@@ -104,8 +104,7 @@ settings.husk_lookup = {
 	"units/weapons/player/wpn_we_javelin_02/prj_we_javelin_02_magic_3ps",
 	"units/weapons/player/wpn_we_life_staff_01/prj_we_life_staff_01_3ps",
 	"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01",
-	"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01_bleed",
-	"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01_poison"
+	"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01_bleed"
 }
 settings.projectile_units = {
 	javelin = {

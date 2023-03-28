@@ -49,9 +49,10 @@ BloodSettingsDefault = BloodSettingsDefault or {
 		enabled = true,
 		first_person_per_race = {
 			default = "fx/impact_blood",
-			skaven = "fx/impact_blood",
 			chaos = "fx/impact_blood_chaos",
-			beastmen = "fx/impact_blood_beastman"
+			skaven = "fx/impact_blood",
+			beastmen = "fx/impact_blood_beastman",
+			undead = false
 		}
 	},
 	dismemberment = {
@@ -71,9 +72,8 @@ end
 BloodSettings.get_hit_effect_for_race = function (self, race)
 	if self.hit_effects.enabled then
 		local race_blood = self.hit_effects.first_person_per_race[race]
-		local default_race_blood = self.hit_effects.first_person_per_race.default
 
-		return race_blood or race_blood == nil and default_race_blood
+		return race_blood or race_blood == nil and self.hit_effects.first_person_per_race.default
 	end
 
 	return nil

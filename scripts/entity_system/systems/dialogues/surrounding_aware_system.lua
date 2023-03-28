@@ -1,8 +1,12 @@
 local RPCS = {}
 local extensions = {
+	"GlobalObserverExtension",
 	"LookatTargetExtension",
 	"SurroundingObserverExtension",
 	"SurroundingObserverHuskExtension"
+}
+local GLOBAL_CONCEPT_NAMES = {
+	heard_speak = true
 }
 SurroundingAwareSystem = class(SurroundingAwareSystem, ExtensionSystemBase)
 
@@ -20,6 +24,7 @@ SurroundingAwareSystem.init = function (self, entity_system_creation_context, sy
 	self.unit_input_data = {}
 	self.unit_extension_data = {}
 	self.observers = {}
+	self.global_observers = {}
 	self.broadphase = Broadphase(math.max(DialogueSettings.max_view_distance, DialogueSettings.max_hear_distance, DialogueSettings.discover_enemy_attack_distance), 256)
 	self.event_array = pdArray.new()
 	self.seen_recently = {}
@@ -96,6 +101,8 @@ SurroundingAwareSystem.on_add_extension = function (self, world, unit, extension
 		extension.view_distance = DialogueSettings.observer_view_distance
 		extension.view_distance_sq = extension.view_distance^2
 		self.observers[unit] = extension
+	elseif extension_name == "GlobalObserverExtension" then
+		self.global_observers[unit] = extension
 	else
 		extension.has_been_seen = false
 		extension.is_lookat_object = true
@@ -140,6 +147,8 @@ SurroundingAwareSystem.on_remove_extension = function (self, unit, extension_nam
 				seen_observers[player_unit] = nil
 			end
 		end
+	elseif extension_name == "GlobalObserverExtension" then
+		self.global_observers[unit] = nil
 	end
 
 	ScriptUnit.remove_extension(unit, "surrounding_aware_system")
@@ -495,6 +504,22 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 						local array_data_index = i + 3 + (k - 1) * 2 + 1
 						event_data[array_data[array_data_index]] = array_data[array_data_index + 1]
 					end
+
+					dialogue_input:trigger_dialogue_event(event_name, event_data)
+				end
+			end
+
+			if GLOBAL_CONCEPT_NAMES[event_name] then
+				local event_data = FrameTable.alloc_table()
+
+				for k = 1, num_args / 2 do
+					local array_data_index = i + 3 + (k - 1) * 2 + 1
+					event_data[array_data[array_data_index]] = array_data[array_data_index + 1]
+				end
+
+				for observer_unit, _ in pairs(self.global_observers) do
+					local dialogue_extension = ScriptUnit.extension(observer_unit, "dialogue_system")
+					local dialogue_input = dialogue_extension.input
 
 					dialogue_input:trigger_dialogue_event(event_name, event_data)
 				end

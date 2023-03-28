@@ -34,6 +34,7 @@ TagQueryLoader.init = function (self, tagquery_database, dialogues_destination_t
 	self.loaded_files = {}
 	self.file_environment = {
 		OP = OP,
+		math = math,
 		define_rule = function (rule_definition)
 			tagquery_database:define_rule(rule_definition)
 		end,

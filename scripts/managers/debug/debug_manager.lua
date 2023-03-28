@@ -124,7 +124,7 @@ DebugManager.update = function (self, dt, t)
 
 	self:update_time_scale(dt)
 
-	if Development.parameter("player_mechanics_goodness_debug") then
+	if script_data.player_mechanics_goodness_debug then
 		self:_adjust_player_speed()
 	end
 

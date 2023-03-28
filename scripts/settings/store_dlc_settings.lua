@@ -1,5 +1,49 @@
 StoreDlcSettings = {
 	{
+		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_adept_bundle_0002",
+		name = "display_name_adept_bundle_0002",
+		slideshow_texture = "store_slideshow_bundle_adept_bundle_0002",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_adept_bundle_0002",
+		optional_dlc_display_name = "display_name_adept_bundle_0002",
+		information_text = "description_adept_bundle_0002",
+		dlc_name = "adept_bundle_0002",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_adept_bundle_0002",
+		optional_dlc_subtitle = "bw_adept",
+		slideshow_text = "description_adept_bundle_0002",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_bw_adept_1002",
+			"adept_hat_1005"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_maidenguard_bundle_0003",
+		name = "display_name_maidenguard_bundle_0003",
+		slideshow_texture = "store_slideshow_bundle_maidenguard_bundle_0003",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_maidenguard_bundle_0003",
+		optional_dlc_display_name = "display_name_maidenguard_bundle_0003",
+		information_text = "description_maidenguard_bundle_0003",
+		dlc_name = "maidenguard_bundle_0003",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_maidenguard_bundle_0003",
+		optional_dlc_subtitle = "ww_maidenguard",
+		slideshow_text = "description_maidenguard_bundle_0003",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_ww_maidenguard_1002",
+			"maidenguard_hat_1005"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
 		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_five_career_bundle_0005",
 		name = "display_name_five_career_bundle_0005",
 		slideshow_texture = "store_slideshow_bundle_five_career_bundle_0005",

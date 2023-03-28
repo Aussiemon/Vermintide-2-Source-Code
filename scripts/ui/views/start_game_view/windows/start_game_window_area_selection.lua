@@ -130,7 +130,7 @@ StartGameWindowAreaSelection._setup_area_widgets = function (self)
 			end
 		end
 
-		local frame_texture = self:_get_selection_frame_by_difficulty_index(highest_completed_difficulty_index)
+		local frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(highest_completed_difficulty_index)
 		content.frame = frame_texture
 		local offset = widget.offset
 		offset[1] = width_offset
@@ -138,18 +138,6 @@ StartGameWindowAreaSelection._setup_area_widgets = function (self)
 	end
 
 	self._active_area_widgets = assigned_widgets
-end
-
-StartGameWindowAreaSelection._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
-	local completed_frame_texture = "map_frame_00"
-
-	if difficulty_index and difficulty_index > 0 then
-		local difficulty_key = DefaultDifficulties[difficulty_index]
-		local settings = DifficultySettings[difficulty_key]
-		completed_frame_texture = settings.completed_frame_texture
-	end
-
-	return completed_frame_texture
 end
 
 StartGameWindowAreaSelection._select_area_by_name = function (self, area_name)

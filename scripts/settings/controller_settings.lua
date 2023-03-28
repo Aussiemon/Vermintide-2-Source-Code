@@ -4579,6 +4579,21 @@ IngameMenuKeymaps = {
 			"keyboard",
 			"numpad enter",
 			"pressed"
+		},
+		cancel_video_1 = {
+			"keyboard",
+			"space",
+			"held"
+		},
+		cancel_video_2 = {
+			"keyboard",
+			"esc",
+			"held"
+		},
+		cancel_video_3 = {
+			"mouse",
+			"left",
+			"held"
 		}
 	},
 	xb1 = InputUtils.keymaps_key_approved("xb1") and {
@@ -4854,6 +4869,16 @@ IngameMenuKeymaps = {
 			"gamepad",
 			"right_trigger",
 			"held"
+		},
+		cancel_video_1 = {
+			"gamepad",
+			"a",
+			"held"
+		},
+		cancel_video_2 = {
+			"gamepad",
+			"b",
+			"held"
 		}
 	},
 	ps4 = InputUtils.keymaps_key_approved("ps4") and {
@@ -5128,6 +5153,16 @@ IngameMenuKeymaps = {
 		debug_pixeldistance_2 = {
 			"gamepad",
 			"r2",
+			"held"
+		},
+		cancel_video_1 = {
+			"gamepad",
+			"cross",
+			"held"
+		},
+		cancel_video_2 = {
+			"gamepad",
+			"circle",
 			"held"
 		}
 	}
@@ -5413,6 +5448,14 @@ IngameMenuFilters = {
 					button_1 = "cycle_prev_raw_held"
 				}
 			}
+		},
+		cancel_video = {
+			filter_type = "or",
+			input_mappings = {
+				button_2 = "cancel_video_2",
+				button_3 = "cancel_video_3",
+				button_1 = "cancel_video_1"
+			}
 		}
 	},
 	xb1 = InputUtils.keymaps_key_approved("xb1") and {
@@ -5631,6 +5674,13 @@ IngameMenuFilters = {
 			multiplier_x = 40,
 			min_multiplier_x = 25,
 			hover_multiplier = 0.3
+		},
+		cancel_video = {
+			filter_type = "or",
+			input_mappings = {
+				button_1 = "cancel_video_1",
+				button_2 = "cancel_video_2"
+			}
 		}
 	},
 	ps4 = InputUtils.keymaps_key_approved("ps4") and {
@@ -5849,6 +5899,13 @@ IngameMenuFilters = {
 			multiplier_x = 40,
 			min_multiplier_x = 25,
 			hover_multiplier = 0.3
+		},
+		cancel_video = {
+			filter_type = "or",
+			input_mappings = {
+				button_1 = "cancel_video_1",
+				button_2 = "cancel_video_2"
+			}
 		}
 	}
 }

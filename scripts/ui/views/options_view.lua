@@ -554,9 +554,11 @@ OptionsView._setup_input_functions = function (self)
 					content.active_2 = true
 				elseif content.hotspot_1.on_right_click then
 					local keybind = content.actions_info[1].keybind
+					local device = keybind[4] or "keyboard"
+					local key = keybind[5] or UNASSIGNED_KEY
 
-					content.callback(keybind[5] or UNASSIGNED_KEY, keybind[4] or "keyboard", content, 1)
 					content.callback(UNASSIGNED_KEY, "keyboard", content, 2)
+					content.callback(key, device, content, 1)
 				elseif content.hotspot_2.on_right_click then
 					content.callback(UNASSIGNED_KEY, "keyboard", content, 2)
 				end
@@ -2863,8 +2865,8 @@ OptionsView.reset_to_default_keybind = function (self, widget)
 	local content = widget.content
 	local default_value = content.default_value
 
-	content.callback(default_value.key, default_value.controller, content, 1)
 	content.callback(UNASSIGNED_KEY, default_value.controller, content, 2)
+	content.callback(default_value.key, default_value.controller, content, 1)
 end
 
 OptionsView.reset_to_default_sorted_list = function (self, widget)
@@ -10326,7 +10328,7 @@ OptionsView.cb_keybind_changed = function (self, new_key, device, content, index
 
 	local first_keybind = actions_info[1].keybind
 
-	if (first_keybind[1] == device and first_keybind[2] == new_key) or (first_keybind[4] == device and first_keybind[5] == new_key) then
+	if new_key ~= UNASSIGNED_KEY and ((first_keybind[1] == device and first_keybind[2] == new_key) or (first_keybind[4] == device and first_keybind[5] == new_key)) then
 		return
 	end
 
@@ -10385,63 +10387,6 @@ OptionsView.cb_keybind_changed = function (self, new_key, device, content, index
 		content.is_unassigned_2 = is_unassigned
 		content.selected_key_2 = button_name
 	end
-end
-
-OptionsView.cb_toggle_profanity_check = function (self, content)
-	local options_values = content.options_values
-	local current_selection = content.current_selection
-	self.changed_user_settings.profanity_check = options_values[current_selection]
-end
-
-OptionsView.cb_toggle_profanity_check_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
-	}
-	local default_value = DefaultUserSettings.get("user_settings", "profanity_check")
-	local enabled = Application.user_setting("profanity_check")
-
-	if enabled == nil then
-		enabled = default_value
-	end
-
-	if enabled then
-		slot4 = 1
-	else
-		local selection = 2
-	end
-
-	if default_value then
-		slot5 = 1
-	else
-		local default_option = 2
-	end
-
-	return selection, options, "menu_settings_profanity_check", default_option
-end
-
-OptionsView.cb_toggle_profanity_check_saved_value = function (self, widget)
-	local enabled = assigned(self.changed_user_settings.profanity_check, Application.user_setting("profanity_check"))
-
-	if enabled == nil then
-		enabled = DefaultUserSettings.get("user_settings", "profanity_check")
-	end
-
-	slot3 = widget.content
-
-	if enabled then
-		slot4 = 1
-	else
-		slot4 = 2
-	end
-
-	slot3.current_selection = slot4
 end
 
 OptionsView.cb_twitch_vote_time = function (self, content)
@@ -10635,3 +10580,5 @@ OptionsView.cb_twitch_difficulty = function (self, content)
 	local value = content.value
 	self.changed_user_settings.twitch_difficulty = value
 end
+
+return

@@ -334,17 +334,29 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	local current_hot_cs = DebugScreen.filtered_console_settings[DebugScreen.hot_id]
 	local setting_search_string, option_search_string = DebugScreen.search_string:match("([^.]*).?(.*)")
 
-	if DebugScreen.search_active and setting_search_string ~= "" then
-		filtered_console_settings = {}
-		local search_string = string.gsub(setting_search_string, "[_ ]", "")
+	if DebugScreen.search_active then
+		if setting_search_string == "*" then
+			filtered_console_settings = {}
 
-		for i = 1, #DebugScreen.console_settings do
-			local cs = DebugScreen.console_settings[i]
-			local current_item = cs.title:lower()
-			current_item = string.gsub(current_item, "[_ ]", "")
+			for i = 1, #DebugScreen.console_settings do
+				local cs = DebugScreen.console_settings[i]
 
-			if current_item:find(search_string, 1, true) ~= nil then
-				filtered_console_settings[#filtered_console_settings + 1] = cs
+				if cs.selected_id ~= nil then
+					filtered_console_settings[#filtered_console_settings + 1] = cs
+				end
+			end
+		elseif setting_search_string ~= "" then
+			filtered_console_settings = {}
+			local search_string = string.gsub(setting_search_string, "[_ ]", "")
+
+			for i = 1, #DebugScreen.console_settings do
+				local cs = DebugScreen.console_settings[i]
+				local current_item = cs.title:lower()
+				current_item = string.gsub(current_item, "[_ ]", "")
+
+				if current_item:find(search_string, 1, true) ~= nil then
+					filtered_console_settings[#filtered_console_settings + 1] = cs
+				end
 			end
 		end
 	end
@@ -496,6 +508,12 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 		end
 	end
 
+	if input_service:get("page up") then
+		DebugScreen.hot_id = 1
+	elseif input_service:get("page down") then
+		DebugScreen.hot_id = #filtered_console_settings
+	end
+
 	if not input_service:get("down_key") and not input_service:get("up_key") then
 		DebugScreen.is_holding = false
 	end
@@ -535,10 +553,15 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 	if DebugScreen.active_id ~= nil then
 		local cs = filtered_console_settings[DebugScreen.active_id]
-		local current_filtered_id = table.find(filtered_option_ids, cs.hot_id)
 
-		if current_filtered_id and current_filtered_id > 5 then
-			wanted_y_offset = wanted_y_offset + (current_filtered_id - 5) * (font_size + 2)
+		if not cs then
+			DebugScreen.active_id = nil
+		else
+			local current_filtered_id = table.find(filtered_option_ids, cs.hot_id)
+
+			if current_filtered_id and current_filtered_id > 5 then
+				wanted_y_offset = wanted_y_offset + (current_filtered_id - 5) * (font_size + 2)
+			end
 		end
 	end
 
@@ -996,6 +1019,23 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 			Gui.rect(gui, search_text_box_pos, Vector2(DebugScreen.search_text_box_width, 35), Colors.get_color_with_alpha("dark_olive_green", 100 + math.cos(hot_anim_t) * 25))
 			Gui.rect(gui, search_title_box_pos, Vector2(200, 35), Colors.get_color_with_alpha("orange", 15 + math.cos(hot_anim_t) * 5))
 			Gui.text(gui, "Search (backspace) ", font_mtrl, font_size, font, search_title_pos, Colors.get_color_with_alpha("white", 100 + math.cos(hot_anim_t) * 100))
+
+			local info_box_width = 300
+			local select_first_pos = Vector3(DebugScreen.console_width - info_box_width, res_y - font_size, search_text_layer)
+
+			Gui.text(gui, "Select First (Page up)", font_mtrl, font_size * 0.5, font, select_first_pos, Colors.get_color_with_alpha("white", 100 + math.cos(hot_anim_t) * 100))
+
+			local select_last_pos = Vector3(DebugScreen.console_width - info_box_width, res_y - font_size * 2, search_text_layer)
+
+			Gui.text(gui, "Select Last (Page down)", font_mtrl, font_size * 0.5, font, select_last_pos, Colors.get_color_with_alpha("white", 100 + math.cos(hot_anim_t) * 100))
+
+			local info_submenu_search_pos = Vector3(DebugScreen.console_width - info_box_width, res_y - font_size * 3, search_text_layer)
+
+			Gui.text(gui, "Use dot symbol [.] in search box to search submenus.", font_mtrl, font_size * 0.5, font, info_submenu_search_pos, Colors.get_color_with_alpha("white", 100 + math.cos(hot_anim_t) * 100))
+
+			local info_modified_search_pos = Vector3(DebugScreen.console_width - info_box_width, res_y - font_size * 4, search_text_layer)
+
+			Gui.text(gui, "Use star symbol [*] in search box to filter modified.", font_mtrl, font_size * 0.5, font, info_modified_search_pos, Colors.get_color_with_alpha("white", 100 + math.cos(hot_anim_t) * 100))
 		end
 
 		return

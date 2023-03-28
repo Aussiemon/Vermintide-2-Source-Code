@@ -432,18 +432,29 @@ BotBehaviors.default = {
 				"BTSelector",
 				{
 					"BTBotInventorySwitchAction",
-					name = "switch_ranged_reload",
-					condition = "is_slot_not_wielded",
+					name = "switch_reload",
+					condition = "is_wanted_slot_not_wielded",
 					condition_args = {
+						"wanted_slot_to_reload",
 						"slot_ranged"
 					},
-					action_data = ACTIONS_DEFAULT.switch_ranged
+					action_data = ACTIONS_DEFAULT.switch_reload_slot
+				},
+				{
+					"BTBotActivateAbilityAction",
+					name = "switch_ability",
+					condition = "is_wanted_slot_not_wielded",
+					condition_args = {
+						"wanted_slot_to_reload",
+						"slot_career_skill_weapon"
+					},
+					action_data = ACTIONS_DEFAULT.use_ability
 				},
 				{
 					"BTBotReloadAction",
 					name = "reload"
 				},
-				condition = "should_reload_weapon",
+				condition = "wants_to_reload_weapon",
 				name = "reload_weapon"
 			},
 			{
@@ -468,48 +479,6 @@ BotBehaviors.default = {
 					start_max_percentage = 0.99,
 					stop_percentage = 0.1,
 					overcharge_limit_type = "threshold"
-				}
-			},
-			{
-				"BTSelector",
-				{
-					"BTBotInventorySwitchAction",
-					name = "switch_ranged_unique_ammo_recall",
-					condition = "is_slot_not_wielded",
-					condition_args = {
-						"slot_ranged"
-					},
-					action_data = ACTIONS_DEFAULT.switch_ranged
-				},
-				{
-					"BTBotReloadAction",
-					name = "recall"
-				},
-				name = "recall_unique_ammo",
-				condition = "should_recall_unique_ammo",
-				condition_args = {
-					ammo_percentage_threshold = 0.2
-				}
-			},
-			{
-				"BTSelector",
-				{
-					"BTBotActivateAbilityAction",
-					name = "switch_ability_charge",
-					condition = "is_slot_not_wielded",
-					condition_args = {
-						"slot_career_skill_weapon"
-					},
-					action_data = ACTIONS_DEFAULT.use_ability
-				},
-				{
-					"BTBotReloadAction",
-					name = "reload_ability"
-				},
-				name = "reload_ability_weapon",
-				condition = "should_reload_ability_weapon",
-				condition_args = {
-					ability_cooldown_theshold = 0
 				}
 			},
 			{

@@ -5,15 +5,16 @@ local fade_min = 0.1
 local margin = 50
 local lost_gaze_threshhold = 1
 
-UICleanUI.create = function (peer_id)
+UICleanUI.create = function (peer_id, hud)
 	return {
-		dirty = true,
 		off_window_clock = 0,
 		was_enabled = false,
+		dirty = true,
 		areas = {},
 		widget_area_map = {},
 		clocks = {},
-		peer_id = peer_id
+		peer_id = peer_id,
+		hud = hud
 	}
 end
 

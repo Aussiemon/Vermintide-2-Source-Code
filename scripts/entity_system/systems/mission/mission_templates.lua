@@ -42,6 +42,9 @@ MissionTemplates = {
 
 			return data
 		end,
+		reset_mission = function (data)
+			data:set_current_amount(0)
+		end,
 		update = function (data, positive, dt)
 			local collect_amount = data.collect_amount
 			local evaluate_at_level_end = data.evaluate_at_level_end

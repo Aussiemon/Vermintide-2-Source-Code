@@ -215,6 +215,18 @@ ItemMasterList.magic_barrel = {
 	item_type = "inventory_item",
 	can_wield = CanWieldAllItemTemplates
 }
+ItemMasterList.wizards_barrel = {
+	temporary_template = "wizards_barrel",
+	slot_type = "healthkit",
+	is_local = true,
+	inventory_icon = "icons_placeholder",
+	left_hand_unit = "units/weapons/player/pup_wizards_barrel_01/wpn_wizards_barrel_01",
+	rarity = "plentiful",
+	gamepad_hud_icon = "consumables_icon_defence",
+	hud_icon = "consumables_icon_defence",
+	item_type = "inventory_item",
+	can_wield = CanWieldAllItemTemplates
+}
 ItemMasterList.wpn_gargoyle_head = {
 	temporary_template = "gargoyle_head",
 	slot_type = "healthkit",

@@ -4318,6 +4318,36 @@ DamageProfileTemplates.huge_boss_explosion = {
 		}
 	}
 }
+DamageProfileTemplates.tower_wipe = {
+	instant_death = true,
+	charge_value = "aoe",
+	is_explosion = true,
+	no_stagger_damage_reduction_ranged = true,
+	armor_modifier = {
+		attack = {
+			1,
+			0.5,
+			100,
+			1,
+			1
+		},
+		impact = {
+			1,
+			0.5,
+			1.5,
+			1,
+			1
+		}
+	},
+	default_target = {
+		attack_template = "tower_wipe",
+		damage_type = "tower_wipe",
+		power_distribution = {
+			attack = 5,
+			impact = 0.5
+		}
+	}
+}
 DamageProfileTemplates.globadier_gas_cloud = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.globadier_gas_cloud.default_target.attack_template = "poison_globe_ai_initial_damage"
 DamageProfileTemplates.globadier_gas_cloud.no_stagger_damage_reduction_ranged = true

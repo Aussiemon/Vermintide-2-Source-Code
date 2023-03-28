@@ -1,5 +1,4 @@
 local definitions = local_require("scripts/ui/views/cutscene_overlay_ui_definitions")
-local DO_RELOAD = false
 CutsceneOverlayUI = class(CutsceneOverlayUI)
 
 CutsceneOverlayUI.init = function (self, parent, context)
@@ -48,10 +47,6 @@ CutsceneOverlayUI._create_ui_elements = function (self)
 
 	self._active_template_lists = active_template_lists
 	self._widgets_by_template = widgets_by_template
-
-	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
-
-	DO_RELOAD = false
 end
 
 CutsceneOverlayUI.destroy = function (self)

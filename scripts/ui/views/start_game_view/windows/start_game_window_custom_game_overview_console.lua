@@ -231,19 +231,7 @@ StartGameWindowCustomGameOverviewConsole._update_mission_option = function (self
 	local mission_widget = self._widgets_by_name.mission_setting
 	mission_widget.content.input_text = Localize(display_name)
 	mission_widget.content.icon_texture = icon_texture
-	mission_widget.content.icon_frame_texture = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
-end
-
-StartGameWindowCustomGameOverviewConsole._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
-	local completed_frame_texture = "map_frame_00"
-
-	if difficulty_index and difficulty_index > 0 then
-		local difficulty_key = DefaultDifficulties[difficulty_index]
-		local settings = DifficultySettings[difficulty_key]
-		completed_frame_texture = settings.completed_frame_texture
-	end
-
-	return completed_frame_texture
+	mission_widget.content.icon_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
 end
 
 StartGameWindowCustomGameOverviewConsole._update_difficulty_option = function (self)

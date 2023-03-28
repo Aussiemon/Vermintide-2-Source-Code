@@ -556,8 +556,8 @@ local scenegraph_definition = {
 		parent = "bottom_panel",
 		horizontal_alignment = "center",
 		size = {
-			1920,
-			100
+			900,
+			72
 		},
 		position = {
 			0,
@@ -933,13 +933,12 @@ local sub_title_text_style = {
 	}
 }
 local warning_text_style = {
-	word_wrap = true,
+	font_size = 36,
 	upper_case = false,
 	localize = false,
-	use_shadow = true,
-	font_size = 36,
+	word_wrap = true,
 	horizontal_alignment = "center",
-	vertical_alignment = "bottom",
+	vertical_alignment = "center",
 	font_type = "hell_shark",
 	text_color = Colors.get_color_table_with_alpha("red", 255),
 	offset = {
@@ -2597,7 +2596,36 @@ local widgets = {
 	open_button = UIWidgets.create_default_button("open_button", scenegraph_definition.open_button.size, nil, nil, Localize("interaction_action_open") .. " 1", 32, "green", nil, nil, disable_with_gamepad, false),
 	open_multiple_button = UIWidgets.create_default_button("open_multiple_button", scenegraph_definition.open_multiple_button.size, nil, nil, Localize("interaction_action_open") .. " 5", 32, "green", nil, nil, disable_with_gamepad, true),
 	close_button = UIWidgets.create_default_button("close_button", scenegraph_definition.close_button.size, nil, nil, Localize("interaction_action_close"), 32, nil, nil, nil, disable_with_gamepad, true),
-	item_cap_warning_text = UIWidgets.create_simple_text(Localize("item_cap_warning_text"), "item_cap_warning_text", nil, nil, warning_text_style)
+	item_cap_warning_text = {
+		scenegraph_id = "item_cap_warning_text",
+		element = {
+			passes = {
+				{
+					pass_type = "rect",
+					style_id = "background"
+				},
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text"
+				}
+			}
+		},
+		content = {
+			text = Localize("item_cap_warning_text")
+		},
+		style = {
+			background = {
+				color = {
+					200,
+					0,
+					0,
+					0
+				}
+			},
+			text = warning_text_style
+		}
+	}
 }
 local input_description_widgets = {
 	bottom_panel = UIWidgets.create_simple_uv_texture("menu_panel_bg", {

@@ -14,7 +14,6 @@ PlayerBreeds.hero_we_thornsister = {
 CareerSettings.we_thornsister = {
 	profile_name = "wood_elf",
 	display_name = "we_thornsister",
-	store_tag_icon = "store_tag_icon_we_thornsister",
 	package_name = "resource_packages/careers/we_thornsister",
 	name = "we_thornsister",
 	preview_idle_animation = "career_idle_04",

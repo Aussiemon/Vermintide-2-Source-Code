@@ -27,10 +27,6 @@ settings.vortex_templates = {
 		max_allowed_inner_radius_dist = 3.5,
 		start_radius = 0.1,
 		time_of_life = {
-			8,
-			10
-		},
-		time_of_life = {
 			4,
 			6
 		},

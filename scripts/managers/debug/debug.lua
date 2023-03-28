@@ -352,6 +352,22 @@ Debug.drawer = function (name, disabled)
 	return DebugDrawer:new(lo, to_boolean(not disabled))
 end
 
+Debug.draw_text = function (text, text_pos, opt_font_size, opt_color)
+	local gui = Debug.gui
+	local size = opt_font_size or font_size
+	local pos = Vector3(text_pos.x, RESOLUTION_LOOKUP.res_h - text_pos.y - size, text_pos.z)
+
+	Gui.text(gui, text, font_mtrl, opt_font_size or font_size, font, pos, opt_color or Color(120, 220, 0), "shadow")
+end
+
+Debug.draw_rect = function (pos, size, color)
+	local gui = Debug.gui
+	local inverted_pos = Vector3(pos.x, RESOLUTION_LOOKUP.res_h - pos.y, pos.z)
+	local inverted_size = Vector3(size.x, -size.y, size.z)
+
+	Gui.rect(gui, inverted_pos, inverted_size, color)
+end
+
 Debug.teardown = function ()
 	Debug.active = false
 	local w = Debug.world

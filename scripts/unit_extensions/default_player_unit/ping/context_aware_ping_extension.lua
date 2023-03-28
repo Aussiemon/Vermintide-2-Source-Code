@@ -58,7 +58,7 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 
 		if ping_released or not ping_held then
 			if t <= ping_context.max_t then
-				if ALIVE[unit_to_ping] then
+				if Unit.alive(unit_to_ping) then
 					self:ping_attempt(unit, unit_to_ping, t, ping_type)
 				elseif ping_context.position then
 					self:ping_world_position_attempt(unit, ping_context.position:unbox(), t)
@@ -189,17 +189,17 @@ ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t, 
 		return false
 	end
 
-	if not ALIVE[unit_to_ping] or LEVEL_EDITOR_TEST then
+	if not Unit.alive(unit_to_ping) or LEVEL_EDITOR_TEST then
 		return false
 	end
 
 	social_wheel_event_id = social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
 	local network_manager = Managers.state.network
 	local pinger_unit_id = network_manager:unit_game_object_id(unit)
-	local pinged_unit_id = network_manager:unit_game_object_id(unit_to_ping)
+	local pinged_unit_id, is_level_unit = network_manager:game_object_or_level_id(unit_to_ping)
 	ping_type = ping_type or self._world_markers_enabled and PingTypes.CONTEXT or PingTypes.PING_ONLY
 
-	network_manager.network_transmit:send_rpc_server("rpc_ping_unit", pinger_unit_id, pinged_unit_id, false, ping_type, social_wheel_event_id)
+	network_manager.network_transmit:send_rpc_server("rpc_ping_unit", pinger_unit_id, pinged_unit_id, is_level_unit, false, ping_type, social_wheel_event_id)
 
 	self._ping_timer = t + PING_COOLDOWN
 
@@ -327,7 +327,7 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 								half_height = 0.25
 							end
 
-							local hit_unit_center_pos = POSITION_LOOKUP[hit_unit] + Vector3(0, 0, half_height)
+							local hit_unit_center_pos = Unit.local_position(hit_unit, 0) + Vector3(0, 0, half_height)
 							local hit_offset = hit_position - hit_unit_center_pos
 							local x_diff = math.abs(Vector3.dot(hit_offset, camera_right))
 							local y_diff = math.abs(Vector3.dot(hit_offset, camera_up))

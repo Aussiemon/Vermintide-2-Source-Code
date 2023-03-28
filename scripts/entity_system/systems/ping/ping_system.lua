@@ -144,12 +144,17 @@ PingSystem.hot_join_sync = function (self, sender)
 	for pinger_unit, data in pairs(pinged_units) do
 		local pinged_unit = data.pinged_unit
 		local pinger_unit_id = network_manager:unit_game_object_id(pinger_unit)
-		local pinged_unit_id = pinged_unit and network_manager:unit_game_object_id(data.pinged_unit)
+		local pinged_unit_id, is_level_unit = nil
+
+		if pinged_unit then
+			pinged_unit_id, is_level_unit = network_manager:game_object_or_level_id(data.pinged_unit)
+		end
+
 		local position = data.position
 
 		if pinger_unit_id then
 			if pinged_unit_id then
-				RPC.rpc_ping_unit(channel_id, pinger_unit_id, pinged_unit_id, data.flash, data.ping_type, data.social_wheel_event_id)
+				RPC.rpc_ping_unit(channel_id, pinger_unit_id, pinged_unit_id, is_level_unit, data.flash, data.ping_type, data.social_wheel_event_id)
 			elseif position then
 				RPC.rpc_ping_world_position(channel_id, pinger_unit_id, Vector3(unpack(position)), data.ping_type, data.social_wheel_event_id)
 			end
@@ -162,7 +167,7 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 		self:_remove_ping(pinger_unit)
 	end
 
-	if pinged_unit and not ALIVE[pinged_unit] then
+	if pinged_unit and not Unit.alive(pinged_unit) then
 		return
 	end
 
@@ -229,7 +234,12 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 	local t = Managers.time:time("game")
 	local network_manager = Managers.state.network
 	local pinger_unit_id = network_manager:unit_game_object_id(pinger_unit)
-	local pinged_unit_id = pinged_unit and network_manager:unit_game_object_id(pinged_unit)
+	local pinged_unit_id, is_level_unit = nil
+
+	if pinged_unit then
+		pinged_unit_id, is_level_unit = network_manager:game_object_or_level_id(pinged_unit)
+	end
+
 	self._pinged_units[pinger_unit] = {
 		start_time = t,
 		pinged_unit = pinged_unit,
@@ -251,7 +261,7 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 
 	if self.is_server then
 		if pinged_unit then
-			self.network_transmit:send_rpc_party_clients("rpc_ping_unit", party, true, pinger_unit_id, pinged_unit_id, flash, ping_type, social_wheel_event_id)
+			self.network_transmit:send_rpc_party_clients("rpc_ping_unit", party, true, pinger_unit_id, pinged_unit_id, is_level_unit, flash, ping_type, social_wheel_event_id)
 			self:_play_ping_vo(pinger_unit, pinged_unit, ping_type, social_wheel_event_id)
 		elseif position then
 			self.network_transmit:send_rpc_party_clients("rpc_ping_world_position", party, true, pinger_unit_id, position, ping_type, social_wheel_event_id)
@@ -547,7 +557,7 @@ PingSystem._add_world_marker = function (self, pinger_unit, pinged_unit, positio
 		}
 	end
 
-	position = position and position or POSITION_LOOKUP[pinged_unit]
+	position = position and position or Unit.local_position(pinged_unit, 0)
 
 	Managers.state.event:trigger("add_world_marker_position", "ping", position, cb)
 end
@@ -689,9 +699,9 @@ PingSystem._play_ping_vo = function (self, pinger_unit, pinged_unit, ping_type, 
 	end
 end
 
-PingSystem.rpc_ping_unit = function (self, channel_id, pinger_unit_id, pinged_unit_id, flash, ping_type, social_wheel_event_id)
+PingSystem.rpc_ping_unit = function (self, channel_id, pinger_unit_id, pinged_unit_id, is_level_unit, flash, ping_type, social_wheel_event_id)
 	local pinger_unit = self._unit_storage:unit(pinger_unit_id)
-	local pinged_unit = self._unit_storage:unit(pinged_unit_id)
+	local pinged_unit = Managers.state.network:game_object_or_level_unit(pinged_unit_id, is_level_unit)
 	local sender_player = Managers.player:unit_owner(pinger_unit)
 
 	if not sender_player then

@@ -346,31 +346,6 @@ UIElements = {
 			}
 		}
 	},
-	ClickButton3States = {
-		passes = {
-			{
-				pass_type = "hover",
-				content_id = "button_hotspot"
-			},
-			{
-				pass_type = "click",
-				content_id = "button_hotspot"
-			},
-			{
-				state_content_id = "button_hotspot",
-				pass_type = "state_texture",
-				texture_content_id = "texture_states"
-			}
-		}
-	},
-	SimpleWindow = {
-		passes = {
-			{
-				pass_type = "rounded_background",
-				style_id = "background"
-			}
-		}
-	},
 	SimpleTexture = {
 		passes = {
 			{
@@ -384,27 +359,6 @@ UIElements = {
 			{
 				pass_type = "rotated_texture",
 				texture_id = "texture_id"
-			}
-		}
-	},
-	SimpleVideo = {
-		passes = {
-			{
-				pass_type = "video",
-				style_id = "video"
-			}
-		}
-	},
-	SimpleTextBox = {
-		passes = {
-			{
-				pass_type = "texture",
-				texture_id = "texture_id"
-			},
-			{
-				style_id = "text",
-				pass_type = "text",
-				text_id = "text_field"
 			}
 		}
 	},
@@ -427,105 +381,6 @@ UIElements = {
 				content_check_function = function (content)
 					return content.button_hotspot.is_hover
 				end
-			}
-		}
-	},
-	Simple3StatesButton = {
-		passes = {
-			{
-				pass_type = "hotspot",
-				content_id = "button_hotspot"
-			},
-			{
-				pass_type = "texture",
-				texture_id = "texture_id",
-				content_check_function = function (content)
-					return not content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
-				end
-			},
-			{
-				pass_type = "texture",
-				texture_id = "texture_hover_id",
-				content_check_function = function (content)
-					return content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
-				end
-			},
-			{
-				pass_type = "texture",
-				texture_id = "texture_click_id",
-				content_check_function = function (content)
-					return content.button_hotspot.is_clicked == 0 or content.button_hotspot.is_selected
-				end
-			}
-		}
-	},
-	Simple3StatesButtonText = {
-		passes = {
-			{
-				pass_type = "hotspot",
-				content_id = "button_hotspot"
-			},
-			{
-				pass_type = "texture",
-				texture_id = "texture_id",
-				content_check_function = function (content)
-					return not content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
-				end
-			},
-			{
-				pass_type = "texture",
-				texture_id = "texture_hover_id",
-				content_check_function = function (content)
-					return content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
-				end
-			},
-			{
-				pass_type = "texture",
-				texture_id = "texture_click_id",
-				content_check_function = function (content)
-					return content.button_hotspot.is_clicked == 0 or content.button_hotspot.is_selected
-				end
-			},
-			{
-				style_id = "text",
-				pass_type = "text",
-				text_id = "text_field"
-			}
-		}
-	},
-	BorderedRect = {
-		passes = {
-			{
-				pass_type = "rect",
-				style_id = "rect"
-			},
-			{
-				pass_type = "border",
-				style_id = "border"
-			}
-		}
-	},
-	DoubleTextureHoldButton = {
-		passes = {
-			{
-				pass_type = "hotspot",
-				content_id = "button_hotspot"
-			},
-			{
-				pass_type = "held",
-				content_id = "button_hotspot"
-			},
-			{
-				style_id = "background_texture",
-				state_content_id = "button_hotspot",
-				pass_type = "state_texture",
-				texture_content_id = "background_texture"
-			},
-			{
-				style_id = "foreground_texture",
-				state_content_id = "button_hotspot",
-				pass_type = "state_texture",
-				texture_content_id = "foreground_texture"
 			}
 		}
 	},

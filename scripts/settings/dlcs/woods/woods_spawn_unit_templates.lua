@@ -1,9 +1,8 @@
 local UNIT_NAMES = {
 	default = "units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01",
-	bleed = "units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01_bleed",
-	poison = "units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01_poison"
+	bleed = "units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01_bleed"
 }
-local WALL_TYPES = table.enum("default", "bleed", "poison")
+local WALL_TYPES = table.enum("default", "bleed")
 SpawnUnitTemplates.thornsister_thorn_wall_unit = {
 	spawn_func = function (source_unit, position, rotation, state_int, group_spawn_index)
 		local UNIT_NAME = UNIT_NAMES[WALL_TYPES.default]
@@ -50,8 +49,6 @@ SpawnUnitTemplates.thornsister_thorn_wall_unit = {
 				area_damage_params.life_time = area_damage_params.life_time * life_time_mult + life_time_bonus
 				props_params.life_time = props_params.life_time * life_time_mult + life_time_bonus
 				UNIT_NAME = UNIT_NAMES[WALL_TYPES.bleed]
-			elseif source_talent_extension:has_talent("kerillian_thorn_sister_debuff_wall") then
-				UNIT_NAME = UNIT_NAMES[WALL_TYPES.poison]
 			end
 		end
 

@@ -291,6 +291,66 @@ filter_macros.can_wield_by_current_hero = function (item, backend_id, params)
 	return false
 end
 
+filter_macros.is_new = function (item, backend_id)
+	return PlayerData.new_item_ids[backend_id]
+end
+
+filter_macros.is_plentiful = function (item, backend_id)
+	local backend_items = Managers.backend:get_interface("items")
+	local rarity = backend_items:get_item_rarity(backend_id)
+
+	return rarity == "plentiful"
+end
+
+filter_macros.is_common = function (item, backend_id)
+	local backend_items = Managers.backend:get_interface("items")
+	local rarity = backend_items:get_item_rarity(backend_id)
+
+	return rarity == "common"
+end
+
+filter_macros.is_rare = function (item, backend_id)
+	local backend_items = Managers.backend:get_interface("items")
+	local rarity = backend_items:get_item_rarity(backend_id)
+
+	return rarity == "rare"
+end
+
+filter_macros.is_exotic = function (item, backend_id)
+	local backend_items = Managers.backend:get_interface("items")
+	local rarity = backend_items:get_item_rarity(backend_id)
+
+	return rarity == "exotic"
+end
+
+filter_macros.is_unique = function (item, backend_id)
+	local backend_items = Managers.backend:get_interface("items")
+	local rarity = backend_items:get_item_rarity(backend_id)
+
+	return rarity == "unique"
+end
+
+filter_macros.is_promo = function (item, backend_id)
+	local backend_items = Managers.backend:get_interface("items")
+	local rarity = backend_items:get_item_rarity(backend_id)
+
+	return rarity == "promo"
+end
+
+filter_macros.is_default = function (item, backend_id)
+	local backend_items = Managers.backend:get_interface("items")
+	local rarity = backend_items:get_item_rarity(backend_id)
+
+	return rarity == "default"
+end
+
+filter_macros.is_magic = function (item, backend_id)
+	local backend_items = Managers.backend:get_interface("items")
+	local rarity = backend_items:get_item_rarity(backend_id)
+
+	return rarity == "magic"
+end
+
 filter_macros.can_wield_bright_wizard = make_filter_macro_can_wield_profile("bright_wizard")
 filter_macros.can_wield_bw_scholar = make_filter_macro_can_wield_career("bw_scholar")
 filter_macros.can_wield_bw_adept = make_filter_macro_can_wield_career("bw_adept")
@@ -309,6 +369,7 @@ filter_macros.can_wield_witch_hunter = make_filter_macro_can_wield_profile("witc
 filter_macros.can_wield_wh_captain = make_filter_macro_can_wield_career("wh_captain")
 filter_macros.can_wield_wh_bountyhunter = make_filter_macro_can_wield_career("wh_bountyhunter")
 filter_macros.can_wield_wh_zealot = make_filter_macro_can_wield_career("wh_zealot")
+filter_macros.can_wield_wh_priest = make_filter_macro_can_wield_career("wh_priest")
 filter_macros.can_wield_wood_elf = make_filter_macro_can_wield_profile("wood_elf")
 filter_macros.can_wield_we_waywatcher = make_filter_macro_can_wield_career("we_waywatcher")
 filter_macros.can_wield_we_maidenguard = make_filter_macro_can_wield_career("we_maidenguard")

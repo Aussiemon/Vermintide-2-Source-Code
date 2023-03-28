@@ -140,7 +140,7 @@ end
 PlayerUnitCosmeticExtension.trigger_equip_events = function (self, slot_name, unit)
 	if slot_name == "slot_hat" then
 		local skin_data = self._cosmetics.skin
-		local equip_hat_event = skin_data.equip_hat_event
+		local equip_hat_event = skin_data.equip_hat_event or "using_skin_default"
 
 		if equip_hat_event then
 			Unit.flow_event(unit, equip_hat_event)

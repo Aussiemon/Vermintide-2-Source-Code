@@ -23,7 +23,7 @@ DeusJourneySettings = DeusJourneySettings or {
 	journey_cave = {
 		description = "journey_cave_desc",
 		display_name = "journey_cave_name",
-		level_image = "morris_level_icon_02",
+		level_image = "morris_level_icon_03",
 		required_journeys = {
 			"journey_ruin"
 		},
@@ -35,7 +35,7 @@ DeusJourneySettings = DeusJourneySettings or {
 	journey_ice = {
 		description = "journey_ice_desc",
 		display_name = "journey_ice_name",
-		level_image = "morris_level_icon_03",
+		level_image = "morris_level_icon_02",
 		required_journeys = {
 			"journey_cave"
 		},

@@ -12,7 +12,7 @@ end
 
 local params = {}
 
-TelemetryEvents.header = function (self, engine_revision, content_revision, steam_branch, svn_branch, machine_name, is_testify_session)
+TelemetryEvents.header = function (self, engine_revision, content_revision, client_version, steam_branch, svn_branch, machine_name, is_testify_session)
 	table.clear(params)
 
 	params.version = TelemetrySettings.version
@@ -21,6 +21,7 @@ TelemetryEvents.header = function (self, engine_revision, content_revision, stea
 	params.build = BUILD
 	params.engine_revision = engine_revision
 	params.content_revision = content_revision
+	params.client_version = client_version
 	params.steam_branch = steam_branch
 	params.svn_branch = svn_branch
 	params.machine_id = Application.machine_id and Application.machine_id() or nil
@@ -761,6 +762,8 @@ TelemetryEvents.store_calendar_rewards_claimed = function (self, claim)
 	params.cooldown = claim.cooldown
 	params.reward_index = claim.reward_index
 	params.rewards = claim.rewards
+	params.steam_items = claim.new_steam_items
+	params.cosmetics = claim.new_cosmetics
 	params.items = table.map(claim.items, function (item)
 		return {
 			name = item.data.name,

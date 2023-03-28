@@ -931,12 +931,6 @@ InteractionDefinitions.pickup_object = {
 					local message = string.format(Localize("system_chat_player_picked_up_loot_die"), interactor_name)
 
 					Managers.chat:add_local_system_message(1, message, pop_chat)
-				elseif pickup_settings.type == "endurance_badge" then
-					Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "picked_up_endurance_badge", player)
-
-					local message = string.format(Localize("dlc1_2_system_chat_player_picked_up_endurance_badge"), interactor_name)
-
-					Managers.chat:add_local_system_message(1, message, pop_chat)
 				elseif pickup_settings.type == "painting_scrap" then
 					Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "picked_up_painting_scrap", player)
 
@@ -996,7 +990,7 @@ InteractionDefinitions.pickup_object = {
 				if on_pick_up_func then
 					local is_server = data.is_server
 
-					on_pick_up_func(world, interactor_unit, is_server, interactable_unit)
+					on_pick_up_func(world, interactor_unit, is_server, interactable_unit, is_husk)
 				end
 
 				local local_bot_or_human = not player.remote

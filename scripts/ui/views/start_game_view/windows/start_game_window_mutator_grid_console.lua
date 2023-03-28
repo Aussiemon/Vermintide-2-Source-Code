@@ -286,7 +286,7 @@ StartGameWindowMutatorGridConsole._handle_input = function (self, dt, t)
 	local page_button_next = widgets_by_name.page_button_next
 	local page_button_previous = widgets_by_name.page_button_previous
 
-	if UIUtils.is_button_hover(page_button_next) or UIUtils.is_button_hover(page_button_previous) then
+	if UIUtils.is_button_hover_enter(page_button_next) or UIUtils.is_button_hover_enter(page_button_previous) then
 		self:_play_sound("play_gui_inventory_next_hover")
 	end
 

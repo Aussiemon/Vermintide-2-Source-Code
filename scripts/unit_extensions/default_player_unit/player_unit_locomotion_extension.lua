@@ -23,6 +23,7 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 	self.animation_translation_scale = Vector3Box(1, 1, 1)
 	self.external_velocity = nil
 	self._external_velocity_enabled = true
+	self._script_driven_gravity_scale = 1
 	self.velocity_forced = nil
 	self.use_drag = true
 
@@ -430,7 +431,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 	if calculate_fall_velocity then
 		local fall_speed = dragged_velocity.z
 		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-		fall_speed = fall_speed - movement_settings_table.gravity_acceleration * dt
+		fall_speed = fall_speed - movement_settings_table.gravity_acceleration * self._script_driven_gravity_scale * dt
 		dragged_velocity.z = math.min(self.maximum_upward_velocity, fall_speed)
 	end
 
@@ -458,9 +459,10 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 				local ai_unit = ai_units[i]
 				local breed = ScriptUnit.extension(ai_unit, "ai_system")._breed
 				local is_alive = ScriptUnit.extension(ai_unit, "health_system"):is_alive()
+				local ai_extension = ScriptUnit.extension(ai_unit, "ai_system")
 
-				if is_alive and breed.player_locomotion_constrain_radius ~= nil and not no_clip_filter[breed.armor_category] then
-					local ai_radius = breed.player_locomotion_constrain_radius
+				if is_alive and ai_extension.player_locomotion_constrain_radius ~= nil and not no_clip_filter[breed.armor_category] then
+					local ai_radius = ai_extension.player_locomotion_constrain_radius
 					local ai_min_dist_sq = ai_radius * ai_radius * 2 * 2
 					local ai_position = Vector3.flat(POSITION_LOOKUP[ai_unit])
 					local ai_point_on_line = flat_player_pos + velocity_flat_normalized
@@ -502,12 +504,12 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 
 			for i = 1, num_ai_units do
 				local ai_unit = ai_units[i]
-				local breed = ScriptUnit.extension(ai_unit, "ai_system")._breed
 				local is_alive = ScriptUnit.extension(ai_unit, "health_system"):is_alive()
+				local ai_extension = ScriptUnit.extension(ai_unit, "ai_system")
 
-				if is_alive and breed.player_locomotion_constrain_radius ~= nil then
+				if is_alive and ai_extension.player_locomotion_constrain_radius ~= nil then
+					local ai_radius = ai_extension.player_locomotion_constrain_radius
 					local ai_position = Vector3.flat(POSITION_LOOKUP[ai_unit])
-					local ai_radius = breed.player_locomotion_constrain_radius
 					local ai_radius_sq = ai_radius * ai_radius
 					local dist_to_ai_sq = Vector3.distance_squared(ai_position, flat_player_pos)
 
@@ -767,6 +769,14 @@ end
 
 PlayerUnitLocomotionExtension.set_script_movement_time_scale = function (self, scale)
 	self._script_movement_time_scale = scale
+end
+
+PlayerUnitLocomotionExtension.set_script_driven_gravity_scale = function (self, scale)
+	self._script_driven_gravity_scale = scale
+end
+
+PlayerUnitLocomotionExtension.get_script_driven_gravity_scale = function (self, scale)
+	return self._script_driven_gravity_scale
 end
 
 PlayerUnitLocomotionExtension.add_external_velocity = function (self, velocity_delta, upper_limit)

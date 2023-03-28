@@ -3,6 +3,7 @@ require("scripts/unit_extensions/human/player_bot_unit/player_bot_unit_first_per
 
 FirstPersonSystem = class(FirstPersonSystem, ExtensionSystemBase)
 local RPCS = {
+	"rpc_play_hud_sound_event",
 	"rpc_play_first_person_sound",
 	"rpc_play_husk_sound_event",
 	"rpc_play_husk_unit_sound_event",
@@ -41,6 +42,21 @@ FirstPersonSystem.rpc_play_first_person_sound = function (self, channel_id, unit
 	local fp_ext = ScriptUnit.extension(unit, "first_person_system")
 
 	fp_ext:play_sound_event(sound_event, position)
+end
+
+FirstPersonSystem.rpc_play_hud_sound_event = function (self, channel_id, unit_id, event_id)
+	local unit = self.unit_storage:unit(unit_id)
+
+	if not unit then
+		printf("unit from game_object_id %d is nil", unit_id)
+
+		return
+	end
+
+	local event = NetworkLookup.sound_events[event_id]
+	local fp_ext = ScriptUnit.extension(unit, "first_person_system")
+
+	fp_ext:play_hud_sound_event(event)
 end
 
 FirstPersonSystem.rpc_play_husk_sound_event = function (self, channel_id, unit_id, event_id)

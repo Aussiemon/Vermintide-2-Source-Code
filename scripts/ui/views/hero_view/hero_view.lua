@@ -421,16 +421,7 @@ HeroView.requested_screen_change_by_name = function (self, screen_name, sub_scre
 end
 
 HeroView._change_screen_by_name = function (self, screen_name, sub_screen_name, optional_params)
-	local settings, settings_index = nil
-
-	for index, screen_settings in ipairs(settings_by_screen) do
-		if screen_settings.name == screen_name then
-			settings = screen_settings
-			settings_index = index
-
-			break
-		end
-	end
+	local settings_index, settings = table.find_by_key(settings_by_screen, "name", screen_name)
 
 	assert(settings_index, "[HeroView] - Could not find state by name: %s", screen_name)
 

@@ -116,7 +116,7 @@ settings.buff_function_templates = {
 			local player_health_extension = ScriptUnit.extension(unit, "health_system")
 			local max_health = player_health_extension:get_max_health()
 			local current_health = player_health_extension:current_health()
-			local damage = max_health * buff.template.damage_percentage
+			local damage = DamageUtils.networkify_damage(max_health * buff.template.damage_percentage)
 			local health_left = current_health - damage
 
 			if health_left > 0 then

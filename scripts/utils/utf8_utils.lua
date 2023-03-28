@@ -1,7 +1,7 @@
 UTF8Utils = UTF8Utils or {}
 
 UTF8Utils.string_length = function (text)
-	local length = string.len(text)
+	local length = #text
 	local index = 1
 	local num_chars = 0
 	local _ = nil
@@ -14,35 +14,36 @@ UTF8Utils.string_length = function (text)
 	return num_chars
 end
 
-UTF8Utils.sub_string = function (text, from, to)
-	if to == 0 or text == "" then
+UTF8Utils.sub_string = function (text, char_from, char_to)
+	if char_to <= 0 or text == "" then
 		return ""
 	end
 
-	local length = string.len(text)
-	local tmp_byte_from, tmp_byte_to, byte_from, byte_to = nil
-	local index = 1
-	local i = 1
+	local byte_index = 1
+	local byte_count = #text
+	local byte_from = -1
+	local byte_to = -1
+	local char_index = 1
 
-	while length >= i do
-		tmp_byte_from, tmp_byte_to = Utf8.location(text, i)
+	while byte_index <= byte_count do
+		local tmp_byte_from, tmp_byte_to = Utf8.location(text, byte_index)
 
-		if index == from then
+		if char_index == char_from then
 			byte_from = tmp_byte_from
 		end
 
-		if index == to then
+		if char_index == char_to then
 			byte_to = tmp_byte_to - 1
+
+			break
 		end
 
-		index = index + 1
-		i = tmp_byte_to
+		char_index = char_index + 1
+		byte_index = tmp_byte_to
 	end
 
-	if byte_from and byte_to then
+	if byte_from then
 		return string.sub(text, byte_from, byte_to)
-	elseif byte_from then
-		return string.sub(text, byte_from)
 	else
 		return ""
 	end

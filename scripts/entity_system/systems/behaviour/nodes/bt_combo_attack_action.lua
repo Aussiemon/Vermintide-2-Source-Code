@@ -537,9 +537,14 @@ BTComboAttackAction.anim_cb_frenzy_damage = function (self, unit, blackboard)
 		damage = action.damage
 	end
 
-	local target_name = ScriptUnit.extension(attacking_target, "dialogue_system").context.player_profile
+	local target_dialogue_extension = ScriptUnit.has_extension(attacking_target, "dialogue_system")
 
-	Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "enemy_attack", DialogueSettings.armor_hit_broadcast_range, "attack_tag", "frenzy_attack_damage", "target_name", target_name)
+	if target_dialogue_extension then
+		local target_name = target_dialogue_extension.context.player_profile
+
+		Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "enemy_attack", DialogueSettings.armor_hit_broadcast_range, "attack_tag", "frenzy_attack_damage", "target_name", target_name)
+	end
+
 	AiUtils.damage_target(attacking_target, unit, action, damage)
 end
 

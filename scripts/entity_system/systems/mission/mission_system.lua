@@ -188,6 +188,16 @@ MissionSystem.block_mission_ui = function (self, ui_blocked)
 	Managers.state.event:trigger("ui_event_block_mission_ui", ui_blocked)
 end
 
+MissionSystem.trigger_active_mission_ui_events = function (self)
+	for mission_name, data in pairs(self.active_missions) do
+		local mission_data = Missions[mission_name]
+
+		if not mission_data.hidden and not data.mission_data.is_side_mission then
+			Managers.state.event:trigger("ui_event_add_mission_objective", mission_name, data.center_text or data.text)
+		end
+	end
+end
+
 MissionSystem.end_mission = function (self, mission_name, sync)
 	fassert(self.active_missions[mission_name], "No active mission with passed mission_name %q", mission_name)
 
@@ -216,6 +226,29 @@ MissionSystem.end_mission = function (self, mission_name, sync)
 
 	self.active_missions[mission_name] = nil
 	self.completed_missions[mission_name] = data
+end
+
+MissionSystem.reset_mission = function (self, mission_name, sync)
+	fassert(self.active_missions[mission_name], "No active mission with passed mission_name %q", mission_name)
+
+	local data = self.active_missions[mission_name]
+	local network_time = self.network_manager:network_time()
+	local mission_template_name = data.mission_data.mission_template_name
+	local template = MissionTemplates[mission_template_name]
+
+	template.reset_mission(data)
+	template.update_text(data)
+
+	if not data.mission_data.hidden then
+		Managers.state.event:trigger("ui_event_update_mission", mission_name, data.center_text or data.text)
+	end
+
+	if sync and self.is_server then
+		local mission_name_id = NetworkLookup.mission_names[mission_name]
+		local sync_data = template.create_sync_data(data)
+
+		self.network_transmit:send_rpc_clients("rpc_update_mission", mission_name_id, sync_data)
+	end
 end
 
 MissionSystem.update_mission = function (self, mission_name, positive, dt, sync)
@@ -289,6 +322,23 @@ MissionSystem.flow_callback_start_mission = function (self, mission_name, unit)
 	end
 
 	self:request_mission(mission_name, unit)
+end
+
+MissionSystem.flow_callback_reset_mission = function (self, mission_name)
+	if not self.is_server then
+		return
+	end
+
+	fassert(self.active_missions[mission_name], "No active mission with passed mission_name %q", mission_name)
+
+	local data = self.active_missions[mission_name]
+	local mission_template_name = data.mission_data.mission_template_name
+
+	if mission_template_name == "collect" then
+		self:reset_mission(mission_name, true)
+	else
+		fassert(mission_template_name, "[flow_callback_reset_mission]: Reset function only suports COLLECT missions")
+	end
 end
 
 MissionSystem.flow_callback_update_mission = function (self, mission_name)

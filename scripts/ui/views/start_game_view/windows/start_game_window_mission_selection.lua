@@ -180,7 +180,7 @@ StartGameWindowMissionSelection._present_acts = function (self, acts)
 				content.text = Localize(level_display_name)
 				local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_key)
 				local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_key)
-				local selection_frame_texture = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
+				local selection_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
 				content.frame = selection_frame_texture
 				content.locked = not level_unlocked
 				content.act_key = act_key
@@ -295,18 +295,6 @@ StartGameWindowMissionSelection._get_last_level_in_act = function (self, act_key
 	return best_level_id, best_sort_order
 end
 
-StartGameWindowMissionSelection._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
-	local completed_frame_texture = "map_frame_00"
-
-	if difficulty_index and difficulty_index > 0 then
-		local difficulty_key = DefaultDifficulties[difficulty_index]
-		local settings = DifficultySettings[difficulty_key]
-		completed_frame_texture = settings.completed_frame_texture
-	end
-
-	return completed_frame_texture
-end
-
 StartGameWindowMissionSelection._get_first_level_id = function (self)
 	local active_node_widgets = self._active_node_widgets
 
@@ -376,7 +364,7 @@ StartGameWindowMissionSelection._set_presentation_info = function (self, level_i
 		local display_name = level_settings.display_name
 		level_description_text = level_settings.description_text
 		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_id)
-		frame_texture = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
+		frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
 		content.icon = level_image
 		content.boss_level = boss_level
 		level_text = Localize(display_name)

@@ -439,7 +439,9 @@ GameModeWeave._handle_bots = function (self, t, dt)
 		return
 	end
 
-	if script_data.ai_bots_disabled or not self._quick_play and not Development.parameter("enable_bots_in_weaves") then
+	local can_spawn_bots = Development.parameter("enable_bots_in_weaves") or self._quick_play
+
+	if script_data.ai_bots_disabled or not can_spawn_bots then
 		if #self._bot_players > 0 then
 			local update_safe = true
 

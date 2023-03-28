@@ -62,12 +62,12 @@ PlayerManager.player_loadouts = function (self)
 	return self._player_loadouts
 end
 
-PlayerManager.rpc_sync_loadout_slot = function (self, channel_id, peer_id, local_player_id, slot_id, item_id, rarity_id, power_level, num_buffs, buff_ids, buff_value_type_ids, buff_values)
+PlayerManager.rpc_sync_loadout_slot = function (self, channel_id, peer_id, local_player_id, slot_id, item_id, rarity_id, power_level, buff_ids, buff_value_type_ids, buff_values)
 	if not Managers.state.network:in_game_session() then
 		return
 	end
 
-	local slot_name, item = LoadoutUtils.create_loadout_item_from_rpc_data(slot_id, item_id, rarity_id, power_level, num_buffs, buff_ids, buff_value_type_ids, buff_values)
+	local slot_name, item = LoadoutUtils.create_loadout_item_from_rpc_data(slot_id, item_id, rarity_id, power_level, buff_ids, buff_value_type_ids, buff_values)
 	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
 	self._player_loadouts[unique_id] = self._player_loadouts[unique_id] or {}
 	self._player_loadouts[unique_id][slot_name] = item
@@ -75,7 +75,7 @@ PlayerManager.rpc_sync_loadout_slot = function (self, channel_id, peer_id, local
 	if self.is_server and peer_id ~= Network.peer_id() then
 		local network_transmit = self.network_manager.network_transmit
 
-		network_transmit:send_rpc_clients("rpc_sync_loadout_slot", peer_id, local_player_id, slot_id, item_id, rarity_id, power_level, num_buffs, buff_ids, buff_value_type_ids, buff_values)
+		network_transmit:send_rpc_clients("rpc_sync_loadout_slot", peer_id, local_player_id, slot_id, item_id, rarity_id, power_level, buff_ids, buff_value_type_ids, buff_values)
 	end
 end
 

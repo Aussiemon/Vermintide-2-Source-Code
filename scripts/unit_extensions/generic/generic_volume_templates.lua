@@ -149,12 +149,20 @@ GenericVolumeTemplates.functions = {
 				if unit == Managers.player:local_player().player_unit then
 					local event = data.params.event_on_triggered
 
+					if not event then
+						return
+					end
+
 					Level.trigger_event(data.level, event)
 				end
 			end,
 			on_exit = function (unit, data)
 				if unit == Managers.player:local_player().player_unit then
 					local event = data.params.event_on_exit
+
+					if not event then
+						return
+					end
 
 					Level.trigger_event(data.level, event)
 				end
@@ -358,6 +366,12 @@ GenericVolumeTemplates.functions = {
 	despawn_volume = {
 		pickup_projectiles = {
 			on_enter = function (unit, dt, t, data)
+				local event = data.params.event_on_triggered
+
+				if event then
+					Level.trigger_event(data.level, event)
+				end
+
 				local kill_volume_handler_extension = ScriptUnit.has_extension(unit, "kill_volume_handler_system")
 
 				if kill_volume_handler_extension and kill_volume_handler_extension:on_hit_kill_volume() then

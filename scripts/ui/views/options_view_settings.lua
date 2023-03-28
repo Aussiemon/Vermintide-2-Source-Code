@@ -1016,7 +1016,9 @@ local gameplay_settings_definition = {
 		}
 	},
 	{
+		menu_setting_name = "menu_settings_twitch_enable_mutators",
 		setting_name = "twitch_disable_mutators",
+		tooltip_text = "tooltip_twitch_enable_mutators",
 		widget_type = "stepper",
 		options = {
 			{
@@ -1025,6 +1027,16 @@ local gameplay_settings_definition = {
 			},
 			{
 				value = false,
+				text = Localize("menu_settings_off")
+			}
+		},
+		options = {
+			{
+				value = false,
+				text = Localize("menu_settings_on")
+			},
+			{
+				value = true,
 				text = Localize("menu_settings_off")
 			}
 		}
@@ -1076,9 +1088,11 @@ local function set_function(self, user_setting_name, widget_type, content, style
 	value_set_function(content, style, new_value)
 end
 
-local function setup_function(self, user_setting_name, widget_type, options)
+local function setup_function(self, user_setting_name, widget_type, options, definition)
 	local default_value = DefaultUserSettings.get("user_settings", user_setting_name)
 	local current_value = Application.user_setting(user_setting_name)
+	local menu_setting_name = definition.menu_setting_name
+	menu_setting_name = menu_setting_name or "menu_settings_" .. user_setting_name
 
 	if widget_type == "slider" then
 		local min = options.min
@@ -1086,7 +1100,7 @@ local function setup_function(self, user_setting_name, widget_type, options)
 		local decimals = options.decimals
 		local value = get_slider_value(min, max, current_value)
 
-		return value, min, max, decimals, "menu_settings_" .. user_setting_name, default_value
+		return value, min, max, decimals, menu_setting_name, default_value
 	else
 		local selection, default_option = nil
 
@@ -1106,7 +1120,7 @@ local function setup_function(self, user_setting_name, widget_type, options)
 
 		selection = selection or default_option
 
-		return selection, options, "menu_settings_" .. user_setting_name, default_option
+		return selection, options, menu_setting_name, default_option
 	end
 end
 
@@ -1157,7 +1171,7 @@ function generate_settings(settings_definition)
 			definition.setup = setup_function_name
 
 			OptionsView[setup_function_name] = function (self)
-				return setup_function(self, setting_name, widget_type, definition.options)
+				return setup_function(self, setting_name, widget_type, definition.options, definition)
 			end
 
 			local saved_value_function_name = prefix .. "_saved_value"
@@ -1167,7 +1181,9 @@ function generate_settings(settings_definition)
 				return saved_value_function(self, setting_name, widget_type, widget, definition.value_saved_function or NOP)
 			end
 
-			definition.tooltip_text = "tooltip_" .. setting_name
+			if not definition.tooltip_text then
+				definition.tooltip_text = "tooltip_" .. setting_name
+			end
 		end
 	end
 end
@@ -1662,14 +1678,6 @@ local keybind_settings_definition = {
 		widget_type = "keybind",
 		actions = {
 			"ingame_vote_no"
-		}
-	},
-	{
-		keybind_description = "rcon_activate_menu",
-		keymappings_key = "RconControllerSettings",
-		widget_type = "keybind",
-		actions = {
-			"activate_menu"
 		}
 	}
 }

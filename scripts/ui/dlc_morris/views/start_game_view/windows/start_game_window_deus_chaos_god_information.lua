@@ -168,16 +168,10 @@ StartGameWindowDeusChaosGodInformation._update_theme = function (self, initial_d
 end
 
 StartGameWindowDeusChaosGodInformation._setup_belakor_information = function (self)
-	local backend_deus = Managers.backend:get_interface("deus")
-	self._belakor_active = backend_deus:belakor_active()
 	self._belakor_refresh_time = 0
 	self._is_refreshing_belakor = false
 	local belakor_widget = self._widgets_by_name.belakor_info_widget
 	belakor_widget.content.visible = false
-
-	if not self._belakor_active then
-		return
-	end
 
 	self:_refresh_belakor_curse_data()
 end
@@ -197,10 +191,6 @@ StartGameWindowDeusChaosGodInformation._refresh_belakor_curse_data = function (s
 end
 
 StartGameWindowDeusChaosGodInformation._update_belakor_time_left = function (self)
-	if not self._belakor_active then
-		return
-	end
-
 	local current_time = Managers.time:time("main")
 	local backend_deus = Managers.backend:get_interface("deus")
 	local belakor_active_in_expedition = backend_deus:deus_journey_with_belakor(self._journey_name)
@@ -239,10 +229,6 @@ StartGameWindowDeusChaosGodInformation._update_belakor_time_left = function (sel
 end
 
 StartGameWindowDeusChaosGodInformation._update_belakor_status = function (self)
-	if not self._belakor_active then
-		return
-	end
-
 	local backend_deus = Managers.backend:get_interface("deus")
 	local belakor_active_in_expedition = backend_deus:deus_journey_with_belakor(self._journey_name)
 	local widget = self._widgets_by_name.belakor_info_widget

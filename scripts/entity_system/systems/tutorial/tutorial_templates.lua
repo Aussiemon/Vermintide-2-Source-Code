@@ -129,9 +129,11 @@ TutorialTemplates = {
 				end
 			end
 
+			local max_distance_sq = 14400
+
 			if has_raycast_unit and raycast_unit_dist < 400 then
 				return true, raycast_unit_pos
-			elseif best_unit_position then
+			elseif best_unit_position and best_distance_sq < max_distance_sq then
 				return true, best_unit_position
 			end
 

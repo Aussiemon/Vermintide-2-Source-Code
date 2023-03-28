@@ -42,6 +42,7 @@ PlayerCharacterStateClimbingLadder.on_enter = function (self, unit, input, dt, c
 	self.ladder_unit = ladder_unit
 	self.movement_speed = 1
 	self.animation_state = "no_animation"
+	self.climb_sfx_event = Unit.get_data(ladder_unit, "sfx_footstep_event") or "player_footstep_ladder"
 	local jump_node = Unit.node(ladder_unit, "c_platform")
 	self.jump_off_height = Vector3.z(Unit.world_position(ladder_unit, jump_node))
 	local loc_ext = self.locomotion_extension
@@ -199,7 +200,7 @@ PlayerCharacterStateClimbingLadder.update = function (self, unit, input, dt, con
 		local position = Unit.world_position(unit, 0)
 		local wwise_source_id, wwise_world = WwiseUtils.make_position_auto_source(self.world, position)
 
-		WwiseWorld.trigger_event(wwise_world, "player_footstep_ladder", wwise_source_id)
+		WwiseWorld.trigger_event(wwise_world, self.climb_sfx_event, wwise_source_id)
 	end
 end
 

@@ -78,10 +78,11 @@ OutlineSettings.colors = {
 	}
 }
 OutlineSettings.ranges = {
-	interactable = 15,
+	small_doors = 4,
 	pickup = 10,
 	elevators = 10,
 	objective_light = 20,
+	interactable = 15,
 	revive = 50,
 	doors = 12.5,
 	objective = 35,

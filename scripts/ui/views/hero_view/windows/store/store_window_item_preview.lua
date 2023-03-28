@@ -46,6 +46,7 @@ StoreWindowItemPreview.on_enter = function (self, params, offset)
 	self:_set_title_edge_length(title_edge_length, 0.01)
 
 	self._current_generic_input_action = nil
+	self._required_dlcs = {}
 end
 
 StoreWindowItemPreview._set_window_expanded = function (self, expand)
@@ -233,6 +234,20 @@ StoreWindowItemPreview.update = function (self, dt, t)
 			end
 
 			self._dupe_warning_popup_id = nil
+		end
+	end
+
+	local missing_required_dlc_popup_id = self._missing_required_dlc_popup_id
+
+	if missing_required_dlc_popup_id then
+		local result = Managers.popup:query_result(missing_required_dlc_popup_id)
+
+		if result then
+			if result == "yes" then
+				self._parent:product_purchase_request(self._selected_product)
+			end
+
+			self._missing_required_dlc_popup_id = nil
 		end
 	end
 
@@ -604,6 +619,16 @@ StoreWindowItemPreview._handle_input = function (self, input_service, dt, t)
 
 		if self._show_dupe_warning then
 			self._dupe_warning_popup_id = Managers.popup:queue_popup(Localize("bundle_party_owned_description"), Localize("bundle_partly_owned_title"), "yes", Localize("popup_choice_yes"), "no", Localize("popup_choice_no"))
+		elseif self._should_show_required_dlcs_popup then
+			local missing_dlcs_text = ""
+
+			for i = 1, #self._required_dlcs do
+				local settings = StoreDlcSettingsByName[self._required_dlcs[i]]
+				local dlc_name = Localize(settings.name)
+				missing_dlcs_text = missing_dlcs_text .. dlc_name .. "\n"
+			end
+
+			self._missing_required_dlc_popup_id = Managers.popup:queue_popup(Localize("menu_store_missing_dlc_error") .. "\n\n" .. string.format(Localize("menu_store_missing_dlc_careers"), missing_dlcs_text), Localize("twitch_disconnect_warning"), "yes", Localize("popup_choice_yes"), "no", Localize("popup_choice_no"))
 		else
 			parent:product_purchase_request(self._selected_product)
 		end
@@ -807,12 +832,17 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 	local selected_product = params.selected_product
 
 	if selected_product ~= self._selected_product or force_update then
+		table.clear(self._required_dlcs)
+
 		local reset_presentation = not self._selected_product or not selected_product or self._selected_product.product_id ~= selected_product.product_id
 		self._selected_product = selected_product
 		local already_owned = false
 		local can_afford = true
 		local dlc_name = nil
 		local show_dupe_warning = false
+		local owns_required_dlc = true
+		local show_required_dlc_warning = false
+		local required_dlcs = {}
 		local product_id, product_type, is_item_useable = nil
 
 		if selected_product then
@@ -826,16 +856,26 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 				local item_key = item.key
 				dlc_name = item.dlc_name
 
-				if backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) then
+				if item_key and (backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key)) then
 					already_owned = true
 				else
-					local all_owned, any_owned = backend_items:has_bundle_contents(item.data.bundle_contains)
+					local all_owned, any_owned, missing_dlcs = backend_items:has_bundle_contents(item.data.bundle_contains)
 					already_owned = all_owned
 					show_dupe_warning = any_owned
+
+					if missing_dlcs ~= nil then
+						required_dlcs = missing_dlcs
+						show_required_dlc_warning = #missing_dlcs ~= 0
+					end
 				end
 
 				can_afford = self._parent:can_afford_item(item)
 				is_item_useable = self._parent:can_use_item(item)
+				local required_dlc = item.data.required_dlc
+
+				if required_dlc then
+					owns_required_dlc = Managers.unlock:is_dlc_unlocked(required_dlc)
+				end
 			elseif product_type == "dlc" then
 				local dlc_settings = selected_product.dlc_settings
 				dlc_name = dlc_settings.dlc_name
@@ -843,11 +883,13 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 			end
 
 			self._show_dupe_warning = show_dupe_warning
+			self._should_show_required_dlcs_popup = show_required_dlc_warning
+			self._required_dlcs = required_dlcs
 			local selected_product_settings = selected_product.settings
 			local acquire_disabled = selected_product_settings and selected_product_settings.acquire_disabled
 			local acquire_hidden = selected_product_settings and selected_product_settings.acquire_hidden
 
-			self:_set_unlock_button_states(already_owned, can_afford, is_item_useable, acquire_disabled, acquire_hidden)
+			self:_set_unlock_button_states(already_owned, can_afford, is_item_useable, acquire_disabled, acquire_hidden, owns_required_dlc)
 		end
 
 		if reset_presentation then
@@ -1082,7 +1124,7 @@ StoreWindowItemPreview._create_item_bundle_layout = function (self, steam_itemde
 			type = "item",
 			id = item_key,
 			settings = {
-				hide_price = true,
+				hide_price = false,
 				hide_new = true
 			}
 		}
@@ -1183,6 +1225,8 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 		item_preview_layout = self:_create_item_bundle_layout(steam_itemdefid, item_data)
 	end
 
+	local missing_required_dlc = item_data.required_dlc and not Managers.unlock:is_dlc_unlocked(item_data.required_dlc)
+
 	if item_preview_layout then
 		local inventory_icon, display_name, _ = UIUtils.get_ui_information_from_item(item)
 
@@ -1191,7 +1235,15 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 		self:_set_sub_title_alpha_multiplier(1)
 		self:_set_type_title_name("")
 		self:_set_career_title_name("")
-		self:_set_disclaimer_text("")
+
+		local disclaimer_text = ""
+
+		if missing_required_dlc then
+			local settings = StoreDlcSettingsByName[item_data.required_dlc]
+			disclaimer_text = string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name))
+		end
+
+		self:_set_disclaimer_text(disclaimer_text)
 		self:_set_expire_timer_text("")
 
 		self._dlc_presentation_active = true
@@ -1208,17 +1260,34 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 		if slot_type == "melee" or slot_type == "ranged" or slot_type == "weapon_skin" then
 			local matching_item_type = ItemMasterList[item_data.matching_item_key].item_type
 			type_title_text = Localize(matching_item_type)
-			disclaimer_text = Localize(item_type)
 			item_preview_environment = item_preview_environment or "weapons_default_01"
 			item_preview_object_set_name = item_preview_object_set_name or "flow_weapon_lights"
+
+			if missing_required_dlc then
+				local settings = StoreDlcSettingsByName[item_data.required_dlc]
+				disclaimer_text = string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name))
+			else
+				disclaimer_text = Localize(item_type)
+			end
 		elseif slot_type == "hat" then
 			type_title_text = Localize(item_type)
 			item_preview_environment = item_preview_environment or "hats_default_01"
 			item_preview_object_set_name = item_preview_object_set_name or "flow_hat_lights"
+
+			if missing_required_dlc then
+				local settings = StoreDlcSettingsByName[item_data.required_dlc]
+				disclaimer_text = string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name))
+			end
 		elseif slot_type == "skin" then
 			type_title_text = Localize(item_type)
-			disclaimer_text = Localize("menu_store_product_hero_skin_disclaimer_desc")
 			item_preview_object_set_name = item_preview_object_set_name or "flow_character_lights"
+
+			if missing_required_dlc then
+				local settings = StoreDlcSettingsByName[item_data.required_dlc]
+				disclaimer_text = string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name))
+			else
+				disclaimer_text = Localize("menu_store_product_hero_skin_disclaimer_desc")
+			end
 		end
 
 		local product_settings = product.settings
@@ -1571,13 +1640,14 @@ StoreWindowItemPreview._setup_xb1_price_data = function (self, widget, price_dat
 	content.real_currency = true
 end
 
-StoreWindowItemPreview._set_unlock_button_states = function (self, already_owned, can_afford, dlc_unlocked, acquire_disabled, acquire_hidden)
-	local enabled = not already_owned and can_afford and dlc_unlocked and not acquire_disabled
+StoreWindowItemPreview._set_unlock_button_states = function (self, already_owned, can_afford, dlc_unlocked, acquire_disabled, acquire_hidden, owns_required_dlc)
+	local enabled = not already_owned and can_afford and dlc_unlocked and not acquire_disabled and owns_required_dlc
 	local widget = self._top_widgets_by_name.unlock_button
 	widget.content.button_hotspot.disable_button = not enabled
 	widget.content.owned = already_owned
 	widget.content.dlc_unlocked = dlc_unlocked
 	widget.content.visible = not acquire_hidden
+	widget.content.owns_required_dlc = owns_required_dlc
 end
 
 StoreWindowItemPreview._owns_product = function (self)

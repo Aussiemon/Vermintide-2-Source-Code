@@ -1859,6 +1859,13 @@ BuffFunctionTemplates.functions = {
 	remove_aoe_buff = function (unit, buff, params)
 		return
 	end,
+	add_buff_local = function (unit, buff, params)
+		local template = buff.template
+		local buff_name = template.buff_to_add
+		local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+		buff_extension:add_buff(buff_name)
+	end,
 	add_buff_server_controlled = function (unit, buff, params)
 		local game = Managers.state.network:game()
 
@@ -4186,21 +4193,13 @@ BuffFunctionTemplates.functions = {
 	end_sienna_adept_activated_ability = function (unit, buff, params)
 		if is_local(unit) then
 			local status_extension = ScriptUnit.extension(unit, "status_system")
-			local removing_stealth = status_extension:remove_stealth_stacking()
 
-			status_extension:remove_noclip_stacking()
+			status_extension:set_invisible(false, nil, "skill_adept")
+			status_extension:set_noclip(false, "skill_adept")
 
 			local career_extension = ScriptUnit.extension(unit, "career_system")
 
 			career_extension:set_state("default")
-
-			if removing_stealth and not is_bot(unit) then
-				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
-
-				first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
-
-				MOOD_BLACKBOARD.skill_shade = false
-			end
 		end
 	end,
 	sienna_adept_double_trail_talent_start_ability_cooldown_add = function (unit, buff, params)
@@ -4230,15 +4229,44 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	apply_shade_activated_ability = function (unit, buff, params, world)
-		if is_husk(unit) then
-			Unit.flow_event(unit, "vfx_career_ability_start")
+		local network_transmit = Managers.state.network.network_transmit
+		local go_id = Managers.state.unit_storage:go_id(unit)
+		local flow_id = NetworkLookup.flow_events.vfx_career_ability_start
+
+		if Managers.state.network.is_server then
+			if is_bot(unit) then
+				Unit.flow_event(unit, "vfx_career_ability_start")
+			end
+
+			network_transmit:send_rpc_clients("rpc_flow_event", go_id, flow_id)
+		else
+			network_transmit:send_rpc_server("rpc_flow_event", go_id, flow_id)
 		end
 
+		local stealth_identifier = buff.template.stealth_identifier
+		local status_extension = ScriptUnit.extension(unit, "status_system")
+
+		status_extension:set_noclip(true, stealth_identifier)
+		status_extension:set_invisible(true, nil, stealth_identifier)
+
+		if not is_bot(unit) then
+			MOOD_BLACKBOARD[stealth_identifier] = true
+		end
+	end,
+	on_apply_shade_dash_stealth = function (unit, buff, params, world)
 		if is_local(unit) then
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 
-			status_extension:add_stealth_stacking()
-			status_extension:add_noclip_stacking()
+			status_extension:set_invisible(true, nil, "shade_dash")
+			status_extension:set_noclip(true, "shade_dash")
+		end
+	end,
+	on_remove_shade_dash_stealth = function (unit, buff, params, world)
+		if is_local(unit) then
+			local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+			status_extension:set_invisible(false, nil, "shade_dash")
+			status_extension:set_noclip(false, "shade_dash")
 		end
 	end,
 	kerillian_shade_noclip_on = function (owner_unit, buff, params)
@@ -4246,7 +4274,7 @@ BuffFunctionTemplates.functions = {
 			local status_extension = ScriptUnit.has_extension(owner_unit, "status_system")
 
 			if status_extension then
-				status_extension:add_noclip_stacking()
+				status_extension:set_noclip(true, "shade_phasing")
 			end
 		end
 	end,
@@ -4255,9 +4283,7 @@ BuffFunctionTemplates.functions = {
 			local status_extension = ScriptUnit.has_extension(owner_unit, "status_system")
 
 			if status_extension then
-				status_extension:remove_noclip_stacking()
-
-				MOOD_BLACKBOARD.skill_huntsman_surge = false
+				status_extension:set_noclip(false, "shade_phasing")
 			end
 		end
 	end,
@@ -4271,15 +4297,21 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 	end,
-	shade_activated_ability_on_remove = function (unit, buff, params, world)
-		local status_extension = nil
-
-		if is_local(unit) then
-			status_extension = ScriptUnit.extension(unit, "status_system")
-
-			status_extension:remove_stealth_stacking()
-			status_extension:remove_noclip_stacking()
+	on_shade_activated_ability_remove = function (unit, buff, params, world)
+		if not ALIVE[unit] then
+			return
 		end
+
+		if not is_local(unit) then
+			return
+		end
+
+		local buff_template = buff.template
+		local stealth_identifier = buff_template.stealth_identifier
+		local status_extension = ScriptUnit.extension(unit, "status_system")
+
+		status_extension:set_invisible(false, nil, stealth_identifier)
+		status_extension:set_noclip(false, stealth_identifier)
 
 		local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
 		local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
@@ -4288,114 +4320,46 @@ BuffFunctionTemplates.functions = {
 			return
 		end
 
-		if talent_extension:has_talent("kerillian_shade_activated_stealth_combo") then
+		local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
+		first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
+		first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_exit", nil, true)
+		first_person_extension:play_remote_hud_sound_event("Stop_career_ability_kerillian_shade_loop_husk")
+
+		if not is_bot(unit) then
+			MOOD_BLACKBOARD[stealth_identifier] = false
+		end
+
+		local career_extension = ScriptUnit.extension(unit, "career_system")
+
+		career_extension:set_state("default")
+		status_extension:set_is_dodging(false)
+
+		if buff_template.can_restealth_combo and talent_extension:has_talent("kerillian_shade_activated_stealth_combo") then
 			buff_extension:add_buff("kerillian_shade_ult_invis_combo_blocker")
 			buff_extension:add_buff("kerillian_shade_ult_invis")
 		end
 
-		if talent_extension:has_talent("kerillian_shade_activated_ability_restealth") and buff.template.restealth then
+		if buff_template.can_restealth_on_remove and talent_extension:has_talent("kerillian_shade_activated_ability_restealth") then
 			buff_extension:add_buff("kerillian_shade_activated_ability_restealth")
+
+			local restealth_buffs = buff_extension:get_stacking_buff("kerillian_shade_activated_ability_restealth")
+			local restealth_buff = restealth_buffs[1]
+			local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
+			local weapon_unit = inventory_extension:get_weapon_unit()
+			local weapon_unit_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
+
+			if weapon_unit_extension:has_current_action() then
+				local current_action = weapon_unit_extension:get_current_action()
+				local action_start_t = current_action.action_start_t
+				restealth_buff.triggering_action_start_t = action_start_t
+			end
 		end
 
 		if talent_extension:has_talent("kerillian_shade_activated_ability_phasing") then
 			buff_extension:add_buff("kerillian_shade_phasing_buff")
 			buff_extension:add_buff("kerillian_shade_movespeed_buff")
 			buff_extension:add_buff("kerillian_shade_power_buff")
-		end
-
-		if is_local(unit) then
-			if not is_bot(unit) and status_extension:current_stealth_counter() == 0 then
-				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
-
-				first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_exit")
-				first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
-
-				MOOD_BLACKBOARD.skill_shade = false
-			end
-
-			local career_extension = ScriptUnit.extension(unit, "career_system")
-
-			career_extension:set_state("default")
-
-			if Managers.state.network:game() then
-				local status_extension = ScriptUnit.extension(unit, "status_system")
-
-				status_extension:set_is_dodging(false)
-			end
-
-			local events = {
-				"Play_career_ability_kerillian_shade_exit",
-				"Stop_career_ability_kerillian_shade_loop_husk"
-			}
-			local network_manager = Managers.state.network
-			local network_transmit = network_manager.network_transmit
-			local is_server = Managers.player.is_server
-			local unit_id = network_manager:unit_game_object_id(unit)
-			local node_id = 0
-
-			for i = 1, #events do
-				local event = events[i]
-				local event_id = NetworkLookup.sound_events[event]
-
-				if is_server then
-					network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-				else
-					network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-				end
-			end
-		end
-	end,
-	remove_shade_cheat_death = function (unit, buff, params, world)
-		if ALIVE[unit] then
-			MOOD_BLACKBOARD.skill_huntsman_surge = false
-		end
-	end,
-	end_shade_activated_ability_short = function (unit, buff, params, world)
-		if is_local(unit) then
-			local status_extension = ScriptUnit.has_extension(unit, "status_system")
-			local removing_stealth = status_extension:remove_stealth_stacking()
-
-			status_extension:remove_noclip_stacking()
-
-			local events = {
-				"Play_career_ability_kerillian_shade_exit",
-				"Stop_career_ability_kerillian_shade_loop_husk"
-			}
-			local network_manager = Managers.state.network
-			local network_transmit = network_manager.network_transmit
-			local is_server = Managers.player.is_server
-			local unit_id = network_manager:unit_game_object_id(unit)
-			local node_id = 0
-
-			for i = 1, #events do
-				local event = events[i]
-				local event_id = NetworkLookup.sound_events[event]
-
-				if is_server then
-					network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-				else
-					network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-				end
-			end
-
-			if not is_bot(unit) and removing_stealth then
-				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
-
-				first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_exit")
-				first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
-
-				MOOD_BLACKBOARD.skill_shade = false
-			end
-
-			if Managers.state.network:game() then
-				local status_extension = ScriptUnit.extension(unit, "status_system")
-
-				status_extension:set_is_dodging(false)
-			end
-
-			local career_extension = ScriptUnit.extension(unit, "career_system")
-
-			career_extension:set_state("default")
 		end
 	end,
 	on_crit_passive_removed = function (unit, buff, params)
@@ -4438,7 +4402,7 @@ BuffFunctionTemplates.functions = {
 		if is_local(unit) then
 			local status_extension = ScriptUnit.has_extension(unit, "status_system")
 
-			status_extension:add_stealth_stacking()
+			status_extension:set_invisible(true, nil, "huntsman_ability")
 		end
 	end,
 	end_huntsman_activated_ability = function (unit, buff, params)
@@ -4448,23 +4412,18 @@ BuffFunctionTemplates.functions = {
 			career_extension:set_state("default")
 
 			local status_extension = ScriptUnit.extension(unit, "status_system")
-			local removing_stealth = status_extension:remove_stealth_stacking()
+
+			status_extension:set_invisible(false, nil, "huntsman_ability")
+
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
+			first_person_extension:play_hud_sound_event("Stop_career_ability_markus_huntsman_loop")
 			first_person_extension:play_hud_sound_event("Play_career_ability_markus_huntsman_exit", nil, true)
 			first_person_extension:play_remote_hud_sound_event("Stop_career_ability_markus_huntsman_loop_husk")
 
 			if not is_bot(unit) then
-				if removing_stealth then
-					first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
-
-					MOOD_BLACKBOARD.skill_shade = false
-				end
-
 				MOOD_BLACKBOARD.skill_huntsman_surge = false
 				MOOD_BLACKBOARD.skill_huntsman_stealth = false
-
-				first_person_extension:play_hud_sound_event("Stop_career_ability_markus_huntsman_loop")
 			end
 		end
 	end,
@@ -4474,14 +4433,12 @@ BuffFunctionTemplates.functions = {
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
-			status_extension:remove_noclip_stacking()
-			first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_slayer_exit", unit, 0)
+			status_extension:set_noclip(false, "skill_slayer")
+			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_slayer_exit", nil, true)
+			first_person_extension:play_hud_sound_event("Stop_career_ability_bardin_slayer_loop")
 			career_extension:set_state("default")
 
 			if not is_bot(unit) then
-				first_person_extension:play_hud_sound_event("Play_career_ability_bardin_slayer_exit")
-				first_person_extension:play_hud_sound_event("Stop_career_ability_bardin_slayer_loop")
-
 				MOOD_BLACKBOARD.skill_slayer = false
 			end
 		end
@@ -4500,7 +4457,7 @@ BuffFunctionTemplates.functions = {
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
-			status_extension:remove_noclip_stacking()
+			status_extension:set_noclip(false, "skill_zealot")
 			first_person_extension:play_remote_unit_sound_event("Play_career_ability_victor_zealot_exit", unit, 0)
 			career_extension:set_state("default")
 
@@ -4557,19 +4514,14 @@ BuffFunctionTemplates.functions = {
 		if is_local(unit) then
 			local career_extension = ScriptUnit.extension(unit, "career_system")
 			local status_extension = ScriptUnit.extension(unit, "status_system")
-			local removing_stealth = status_extension:remove_stealth_stacking()
+
+			status_extension:set_invisible(false, nil, "ranger_ability")
+
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
-			first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_ranger_exit", unit, 0)
+			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_exit", nil, true)
 
 			if not is_bot(unit) then
-				if removing_stealth then
-					first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
-
-					MOOD_BLACKBOARD.skill_shade = false
-				end
-
-				first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_exit")
 				first_person_extension:play_hud_sound_event("Stop_career_ability_bardin_ranger_loop")
 
 				MOOD_BLACKBOARD.skill_ranger = false
@@ -4622,12 +4574,9 @@ BuffFunctionTemplates.functions = {
 
 		if is_local(owner_unit) then
 			local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+			local sound_to_play = buff.template.sound_to_play
 
-			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_enter")
-
-			if not is_bot(owner_unit) then
-				first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_ranger_enter", owner_unit, 0)
-			end
+			first_person_extension:play_hud_sound_event(sound_to_play, nil, true)
 		end
 	end,
 	ranger_activated_ability_buff = function (owner_unit, buff, params)
@@ -4635,45 +4584,44 @@ BuffFunctionTemplates.functions = {
 			return false
 		end
 
-		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
-		local career_extension = ScriptUnit.extension(owner_unit, "career_system")
-
 		if is_local(owner_unit) then
-			local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+			local status_extension = ScriptUnit.extension(owner_unit, "status_system")
+
+			status_extension:set_invisible(true, nil, "ranger_ability")
 
 			if not is_bot(owner_unit) then
+				local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+
 				first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_loop")
 
 				MOOD_BLACKBOARD.skill_ranger = true
 			end
 
+			local career_extension = ScriptUnit.extension(owner_unit, "career_system")
+
 			career_extension:set_state("bardin_activate_ranger")
 		end
-
-		status_extension:add_stealth_stacking()
 	end,
 	ranger_activated_ability_buff_remove = function (owner_unit, buff, params)
 		local unit = owner_unit
 
 		if is_local(unit) then
 			local status_extension = ScriptUnit.extension(unit, "status_system")
+
+			status_extension:set_invisible(false, nil, "ranger_ability")
+
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
-			local removing_stealth = status_extension:remove_stealth_stacking()
+
+			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_exit", nil, true)
+
 			local career_extension = ScriptUnit.extension(unit, "career_system")
 
 			career_extension:set_state("default")
 
 			if not is_bot(unit) then
-				first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_exit")
 				first_person_extension:play_hud_sound_event("Stop_career_ability_bardin_ranger_loop")
 
 				MOOD_BLACKBOARD.skill_ranger = false
-
-				if removing_stealth then
-					first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
-
-					MOOD_BLACKBOARD.skill_shade = false
-				end
 			end
 		end
 	end,
@@ -4809,9 +4757,9 @@ BuffFunctionTemplates.functions = {
 	end_maidenguard_activated_ability = function (unit, buff, params)
 		if is_local(unit) then
 			local status_extension = ScriptUnit.extension(unit, "status_system")
-			local removing_stealth = status_extension:remove_stealth_stacking()
 
-			status_extension:remove_noclip_stacking()
+			status_extension:set_invisible(false, nil, "skill_maiden_guard")
+			status_extension:set_noclip(false, "skill_maiden_guard")
 
 			if not is_bot(unit) then
 				local fov_multiplier = 1
@@ -4819,13 +4767,7 @@ BuffFunctionTemplates.functions = {
 
 				Managers.state.camera:set_additional_fov_multiplier_with_lerp_time(fov_multiplier, lerp_time)
 
-				if removing_stealth then
-					local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
-
-					first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
-
-					MOOD_BLACKBOARD.skill_shade = false
-				end
+				MOOD_BLACKBOARD.skill_maiden_guard = false
 			end
 
 			local career_extension = ScriptUnit.extension(unit, "career_system")
@@ -4848,7 +4790,7 @@ BuffFunctionTemplates.functions = {
 		if is_local(unit) then
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 
-			status_extension:remove_noclip_stacking()
+			status_extension:set_noclip(false, "skill_knight")
 		end
 	end,
 	start_activated_ability_cooldown = function (unit, buff, params)
@@ -5044,20 +4986,16 @@ BuffFunctionTemplates.functions = {
 	apply_twitch_invisibility_buff = function (unit, buff, params)
 		if is_local(unit) then
 			local status_extension = ScriptUnit.extension(unit, "status_system")
-			local applying_stealth = status_extension:add_stealth_stacking()
 
-			status_extension:add_noclip_stacking()
+			status_extension:set_invisible(true, nil, "twitch_invis")
+			status_extension:set_noclip(true, "twitch_invis")
 
 			if not is_bot(unit) then
 				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 				first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter_small")
 
-				if applying_stealth then
-					first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_loop")
-				end
-
-				MOOD_BLACKBOARD.skill_shade = true
+				MOOD_BLACKBOARD.twitch_invis = true
 			end
 		end
 	end,
@@ -5067,17 +5005,12 @@ BuffFunctionTemplates.functions = {
 	remove_twitch_invisibility_buff = function (unit, buff, params)
 		if is_local(unit) then
 			local status_extension = ScriptUnit.extension(unit, "status_system")
-			local removing_stealth = status_extension:remove_stealth_stacking()
+			local removing_stealth = status_extension:set_invisible(false, nil, "twitch_invis")
 
-			status_extension:remove_noclip_stacking()
+			status_extension:set_noclip(false, "twitch_invis")
 
-			if removing_stealth and not is_bot(unit) then
-				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
-
-				first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_exit")
-				first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
-
-				MOOD_BLACKBOARD.skill_shade = false
+			if not is_bot(unit) then
+				MOOD_BLACKBOARD.twitch_invis = false
 			end
 		end
 	end,

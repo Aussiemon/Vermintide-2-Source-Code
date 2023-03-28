@@ -58,7 +58,8 @@ BackendManagerPlayFab.init = function (self, signin_name, mirror_name, server_qu
 	self._current_talents_interface_override = nil
 	self._total_power_level_interface_overrides = {}
 	self._metadata = {
-		client_version = VersionSettings.version
+		client_version = VersionSettings.version,
+		realm = HAS_STEAM and script_data["eac-untrusted"] and "modded" or "official"
 	}
 end
 

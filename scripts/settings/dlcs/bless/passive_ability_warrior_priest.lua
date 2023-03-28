@@ -313,13 +313,13 @@ PassiveAbilityWarriorPriest.on_talents_changed = function (self, unit, talent_ex
 
 	local fp_unit = self._fp_unit
 
-	if fp_unit and self._anim_var_id then
+	if ALIVE[fp_unit] and self._anim_var_id then
 		unit_animation_set_variable(fp_unit, self._anim_var_id, talent_selection)
 	end
 
 	local tp_unit = unit
 
-	if tp_unit and self._anim_var_3p_id then
+	if ALIVE[tp_unit] and self._anim_var_3p_id then
 		unit_animation_set_variable(tp_unit, self._anim_var_3p_id, talent_selection)
 	end
 end

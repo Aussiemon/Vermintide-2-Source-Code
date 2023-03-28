@@ -124,7 +124,7 @@ StartGameWindowDeusJourneySelection._setup_journey_widgets = function (self)
 		offset[1] = journey_position_x
 		offset[2] = 0
 		local completed_difficulty_index = LevelUnlockUtils.completed_journey_difficulty_index(statistics_db, stats_id, journey_name)
-		local selection_frame_texture = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
+		local selection_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
 		local is_unlocked = unlocked_journeys[journey_name]
 		content.icon = journey_data.level_image
 		content.locked = not is_unlocked
@@ -139,18 +139,6 @@ StartGameWindowDeusJourneySelection._setup_journey_widgets = function (self)
 	end
 
 	self._active_node_widgets = assigned_widgets
-end
-
-StartGameWindowDeusJourneySelection._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
-	local completed_frame_texture = "map_frame_00"
-
-	if difficulty_index and difficulty_index > 0 then
-		local difficulty_key = DefaultDifficulties[difficulty_index]
-		local settings = DifficultySettings[difficulty_key]
-		completed_frame_texture = settings.completed_frame_texture
-	end
-
-	return completed_frame_texture
 end
 
 StartGameWindowDeusJourneySelection._get_first_journey_name = function (self)
@@ -223,7 +211,7 @@ StartGameWindowDeusJourneySelection._set_presentation_info = function (self, jou
 		local display_name = journey_settings.display_name
 		journey_description_text = journey_settings.description
 		local completed_difficulty_index = LevelUnlockUtils.completed_journey_difficulty_index(statistics_db, stats_id, journey_name)
-		frame_texture = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
+		frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
 		local is_unlocked = self._unlocked_journeys[journey_name]
 
 		if is_unlocked then

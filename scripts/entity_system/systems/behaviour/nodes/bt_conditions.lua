@@ -532,6 +532,14 @@ BTConditions.loot_rat_flee = function (blackboard)
 	return BTConditions.confirmed_player_sighting(blackboard) or blackboard.is_fleeing
 end
 
+BTConditions.defend = function (blackboard)
+	return blackboard.defend
+end
+
+BTConditions.defend_get_in_position = function (blackboard)
+	return blackboard.defend_get_in_position
+end
+
 BTConditions.can_trigger_move_to = function (blackboard)
 	local t = Managers.time:time("game")
 	local trigger_time = blackboard.trigger_time or 0

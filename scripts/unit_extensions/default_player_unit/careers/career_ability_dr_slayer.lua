@@ -238,9 +238,9 @@ CareerAbilityDRSlayer._do_common_stuff = function (self)
 		first_person_extension:play_hud_sound_event("Play_career_ability_bardin_slayer_loop")
 
 		if local_player then
-			MOOD_BLACKBOARD.skill_slayer = true
-
 			career_extension:set_state("bardin_activate_slayer")
+
+			MOOD_BLACKBOARD.skill_slayer = true
 		end
 	end
 
@@ -302,7 +302,7 @@ CareerAbilityDRSlayer._do_leap = function (self)
 
 	locomotion_extension:set_external_velocity_enabled(false)
 	status_extension:reset_move_speed_multiplier()
-	status_extension:add_noclip_stacking()
+	status_extension:set_noclip(true, "skill_slayer")
 
 	if Managers.state.network:game() then
 		status_extension:set_is_dodging(true)
@@ -349,7 +349,7 @@ CareerAbilityDRSlayer._do_leap = function (self)
 					area_damage_system:create_explosion(unit_3p, final_position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
 				end
 
-				ScriptUnit.extension(unit_3p, "status_system"):remove_noclip_stacking()
+				ScriptUnit.extension(unit_3p, "status_system"):set_noclip(false, "skill_slayer")
 
 				local game = Managers.state.network:game()
 

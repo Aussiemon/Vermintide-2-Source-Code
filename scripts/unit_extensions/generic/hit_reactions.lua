@@ -144,6 +144,45 @@ HitReactions.templates = {
 				Unit.flow_event(unit, "lua_on_damage_taken")
 			end
 		end
+	},
+	ai_ethereal_skull_knock_back = {
+		unit = function (unit, dt, context, t, hit)
+			local attacker_unit = hit[DamageDataIndex.ATTACKER]
+			local is_player = Managers.player:is_player_unit(attacker_unit)
+
+			if not is_player then
+				return
+			end
+
+			local damage_type = hit[DamageDataIndex.DAMAGE_TYPE]
+			local damage_taken = hit[DamageDataIndex.DAMAGE_AMOUNT]
+			local hit_direction = hit[DamageDataIndex.DIRECTION]
+			local hit_position = hit[DamageDataIndex.POSITION]
+			local damaged_by_other = unit ~= attacker_unit
+
+			if damage_type ~= "push" and damaged_by_other then
+				ScriptUnit.extension(unit, "ai_system"):attacked(attacker_unit, t, hit)
+				trigger_enemy_armor_hit_dialogue(unit, attacker_unit, damage_taken, hit)
+			end
+
+			local locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
+
+			if locomotion_extension and hit[2] ~= "bleed" and hit[7] ~= "dot_debuff" then
+				locomotion_extension:set_knockback(attacker_unit, hit_direction, hit_position, t)
+			end
+
+			Managers.state.game_mode:ai_hit_by_player(unit, attacker_unit, hit)
+		end,
+		husk = function (unit, dt, context, t, hit)
+			local attacker_unit = hit[DamageDataIndex.ATTACKER]
+			local is_player = Managers.player:is_player_unit(attacker_unit)
+
+			if not is_player then
+				return
+			end
+
+			Managers.state.game_mode:ai_hit_by_player(unit, attacker_unit, hit)
+		end
 	}
 }
 

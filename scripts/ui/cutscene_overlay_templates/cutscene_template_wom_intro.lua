@@ -18,7 +18,7 @@ local template_settings = {
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				0,
-				50,
+				20,
 				start_layer
 			}
 		},
@@ -38,7 +38,7 @@ local template_settings = {
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				0,
-				50,
+				20,
 				start_layer
 			}
 		},
@@ -58,7 +58,7 @@ local template_settings = {
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				0,
-				50,
+				20,
 				start_layer
 			}
 		},
@@ -78,7 +78,7 @@ local template_settings = {
 			color = Colors.get_color_table_with_alpha("orange", 255),
 			offset = {
 				0,
-				50,
+				20,
 				start_layer
 			}
 		},
@@ -98,7 +98,7 @@ local template_settings = {
 			color = Colors.get_color_table_with_alpha("orange", 255),
 			offset = {
 				0,
-				50,
+				20,
 				start_layer
 			}
 		},
@@ -118,7 +118,7 @@ local template_settings = {
 			color = Colors.get_color_table_with_alpha("orange", 255),
 			offset = {
 				0,
-				50,
+				20,
 				start_layer
 			}
 		},
@@ -138,7 +138,7 @@ local template_settings = {
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				0,
-				50,
+				20,
 				start_layer
 			}
 		},
@@ -158,7 +158,7 @@ local template_settings = {
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				0,
-				50,
+				20,
 				start_layer
 			}
 		},
@@ -178,7 +178,7 @@ local template_settings = {
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				0,
-				50,
+				20,
 				start_layer
 			}
 		}

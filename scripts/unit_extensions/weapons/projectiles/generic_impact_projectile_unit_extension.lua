@@ -40,6 +40,10 @@ GenericImpactProjectileUnitExtension.update = function (self, unit, input, _, co
 
 	self:impact(recent_impacts, num_impacts)
 
+	if self.impact_template_name == "vfx_impact" then
+		return
+	end
+
 	local UNIT = ProjectileImpactDataIndex.UNIT
 	local POSITION = ProjectileImpactDataIndex.POSITION
 	local DIRECTION = ProjectileImpactDataIndex.DIRECTION

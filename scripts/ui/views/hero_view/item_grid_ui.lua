@@ -708,7 +708,33 @@ ItemGridUI._on_category_index_change = function (self, index, keep_page_index)
 	end
 end
 
-ItemGridUI.change_item_filter = function (self, item_filter, change_page)
+local FILTERED_ITEMS = {}
+
+ItemGridUI._apply_search_query = function (self, items, search_query)
+	local lower_search_query = Utf8.lower(search_query)
+
+	table.clear(FILTERED_ITEMS)
+
+	for i = 1, #items do
+		local item = items[i]
+		local item_data = item.data
+		local localized_type = Utf8.lower(Localize(item_data.item_type))
+		local _, display_name = UIUtils.get_ui_information_from_item(item)
+		local localized_name = Utf8.lower(Localize(display_name))
+
+		if localized_type:find(lower_search_query) then
+			FILTERED_ITEMS[#FILTERED_ITEMS + 1] = item
+		elseif localized_name:find(lower_search_query) then
+			FILTERED_ITEMS[#FILTERED_ITEMS + 1] = item
+		end
+	end
+
+	local filtered_items = FILTERED_ITEMS
+
+	return FILTERED_ITEMS
+end
+
+ItemGridUI.change_item_filter = function (self, item_filter, change_page, optional_search_query)
 	item_filter = "available_in_current_mechanism and ( " .. item_filter .. " )"
 	local items_1 = self:_get_items_by_filter("can_wield_by_current_career and ( " .. item_filter .. " )")
 	local items_2 = self:_get_items_by_filter("not can_wield_by_current_career and ( " .. item_filter .. " )")
@@ -723,6 +749,10 @@ ItemGridUI.change_item_filter = function (self, item_filter, change_page)
 
 	for _, value in pairs(items_2) do
 		items[#items + 1] = value
+	end
+
+	if optional_search_query then
+		items = self:_apply_search_query(items, optional_search_query)
 	end
 
 	self._items = items

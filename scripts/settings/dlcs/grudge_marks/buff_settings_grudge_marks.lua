@@ -800,7 +800,6 @@ settings.buff_function_templates = {
 	end,
 	apply_curse_to_nearby_players = function (unit, buff, params, world)
 		local template = buff.template
-		local buff_to_add = template.buff_to_add
 		local max_distance = template.max_distance
 		local position = POSITION_LOOKUP[unit]
 		buff.cursed_players = buff.cursed_players or {}
@@ -863,21 +862,20 @@ settings.buff_function_templates = {
 			inside_last_frame[local_player] = inside_this_frame[local_player] and true or nil
 		end
 	end,
-	ai_create_explosion = function (unit, buff, params, world)
-		if not is_server() or not ALIVE[unit] then
+	ai_create_explosion = function (owner_unit, buff, params, world)
+		if not is_server() or not ALIVE[owner_unit] then
 			return
 		end
 
 		local buff_template = buff.template
 		local explosion_template_name = buff_template.explosion_template_name
 		local damage_source_name = buff_template.damage_source_name or "buff"
-		local world = Managers.world:world("level_world")
-		local explosion_position = POSITION_LOOKUP[unit] or Unit.world_position(unit, 0)
+		local explosion_position = POSITION_LOOKUP[owner_unit] or Unit.world_position(owner_unit, 0)
 		local explosion_template = ExplosionTemplates[explosion_template_name]
 
-		DamageUtils.create_explosion(world, unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source_name, true, false, unit, 0, false)
+		DamageUtils.create_explosion(world, owner_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source_name, true, false, owner_unit, 0, false)
 
-		local attacker_unit_id = Managers.state.unit_storage:go_id(unit)
+		local attacker_unit_id = Managers.state.unit_storage:go_id(owner_unit)
 		local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
 		local damage_source_id = NetworkLookup.damage_sources[damage_source_name]
 
@@ -978,30 +976,6 @@ settings.buff_function_templates = {
 			end
 		end
 	end,
-	frenzy_damage_over_time = function (unit, buff, params)
-		if not is_server() then
-			return
-		end
-
-		if ALIVE[unit] then
-			local health_extension = ScriptUnit.has_extension(unit, "health_system")
-
-			if not health_extension then
-				return
-			end
-
-			local current_health = health_extension:current_health()
-			local damage_per_tick = buff.template.damage_per_tick
-
-			if current_health <= damage_per_tick then
-				damage_per_tick = current_health - 1
-			end
-
-			if damage_per_tick > 0 then
-				DamageUtils.add_damage_network(unit, unit, damage_per_tick, "torso", "buff", nil, Vector3(0, 0, 0), "buff", nil, unit)
-			end
-		end
-	end,
 	apply_frenzy_func = function (unit, buff, params)
 		if ALIVE[unit] then
 			local player = Managers.player:owner(unit)
@@ -1036,20 +1010,6 @@ settings.buff_function_templates = {
 				end
 			end
 		end
-	end,
-	add_noclip = function (owner_unit, buff, params)
-		if ALIVE[owner_unit] then
-			local status_extension = ScriptUnit.has_extension(owner_unit, "status_system")
-
-			status_extension:add_noclip_stacking()
-		end
-	end,
-	remove_noclip = function (owner_unit, buff, params)
-		if ALIVE[owner_unit] then
-			local status_extension = ScriptUnit.has_extension(owner_unit, "status_system")
-
-			status_extension:remove_noclip_stacking()
-		end
 	end
 }
 settings.proc_functions = {
@@ -1074,16 +1034,15 @@ settings.proc_functions = {
 			end
 		end
 	end,
-	add_frenzy_stack = function (player, buff, params)
+	add_frenzy_stack = function (owner_unit, buff, params)
 		local hit_unit = params[1]
-		local player_unit = player.player_unit
 
-		if ALIVE[player_unit] and ALIVE[hit_unit] then
+		if ALIVE[owner_unit] and ALIVE[hit_unit] then
 			if not buff.attacker_unit or hit_unit ~= buff.attacker_unit then
 				return
 			end
 
-			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+			local buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
 
 			if buff_extension and not buff_extension:has_buff_type(buff.template.blocker_buff) then
 				buff_extension:add_buff(buff.template.buff_to_add)
@@ -1120,7 +1079,7 @@ settings.proc_functions = {
 			end
 		end
 	end,
-	ai_delay_regen = function (unit, buff, params)
+	ai_delay_regen = function (owner_unit, buff, params)
 		local t = Managers.time:time("game")
 		local on_hit_delay = buff.template.on_hit_delay
 

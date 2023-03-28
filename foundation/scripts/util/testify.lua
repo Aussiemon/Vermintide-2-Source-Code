@@ -1,8 +1,9 @@
 local SIGNALS = {
-	end_suite = "end_suite",
+	current_request = "current_request",
 	request = "request",
 	reply = "reply",
-	ready = "ready"
+	ready = "ready",
+	end_suite = "end_suite"
 }
 Testify = {
 	_requests = {},
@@ -200,4 +201,12 @@ Testify._print = function (self, ...)
 	if Development.parameter("debug_testify") then
 		printf("[Testify] %s", string.format(...))
 	end
+end
+
+Testify.current_request_name = function (self)
+	local requests = self._requests
+	local request_name, _ = next(requests)
+
+	self:_print("Current request name: %s", request_name)
+	self:_signal(SIGNALS.current_request, request_name)
 end

@@ -1491,6 +1491,19 @@ ExplosionTemplates.shadow_flare = {
 		unit_path = "units/weapons/player/wpn_shadow_gargoyle_head/wpn_shadow_gargoyle_head"
 	}
 }
+ExplosionTemplates.tower_wipe = {
+	explosion = {
+		always_hurt_players = false,
+		radius = 300,
+		no_aggro = true,
+		player_push_speed = 5,
+		collision_filter = "filter_simple_explosion_overlap",
+		alert_enemies = false,
+		damage_profile = "tower_wipe",
+		power_level = 1000,
+		level_unit_damage = true
+	}
+}
 
 DLCUtils.merge("explosion_templates", ExplosionTemplates)
 

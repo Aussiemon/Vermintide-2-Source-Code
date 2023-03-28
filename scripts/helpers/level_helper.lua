@@ -125,3 +125,14 @@ LevelHelper.get_base_level = function (self, level_key)
 
 	return level_settings and level_settings.base_level_name or level_key
 end
+
+LevelHelper.get_small_level_image = function (self, level_key)
+	local level_settings = LevelSettings[level_key]
+	local level_image = level_settings.small_level_image or level_key .. "_small_image"
+
+	if not UIAtlasHelper.has_texture_by_name(level_image) then
+		level_image = "any_small_image"
+	end
+
+	return level_image
+end

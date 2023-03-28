@@ -11,7 +11,6 @@ UIWidget = UIWidget or {}
 UIWidget.init = function (widget_definition)
 	local content = error_prone_clone(widget_definition.content)
 	local style = error_prone_clone(widget_definition.style)
-	local style_global = error_prone_clone(widget_definition.style_global)
 	local offset = widget_definition.offset and error_prone_clone(widget_definition.offset)
 	local passes = widget_definition.element.passes
 	local num_passes = #passes
@@ -21,7 +20,7 @@ UIWidget.init = function (widget_definition)
 		local pass = passes[i]
 		local pass_type = pass.pass_type
 		local ui_pass = UIPasses[pass_type]
-		pass_data[i] = ui_pass.init(pass, content, style, style_global)
+		pass_data[i] = ui_pass.init(pass, content, style)
 	end
 
 	local widget = {
@@ -33,8 +32,7 @@ UIWidget.init = function (widget_definition)
 		},
 		content = content,
 		style = style,
-		animations = {},
-		style_global = style_global
+		animations = {}
 	}
 
 	return widget

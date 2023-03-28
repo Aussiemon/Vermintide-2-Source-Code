@@ -32,10 +32,21 @@ end
 BuffAreaExtension.update = function (self, unit, input, dt, context, t)
 	local player = self.owner_player
 	local player_unit = player.player_unit
+
+	if self._duration and self._duration < t then
+		self:_remove_unit()
+
+		if not self._outside then
+			self:_remove_buff()
+		end
+
+		return
+	end
+
 	local within_distance = false
 
 	if player_unit then
-		local position = Unit.world_position(unit, 0)
+		local position = Unit.local_position(unit, 0)
 		local player_position = POSITION_LOOKUP[player_unit]
 		local distance_squared = Vector3.length_squared(player_position - position)
 		within_distance = distance_squared <= self.radius_squared
@@ -50,10 +61,6 @@ BuffAreaExtension.update = function (self, unit, input, dt, context, t)
 
 		self._outside = true
 	end
-
-	if self._duration and self._duration < t then
-		self:_remove_unit()
-	end
 end
 
 BuffAreaExtension.set_unit_position = function (self, position)
@@ -67,12 +74,16 @@ end
 
 BuffAreaExtension._remove_buff = function (self)
 	if not self._unlimited then
-		ProcFunctions[self.removal_proc_function_name](self.owner_player, self.template)
+		local player_unit = self.owner_player.player_unit
+
+		ProcFunctions[self.removal_proc_function_name](player_unit, self.template)
 	end
 end
 
 BuffAreaExtension._add_buff = function (self)
-	ProcFunctions[self.add_proc_function_name](self.owner_player, self.template)
+	local player_unit = self.owner_player.player_unit
+
+	ProcFunctions[self.add_proc_function_name](player_unit, self.template)
 end
 
 BuffAreaExtension._remove_unit = function (self)

@@ -3495,11 +3495,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 	elseif selected_mission_id then
 		local level_settings = LevelSettings[selected_mission_id]
 		selected_level_name = Localize(level_settings.display_name or "UNKNOWN")
-		level_image = selected_mission_id .. "_small_image"
-
-		if not UIAtlasHelper.has_texture_by_name(level_image) then
-			level_image = level_settings.small_level_image or "any_small_image"
-		end
+		level_image = LevelHelper:get_small_level_image(selected_mission_id)
 	end
 
 	local current_level_name = "UNKNOWN"
@@ -3534,7 +3530,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 	end
 
 	if rawget(_G, "Steam") then
-		local user_country_code = string.lower(Steam.user_country_code() or "")
+		local user_country_code = Managers.account:region()
 
 		if (user_country_code == "cn" or user_country_code == "hk") and country_code == "tw" then
 			flag_size = {

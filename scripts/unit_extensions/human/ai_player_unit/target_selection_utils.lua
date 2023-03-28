@@ -400,7 +400,7 @@ PerceptionUtils.horde_pick_closest_target_with_spillover = function (ai_unit, bl
 	local distance_to_target_sq = nil
 	local using_override_target = false
 	local override_targets = blackboard.override_targets
-	local VALID_ENEMIES = side.enemy_units_lookup
+	local VALID_ENEMIES = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
 
 	for target_unit, end_of_override_t in pairs(override_targets) do
 		local target_unit_valid = VALID_ENEMIES[target_unit]
@@ -505,10 +505,9 @@ local function _calculate_closest_target_with_spillover_score(ai_unit, target_un
 	local all_slots_disabled = false
 	local is_previous_attacker = previous_attacker and previous_attacker == target_unit
 	local target_of_combo_score = 0
+	local target_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
 
-	if ScriptUnit.has_extension(target_unit, "ai_slot_system") then
-		local target_slot_extension = ScriptUnit.extension(target_unit, "ai_slot_system")
-
+	if target_slot_extension then
 		if not target_slot_extension.valid_target then
 			return
 		end
@@ -533,8 +532,8 @@ local function _calculate_closest_target_with_spillover_score(ai_unit, target_un
 		target_of_combo_score = (status_ext and status_ext:get_combo_target_count() or 0) * COMBO_TARGET_SCORE
 	end
 
-	local aggro_extension = ScriptUnit.extension(target_unit, "aggro_system")
-	local aggro_modifier = aggro_extension.aggro_modifier
+	local aggro_extension = ScriptUnit.has_extension(target_unit, "aggro_system")
+	local aggro_modifier = aggro_extension and aggro_extension.aggro_modifier or 0
 	local is_knocked_down = unit_knocked_down(target_unit)
 
 	if distance_sq < STICKY_AGGRO_RANGE_SQUARED and not is_knocked_down then
@@ -587,12 +586,13 @@ PerceptionUtils.pick_closest_target_with_spillover = function (ai_unit, blackboa
 	local raycast_pos = Unit.world_position(ai_unit, Unit.node(ai_unit, "j_head"))
 	local using_override_target = false
 	local override_targets = blackboard.override_targets
-	local VALID_ENEMIES = side.enemy_units_lookup
+	local VALID_ENEMIES = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
 
 	for target_unit, end_of_override_t in pairs(override_targets) do
 		local target_unit_valid = VALID_ENEMIES[target_unit]
+		local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
 
-		if not target_unit_valid or end_of_override_t < t or ScriptUnit.extension(target_unit, "status_system"):is_disabled() then
+		if not target_unit_valid or end_of_override_t < t or status_extension and status_extension:is_disabled() then
 			override_targets[target_unit] = nil
 		else
 			local score, distance_sq = _calculate_closest_target_with_spillover_score(ai_unit, target_unit, target_current, previous_attacker, ai_unit_position, raycast_pos, breed, detection_radius_sq, perception_previous_attacker_stickyness_value, is_horde)

@@ -20,9 +20,6 @@ end
 ActionMeleeStart.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
 	ActionMeleeStart.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 	Unit.flow_event(self.first_person_unit, "sfx_swing_charge")
-
-	self._action_start_time = t
-
 	self:_play_additional_animation(new_action.custom_start_anim_data)
 
 	self.zoom_condition_function = new_action.zoom_condition_function
@@ -39,7 +36,7 @@ end
 ActionMeleeStart.client_owner_post_update = function (self, dt, t, world)
 	local action = self.current_action
 	local owner_unit = self.owner_unit
-	local action_start_time = self._action_start_time
+	local action_start_time = self.action_start_t
 	local blocking_charge = action.blocking_charge
 	local status_extension = self.status_extension
 

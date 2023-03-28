@@ -3,6 +3,7 @@ local guid = IS_PS4 and math.uuid or Application.guid
 PlayFabRequestQueue = class(PlayFabRequestQueue)
 local MAX_RETRIES = 2
 local TIMEOUT_TIME = 20
+local MAX_THROTTLE_REQUESTS = 10
 
 PlayFabRequestQueue.init = function (self)
 	self._queue = {}
@@ -11,7 +12,6 @@ PlayFabRequestQueue.init = function (self)
 	self._eac_id = 0
 	self._metadata = Managers.backend:get_metadata()
 	self._throttle_per_func = {}
-	self._max_requests = 15
 end
 
 PlayFabRequestQueue.is_pending_request = function (self)
@@ -71,30 +71,28 @@ PlayFabRequestQueue.enqueue_api_request = function (self, api_function_name, req
 	return id
 end
 
-PlayFabRequestQueue._need_throttle = function (self, funcName, t)
-	if not self._throttle_per_func[funcName] then
-		local data = {
-			num_requests = 0,
-			time = t + 15
-		}
-	end
+PlayFabRequestQueue._need_throttle = function (self, func_name, t)
+	local data = self._throttle_per_func[func_name] or {}
+	local new_num_requests = #data + 1
 
-	self._throttle_per_func[funcName] = data
-	local new_num_requests = data.num_requests + 1
-
-	if self._max_requests <= new_num_requests then
+	if MAX_THROTTLE_REQUESTS <= new_num_requests then
 		return true
 	end
 
-	data.num_requests = new_num_requests
+	data[new_num_requests] = t + 15
+	self._throttle_per_func[func_name] = data
 
 	return false
 end
 
 PlayFabRequestQueue._update_throttling = function (self, t, entry)
 	for key, data in pairs(self._throttle_per_func) do
-		if data.time <= t then
-			self._throttle_per_func[key] = nil
+		local expire_date = data[1] or t + 1
+
+		while t > expire_date do
+			table.remove(data, 1)
+
+			expire_date = data[1] or t + 1
 		end
 	end
 

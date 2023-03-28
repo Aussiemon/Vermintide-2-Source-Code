@@ -954,14 +954,14 @@ TalentBuffTemplates.empire_soldier = {
 	markus_huntsman_ult_on_death_delay = {
 		buffs = {
 			{
-				buff_after_delay = true,
+				buff_to_add = "markus_huntsman_ult_on_death",
 				name = "ult_on_death_delay",
 				icon = "markus_huntsman_activated_ability_duration",
-				max_stacks = 1,
+				duration_end_func = "add_buff_local",
 				is_cooldown = true,
 				duration = 120,
-				refresh_durations = true,
-				delayed_buff_name = "markus_huntsman_ult_on_death"
+				max_stacks = 1,
+				refresh_durations = true
 			}
 		}
 	},

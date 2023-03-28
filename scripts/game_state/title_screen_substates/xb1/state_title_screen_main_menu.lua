@@ -98,6 +98,13 @@ elseif GameSettingsDevelopment.additional_content_view_enabled then
 		function (this)
 			local input_manager = Managers.input
 
+			this:activate_view("cinematics_view")
+			this._title_start_ui:menu_option_activated(true)
+			Managers.music:trigger_event("Play_console_menu_select")
+		end,
+		function (this)
+			local input_manager = Managers.input
+
 			input_manager:block_device_except_service("additional_content_menu", "gamepad")
 			this:activate_view("additional_content_view")
 			this._title_start_ui:menu_option_activated(true)
@@ -258,6 +265,7 @@ StateTitleScreenMainMenu._init_menu_views = function (self)
 		self._views = {
 			credits_view = CreditsView:new(view_context),
 			options_view = OptionsView:new(view_context),
+			cinematics_view = CinematicsView:new(view_context),
 			additional_content_view = GameSettingsDevelopment.additional_content_view_enabled and AdditionalContentView:new(view_context) or nil
 		}
 	end

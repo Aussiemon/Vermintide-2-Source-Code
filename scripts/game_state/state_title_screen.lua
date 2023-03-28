@@ -1,7 +1,6 @@
 require("scripts/game_state/state_title_screen_main")
 require("scripts/settings/platform_specific")
 require("scripts/game_state/state_loading")
-require("scripts/managers/rcon/rcon_manager")
 require("scripts/managers/eac/eac_manager")
 require("scripts/settings/game_settings")
 require("foundation/scripts/managers/chat/chat_manager")
@@ -84,8 +83,6 @@ StateTitleScreen.on_enter = function (self, params)
 	self:_setup_state_machine()
 	self:_init_popup_manager()
 	self:_init_chat_manager()
-
-	Managers.rcon = Managers.rcon or RconManager:new()
 
 	if IS_WINDOWS or IS_LINUX then
 		Managers.eac = Managers.eac or EacManager:new()

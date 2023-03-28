@@ -203,7 +203,7 @@ CareerAbilityWHZealot._run_ability = function (self)
 		end
 	end
 
-	status_extension:add_noclip_stacking()
+	status_extension:set_noclip(true, "skill_zealot")
 
 	status_extension.do_lunge = {
 		animation_end_event = "zealot_active_ability_charge_hit",

@@ -22,7 +22,7 @@ StateLoading.LoadoutResyncStates = {
 	CHECK_RESYNC = "check_resync",
 	RESYNCING = "resyncing"
 }
-local LOADING_SCREEN_MUSIC_BY_GAME_MODE = {
+local LOADING_SCREEN_MUSIC_BY_GAME_MECHANISM = {
 	survival = "Play_loading_screen_music",
 	weave = "Play_loading_screen_music",
 	quad = "Play_loading_screen_music",
@@ -76,11 +76,10 @@ StateLoading.on_enter = function (self, param_block)
 	self:_setup_init_network_view()
 	Managers.popup:set_input_manager(self._input_manager)
 
-	if Managers.rcon ~= nil then
-		Managers.rcon:set_input_manager(self._input_manager)
+	if not DEDICATED_SERVER then
+		Managers.chat:set_input_manager(self._input_manager)
 	end
 
-	Managers.chat:set_input_manager(self._input_manager)
 	self:_setup_state_machine()
 	self:_unmute_all_world_sounds()
 
@@ -245,7 +244,7 @@ StateLoading._setup_first_time_ui = function (self)
 		local level_name = Boot.loading_context and Boot.loading_context.level_key or inn_level_name
 		local auto_skip = nil
 		local params = {}
-		local next_level_key = Managers.level_transition_handler:get_next_level_key()
+		local next_level_key = Managers.level_transition_handler:get_current_level_key()
 		params.is_prologue = next_level_key == "prologue"
 		local platform = PLATFORM
 
@@ -265,7 +264,7 @@ StateLoading._setup_first_time_ui = function (self)
 
 			local save_data = SaveData
 			params.gamma = not save_data.gamma_corrected
-			params.trailer = Application.user_setting("play_intro_cinematic")
+			params.trailer = loading_context.play_trailer or Application.user_setting("play_intro_cinematic")
 		elseif IS_CONSOLE then
 			level_name = check_bool_string(Development.parameter("auto_host_level")) or level_name
 			local level_settings = LevelSettings[level_name]
@@ -350,8 +349,8 @@ StateLoading._trigger_loading_view = function (self, level_key, act_progression_
 		end
 
 		local level_settings = LevelSettings[level_key]
-		local game_mode = level_settings.game_mode
-		local event_name = LOADING_SCREEN_MUSIC_BY_GAME_MODE[game_mode]
+		local mechanism = level_settings.mechanism
+		local event_name = LOADING_SCREEN_MUSIC_BY_GAME_MECHANISM[mechanism]
 		local active_weave = Managers.weave:get_active_weave()
 
 		if active_weave then
@@ -754,10 +753,6 @@ StateLoading.update = function (self, dt, t)
 			menu_active = true
 			menu_input_service = level_end_view:active_input_service()
 		end
-	end
-
-	if Managers.rcon ~= nil then
-		Managers.rcon:update(dt, t, menu_active, menu_input_service)
 	end
 
 	Managers.chat:update(dt, t, menu_active, menu_input_service)
@@ -1427,6 +1422,37 @@ StateLoading._try_next_state = function (self, dt)
 				self._level_spawned = true
 				self._ingame_world_object = world
 				self._ingame_level_object = level
+
+				Level.set_data(level, "intro_wwise_id", self.wwise_playing_id or WwiseUtils.EVENT_ID_NONE)
+				print("Spawn additional sub_levels:")
+
+				local level_transition_handler = Managers.level_transition_handler
+				local level_key = level_transition_handler:get_current_level_keys()
+				local hero_specific_sublevels = LevelSettings[level_key].hero_specific_sublevels
+
+				if hero_specific_sublevels then
+					local selected_hero_name_on_load = level_transition_handler.selected_hero_name_on_load
+					local selected_hero_sublevels = hero_specific_sublevels[selected_hero_name_on_load]
+
+					if selected_hero_sublevels and #selected_hero_sublevels > 0 then
+						local game_mode_key = level_transition_handler:get_current_game_mode()
+						local sub_levels = {}
+
+						for sublevel_idx = 1, #selected_hero_sublevels do
+							local sublevel_name = selected_hero_sublevels[sublevel_idx]
+							local _, spawned_object_sets = GameModeHelper.get_object_sets(sublevel_name, game_mode_key)
+							local sub_level = ScriptWorld.spawn_level(world, sublevel_name, spawned_object_sets)
+
+							Level.set_data(sub_level, "parent_level", level)
+
+							sub_levels[sublevel_name] = sub_level
+
+							print(sublevel_name)
+						end
+
+						Level.set_data(level, "sub_levels", sub_levels)
+					end
+				end
 			end
 		end
 
@@ -1662,21 +1688,11 @@ StateLoading.on_exit = function (self, application_shutdown)
 			loading_context.lobby_host = self._lobby_host
 			local level_key = level_transition_handler:get_current_level_keys()
 			local stored_lobby_host_data = self._lobby_host:get_stored_lobby_data() or {}
-			local country_code = nil
-
-			if DEDICATED_SERVER then
-				country_code = SteamGameServer.country_code()
-			elseif IS_PS4 then
-				country_code = Managers.account:region()
-			elseif rawget(_G, "Steam") then
-				country_code = Steam.user_country_code()
-			end
-
 			stored_lobby_host_data.mission_id = level_key
 			stored_lobby_host_data.unique_server_name = stored_lobby_host_data.unique_server_name or LobbyAux.get_unique_server_name()
 			stored_lobby_host_data.host = stored_lobby_host_data.host or Network.peer_id()
 			stored_lobby_host_data.num_players = stored_lobby_host_data.num_players or 1
-			stored_lobby_host_data.country_code = country_code
+			stored_lobby_host_data.country_code = Managers.account:region()
 
 			self._lobby_host:set_lobby_data(stored_lobby_host_data)
 
@@ -1723,7 +1739,7 @@ StateLoading.on_exit = function (self, application_shutdown)
 	end
 
 	if self._ingame_level_object then
-		Level.trigger_level_shutdown(self._ingame_level_object)
+		ScriptWorld.trigger_level_shutdown(self._ingame_level_object)
 		ScriptWorld.destroy_level_from_reference(self._ingame_world_object, self._ingame_level_object)
 
 		self._ingame_level_object = nil

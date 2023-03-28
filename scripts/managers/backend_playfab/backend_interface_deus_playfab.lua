@@ -46,29 +46,13 @@ BackendInterfaceDeusPlayFab.deus_journey_with_belakor = function (self, journey_
 		self:get_belakor_cycle()
 	end
 
-	local belakor_active = self._backend_mirror:belakor_active()
-
-	if not belakor_active then
-		return false
-	end
-
 	local deus_belakor_cycle_data = self._belakor_data
 
 	return deus_belakor_cycle_data.journey_name == journey_name and true or false
 end
 
-BackendInterfaceDeusPlayFab.belakor_active = function (self)
-	return self._backend_mirror:belakor_active()
-end
-
 BackendInterfaceDeusPlayFab.get_belakor_cycle = function (self)
 	local current_time = Managers.time:time("main")
-	local belakor_active = self._backend_mirror:belakor_active()
-
-	if not belakor_active then
-		return false
-	end
-
 	local deus_belakor_cycle_data = self._backend_mirror:get_deus_belakor_curse_data()
 	local time_delta = current_time - deus_belakor_cycle_data.time_of_update
 	local remaining_time = deus_belakor_cycle_data.remaining_time - time_delta

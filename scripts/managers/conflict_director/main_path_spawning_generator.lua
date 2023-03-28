@@ -258,7 +258,9 @@ MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, m
 	local initial_roaming_set = pack_spawning_setting.roaming_set
 	local random_director_list = Managers.state.conflict.enemy_package_loader.random_director_list
 	local random_director_index = 1
-	_, _, _ = MainPathSpawningGenerator.process_conflict_directors_zones(conflict_director.name, zones, num_main_zones, level_seed)
+
+	MainPathSpawningGenerator.process_conflict_directors_zones(conflict_director.name, zones, num_main_zones, level_seed)
+
 	local zone_mutator_list = {}
 	local current_director_name = conflict_director.name
 

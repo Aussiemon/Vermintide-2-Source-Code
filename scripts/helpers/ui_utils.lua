@@ -284,17 +284,8 @@ UIUtils.get_hero_statistics_by_template = function (template)
 	return layout
 end
 
-UIUtils.get_text_height = function (ui_renderer, size, text_style, text, ui_style_global)
-	local widget_scale = nil
-
-	if ui_style_global then
-		widget_scale = ui_style_global.scale
-	end
-
-	local font, scaled_font_size = UIFontByResolution(text_style, widget_scale)
-	local font_type = text_style.font_type
-	local font_path = font[1]
-	local font_name = font[3]
+UIUtils.get_text_height = function (ui_renderer, size, text_style, text)
+	local font, scaled_font_size = UIFontByResolution(text_style)
 
 	if text_style.localize then
 		text = Localize(text)
@@ -304,8 +295,8 @@ UIUtils.get_text_height = function (ui_renderer, size, text_style, text, ui_styl
 		text = TextToUpper(text)
 	end
 
-	local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, font_type, scaled_font_size)
-	local texts = UIRenderer.word_wrap(ui_renderer, text, font_path, scaled_font_size, size[1])
+	local font_height, font_min, font_max = UIGetFontHeight(ui_renderer.gui, text_style.font_type, scaled_font_size)
+	local texts = UIRenderer.word_wrap(ui_renderer, text, font[1], scaled_font_size, size[1])
 	local text_start_index = 1
 	local max_texts = #texts
 	local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
@@ -315,13 +306,7 @@ UIUtils.get_text_height = function (ui_renderer, size, text_style, text, ui_styl
 	return full_font_height, num_texts
 end
 
-UIUtils.get_text_width = function (ui_renderer, text_style, text, ui_style_global)
-	local widget_scale = nil
-
-	if ui_style_global then
-		widget_scale = ui_style_global.scale
-	end
-
+UIUtils.get_text_width = function (ui_renderer, text_style, text)
 	if text_style.localize then
 		text = Localize(text)
 	end
@@ -330,8 +315,8 @@ UIUtils.get_text_width = function (ui_renderer, text_style, text, ui_style_globa
 		text = TextToUpper(text)
 	end
 
-	local font, scaled_font_size = UIFontByResolution(text_style, widget_scale)
-	local text_width, text_height, min = UIRenderer.text_size(ui_renderer, text, font[1], scaled_font_size)
+	local font, scaled_font_size = UIFontByResolution(text_style)
+	local text_width = UIRenderer.text_size(ui_renderer, text, font[1], scaled_font_size)
 
 	return text_width
 end
@@ -525,4 +510,50 @@ UIUtils.get_color_for_consumable_item = function (item_key)
 	local default_color = UISettings.inventory_consumable_slot_colors.default
 
 	return item_key and UISettings.inventory_consumable_slot_colors[item_key] or default_color
+end
+
+UIUtils.sort_items_power_level_ascending = function (item_1, item_2)
+	local item_1_power_level = item_1.power_level or math.huge
+	local item_2_power_level = item_2.power_level or math.huge
+
+	if item_1_power_level == item_2_power_level then
+		return UIUtils.sort_items_rarity_ascending(item_1, item_2)
+	end
+
+	return item_1_power_level < item_2_power_level
+end
+
+UIUtils.sort_items_power_level_descending = function (item_1, item_2)
+	local item_1_power_level = item_1.power_level or math.huge
+	local item_2_power_level = item_2.power_level or math.huge
+
+	if item_1_power_level == item_2_power_level then
+		return UIUtils.sort_items_rarity_descending(item_1, item_2)
+	end
+
+	return item_2_power_level < item_1_power_level
+end
+
+UIUtils.sort_items_rarity_ascending = function (item_1, item_2)
+	local item_data_1 = item_1.data
+	local item_data_2 = item_2.data
+	local item_1_rarity = item_1.rarity or item_data_1.rarity
+	local item_2_rarity = item_2.rarity or item_data_2.rarity
+	local item_rarity_order = UISettings.item_rarity_order
+	local item_1_rarity_order = item_rarity_order[item_1_rarity]
+	local item_2_rarity_order = item_rarity_order[item_2_rarity]
+
+	return item_2_rarity_order < item_1_rarity_order
+end
+
+UIUtils.sort_items_rarity_descending = function (item_1, item_2)
+	local item_data_1 = item_1.data
+	local item_data_2 = item_2.data
+	local item_1_rarity = item_1.rarity or item_data_1.rarity
+	local item_2_rarity = item_2.rarity or item_data_2.rarity
+	local item_rarity_order = UISettings.item_rarity_order
+	local item_1_rarity_order = item_rarity_order[item_1_rarity]
+	local item_2_rarity_order = item_rarity_order[item_2_rarity]
+
+	return item_1_rarity_order < item_2_rarity_order
 end

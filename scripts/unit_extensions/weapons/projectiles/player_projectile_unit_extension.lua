@@ -59,6 +59,7 @@ PlayerProjectileUnitExtension.init = function (self, extension_init_context, uni
 	local timed_data = current_action.timed_data
 	self.power_level = extension_init_data.power_level
 	self.projectile_info = projectile_info
+	self.charge_data = current_action.charge_data
 
 	if impact_data.grenade and owner_buff_extension and owner_buff_extension:has_buff_perk("frag_fire_grenades") then
 		impact_data = table.shallow_copy(impact_data)
@@ -90,13 +91,15 @@ PlayerProjectileUnitExtension.init = function (self, extension_init_context, uni
 	self._did_damage = false
 	self._num_bounces = 0
 	self._num_additional_penetrations = owner_buff_extension:apply_buffs_to_value(0, "ranged_additional_penetrations")
+	self._active = true
 	self._is_critical_strike = not not extension_init_data.is_critical_strike
+	self._stop_impacts = not not extension_init_data.stopped
 
 	self:initialize_projectile(projectile_info, impact_data)
 end
 
 PlayerProjectileUnitExtension.extensions_ready = function (self, world, unit)
-	self._locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
+	self.locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
 	self._impact_extension = ScriptUnit.extension(unit, "projectile_impact_system")
 end
 
@@ -170,7 +173,7 @@ PlayerProjectileUnitExtension.mark_for_deletion = function (self)
 	end
 end
 
-PlayerProjectileUnitExtension.stop = function (self)
+PlayerProjectileUnitExtension.stop = function (self, hit_unit, hit_zone_name, hit_normal)
 	if self._stop_impacts then
 		return
 	end
@@ -179,8 +182,8 @@ PlayerProjectileUnitExtension.stop = function (self)
 
 	if self._anim_blend_enabled then
 		self._anim_blend_enabled = false
-		local real_pos = self._locomotion_extension:current_position()
-		local real_rot = self._locomotion_extension:current_rotation()
+		local real_pos = self.locomotion_extension:current_position()
+		local real_rot = self.locomotion_extension:current_rotation()
 
 		unit_set_local_position(unit, 0, real_pos)
 		unit_set_local_rotation(unit, 0, real_rot)
@@ -193,10 +196,10 @@ PlayerProjectileUnitExtension.stop = function (self)
 		self:mark_for_deletion()
 		Unit.flow_event(unit, "lua_projectile_end")
 
-		self.active = false
+		self._active = false
 	end
 
-	self._locomotion_extension:stop()
+	self.locomotion_extension:stop(hit_unit, hit_zone_name, hit_normal)
 
 	self._stop_impacts = true
 end
@@ -204,10 +207,10 @@ end
 PlayerProjectileUnitExtension._stop_by_life_time = function (self)
 	self:mark_for_deletion()
 	Unit.flow_event(self._projectile_unit, "lua_projectile_end")
-	self._locomotion_extension:stop()
+	self.locomotion_extension:stop()
 
 	self._stop_impacts = true
-	self.active = false
+	self._active = false
 end
 
 PlayerProjectileUnitExtension.update = function (self, unit, input, _, context, t)
@@ -226,14 +229,14 @@ PlayerProjectileUnitExtension.update = function (self, unit, input, _, context, 
 		local anim_blend_settings = self.projectile_info.anim_blend_settings
 		local blend_time = anim_blend_settings.blend_time
 		local blend_func = anim_blend_settings.blend_func
-		local life_time = self._locomotion_extension.life_time
+		local life_time = self.locomotion_extension.time_lived
 		local blend_t = math.min(blend_func(life_time / blend_time), 1)
 
 		if not ALIVE[owner_unit] or blend_t >= 1 then
 			self._anim_blend_enabled = false
 		else
-			local real_pos = self._locomotion_extension:current_position()
-			local real_rot = self._locomotion_extension:current_rotation()
+			local real_pos = self.locomotion_extension:current_position()
+			local real_rot = self.locomotion_extension:current_rotation()
 
 			if real_pos and real_rot then
 				local anim_node = self._anim_node_id
@@ -302,10 +305,17 @@ PlayerProjectileUnitExtension.handle_timed_events = function (self, t)
 
 		self:_stop_by_life_time()
 	end
+
+	if self._charge_t and self._charge_t <= t then
+		self._charge_t = nil
+		self.is_charged = true
+	end
 end
 
 PlayerProjectileUnitExtension.destroy = function (self)
-	return
+	if self._projectile_unit and self._active then
+		self:stop()
+	end
 end
 
 PlayerProjectileUnitExtension.validate_position = function (self, position, min, max)
@@ -428,7 +438,7 @@ PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impa
 						local node = Actor.node(hit_actor)
 						local hit_zone = breed.hit_zones_lookup[node]
 
-						if hit_zone.name == best_hit_zone.name then
+						if hit_zone and hit_zone.name == best_hit_zone.name then
 							hit_units[hit_unit] = true
 						else
 							break
@@ -491,6 +501,10 @@ PlayerProjectileUnitExtension._activate_life_time = function (self, game_time)
 	end
 
 	self._life_time = game_time + timed_data.life_time
+
+	if timed_data.charge_time then
+		self._charge_t = game_time + timed_data.charge_time
+	end
 end
 
 PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, has_ranged_boost, ranged_boost_curve_multiplier)
@@ -506,10 +520,12 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 		return
 	end
 
+	local hit_zone_name = nil
+
 	if damage_profile then
 		local node = Actor.node(hit_actor)
 		local hit_zone = breed.hit_zones_lookup[node]
-		local hit_zone_name = hit_zone.name
+		hit_zone_name = hit_zone.name
 		local send_to_server = true
 		local charge_value = damage_profile.charge_value or "projectile"
 		local is_critical_strike = self._is_critical_strike
@@ -567,7 +583,7 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 			end
 		end
 
-		self:stop()
+		self:stop(hit_unit, hit_zone_name, hit_normal)
 	end
 
 	local current_action = self._current_action
@@ -580,7 +596,7 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 				local hit_enemy_or_player = true
 
 				self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, allow_link, shield_blocked, hit_enemy_or_player)
-				self:stop()
+				self:stop(hit_unit, hit_zone_name, hit_normal)
 			end
 		end
 	elseif self._max_mass <= self._amount_of_mass_hit then
@@ -590,12 +606,12 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 			local hit_enemy_or_player = true
 
 			self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, allow_link, shield_blocked, hit_enemy_or_player)
-			self:stop()
+			self:stop(hit_unit, hit_zone_name, hit_normal)
 		end
 	end
 
-	if self._locomotion_extension.notify_hit_enemy then
-		self._locomotion_extension:notify_hit_enemy(hit_unit)
+	if self.locomotion_extension.notify_hit_enemy then
+		self.locomotion_extension:notify_hit_enemy(hit_unit)
 	end
 
 	if forced_penetration then
@@ -702,7 +718,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 		else
 			self._amount_of_mass_hit = self._max_mass
 
-			self:stop()
+			self:stop(hit_unit, hit_zone_name, hit_normal)
 		end
 	elseif was_alive and not action.ignore_armor and (breed.armor_category == 2 or breed.armor_category == 3 or shield_blocked) then
 		self._did_damage = predicted_damage
@@ -712,7 +728,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 		else
 			self._amount_of_mass_hit = self._max_mass
 
-			self:stop()
+			self:stop(hit_unit, hit_zone_name, hit_normal)
 		end
 	else
 		self._did_damage = predicted_damage
@@ -922,7 +938,7 @@ PlayerProjectileUnitExtension.hit_level_unit = function (self, impact_data, hit_
 	if bounce then
 		local num_bounces = self._num_bounces
 		local max_bounces = impact_data.max_bounces or 0
-		local locomotion_extension = self._locomotion_extension
+		local locomotion_extension = self.locomotion_extension
 		max_bounces = max_bounces + buffed_bounces
 
 		if locomotion_extension.bounce and num_bounces < max_bounces then
@@ -954,7 +970,7 @@ PlayerProjectileUnitExtension.hit_level_unit = function (self, impact_data, hit_
 	if health_extension and self._num_additional_penetrations > 0 and not impact_data.grenade then
 		self._num_additional_penetrations = self._num_additional_penetrations - 1
 	else
-		self:stop()
+		self:stop(hit_unit, nil, hit_normal)
 	end
 end
 
@@ -1037,7 +1053,7 @@ PlayerProjectileUnitExtension.hit_non_level_unit = function (self, impact_data, 
 		if self._num_additional_penetrations > 0 then
 			self._num_additional_penetrations = self._num_additional_penetrations - 1
 		else
-			self:stop()
+			self:stop(hit_unit, nil, hit_normal)
 		end
 	end
 end
@@ -1342,7 +1358,7 @@ PlayerProjectileUnitExtension._spawn_pickup_projectile = function (self, pickup_
 	local pickup_unit_template_name = pickup_settings.unit_template_name
 	local pickup_unit_name_id = NetworkLookup.husks[pickup_unit_name]
 	local pickup_unit_template_name_id = NetworkLookup.go_types[pickup_unit_template_name]
-	local velocity = bounce_dir * self._locomotion_extension.speed * 0.001
+	local velocity = bounce_dir * self.locomotion_extension.speed * 0.001
 	local weapon_pose = Unit.world_pose(self._projectile_unit, 0)
 	local av = self.projectile_info.bounce_angular_velocity
 	local angular_velocity = Vector3(av[1], av[2], av[3])
@@ -1355,7 +1371,7 @@ PlayerProjectileUnitExtension._spawn_pickup_projectile = function (self, pickup_
 	Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_projectile", pickup_unit_name_id, pickup_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, pickup_spawn_type_id, spawn_limit)
 end
 
-PlayerProjectileUnitExtension.do_aoe = function (self, aoe_data, position)
+PlayerProjectileUnitExtension.do_aoe = function (self, aoe_data, position, network_sync)
 	local world = self._world
 	local unit = self._projectile_unit
 	local owner_unit = self._owner_unit
@@ -1369,7 +1385,13 @@ PlayerProjectileUnitExtension.do_aoe = function (self, aoe_data, position)
 		local power_level = self.power_level
 		local is_husk = false
 
-		DamageUtils.create_explosion(world, owner_unit, position, rotation, aoe_data, scale, item_name, is_server, is_husk, unit, power_level, self._is_critical_strike, source_attacker_unit)
+		if network_sync then
+			local area_damage_system = Managers.state.entity:system("area_damage_system")
+
+			area_damage_system:create_explosion(owner_unit, position, rotation, aoe_data.name, scale, item_name, power_level, self._is_critical_strike, source_attacker_unit)
+		else
+			DamageUtils.create_explosion(world, owner_unit, position, rotation, aoe_data, scale, item_name, is_server, is_husk, unit, power_level, self._is_critical_strike, source_attacker_unit)
+		end
 	end
 
 	if aoe_data.spawn_unit then

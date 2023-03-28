@@ -223,6 +223,7 @@ local name_widget_definitions = {
 	UIWidgets.create_simple_text("player_4", "name_slot_4", nil, nil, name_style, nil, RETAINED_MODE_ENABLED)
 }
 local DO_RELOAD = false
+local UI_REMOVE_DELAY = 0.3
 
 VoiceChatUI.init = function (self, ingame_ui_context)
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
@@ -230,9 +231,8 @@ VoiceChatUI.init = function (self, ingame_ui_context)
 	self.voip = ingame_ui_context.voip
 	self._lobby = ingame_ui_context.lobby
 	self._cached_names = {}
-	self._talked_last_frame = {}
-	self._talking_this_frame = {}
-	self._dirty = false
+	self._talking_peers = {}
+	self._dirty = true
 	self._safe_rect = Application.user_setting("safe_rect") or 0
 
 	self:create_ui_elements()
@@ -302,20 +302,23 @@ VoiceChatUI.destroy = function (self)
 	GarbageLeakDetector.register_object(self, "voice_chat_ui")
 end
 
-local MEMBERS = {}
+VoiceChatUI._update_timer = function (self)
+	self._timer = Application.time_since_launch()
+end
 
-VoiceChatUI.update = function (self, dt)
-	local talked_last_frame = self._talked_last_frame
-	local talking_this_frame = self._talking_this_frame
-	local dirty = false
-	local safe_rect = Application.user_setting("safe_rect") or 0
+VoiceChatUI._update_safe_rect = function (self)
+	if IS_PS4 then
+		local safe_rect = Application.user_setting("safe_rect") or 0
 
-	if safe_rect ~= self._safe_rect then
-		self._safe_rect = safe_rect
-		dirty = true
+		if safe_rect ~= self._safe_rect then
+			self._safe_rect = safe_rect
+			self._dirty = true
+		end
 	end
+end
 
-	table.clear(MEMBERS)
+VoiceChatUI._gather_members = function (self, members_table)
+	table.clear(members_table)
 
 	local lobby = self._lobby
 	local lobby_members = lobby and lobby:members()
@@ -323,98 +326,99 @@ VoiceChatUI.update = function (self, dt)
 
 	if members then
 		for _, peer_id in ipairs(members) do
-			MEMBERS[peer_id] = true
+			members_table[peer_id] = true
 		end
 	end
-
-	if not RETAINED_MODE_ENABLED then
-		dirty = true
-	end
-
-	for peer_id, player in pairs(talked_last_frame) do
-		if not MEMBERS[peer_id] then
-			talked_last_frame[peer_id] = nil
-			dirty = true
-		end
-	end
-
-	for peer_id, player in pairs(talking_this_frame) do
-		if not MEMBERS[peer_id] then
-			talking_this_frame[peer_id] = nil
-			dirty = true
-		end
-	end
-
-	for peer_id, player in pairs(self._cached_names) do
-		if not MEMBERS[peer_id] then
-			self._cached_names[peer_id] = nil
-			dirty = true
-		end
-	end
-
-	for peer_id, _ in pairs(MEMBERS) do
-		local talking = self.voip:is_talking(peer_id)
-		local was_talking = talked_last_frame[peer_id]
-		talking_this_frame[peer_id] = talking
-
-		if not was_talking and talking or was_talking and not talking then
-			dirty = true
-		end
-	end
-
-	if dirty then
-		local index = 1
-
-		for peer_id, talking in pairs(talking_this_frame) do
-			if talking then
-				local icon_widget = self.icon_widgets[index]
-				icon_widget.content.visible = true
-				icon_widget.element.dirty = true
-				local bg_widget = self.bg_widgets[index]
-				bg_widget.content.visible = true
-				bg_widget.element.dirty = true
-				local name_widget = self.name_widgets[index]
-
-				if not self._cached_names[peer_id] then
-					local lobby = self._lobby
-					local lobby_state = lobby.state
-
-					if lobby_state and lobby_state == "joined" then
-						self._cached_names[peer_id] = lobby:user_name(peer_id)
-					end
-				end
-
-				local name = self._cached_names[peer_id] or tostring(peer_id)
-				local cropped_name = PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name) and UIRenderer.crop_text_width(self.ui_top_renderer, name, 250, name_widget.style.text) or name
-				name_widget.content.text = cropped_name
-				name_widget.content.visible = true
-				name_widget.element.dirty = true
-				index = index + 1
-			end
-		end
-
-		for i = index, NUM_SLOTS do
-			local icon_widget = self.icon_widgets[index]
-			icon_widget.content.visible = false
-			icon_widget.element.dirty = true
-			local bg_widget = self.bg_widgets[index]
-			bg_widget.content.visible = false
-			bg_widget.element.dirty = true
-			local name_widget = self.name_widgets[index]
-			name_widget.content.visible = false
-			name_widget.element.dirty = true
-			index = index + 1
-		end
-
-		self._dirty = true
-	end
-
-	self._talked_last_frame = talking_this_frame
-
-	self:draw(dt)
 end
 
-VoiceChatUI.draw = function (self, dt)
+VoiceChatUI._update_talking_state = function (self, members_table)
+	for peer_id, _ in pairs(members_table) do
+		local is_talking = self.voip:is_talking(peer_id)
+		local was_talking = self._talking_peers[peer_id]
+		self._talking_peers[peer_id] = is_talking and self._timer + UI_REMOVE_DELAY or was_talking
+		self._dirty = not was_talking and is_talking or self._dirty
+	end
+
+	for peer_id, timer in pairs(self._talking_peers) do
+		if timer < self._timer then
+			self._talking_peers[peer_id] = nil
+			self._dirty = true
+		end
+	end
+end
+
+VoiceChatUI._update_widgets = function (self)
+	if not self._dirty then
+		return
+	end
+
+	local index = 1
+
+	for peer_id, _ in pairs(self._talking_peers) do
+		local icon_widget = self.icon_widgets[index]
+		local icon_widget_content = icon_widget.content
+		local icon_widget_element = icon_widget.element
+		icon_widget_content.visible = true
+		icon_widget_element.dirty = true
+		local bg_widget = self.bg_widgets[index]
+		local bg_widget_content = bg_widget.content
+		local bg_widget_element = bg_widget.element
+		bg_widget_content.visible = true
+		bg_widget_element.dirty = true
+		local name = nil
+
+		if HAS_STEAM then
+			name = Steam.user_name(peer_id)
+		else
+			local player = Managers.player:player_from_peer_id(peer_id, 1)
+			name = player and player:name()
+		end
+
+		if not name or name == "" then
+			name = "Remote #" .. string.sub(peer_id, -3)
+		end
+
+		local name_widget = self.name_widgets[index]
+		local cropped_name = PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name) and UIRenderer.crop_text_width(self.ui_top_renderer, name, 250, name_widget.style.text) or name
+		local name_widget_content = name_widget.content
+		local name_widget_element = name_widget.element
+		name_widget_content.text = cropped_name
+		name_widget_content.visible = true
+		name_widget_element.dirty = true
+		index = index + 1
+	end
+
+	for i = index, NUM_SLOTS do
+		local icon_widget = self.icon_widgets[i]
+		local icon_widget_content = icon_widget.content
+		local icon_widget_element = icon_widget.element
+		icon_widget_content.visible = false
+		icon_widget_element.dirty = true
+		local bg_widget = self.bg_widgets[i]
+		local bg_widget_content = bg_widget.content
+		local bg_widget_element = bg_widget.element
+		bg_widget_content.visible = false
+		bg_widget_element.dirty = true
+		local name_widget = self.name_widgets[i]
+		local name_widget_content = name_widget.content
+		local name_widget_element = name_widget.element
+		name_widget_content.visible = false
+		name_widget_element.dirty = true
+	end
+end
+
+local MEMBERS_TABLE = {}
+
+VoiceChatUI.update = function (self, dt)
+	self:_update_timer()
+	self:_update_safe_rect()
+	self:_gather_members(MEMBERS_TABLE)
+	self:_update_talking_state(MEMBERS_TABLE)
+	self:_update_widgets()
+	self:_draw(dt)
+end
+
+VoiceChatUI._draw = function (self, dt)
 	if not self._dirty then
 		return
 	end
@@ -433,5 +437,5 @@ VoiceChatUI.draw = function (self, dt)
 
 	UIRenderer.end_pass(ui_top_renderer)
 
-	self._dirty = false
+	self._dirty = not RETAINED_MODE_ENABLED
 end

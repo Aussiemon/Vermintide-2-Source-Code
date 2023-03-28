@@ -697,9 +697,6 @@ SpecialsPacing.get_special_spawn_pos = function (self, spawning_rule)
 	end
 
 	if not pos then
-		print(debug_string)
-		print("FAIL: Special spawn no hidden pos found :/ ")
-
 		return
 	end
 

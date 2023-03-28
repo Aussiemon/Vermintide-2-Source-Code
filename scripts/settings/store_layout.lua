@@ -32,7 +32,9 @@ if not StoreLayoutConfig then
 						skins = "item_details"
 					},
 					engineer = {
-						weapon_skins = "item_details"
+						weapon_skins = "item_details",
+						hats = "item_details",
+						skins = "item_details"
 					}
 				},
 				kruber = {
@@ -52,7 +54,9 @@ if not StoreLayoutConfig then
 						skins = "item_details"
 					},
 					questingknight = {
-						weapon_skins = "item_details"
+						weapon_skins = "item_details",
+						hats = "item_details",
+						skins = "item_details"
 					}
 				},
 				kerillian = {
@@ -84,6 +88,11 @@ if not StoreLayoutConfig then
 						skins = "item_details"
 					},
 					zealot = {
+						weapon_skins = "item_details",
+						hats = "item_details",
+						skins = "item_details"
+					},
+					priest = {
 						weapon_skins = "item_details",
 						hats = "item_details",
 						skins = "item_details"
@@ -337,6 +346,14 @@ if not StoreLayoutConfig then
 		sort_order = 3,
 		category_button_texture = "store_category_icon_kerillian_shade"
 	}
+	StoreLayoutConfig.pages.thornsister = {
+		sound_event_enter = "Play_hud_store_category_button",
+		layout = "category",
+		display_name = "we_thornsister",
+		item_filter = "can_wield_we_thornsister",
+		sort_order = 4,
+		category_button_texture = "store_category_icon_kerillian_thornsister"
+	}
 	StoreLayoutConfig.pages.victor = {
 		sound_event_enter = "Play_hud_store_saltzpyre",
 		layout = "category",
@@ -368,6 +385,14 @@ if not StoreLayoutConfig then
 		item_filter = "can_wield_wh_zealot",
 		sort_order = 3,
 		category_button_texture = "store_category_icon_victor_zealot"
+	}
+	StoreLayoutConfig.pages.priest = {
+		sound_event_enter = "Play_hud_store_category_button",
+		layout = "category",
+		display_name = "wh_priest",
+		item_filter = "can_wield_wh_priest",
+		sort_order = 4,
+		category_button_texture = "store_category_icon_victor_priest"
 	}
 	StoreLayoutConfig.pages.sienna = {
 		sound_event_enter = "Play_hud_store_sienna",

@@ -565,12 +565,15 @@ function flow_callback_attach_player_item(params)
 							end
 						end
 
-						if skin_template.equip_hat_event ~= nil then
-							local skin_events = Unit.get_data(parent_unit, "skin_events") or {}
+						local skin_events = Unit.get_data(parent_unit, "skin_events") or {}
 
+						if skin_template.equip_hat_event ~= nil then
 							table.insert(skin_events, skin_template.equip_hat_event)
-							Unit.set_data(parent_unit, "skin_events", skin_events)
+						else
+							table.insert(skin_events, "using_skin_default")
 						end
+
+						Unit.set_data(parent_unit, "skin_events", skin_events)
 
 						if Unit.has_animation_state_machine(item_unit) and Unit.has_animation_event(item_unit, "enable") then
 							Unit.animation_event(item_unit, "enable")

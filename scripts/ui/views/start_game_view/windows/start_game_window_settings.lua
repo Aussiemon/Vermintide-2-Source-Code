@@ -393,23 +393,11 @@ StartGameWindowSettings._set_selected_level = function (self, level_id)
 		texture_size[2] = icon_texture_settings.size[2]
 		widget.content.icon = level_image
 		local completed_difficulty_index = self.parent:get_completed_level_difficulty_index(self.statistics_db, self._stats_id, level_id)
-		local level_frame = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
+		local level_frame = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
 		widget.content.icon_frame = level_frame
 	end
 
 	widget.content.option_text = text
-end
-
-StartGameWindowSettings._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
-	local completed_frame_texture = "map_frame_00"
-
-	if difficulty_index and difficulty_index > 0 then
-		local difficulty_key = DefaultDifficulties[difficulty_index]
-		local settings = DifficultySettings[difficulty_key]
-		completed_frame_texture = settings.completed_frame_texture
-	end
-
-	return completed_frame_texture
 end
 
 StartGameWindowSettings.draw = function (self, dt)

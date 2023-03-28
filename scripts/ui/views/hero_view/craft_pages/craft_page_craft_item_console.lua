@@ -55,6 +55,8 @@ CraftPageCraftItemConsole.on_enter = function (self, params, settings)
 	self._item_grid:disable_item_drag()
 	self.super_parent:clear_disabled_backend_ids()
 	self:setup_recipe_requirements()
+	self.super_parent:disable_filter(true)
+	self.super_parent:disable_search(true)
 end
 
 CraftPageCraftItemConsole.setup_recipe_requirements = function (self)
@@ -185,6 +187,9 @@ CraftPageCraftItemConsole.on_exit = function (self, params)
 	if self._craft_input_time then
 		self:_play_sound("play_gui_craft_forge_button_aborted")
 	end
+
+	self.super_parent:disable_filter(false)
+	self.super_parent:disable_search(false)
 end
 
 CraftPageCraftItemConsole.update = function (self, dt, t)

@@ -882,6 +882,12 @@ AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, 
 		return
 	end
 
+	local breed = blackboard.breed
+
+	if breed.boss_staggers and stagger_type < stagger_types.explosion then
+		return
+	end
+
 	local difficulty_modifier = Managers.state.difficulty:get_difficulty_settings().stagger_modifier
 	blackboard.pushing_unit = attacker_unit
 	blackboard.stagger_direction = Vector3Box(stagger_direction)
@@ -901,7 +907,6 @@ AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, 
 
 	if unit ~= attacker_unit and ScriptUnit.has_extension(unit, "ai_system") then
 		local ai_extension = ScriptUnit.extension(unit, "ai_system")
-		local breed = blackboard.breed
 
 		if breed.using_combo and always_stagger then
 			Unit.set_data(attacker_unit, "last_combo_t", t)

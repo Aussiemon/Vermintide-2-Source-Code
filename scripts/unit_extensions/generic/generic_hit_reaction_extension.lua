@@ -411,9 +411,22 @@ GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, 
 	return new_dismember_event, should_replace_old
 end
 
+local restricted_regions = {
+	at = true,
+	de = true
+}
+
 GenericHitReactionExtension._is_dismembering_allowed = function (self, parameters)
-	if not IS_WINDOWS and not IS_LINUX and not parameters.is_critical_strike then
-		return false
+	if IS_CONSOLE then
+		if not parameters.is_critical_strike or not Managers.account:console_type_setting("allow_dismemberment") then
+			return false
+		end
+
+		local country_code = Managers.account:region()
+
+		if restricted_regions[country_code] then
+			return false
+		end
 	end
 
 	return BloodSettings.dismemberment.enabled
@@ -700,7 +713,7 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 
 	local hit_direction = Vector3(hit_direction_table[1], hit_direction_table[2], 0)
 	hit_direction = Vector3.normalize(hit_direction)
-	local distal_direction, lateral_direction = get_attacker_direction(attacker_unit, hit_direction, explosion_push)
+	local distal_direction, lateral_direction = get_attacker_direction(attacker_unit, hit_direction, explosion_push or push_parameters.always_use_hit_direction)
 
 	if Vector3.dot(lateral_direction, hit_direction) <= 0 then
 		lateral_direction = -lateral_direction

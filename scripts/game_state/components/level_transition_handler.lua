@@ -46,6 +46,7 @@ LevelTransitionHandler.init = function (self)
 	self._default_level_data = default_level_data
 	self._next_level_data = nil
 	self._checkpoint_data = nil
+	self.hero_specific_packages = {}
 end
 
 LevelTransitionHandler.register_network_state = function (self, network_state)
@@ -417,7 +418,7 @@ LevelTransitionHandler._load_level_packages = function (self, level_key)
 	local package_manager = Managers.package
 	local reference_name = level_key
 	local settings = LevelSettings[level_key]
-	local packages = table.clone(settings.packages)
+	local packages = settings.packages
 
 	if packages then
 		for i = 1, #packages do
@@ -426,13 +427,54 @@ LevelTransitionHandler._load_level_packages = function (self, level_key)
 			package_manager:load(package_path, reference_name, nil, async)
 		end
 	end
+
+	local hero_specific_packages = settings.hero_specific_packages
+
+	if hero_specific_packages then
+		local profile_synchronizer = Managers.mechanism:profile_synchronizer()
+		local profile_index = profile_synchronizer and profile_synchronizer:profile_by_peer(Network.peer_id(), 1)
+
+		if not profile_index then
+			local network_handler = Managers.mechanism:network_handler()
+			profile_index = network_handler and network_handler.wanted_profile_index
+		end
+
+		local profile = SPProfiles[profile_index]
+		local hero_name = profile and profile.display_name
+		local selected_hero_specific_packages = hero_specific_packages[hero_name]
+
+		if selected_hero_specific_packages then
+			for i = 1, #selected_hero_specific_packages do
+				local package_path = selected_hero_specific_packages[i]
+
+				package_manager:load(package_path, reference_name, nil, async)
+			end
+
+			self.hero_specific_packages[level_key] = selected_hero_specific_packages
+			self.selected_hero_name_on_load = hero_name
+		end
+	end
 end
 
 LevelTransitionHandler._unload_level_packages = function (self, level_key)
 	local reference_name = level_key
 	local package_manager = Managers.package
 	local settings = LevelSettings[level_key]
-	local packages = table.clone(settings.packages)
+	local packages = settings.packages
+	local hero_specific_packages = self.hero_specific_packages[level_key]
+
+	if hero_specific_packages then
+		for i = #hero_specific_packages, 1, -1 do
+			local package_path = hero_specific_packages[i]
+
+			if package_manager:has_loaded(package_path, reference_name) or package_manager:is_loading(package_path) then
+				package_manager:unload(package_path, reference_name)
+			end
+		end
+
+		self.hero_specific_packages[level_key] = nil
+		self.selected_hero_name_on_load = nil
+	end
 
 	if packages then
 		for i = #packages, 1, -1 do
@@ -454,6 +496,18 @@ LevelTransitionHandler._level_packages_loaded = function (self, level_key)
 	if packages then
 		for i = 1, #packages do
 			local package_path = packages[i]
+
+			if not package_manager:has_loaded(package_path, reference_name) then
+				return false
+			end
+		end
+	end
+
+	local hero_specific_packages = self.hero_specific_packages[level_key]
+
+	if hero_specific_packages then
+		for i = #hero_specific_packages, 1, -1 do
+			local package_path = hero_specific_packages[i]
 
 			if not package_manager:has_loaded(package_path, reference_name) then
 				return false

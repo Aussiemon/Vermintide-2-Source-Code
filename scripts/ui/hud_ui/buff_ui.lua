@@ -250,7 +250,7 @@ local customizer_data = {
 
 BuffUI.update = function (self, dt, t)
 	if HudCustomizer.run(self._ui_renderer, self._ui_scenegraph, customizer_data) then
-		UIUtils.mark_dirty(self._buff_widgets)
+		UIUtils.mark_dirty(self._active_buff_widgets)
 
 		self._dirty = true
 	end

@@ -16,6 +16,7 @@ OutlineSystem.system_extensions = {
 	"EnemyOutlineExtension",
 	"GenericOutlineExtension",
 	"SmallPickupOutlineExtension",
+	"SmallDoorOutlineExtension",
 	[#OutlineSystem.system_extensions + 1] = "DarkPactPlayerOutlineExtension",
 	[#OutlineSystem.system_extensions + 1] = "DarkPactPlayerHuskOutlineExtension"
 }
@@ -106,6 +107,17 @@ OutlineSystem.add_ext_functions = {
 			method = "within_distance_and_not_in_dark",
 			outline_color = OutlineSettings.colors.interactable,
 			distance = OutlineSettings.ranges.doors,
+			flag = OutlineSettings.flags.wall_occluded
+		})
+
+		extension.apply_method = "unit"
+		extension.pinged_method = "not_in_dark"
+	end,
+	SmallDoorOutlineExtension = function (extension)
+		extension:add_outline({
+			method = "within_distance_and_not_in_dark",
+			outline_color = OutlineSettings.colors.interactable,
+			distance = OutlineSettings.ranges.small_doors,
 			flag = OutlineSettings.flags.wall_occluded
 		})
 

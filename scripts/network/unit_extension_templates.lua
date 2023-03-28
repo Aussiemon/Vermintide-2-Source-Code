@@ -801,6 +801,64 @@ local unit_templates = {
 			}
 		}
 	},
+	ai_unit_skeleton_with_shield = {
+		base_template = "ai_unit_base",
+		go_type = "ai_unit_with_inventory_and_shield_and_target",
+		self_owned_extensions = {
+			"AILineOfSightExtension",
+			"AIInventoryExtension",
+			"AIShieldUserExtension",
+			"AIEnemySlotExtension",
+			"GenericUnitAimExtension",
+			"SoundSectorExtension"
+		},
+		husk_extensions = {
+			"AIInventoryExtension",
+			"AIShieldUserHuskExtension",
+			"GenericUnitAimExtension",
+			"SoundSectorExtension"
+		},
+		remove_when_killed = {
+			self_owned_extensions = {
+				"AILineOfSightExtension",
+				"AIEnemySlotExtension",
+				"GenericUnitAimExtension",
+				"SoundSectorExtension"
+			},
+			husk_extensions = {
+				"GenericUnitAimExtension",
+				"SoundSectorExtension"
+			}
+		}
+	},
+	ai_unit_skeleton = {
+		base_template = "ai_unit_base",
+		go_type = "ai_unit_with_inventory_and_target",
+		self_owned_extensions = {
+			"AILineOfSightExtension",
+			"AIInventoryExtension",
+			"AIEnemySlotExtension",
+			"GenericUnitAimExtension",
+			"SoundSectorExtension"
+		},
+		husk_extensions = {
+			"AIInventoryExtension",
+			"GenericUnitAimExtension",
+			"SoundSectorExtension"
+		},
+		remove_when_killed = {
+			self_owned_extensions = {
+				"AILineOfSightExtension",
+				"AIEnemySlotExtension",
+				"GenericUnitAimExtension",
+				"SoundSectorExtension"
+			},
+			husk_extensions = {
+				"GenericUnitAimExtension",
+				"SoundSectorExtension"
+			}
+		}
+	},
 	ai_unit_berzerker = {
 		base_template = "ai_unit_base",
 		go_type = "ai_unit_with_inventory_and_target",
@@ -1609,6 +1667,19 @@ local unit_templates = {
 			"ProjectilePhysicsHuskLocomotionExtension"
 		}
 	},
+	vfx_scripted_projectile_unit = {
+		go_type = "vfx_scripted_projectile_unit",
+		self_owned_extensions = {
+			"ProjectileScriptUnitLocomotionExtension",
+			"ProjectileLinearSphereSweepImpactUnitExtension",
+			"GenericImpactProjectileUnitExtension"
+		},
+		husk_extensions = {
+			"ProjectileScriptUnitLocomotionExtension",
+			"ProjectileLinearSphereSweepImpactUnitExtension",
+			"GenericImpactProjectileUnitExtension"
+		}
+	},
 	pickup_projectile_unit = {
 		go_type = "pickup_projectile_unit",
 		self_owned_extensions = {
@@ -2317,6 +2388,26 @@ local unit_templates = {
 		husk_extensions = {
 			"LureHealthExtension",
 			"GenericDeathExtension"
+		}
+	},
+	rotating_hazard = {
+		go_type = "rotating_hazard",
+		self_owned_extensions = {
+			"RotatingHazardExtension"
+		},
+		husk_extensions = {
+			"RotatingHazardExtension"
+		}
+	},
+	dialogue_node = {
+		go_type = "dialogue_node",
+		self_owned_extensions = {
+			"DialogueActorExtension",
+			"GlobalObserverExtension"
+		},
+		husk_extensions = {
+			"DialogueActorExtension",
+			"GlobalObserverExtension"
 		}
 	}
 }

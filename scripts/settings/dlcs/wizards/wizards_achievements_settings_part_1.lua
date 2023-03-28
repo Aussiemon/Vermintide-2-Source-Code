@@ -5,7 +5,7 @@ settings.achievement_outline = {
 		categories = {
 			{
 				sorting = 8,
-				name = "level_name_dlc_wizards_trail",
+				name = "area_selection_onions_name",
 				entries = {
 					"trail_cog_strike",
 					"trail_shatterer",

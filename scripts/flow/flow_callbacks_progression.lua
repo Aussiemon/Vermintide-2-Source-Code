@@ -397,6 +397,39 @@ function flow_query_local_player_achievement_completed(params)
 	return flow_return_table
 end
 
+function flow_query_local_player_quest_progress(params)
+	flow_return_table.progress = 0
+	flow_return_table.target = 0
+
+	if script_data.settings.use_beta_mode then
+		flow_return_table.success = false
+
+		return flow_return_table
+	end
+
+	local quest_id = params.quest_id
+	local backend_interface_quests = Managers.backend:get_interface("quests")
+	local quest_key = backend_interface_quests:get_quest_key(quest_id)
+
+	if not quest_key then
+		flow_return_table.success = false
+
+		return flow_return_table
+	end
+
+	local quest_data = Managers.state.quest:get_data_by_id(quest_id)
+
+	if quest_data then
+		flow_return_table.progress = quest_data.progress[1]
+		flow_return_table.target = quest_data.progress[2]
+		flow_return_table.success = true
+	else
+		flow_return_table.success = false
+	end
+
+	return flow_return_table
+end
+
 function flow_query_leader_hero_xp(params)
 	local leader_peer_id = Managers.party:leader()
 	local local_peer_id = Network.peer_id()

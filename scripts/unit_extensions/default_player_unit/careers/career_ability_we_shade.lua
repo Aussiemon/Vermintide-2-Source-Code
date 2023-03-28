@@ -47,7 +47,6 @@ end
 CareerAbilityWEShade._ability_available = function (self)
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
-	local talent_extension = ScriptUnit.extension(self._owner_unit, "talent_system")
 	local available = true
 
 	return available and career_extension:can_use_activated_ability() and not status_extension:is_disabled()
@@ -55,48 +54,30 @@ end
 
 CareerAbilityWEShade._run_ability = function (self)
 	local owner_unit = self._owner_unit
-	local local_player = self._local_player
 	local bot_player = self._bot_player
-	local is_server = self._is_server
 	local network_manager = self._network_manager
 	local network_transmit = network_manager.network_transmit
 	local buff_extension = self._buff_extension
 	local career_extension = self._career_extension
 	local status_extension = self._status_extension
+	local was_invisible = status_extension:is_invisible()
+	local buff_name = "kerillian_shade_activated_ability"
 	local talent_extension = ScriptUnit.extension(self._owner_unit, "talent_system")
 	local has_phasing = talent_extension:has_talent("kerillian_shade_activated_ability_phasing")
 
 	if has_phasing then
-		local buffs_to_add = {
-			"kerillian_shade_activated_ability_phasing"
-		}
-
-		for i = 1, #buffs_to_add do
-			local buff_to_add = buffs_to_add[i]
-
-			self._buff_system:add_buff(owner_unit, buff_to_add, owner_unit, false)
-		end
-	else
-		local buff_name = "kerillian_shade_activated_ability"
-		local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
-		local unit_object_id = network_manager:unit_game_object_id(owner_unit)
-
-		if is_server then
-			buff_extension:add_buff(buff_name, {
-				attacker_unit = owner_unit
-			})
-			network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
-		else
-			network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
-		end
+		buff_name = "kerillian_shade_activated_ability_phasing"
 	end
 
+	buff_extension:add_buff(buff_name)
+
+	local first_person_extension = self._first_person_extension
+
+	first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter", nil, true)
+	first_person_extension:play_remote_hud_sound_event("Play_career_ability_kerillian_shade_loop_husk")
+
 	if not bot_player then
-		local first_person_extension = self._first_person_extension
-
-		first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter")
-
-		if status_extension:current_stealth_counter() == 1 then
+		if not was_invisible then
 			first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_loop")
 		end
 
@@ -104,25 +85,6 @@ CareerAbilityWEShade._run_ability = function (self)
 		career_extension:set_state("kerillian_activate_shade")
 
 		MOOD_BLACKBOARD.skill_shade = true
-	end
-
-	if local_player or is_server and bot_player then
-		local events = {
-			"Play_career_ability_kerillian_shade_enter",
-			"Play_career_ability_kerillian_shade_loop_husk"
-		}
-		local unit_id = network_manager:unit_game_object_id(owner_unit)
-		local node_id = 0
-
-		for _, event in ipairs(events) do
-			local event_id = NetworkLookup.sound_events[event]
-
-			if is_server then
-				network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-			else
-				network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-			end
-		end
 	end
 
 	if Managers.state.network:game() then

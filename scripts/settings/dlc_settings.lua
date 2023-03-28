@@ -301,13 +301,36 @@ DLCSettings = DLCSettings or {
 		package_name = "resource_packages/dlcs/wizards_part_1",
 		additional_settings = {
 			common = "scripts/settings/dlcs/wizards/wizards_common_settings_part_1",
-			ui = "scripts/settings/dlcs/wizards/wizards_trail_ui_settings",
-			sound = "scripts/settings/dlcs/wizards/wizards_sound_settings_part_1",
 			achievements = "scripts/settings/dlcs/wizards/wizards_achievements_settings_part_1",
+			sound = "scripts/settings/dlcs/wizards/wizards_sound_settings_part_1",
 			level = "scripts/settings/dlcs/wizards/wizards_level_settings_part_1"
-		},
-		portrait_materials = {
-			"materials/ui/ui_1080p_wizards_trail_atlas"
+		}
+	},
+	wizards_part_2 = {
+		localization = "localization/wizards_tower",
+		package_name = "resource_packages/dlcs/wizards_part_2",
+		additional_settings = {
+			common = "scripts/settings/dlcs/wizards/wizards_common_settings_part_2",
+			ai = "scripts/settings/dlcs/wizards/wizards_ai_settings_part_2",
+			sound = "scripts/settings/dlcs/wizards/wizards_sound_settings_part_2",
+			buff = "scripts/settings/dlcs/wizards/wizards_buff_settings_part_2",
+			achievements = "scripts/settings/dlcs/wizards/wizards_achievements_settings_part_2",
+			level = "scripts/settings/dlcs/wizards/wizards_level_settings_part_2"
+		}
+	},
+	cosmetics_2023_q1 = {
+		localization = "localization/cosmetics_2023_q1",
+		package_name = "resource_packages/dlcs/cosmetics_2023_q1",
+		additional_settings = {
+			common = "scripts/settings/dlcs/cosmetics_2023_q1/cosmetics_2023_q1_common_settings",
+			equipment = "scripts/settings/dlcs/cosmetics_2023_q1/cosmetics_2023_q1_equipment_settings"
+		}
+	},
+	menu_cinematics = {
+		localization = "localization/menu_cinematics",
+		package_name = "resource_packages/menu_cinematics",
+		additional_settings = {
+			ui = "scripts/settings/menu_cinematics_ui_settings"
 		}
 	},
 	crawl_2023 = {

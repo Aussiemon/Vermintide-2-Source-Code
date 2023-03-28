@@ -616,6 +616,20 @@ local scenegraph_definition = {
 			60
 		}
 	},
+	menu_option_6 = {
+		vertical_alignment = "center",
+		parent = "menu_anchor_point",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			-160,
+			10
+		},
+		size = {
+			300,
+			60
+		}
+	},
 	ai_benchmark = {
 		vertical_alignment = "center",
 		parent = "menu_anchor_point",
@@ -1215,7 +1229,7 @@ local background_widget_definitions = {
 		0,
 		0
 	}),
-	sidebar_fade_bg = UIWidgets.create_tiled_texture("sidebar_fade_bg", "fade_bg", {
+	sidebar_fade_bg = UIWidgets.create_shader_tiled_texture("sidebar_fade_bg", "fade_bg", {
 		256,
 		256
 	}, nil, nil, {
@@ -1265,11 +1279,12 @@ local single_widget_definitions = {
 local menu_item_index_lookup = {
 	store = 4,
 	offline = 2,
-	credits = 4,
+	credits = 5,
 	tutorial = 2,
-	options = 3,
+	cinematics = 4,
 	online = 1,
-	start_game = 1
+	start_game = 1,
+	options = 3
 }
 local menu_button_font_size = 24
 local base_menu_button_definitions = {
@@ -1304,8 +1319,9 @@ elseif BUILD == "dev" or BUILD == "debug" then
 				create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
 				create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
 				create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
-				create_menu_button("menu_option_4", "title_screen_store_xb1", menu_button_font_size, "font_title", true),
-				create_menu_button("menu_option_5", "credits_menu_button_name", menu_button_font_size, "font_title")
+				create_menu_button("menu_option_4", "start_menu_cinematics", menu_button_font_size, "font_title"),
+				create_menu_button("menu_option_5", "title_screen_store_xb1", menu_button_font_size, "font_title", true),
+				create_menu_button("menu_option_6", "credits_menu_button_name", menu_button_font_size, "font_title")
 			}
 		else
 			menu_button_definitions = {
@@ -1321,8 +1337,9 @@ elseif BUILD == "dev" or BUILD == "debug" then
 				create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
 				create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
 				create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
-				create_menu_button("menu_option_4", "dlc1_2_dlc_level_locked_tooltip", 18, "font_title", true, 60),
-				create_menu_button("menu_option_5", "credits_menu_button_name", menu_button_font_size, "font_title")
+				create_menu_button("menu_option_4", "start_menu_cinematics", menu_button_font_size, "font_title"),
+				create_menu_button("menu_option_5", "dlc1_2_dlc_level_locked_tooltip", 18, "font_title", true, 60),
+				create_menu_button("menu_option_6", "credits_menu_button_name", menu_button_font_size, "font_title")
 			}
 		else
 			menu_button_definitions = {
@@ -1346,8 +1363,9 @@ elseif IS_XB1 then
 			create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
 			create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
 			create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
-			create_menu_button("menu_option_4", "title_screen_store_xb1", menu_button_font_size, "font_title", true),
-			create_menu_button("menu_option_5", "credits_menu_button_name", menu_button_font_size, "font_title")
+			create_menu_button("menu_option_4", "start_menu_cinematics", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_5", "title_screen_store_xb1", menu_button_font_size, "font_title", true),
+			create_menu_button("menu_option_6", "credits_menu_button_name", menu_button_font_size, "font_title")
 		}
 	else
 		menu_button_definitions = {
@@ -1363,8 +1381,9 @@ elseif IS_PS4 then
 			create_menu_button("menu_option_1", "start_game_menu_button_name", menu_button_font_size, "font_title"),
 			create_menu_button("menu_option_2", "tutorial_menu_button_name", menu_button_font_size, "font_title"),
 			create_menu_button("menu_option_3", "options_menu_button_name", menu_button_font_size, "font_title"),
-			create_menu_button("menu_option_4", "dlc1_2_dlc_level_locked_tooltip", 18, "font_title", true, 60),
-			create_menu_button("menu_option_5", "credits_menu_button_name", menu_button_font_size, "font_title")
+			create_menu_button("menu_option_4", "start_menu_cinematics", menu_button_font_size, "font_title"),
+			create_menu_button("menu_option_5", "dlc1_2_dlc_level_locked_tooltip", 18, "font_title", true, 60),
+			create_menu_button("menu_option_6", "credits_menu_button_name", menu_button_font_size, "font_title")
 		}
 	else
 		menu_button_definitions = {

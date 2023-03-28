@@ -749,6 +749,45 @@ HeroViewStateOverview.get_auto_fill_rarity = function (self)
 	return auto_fill_rarity
 end
 
+HeroViewStateOverview.set_filter_selected = function (self, selected)
+	self._filter_selected = selected
+end
+
+HeroViewStateOverview.filter_selected = function (self)
+	return self._filter_selected
+end
+
+HeroViewStateOverview.set_filter_active = function (self, enable)
+	self._filter_active = enable
+end
+
+HeroViewStateOverview.filter_active = function (self)
+	return self._filter_active
+end
+
+HeroViewStateOverview.reset_filter = function (self)
+	self._filter_reset = true
+end
+
+HeroViewStateOverview.filter_reset = function (self)
+	local filter_reset = self._filter_reset
+	self._filter_reset = nil
+
+	return filter_reset
+end
+
+HeroViewStateOverview.disable_filter = function (self, disable)
+	self._filter_disabled = disable
+end
+
+HeroViewStateOverview.disable_search = function (self, disable)
+	self._search_disabled = disable
+end
+
+HeroViewStateOverview.filter_search_disabled = function (self)
+	return self._filter_disabled, self._search_disabled
+end
+
 HeroViewStateOverview.set_selected_items_backend_ids = function (self, backend_ids)
 	self._selected_items_backend_ids = backend_ids
 end

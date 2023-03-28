@@ -67,6 +67,7 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate StoreWindowFeatured")
 
 	self._params = params
+	self._offset = offset
 	self._parent = params.parent
 	local ui_renderer, ui_top_renderer = self._parent:get_renderers()
 	self._ui_renderer = ui_renderer
@@ -290,7 +291,7 @@ StoreWindowFeatured._handle_input = function (self, dt, t)
 		if self._slideshow_selected then
 			if confirm_press then
 				self:_on_slideshow_pressed(slideshow_widget)
-			elseif input_service:get("move_right_hold_continuous") then
+			elseif input_service:get("move_right_hold_continuous") and #self._gamepad_navigation > 0 then
 				self:_select_slideshow_widget(false)
 				self:_on_list_index_selected(1)
 			end

@@ -544,6 +544,7 @@ end
 local material = {
 	"surface_material"
 }
+local output = {}
 
 EffectHelper.query_material_surface = function (hit_unit, position, normal)
 	local query_forward = normal
@@ -551,5 +552,5 @@ EffectHelper.query_material_surface = function (hit_unit, position, normal)
 	local query_start_position = position + query_vector / 2
 	local query_end_position = position - query_vector / 2
 
-	return Unit.query_material(hit_unit, query_start_position, query_end_position, material)
+	return Unit.query_material(hit_unit, query_start_position, query_end_position, material, output)
 end

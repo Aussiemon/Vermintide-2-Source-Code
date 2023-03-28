@@ -1,7 +1,9 @@
 local settings = DLCSettings.geheimnisnacht_2021
 settings.live_events_packages = {
 	geheimnisnacht_2021 = {
-		"resource_packages/dlcs/geheimnisnacht_2021_event"
+		resource_packages = {
+			"resource_packages/dlcs/geheimnisnacht_2021_event"
+		}
 	}
 }
 settings.anim_lookup = {

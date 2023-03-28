@@ -218,8 +218,8 @@ ActionUtils.get_power_level_for_target = function (target_unit, original_power_l
 	local impact_power = ActionUtils.get_power_level("impact", power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit, difficulty_level)
 
 	if is_enemy_target then
-		attack_power = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, attack_power, breed, damage_source, dummy_unit_armor)
-		impact_power = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, impact_power, breed, damage_source, dummy_unit_armor)
+		attack_power = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, attack_power, breed, damage_source, dummy_unit_armor, is_critical_strike)
+		impact_power = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, impact_power, breed, damage_source, dummy_unit_armor, is_critical_strike)
 		local target_armor = armor_type_override or target_unit_primary_armor or target_unit_armor
 		attack_armor_power_modifer = ActionUtils.apply_buffs_to_armor_power_on_hit(attacker_unit, target_unit, attack_armor_power_modifer, target_armor)
 		impact_armor_power_modifer = ActionUtils.apply_buffs_to_armor_power_on_hit(attacker_unit, target_unit, impact_armor_power_modifer, target_armor)
@@ -243,7 +243,7 @@ ActionUtils.apply_buffs_to_power_level = function (unit, power_level)
 	return power_level
 end
 
-ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, breed, damage_source, dummy_unit_armor)
+ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, breed, damage_source, dummy_unit_armor, is_critical_strike)
 	if not Unit.alive(unit) then
 		return power_level
 	end
@@ -254,13 +254,14 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 		return power_level
 	end
 
-	local power_level_weapon_multiplier = 1
+	local stacked_multiplier = 1
 
 	if damage_source then
 		local item_data = rawget(ItemMasterList, damage_source)
 		local weapon_template_name = item_data and item_data.template
 
 		if weapon_template_name then
+			local power_level_weapon_multiplier = 1
 			local weapon_template = Weapons[weapon_template_name]
 			local buff_type = weapon_template.buff_type
 			local is_melee = MeleeBuffTypes[buff_type]
@@ -276,6 +277,8 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 			if weapon_type and weapon_type == "DRAKEFIRE" then
 				power_level_weapon_multiplier = buff_extension:apply_buffs_to_value(power_level_weapon_multiplier, "power_level_ranged_drakefire")
 			end
+
+			stacked_multiplier = stacked_multiplier + power_level_weapon_multiplier - 1
 		end
 	end
 
@@ -292,6 +295,7 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 		armor_power_level_target_multiplier = buff_extension:apply_buffs_to_value(armor_power_level_target_multiplier, "power_level_unarmoured")
 	end
 
+	stacked_multiplier = stacked_multiplier + armor_power_level_target_multiplier - 1
 	local race_power_level_target_multiplier = 1
 	local race = breed and breed.race or unit_get_data(unit, "race")
 
@@ -301,8 +305,8 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 		race_power_level_target_multiplier = buff_extension:apply_buffs_to_value(race_power_level_target_multiplier, "power_level_skaven")
 	end
 
-	local power_level_target_multiplier = armor_power_level_target_multiplier + race_power_level_target_multiplier - 2
-	power_level = power_level * (power_level_weapon_multiplier + power_level_target_multiplier)
+	stacked_multiplier = stacked_multiplier + race_power_level_target_multiplier - 1
+	power_level = power_level * stacked_multiplier
 
 	return power_level
 end

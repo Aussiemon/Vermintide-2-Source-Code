@@ -216,7 +216,7 @@ local scenegraph_definition = {
 		size = auto_fill_button_size,
 		position = {
 			-42,
-			74,
+			93,
 			6
 		}
 	},

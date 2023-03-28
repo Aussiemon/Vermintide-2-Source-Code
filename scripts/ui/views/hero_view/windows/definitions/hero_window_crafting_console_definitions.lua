@@ -539,6 +539,65 @@ local generic_input_actions = {
 			priority = 6,
 			description_text = "input_description_back"
 		}
+	},
+	filter_selected = {
+		{
+			input_action = "d_pad",
+			priority = 1,
+			description_text = "input_description_navigate",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "show_gamercard",
+			priority = 2,
+			description_text = "start_menu_switch_hero"
+		},
+		{
+			input_action = "special_1",
+			priority = 3,
+			description_text = "lb_reset_filters"
+		},
+		{
+			input_action = "confirm",
+			priority = 4,
+			description_text = "input_description_filter"
+		},
+		{
+			input_action = "refresh",
+			priority = 5,
+			description_text = "lb_search",
+			content_check_function = function ()
+				return not IS_WINDOWS
+			end
+		},
+		{
+			input_action = "back",
+			priority = 6,
+			description_text = "input_description_back"
+		}
+	},
+	filter_active = {
+		{
+			input_action = "d_pad",
+			priority = 1,
+			description_text = "input_description_navigate",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "special_1",
+			priority = 3,
+			description_text = "lb_reset_filters"
+		},
+		{
+			input_action = "confirm",
+			priority = 5,
+			description_text = "input_description_select"
+		},
+		{
+			input_action = "back",
+			priority = 6,
+			description_text = "input_description_back"
+		}
 	}
 }
 local input_actions = {

@@ -961,7 +961,7 @@ StatisticsUtil._register_completed_journey_difficulty = function (statistics_db,
 
 	if current_completed_difficulty < difficulty_index then
 		if difficulty_index > #DefaultDifficulties then
-			fassert(false, [[
+			ferror([[
 This shouldn't happen. 
 difficulties: %s
 difficulty_name: %s
@@ -975,7 +975,7 @@ current_completed_difficulty: %s]], table.tostring(difficulties), difficulty_nam
 
 	if current_completed_journey_dominant_god_difficulty < difficulty_index then
 		if difficulty_index > #DefaultDifficulties then
-			fassert(false, [[
+			ferror([[
 This shouldn't happen. 
 difficulties: %s
 difficulty_name: %s
@@ -989,7 +989,7 @@ current_completed_journey_dominant_god_difficulty: %s]], table.tostring(difficul
 
 	if current_completed_hero_journey_difficulty < difficulty_index then
 		if difficulty_index > #DefaultDifficulties then
-			fassert(false, [[
+			ferror([[
 This shouldn't happen. 
 difficulties: %s
 difficulty_name: %s

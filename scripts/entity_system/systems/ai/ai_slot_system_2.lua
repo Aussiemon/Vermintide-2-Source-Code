@@ -85,7 +85,9 @@ AISlotSystem2.ai_unit_have_slot = function (self, ai_unit)
 		return false
 	end
 
-	if ai_unit_extension.belongs_to_ai then
+	local target_slot_extension = ai_unit_extension.ai_target_slot_extension
+
+	if target_slot_extension and target_slot_extension.belongs_to_ai then
 		return true
 	end
 

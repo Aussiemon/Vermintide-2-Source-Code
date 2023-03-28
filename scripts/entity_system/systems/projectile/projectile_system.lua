@@ -5,6 +5,7 @@ require("scripts/unit_extensions/weapons/projectiles/player_projectile_husk_exte
 require("scripts/unit_extensions/weapons/projectiles/projectile_true_flight_locomotion_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_homing_skull_locomotion_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_extrapolated_husk_locomotion_extension")
+require("scripts/unit_extensions/weapons/projectiles/projectile_ethereal_skull_locomotion_extension")
 require("scripts/settings/light_weight_projectile_effects")
 
 ProjectileSystem = class(ProjectileSystem, ExtensionSystemBase)
@@ -609,7 +610,7 @@ ProjectileSystem._add_player_projectile_reference = function (self, owner_unit, 
 		Managers.state.unit_spawner:add_destroy_listener(owner_unit, "projectile_owner_" .. self.owner_units_count, self.projectile_owner_destroy_callback)
 	end
 
-	self.player_projectile_units[owner_unit][projectile_unit] = t + PLAYER_PROJECTILE_LIFETIME
+	self.player_projectile_units[owner_unit][projectile_unit] = t + (projectile_info.unit_life_time or PLAYER_PROJECTILE_LIFETIME)
 
 	if projectile_info.indexed then
 		if not self.indexed_player_projectile_units[owner_unit] then
@@ -634,6 +635,16 @@ ProjectileSystem._remove_player_projectile_reference = function (self, projectil
 			table.remove(indexed_projectiles, index)
 		end
 	end
+end
+
+ProjectileSystem.get_indexed_projectile_count = function (self, owner_unit)
+	local indexed_projectiles = self.indexed_player_projectile_units[owner_unit]
+
+	if not indexed_projectiles then
+		return 0
+	end
+
+	return #indexed_projectiles
 end
 
 ProjectileSystem.get_and_delete_indexed_projectile = function (self, owner_unit, index)

@@ -620,6 +620,30 @@ WeaponUnitExtension.anim_end_event = function (self, reason, current_action_sett
 	end
 end
 
+WeaponUnitExtension.trigger_anim_event = function (self, event)
+	if event then
+		local event_id = NetworkLookup.anims[event]
+
+		if not LEVEL_EDITOR_TEST then
+			local go_id = Managers.state.unit_storage:go_id(self.owner_unit)
+
+			if self.is_server then
+				Managers.state.network.network_transmit:send_rpc_clients("rpc_anim_event", event_id, go_id)
+			else
+				Managers.state.network.network_transmit:send_rpc_server("rpc_anim_event", event_id, go_id)
+			end
+		end
+
+		Unit.animation_event(self.first_person_unit, event)
+
+		if not script_data.disable_third_person_weapon_animation_events then
+			Unit.animation_event(self.owner_unit, event)
+		end
+
+		self._looping_anim_event_started = nil
+	end
+end
+
 WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 	local current_action_settings = self.current_action_settings
 

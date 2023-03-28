@@ -499,8 +499,6 @@ StartGameWindowTwitchOverviewConsole._update_mission_option = function (self)
 	if selected_level_id then
 		self:_set_selected_level(selected_level_id)
 	end
-
-	self._widgets_by_name.mission_setting.content.button_hotspot.disable_button = selected_level_id == nil
 end
 
 StartGameWindowTwitchOverviewConsole._set_selected_level = function (self, level_id)
@@ -510,20 +508,8 @@ StartGameWindowTwitchOverviewConsole._set_selected_level = function (self, level
 	local level_image = level_settings.level_image
 	mission_widget.content.icon_texture = level_image
 	local completed_difficulty_index = self._parent:get_completed_level_difficulty_index(self._statistics_db, self._stats_id, level_id)
-	local level_frame = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
+	local level_frame = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
 	mission_widget.content.icon_frame_texture = level_frame
-end
-
-StartGameWindowTwitchOverviewConsole._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
-	local completed_frame_texture = "map_frame_00"
-
-	if difficulty_index and difficulty_index > 0 then
-		local difficulty_key = DefaultDifficulties[difficulty_index]
-		local settings = DifficultySettings[difficulty_key]
-		completed_frame_texture = settings.completed_frame_texture
-	end
-
-	return completed_frame_texture
 end
 
 StartGameWindowTwitchOverviewConsole._update_difficulty_option = function (self)

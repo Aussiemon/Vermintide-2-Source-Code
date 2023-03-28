@@ -49,6 +49,14 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	blackboard.optional_spawn_data = optional_spawn_data
 	blackboard.spawn_category = extension_init_data.spawn_category
 	blackboard.is_ai = true
+	local blackboard_init_data = breed.blackboard_init_data
+
+	if blackboard_init_data and blackboard_init_data.player_locomotion_constrain_radius ~= nil then
+		self.player_locomotion_constrain_radius = blackboard_init_data.player_locomotion_constrain_radius or nil
+	else
+		self.player_locomotion_constrain_radius = breed.player_locomotion_constrain_radius or nil
+	end
+
 	local health_extension = ScriptUnit.has_extension(unit, "health_system")
 	self._health_extension = health_extension
 	local locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system")

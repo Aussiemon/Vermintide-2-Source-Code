@@ -7,6 +7,7 @@ require("scripts/entity_system/systems/dialogues/dialogue_queries")
 require("scripts/entity_system/systems/dialogues/dialogue_flow_events")
 require("scripts/settings/dialogue_settings")
 
+local LIVE_EVENT_PACKAGES = require("scripts/settings/live_events_packages")
 script_data.dialogue_debug_all_contexts = script_data.dialogue_debug_all_contexts or Development.parameter("dialogue_debug_all_contexts")
 script_data.dialogue_debug_last_query = script_data.dialogue_debug_last_query or Development.parameter("dialogue_debug_last_query")
 script_data.dialogue_debug_last_played_query = script_data.dialogue_debug_last_played_query or Development.parameter("dialogue_debug_last_played_query")
@@ -214,7 +215,8 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 		context = {
 			health = 1
 		},
-		local_player = extension_init_data.local_player
+		local_player = extension_init_data.local_player,
+		dialogue_profile = extension_init_data.dialogue_profile
 	}
 	local dialogue_system = self
 	local input = MakeTableStrict({
@@ -390,7 +392,7 @@ DialogueSystem.extensions_ready = function (self, world, unit)
 		self.global_context[career_name] = true
 		context.player_career = career_name
 	elseif player_profile == nil then
-		context.player_profile = Unit.get_data(unit, "dialogue_profile")
+		context.player_profile = extension.dialogue_profile or Unit.get_data(unit, "dialogue_profile")
 	end
 
 	local play_unit = unit

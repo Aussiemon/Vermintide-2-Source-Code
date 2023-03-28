@@ -1,6 +1,243 @@
 ProjectileTemplates = {}
 local check_for_afro_hit = nil
 ProjectileTemplates.trajectory_templates = {
+	straight_target_traversal = {
+		unit = {
+			update = function (speed, radians, gravity, initial_position, target_vector, time_lived, dt, traversal_data)
+				local target_position = traversal_data.current_target
+				local position = traversal_data.position
+				local direction = Vector3.normalize(target_position - position)
+				local move_delta = direction * speed * dt
+				local new_position = move_delta + position
+
+				return new_position
+			end
+		},
+		husk = {
+			update = function (speed, radians, gravity, initial_position, target_vector, time_lived, dt, traversal_data)
+				local target_position = traversal_data.current_target
+				local position = traversal_data.position
+				local direction = Vector3.normalize(target_position - position)
+				local move_delta = direction * speed * dt
+				local new_position = move_delta + position
+
+				return new_position
+			end
+		}
+	},
+	right_spinning_target_traversal = {
+		unit = {
+			update = function (speed, radians, gravity, initial_position, target_vector, time_lived, dt, target_data)
+				local max_t = 0.1
+				local target_position = target_data.current_target
+				local position = target_data.position
+				local direction = Vector3.normalize(target_position - initial_position)
+				local point_on_line = Geometry.closest_point_on_line(position, initial_position, target_position)
+				local dist_to_target = Vector3.distance(point_on_line, target_position)
+				local dist_from_init = Vector3.distance(initial_position, target_position)
+				local current_lerp_t = 1 - dist_to_target / dist_from_init
+				local wanted_pos = Vector3.lerp(initial_position, target_position, current_lerp_t)
+				local lerp_t = current_lerp_t
+				local offset = nil
+				local spin_speed = speed * 2
+				local curve_lerp_t = nil
+
+				if lerp_t < max_t then
+					curve_lerp_t = math.clamp(lerp_t / max_t, 0, 1)
+					offset = math.easeInCubic(curve_lerp_t)
+				elseif lerp_t < 1 then
+					speed = speed / 5
+					lerp_t = lerp_t / 1
+					curve_lerp_t = math.clamp((lerp_t - max_t) / (1 - max_t), 0, 1)
+					offset = 1 - math.easeOutCubic(curve_lerp_t)
+					local offset_speed = offset
+
+					if offset < 0.3 then
+						offset_speed = 0.3
+					end
+
+					speed = speed * (1 + math.ease_out_quad(curve_lerp_t)) / offset_speed
+					spin_speed = spin_speed * offset
+				else
+					offset = 0
+				end
+
+				local offset_pos = Vector3(math.cos(time_lived * spin_speed), 0, -math.sin(time_lived * spin_speed))
+				offset_pos = Quaternion.rotate(Quaternion.look(direction, Vector3.up()), offset_pos) * offset
+				speed = speed * (1 + math.easeInCubic(lerp_t))
+				local max_move_distance = Vector3.distance(target_position, position)
+				local delta_move_distance = math.clamp(speed * dt, 0, max_move_distance)
+				local new_position = wanted_pos + direction * delta_move_distance + offset_pos
+
+				return new_position
+			end
+		}
+	},
+	left_spinning_target_traversal = {
+		unit = {
+			update = function (speed, radians, gravity, initial_position, target_vector, time_lived, dt, target_data)
+				local max_t = 0.1
+				local target_position = target_data.current_target
+				local position = target_data.position
+				local direction = Vector3.normalize(target_position - initial_position)
+				local point_on_line = Geometry.closest_point_on_line(position, initial_position, target_position)
+				local dist_to_target = Vector3.distance(point_on_line, target_position)
+				local dist_from_init = Vector3.distance(initial_position, target_position)
+				local current_lerp_t = 1 - dist_to_target / dist_from_init
+				local wanted_pos = Vector3.lerp(initial_position, target_position, current_lerp_t)
+				local lerp_t = current_lerp_t
+				local offset = nil
+				local spin_speed = speed * 2
+				local curve_lerp_t = nil
+
+				if lerp_t < max_t then
+					curve_lerp_t = math.clamp(lerp_t / max_t, 0, 1)
+					offset = math.easeInCubic(curve_lerp_t)
+				elseif lerp_t < 1 then
+					speed = speed / 5
+					lerp_t = lerp_t / 1
+					curve_lerp_t = math.clamp((lerp_t - max_t) / (1 - max_t), 0, 1)
+					offset = 1 - math.easeOutCubic(curve_lerp_t)
+					local offset_speed = offset
+
+					if offset < 0.3 then
+						offset_speed = 0.3
+					end
+
+					speed = speed * (1 + math.ease_out_quad(curve_lerp_t)) / offset_speed
+					spin_speed = spin_speed * offset
+				else
+					offset = 0
+				end
+
+				local offset_pos = Vector3(math.sin(time_lived * spin_speed), 0, -math.cos(time_lived * spin_speed))
+				offset_pos = Quaternion.rotate(Quaternion.look(direction, Vector3.up()), offset_pos) * offset
+				speed = speed * (1 + math.easeInCubic(lerp_t))
+				local max_move_distance = Vector3.distance(target_position, position)
+				local delta_move_distance = math.clamp(speed * dt, 0, max_move_distance)
+				local new_position = wanted_pos + direction * delta_move_distance + offset_pos
+
+				return new_position
+			end
+		}
+	},
+	random_spinning_target_traversal = {
+		unit = {
+			update = function (speed, radians, gravity, initial_position, target_vector, time_lived, dt, target_data)
+				local max_t = 0.1
+				local target_position = target_data.current_target
+				local position = target_data.position
+				local direction = Vector3.normalize(target_position - initial_position)
+				local point_on_line = Geometry.closest_point_on_line(position, initial_position, target_position)
+				local dist_to_target = Vector3.distance(point_on_line, target_position)
+				local dist_from_init = Vector3.distance(initial_position, target_position)
+				local current_lerp_t = 1 - dist_to_target / dist_from_init
+				local wanted_pos = Vector3.lerp(initial_position, target_position, current_lerp_t)
+				local lerp_t = current_lerp_t
+				local offset = nil
+				local spin_speed = speed * 2
+				local curve_lerp_t = nil
+
+				if lerp_t < max_t then
+					curve_lerp_t = math.clamp(lerp_t / max_t, 0, 1)
+					offset = math.easeInCubic(curve_lerp_t)
+				elseif lerp_t < 1 then
+					speed = speed / 5
+					lerp_t = lerp_t / 1
+					curve_lerp_t = math.clamp((lerp_t - max_t) / (1 - max_t), 0, 1)
+					offset = 1 - math.easeOutCubic(curve_lerp_t)
+					local offset_speed = offset
+
+					if offset < 0.3 then
+						offset_speed = 0.3
+					end
+
+					speed = speed * (1 + math.ease_out_quad(curve_lerp_t)) / offset_speed
+					spin_speed = spin_speed * offset
+				else
+					offset = 0
+				end
+
+				local random_spin_dir = target_data.random_spin_dir
+				local offset_pos = nil
+
+				if random_spin_dir == 1 then
+					offset_pos = Vector3(-math.cos(time_lived * spin_speed), 0, math.sin(time_lived * spin_speed))
+				else
+					offset_pos = Vector3(math.sin(time_lived * spin_speed), 0, -math.cos(time_lived * spin_speed))
+				end
+
+				offset_pos = Quaternion.rotate(Quaternion.look(direction, Vector3.up()), offset_pos) * offset
+				speed = speed * (1 + math.easeInCubic(lerp_t))
+				local max_move_distance = Vector3.distance(target_position, position)
+				local delta_move_distance = math.clamp(speed * dt, 0, max_move_distance)
+				local new_position = wanted_pos + direction * delta_move_distance + offset_pos
+
+				QuickDrawer:sphere(new_position, 0.1, Color(255, 0, 0))
+
+				return new_position
+			end
+		}
+	},
+	magic_missile_traversal = {
+		unit = {
+			update = function (speed, radians, gravity, initial_position, target_vector, time_lived, dt, traversal_data)
+				local max_t = 0.075
+				local target_position = traversal_data.current_target
+				local position = traversal_data.position
+				local direction = Vector3.normalize(target_position - initial_position)
+				local wanted_position = Geometry.closest_point_on_line(position + direction * speed * dt, initial_position, target_position)
+				local random_x_axis = traversal_data.random_x_axis
+				local random_y_axis = traversal_data.random_y_axis
+				local dist_to_wanted = Vector3.distance(initial_position, wanted_position)
+				local dist_to_target = Vector3.distance(initial_position, target_position)
+				local lerp_t = math.clamp(math.inv_lerp(0, dist_to_target, dist_to_wanted), 0, 1)
+				local offset = nil
+
+				if lerp_t < max_t then
+					local curve_lerp_t = math.clamp(lerp_t / max_t, 0, 1)
+					offset = math.easeInCubic(curve_lerp_t) * 0.75
+					speed = speed * (1 + math.easeInCubic(curve_lerp_t) / 2) * 0.75
+				elseif lerp_t < 1 then
+					local curve_lerp_t = math.clamp((lerp_t - max_t) / (1 - max_t), 0, 1)
+					offset = 1 - math.easeOutCubic(curve_lerp_t)
+					speed = speed * (1 + math.easeOutCubic(curve_lerp_t))
+				else
+					offset = 0
+				end
+
+				local local_x_offset_dir = Vector3.right() * random_x_axis
+				local local_y_offset_dir = Vector3.up() * random_y_axis
+				local local_offset_dir = Vector3.normalize(local_x_offset_dir + local_y_offset_dir)
+				local offset_dir = Quaternion.rotate(Quaternion.look(direction), local_offset_dir)
+				local max_move_distance = Vector3.distance(target_position, position)
+				local delta_move_distance = math.clamp(speed * dt, 0, max_move_distance)
+				wanted_position = wanted_position + offset_dir * offset
+				local move = Vector3.normalize(wanted_position - position) * delta_move_distance
+				local new_position = position + move
+
+				return new_position
+			end
+		}
+	},
+	straight_direction_traversal = {
+		unit = {
+			update = function (speed, radians, gravity, initial_position, target_vector, time_lived, dt, optional_data)
+				local move_delta = target_vector * speed * dt
+				local new_position = move_delta + optional_data.position
+
+				return new_position
+			end
+		},
+		husk = {
+			update = function (speed, radians, gravity, initial_position, target_vector, time_lived, dt, optional_data)
+				local move_delta = target_vector * speed * dt
+				local new_position = move_delta + optional_data.position
+
+				return new_position
+			end
+		}
+	},
 	throw_trajectory = {
 		prediction_function = function (speed, gravity, initial_position, target_position, target_velocity)
 			local t = 0
@@ -39,15 +276,15 @@ ProjectileTemplates.trajectory_templates = {
 			return angle, estimated_target_position
 		end,
 		unit = {
-			update = function (speed, radians, gravity, initial_position, target_vector, dt)
-				local position = WeaponHelper:position_on_trajectory(initial_position, target_vector, speed, radians, gravity, dt)
+			update = function (speed, radians, gravity, initial_position, target_vector, time_lived, dt, optional_data)
+				local position = WeaponHelper:position_on_trajectory(initial_position, target_vector, speed, radians, gravity, time_lived, dt)
 
 				return position
 			end
 		},
 		husk = {
-			update = function (speed, radians, gravity, initial_position, target_vector, dt)
-				local position = WeaponHelper:position_on_trajectory(initial_position, target_vector, speed, radians, gravity, dt)
+			update = function (speed, radians, gravity, initial_position, target_vector, time_lived, dt, optional_data)
+				local position = WeaponHelper:position_on_trajectory(initial_position, target_vector, speed, radians, gravity, time_lived, dt)
 
 				return position
 			end
@@ -259,6 +496,24 @@ ProjectileTemplates.impact_templates = {
 						explosion_template.server_hit_func(projectile_unit, damage_source, owner_unit, first_hit_position, recent_impacts, explosion_template)
 					end
 				end
+
+				return true
+			end
+		},
+		client = {
+			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
+				Unit.set_unit_visibility(unit, false)
+				Unit.flow_event(unit, "lua_projectile_impact")
+
+				return true
+			end
+		}
+	},
+	vfx_impact = {
+		server = {
+			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
+				Unit.set_unit_visibility(unit, false)
+				Unit.flow_event(unit, "lua_projectile_impact")
 
 				return true
 			end

@@ -196,8 +196,6 @@ end
 
 PlayFabMirrorBase._verify_account_data = function (self)
 	if DEDICATED_SERVER then
-		self:_migrate_cosmetics()
-
 		return
 	end
 
@@ -646,6 +644,73 @@ PlayFabMirrorBase.fix_inventory_data_2_request_cb = function (self, result)
 		self._read_only_data.weaves_career_progress = cjson.encode(weaves_career_progress)
 	end
 
+	self:_handle_fix_data_ids()
+end
+
+PlayFabMirrorBase._handle_fix_data_ids = function (self)
+	local request = {
+		FunctionName = "handleFixDataIds",
+		FunctionParameter = {}
+	}
+	local success_callback = callback(self, "handle_fix_data_ids_request_cb")
+
+	self._request_queue:enqueue(request, success_callback)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirrorBase.handle_fix_data_ids_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+
+	if function_result.new_user_read_only_data then
+		for key, value in pairs(function_result.new_user_read_only_data) do
+			local value_json = cjson.encode(value)
+
+			self:set_read_only_data(key, value_json, true)
+		end
+	end
+
+	if function_result.new_user_data then
+		for key, value in pairs(function_result.new_user_data) do
+			local value_json = cjson.encode(value)
+
+			self:set_user_data(key, value_json, true)
+		end
+	end
+
+	if function_result.new_cosmetics then
+		for i = 1, #function_result.new_cosmetics do
+			self:add_item(nil, {
+				ItemId = function_result.new_cosmetics[i]
+			})
+		end
+	end
+
+	if function_result.new_weapon_skins then
+		for i = 1, #function_result.new_weapon_skins do
+			local weapon_skin_name = function_result.new_weapon_skins[i]
+
+			self:add_unlocked_weapon_skin(weapon_skin_name)
+		end
+	end
+
+	if function_result.new_items then
+		for i = 1, #function_result.new_items do
+			local item = function_result.new_items[i]
+
+			self:add_item(item.ItemInstanceId, item)
+		end
+	end
+
+	if function_result.removed_items then
+		for i = 1, #function_result.removed_items do
+			local item = function_result.removed_items[i]
+
+			self:remove_item(item.ItemInstanceId)
+		end
+	end
+
 	self:_fix_excess_bogenhafen_chests()
 end
 
@@ -724,11 +789,16 @@ PlayFabMirrorBase.user_data_request_cb = function (self, result)
 		if key == "unseen_rewards" then
 			local new_unseen_rewards = cjson.decode(data.Value)
 			local existing_unseen_rewards = self._user_data.unseen_rewards and cjson.decode(self._user_data.unseen_rewards) or {}
+			local is_fake_item = ItemHelper.is_fake_item
 
 			for i = 1, #new_unseen_rewards do
 				local new_reward = new_unseen_rewards[i]
 
-				if not table.find_by_key(existing_unseen_rewards, "backend_id", new_reward.backend_id) then
+				if is_fake_item(new_reward.reward_type) then
+					if not table.find_by_key(existing_unseen_rewards, "item_id", new_reward.item_id) then
+						existing_unseen_rewards[#existing_unseen_rewards + 1] = new_reward
+					end
+				elseif not table.find_by_key(existing_unseen_rewards, "backend_id", new_reward.backend_id) then
 					existing_unseen_rewards[#existing_unseen_rewards + 1] = new_reward
 				end
 			end
@@ -829,10 +899,7 @@ PlayFabMirrorBase.fix_total_collected_essence_cb = function (self, result)
 		self:_request_win_tracks()
 	elseif DLCSettings.morris then
 		self:_deus_player_setup()
-
-		if self:belakor_active() then
-			self:_deus_setup_belakor_data()
-		end
+		self:_deus_setup_belakor_data()
 	else
 		self:_set_up_additional_account_data()
 	end
@@ -868,10 +935,7 @@ PlayFabMirrorBase.win_tracks_request_cb = function (self, result)
 
 	if DLCSettings.morris then
 		self:_deus_player_setup()
-
-		if self:belakor_active() then
-			self:_deus_setup_belakor_data()
-		end
+		self:_deus_setup_belakor_data()
 	else
 		self:_set_up_additional_account_data()
 	end
@@ -910,20 +974,6 @@ end
 
 PlayFabMirrorBase.set_has_loaded_belakor_data = function (self, value)
 	self._belakor_data_loaded = value
-end
-
-PlayFabMirrorBase.belakor_active = function (self)
-	local backend_manager = Managers.backend
-	local belakor_active = backend_manager:get_title_data("belakor_active")
-
-	if not belakor_active then
-		return true
-	end
-
-	belakor_active = cjson.decode(belakor_active)
-	local active = belakor_active.active
-
-	return active
 end
 
 PlayFabMirrorBase._deus_setup_belakor_data = function (self)
@@ -1095,8 +1145,9 @@ PlayFabMirrorBase._request_steam_user_inventory = function (self)
 		end
 
 		local migrate_and_request_characters = true
+		local skip_mark_as_new = true
 
-		self:_cb_steam_user_inventory(result, item_list, migrate_and_request_characters)
+		self:_cb_steam_user_inventory(result, item_list, migrate_and_request_characters, skip_mark_as_new)
 	end
 
 	Managers.steam:request_user_inventory(callback)
@@ -1146,11 +1197,12 @@ end
 PlayFabMirrorBase.add_steam_items = function (self, item_list)
 	local result_success = 1
 	self._num_items_to_load = self._num_items_to_load + 1
+	local skip_mark_as_new = false
 
-	self:_cb_steam_user_inventory(result_success, item_list, false)
+	self:_cb_steam_user_inventory(result_success, item_list, false, skip_mark_as_new)
 end
 
-PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list, migrate_and_request_characters)
+PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list, migrate_and_request_characters, skip_mark_as_new)
 	self._num_items_to_load = self._num_items_to_load - 1
 
 	if result == 1 then
@@ -1170,7 +1222,7 @@ PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list, 
 					ItemInstanceId = backend_id
 				}
 
-				self:add_item(backend_id, steam_item, true)
+				self:add_item(backend_id, steam_item, true, skip_mark_as_new)
 				debug_printf("Steam Item: %q, %q, %q, %q, %q", item_key, steam_itemdefid, steam_backend_unique_id, flags, amount)
 			end
 		end
@@ -1605,10 +1657,6 @@ PlayFabMirrorBase.get_unlocked_cosmetics = function (self)
 	return self._unlocked_cosmetics
 end
 
-PlayFabMirrorBase.get_unlocked_cosmetics = function (self)
-	return self._unlocked_cosmetics
-end
-
 PlayFabMirrorBase.get_unlocked_keep_decorations = function (self)
 	return self._unlocked_keep_decorations
 end
@@ -1803,7 +1851,7 @@ PlayFabMirrorBase._add_new_weapon_skin = function (self, item, generate_new_id, 
 	return fake_item_id
 end
 
-PlayFabMirrorBase.add_item = function (self, backend_id, item, skip_autosave)
+PlayFabMirrorBase.add_item = function (self, backend_id, item, skip_autosave, skip_mark_as_new)
 	if not self._inventory_items then
 		self._inventory_items = {}
 	end
@@ -1818,7 +1866,9 @@ PlayFabMirrorBase.add_item = function (self, backend_id, item, skip_autosave)
 		if CosmeticUtils.is_cosmetic_item(master_list_item.slot_type) then
 			backend_id = self:add_unlocked_cosmetic(item.ItemId, backend_id)
 
-			ItemHelper.mark_backend_id_as_new(backend_id, self._inventory_items[backend_id], skip_autosave)
+			if not skip_mark_as_new then
+				ItemHelper.mark_backend_id_as_new(backend_id, self._inventory_items[backend_id], skip_autosave)
+			end
 
 			return backend_id
 		end
@@ -1826,7 +1876,11 @@ PlayFabMirrorBase.add_item = function (self, backend_id, item, skip_autosave)
 		self._inventory_items[backend_id] = item
 
 		self:_update_data(item, backend_id)
-		ItemHelper.mark_backend_id_as_new(backend_id, item, skip_autosave)
+
+		if not skip_mark_as_new then
+			ItemHelper.mark_backend_id_as_new(backend_id, item, skip_autosave)
+		end
+
 		self:_re_evaluate_best_power_level(item)
 		ItemHelper.on_inventory_item_added(item)
 

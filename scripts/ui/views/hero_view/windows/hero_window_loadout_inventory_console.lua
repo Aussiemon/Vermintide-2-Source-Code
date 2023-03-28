@@ -81,6 +81,8 @@ HeroWindowLoadoutInventoryConsole.on_enter = function (self, params, offset)
 	local profile = SPProfiles[self.profile_index]
 	local career_data = profile.careers[self.career_index]
 	self.career_name = career_data.name
+	self._equipped_item = nil
+	self._compare_item = nil
 	self._animations = {}
 	self._categories = self:_create_item_categories(self.profile_index, self.career_index)
 
@@ -278,6 +280,7 @@ HeroWindowLoadoutInventoryConsole._update_equipped_item_tooltip = function (self
 	local item = backend_id and item_interface:get_item_from_id(backend_id)
 	local widget = self._widgets_by_name.item_tooltip_compare
 	widget.content.item = item
+	self._equipped_item = item
 end
 
 HeroWindowLoadoutInventoryConsole._update_selected_item_tooltip = function (self)
@@ -287,6 +290,8 @@ HeroWindowLoadoutInventoryConsole._update_selected_item_tooltip = function (self
 	if backend_id ~= self._selected_backend_id then
 		local widget = self._widgets_by_name.item_tooltip
 		widget.content.item = selected_item
+		self._compare_item = selected_item
+		widget.content.compare_item = self._equipped_item
 	end
 
 	self._selected_backend_id = backend_id

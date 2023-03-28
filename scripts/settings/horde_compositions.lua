@@ -19638,6 +19638,141 @@ HordeCompositions = {
 			}
 		}
 	},
+	wt_end_event_skeletons_01 = {
+		{
+			{
+				name = "skeletonnos",
+				weight = 1,
+				breeds = {
+					"ethereal_skeleton_with_shield",
+					{
+						1,
+						2
+					},
+					"ethereal_skeleton_with_hammer",
+					{
+						6,
+						9
+					}
+				}
+			},
+			start_time = 0
+		},
+		{
+			{
+				name = "skeletonnos",
+				weight = 1,
+				breeds = {
+					"ethereal_skeleton_with_shield",
+					{
+						1,
+						2
+					},
+					"ethereal_skeleton_with_hammer",
+					{
+						6,
+						9
+					}
+				}
+			},
+			start_time = 0
+		},
+		{
+			{
+				name = "skeletonnos",
+				weight = 1,
+				breeds = {
+					"ethereal_skeleton_with_shield",
+					{
+						1,
+						2
+					},
+					"ethereal_skeleton_with_hammer",
+					{
+						6,
+						9
+					}
+				}
+			},
+			start_time = 0
+		},
+		{
+			{
+				name = "skeletonnos",
+				weight = 1,
+				breeds = {
+					"ethereal_skeleton_with_shield",
+					{
+						1,
+						2
+					},
+					"ethereal_skeleton_with_hammer",
+					{
+						6,
+						9
+					}
+				}
+			},
+			start_time = 0
+		},
+		{
+			{
+				name = "skeletonnos",
+				weight = 1,
+				breeds = {
+					"ethereal_skeleton_with_shield",
+					{
+						2,
+						3
+					},
+					"ethereal_skeleton_with_hammer",
+					{
+						8,
+						11
+					}
+				}
+			},
+			start_time = 0
+		},
+		{
+			{
+				name = "skeletonnos",
+				weight = 1,
+				breeds = {
+					"ethereal_skeleton_with_shield",
+					{
+						2,
+						3
+					},
+					"ethereal_skeleton_with_hammer",
+					{
+						8,
+						11
+					}
+				}
+			},
+			start_time = 0
+		},
+		{
+			{
+				name = "skeletonnos",
+				weight = 1,
+				breeds = {
+					"ethereal_skeleton_with_shield",
+					{
+						2,
+						3
+					},
+					"ethereal_skeleton_with_hammer",
+					{
+						8,
+						11
+					}
+				}
+			},
+			start_time = 0
+		}
+	},
 	pathfind_test_light = {
 		{
 			{

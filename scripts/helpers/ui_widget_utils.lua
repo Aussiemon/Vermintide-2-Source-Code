@@ -604,15 +604,15 @@ UIWidgetUtils.animate_play_button = function (widget, dt)
 end
 
 UIWidgetUtils.get_level_frame_by_difficulty_index = function (difficulty_index)
-	local completed_frame_texture = "map_frame_00"
+	local difficulty_key = DefaultDifficulties[difficulty_index]
 
-	if difficulty_index and difficulty_index > 0 then
-		local difficulty_key = DefaultDifficulties[difficulty_index]
+	if difficulty_key then
 		local settings = DifficultySettings[difficulty_key]
-		completed_frame_texture = settings.completed_frame_texture
+
+		return settings.completed_frame_texture
 	end
 
-	return completed_frame_texture
+	return "map_frame_00"
 end
 
 UIWidgetUtils.animate_game_option_button = function (widget, dt)

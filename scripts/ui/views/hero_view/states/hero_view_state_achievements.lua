@@ -2698,6 +2698,10 @@ HeroViewStateAchievements._handle_search_input = function (self, dt, t, input_se
 		input_content.text_index = 1
 		input_content.caret_index = 1
 		input_content.search_query = ""
+
+		self:_do_search(input_content.search_query)
+
+		return true
 	end
 
 	if filters_content.query_dirty then

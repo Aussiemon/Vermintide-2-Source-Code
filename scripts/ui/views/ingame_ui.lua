@@ -21,6 +21,8 @@ require("scripts/ui/views/character_selection_view/character_selection_view")
 require("scripts/ui/views/chat_view")
 require("scripts/ui/views/start_menu_view/start_menu_view")
 require("scripts/ui/views/console_friends_view")
+require("scripts/ui/views/cinematics_view/cinematics_view_settings")
+require("scripts/ui/views/cinematics_view/cinematics_view")
 require("scripts/ui/views/friends_ui_component")
 require("scripts/ui/text_popup/text_popup_ui")
 require("scripts/ui/weave_tutorial/weave_ui_onboarding_tutorial")
@@ -117,7 +119,6 @@ IngameUI.init = function (self, ingame_ui_context)
 	Managers.chat:set_profile_synchronizer(ingame_ui_context.profile_synchronizer)
 	Managers.chat:set_wwise_world(wwise_world)
 	Managers.chat:set_input_manager(input_manager)
-	Managers.rcon:set_input_manager(input_manager)
 
 	local network_handler = ingame_ui_context.network_server or ingame_ui_context.network_client
 	self._profile_requester = network_handler:profile_requester()
@@ -210,7 +211,6 @@ IngameUI.destroy = function (self)
 	Managers.chat:set_profile_synchronizer(nil)
 	Managers.chat:set_wwise_world(nil)
 	Managers.chat:set_input_manager(nil)
-	Managers.rcon:set_input_manager(nil)
 
 	local current_view = self.current_view
 	local menu_active = self.menu_active
@@ -591,7 +591,6 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	end
 
 	self.ingame_hud:update(dt, t)
-	self:_update_rcon_ui(dt, t, input_service, end_of_level_ui)
 	self:_update_chat_ui(dt, t, input_service, end_of_level_ui)
 	self:_render_debug_ui(dt, t)
 	self:_update_fade_transition()
@@ -661,12 +660,6 @@ IngameUI._update_chat_ui = function (self, dt, t, input_service, end_of_level_ui
 	Managers.chat:update(dt, t, in_view, menu_input_service, no_unblock)
 end
 
-IngameUI._update_rcon_ui = function (self, dt, t, input_service, end_of_level_ui)
-	local in_view, menu_input_service, no_unblock = self:_menu_blocking_information(input_service, end_of_level_ui)
-
-	Managers.rcon:update(dt, t, in_view, menu_input_service, no_unblock)
-end
-
 IngameUI._menu_blocking_information = function (self, input_service, end_of_level_ui)
 	local ingame_hud = self.ingame_hud
 	local ingame_player_list_ui = ingame_hud:component("IngamePlayerListUI") or ingame_hud:component("VersusTabUI")
@@ -723,12 +716,14 @@ IngameUI._menu_blocking_information = function (self, input_service, end_of_leve
 end
 
 IngameUI._render_debug_ui = function (self, dt, t)
-	if self.menu_active and GameSettingsDevelopment.show_version_info and not Development.parameter("hide_version_info") then
-		self:_render_version_info()
-	end
+	if not script_data.disable_debug_draw then
+		if self.menu_active and GameSettingsDevelopment.show_version_info and not script_data.hide_version_info then
+			self:_render_version_info()
+		end
 
-	if GameSettingsDevelopment.show_fps and not Development.parameter("hide_fps") then
-		self:_render_fps(dt)
+		if GameSettingsDevelopment.show_fps and not script_data.hide_fps then
+			self:_render_fps(dt)
+		end
 	end
 end
 
@@ -1189,6 +1184,12 @@ IngameUI.get_active_popup = function (self, popup_name)
 end
 
 IngameUI.respawn = function (self)
+	local game = Managers.state.network:game()
+
+	if not game then
+		return
+	end
+
 	local peer_id = self.peer_id
 	local local_player_id = self.local_player_id
 	local profile_index, career_index = self.profile_synchronizer:profile_by_peer(peer_id, local_player_id)

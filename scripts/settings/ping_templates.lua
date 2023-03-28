@@ -29,7 +29,7 @@ IgnoreCooldownPingTypes = {
 PingTemplates = {
 	generic_item = {
 		check_func = function (self, pinger_unit, pinged_unit)
-			return pinged_unit and ScriptUnit.has_extension(pinged_unit, "pickup_system")
+			return pinged_unit and (ScriptUnit.has_extension(pinged_unit, "pickup_system") or Managers.state.network:level_object_id(pinged_unit))
 		end,
 		responses = {
 			[PingTypes.ENEMY_GENERIC] = {

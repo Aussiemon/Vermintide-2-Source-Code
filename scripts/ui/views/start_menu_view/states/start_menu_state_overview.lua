@@ -20,6 +20,9 @@ local menu_functions = {
 	end,
 	function (this)
 		this:_activate_view("credits_view")
+	end,
+	function (this)
+		this:_activate_view("cinematics_view")
 	end
 }
 StartMenuStateOverview = class(StartMenuStateOverview)
@@ -376,6 +379,7 @@ StartMenuStateOverview._handle_keyboard_input = function (self)
 			"play_button",
 			"options_button",
 			"tutorial_button",
+			"cinematics_button",
 			"credits_button",
 			"quit_button"
 		},
@@ -399,6 +403,9 @@ StartMenuStateOverview._handle_keyboard_input = function (self)
 		end,
 		tutorial_button = function ()
 			menu_functions[2](self)
+		end,
+		cinematics_button = function ()
+			menu_functions[4](self)
 		end,
 		credits_button = function ()
 			menu_functions[3](self)
@@ -463,15 +470,19 @@ StartMenuStateOverview._handle_input = function (self, dt, t)
 	local credits_button = widgets_by_name.credits_button
 	local options_button = widgets_by_name.options_button
 	local tutorial_button = widgets_by_name.tutorial_button
+	local cinematics_button = widgets_by_name.cinematics_button
 
 	UIWidgetUtils.animate_default_button(play_button, dt)
 	UIWidgetUtils.animate_default_button(hero_button, dt)
 	UIWidgetUtils.animate_default_button(quit_button, dt)
 	UIWidgetUtils.animate_default_button(credits_button, dt)
+	UIWidgetUtils.animate_default_button(cinematics_button, dt)
 	UIWidgetUtils.animate_default_button(options_button, dt)
 	UIWidgetUtils.animate_default_button(tutorial_button, dt)
 
 	if self:_is_button_hover_enter(play_button) or self:_is_button_hover_enter(hero_button) or self:_is_button_hover_enter(quit_button) or self:_is_button_hover_enter(credits_button) or self:_is_button_hover_enter(options_button) or self:_is_button_hover_enter(tutorial_button) then
+		self:_play_sound("play_gui_start_menu_button_hover")
+	elseif self:_is_button_hover_enter(cinematics_button) then
 		self:_play_sound("play_gui_start_menu_button_hover")
 	end
 
@@ -487,6 +498,9 @@ StartMenuStateOverview._handle_input = function (self, dt, t)
 		self:_play_sound("play_gui_start_menu_button_click")
 	elseif self:_is_button_pressed(tutorial_button) then
 		menu_functions[2](self)
+		self:_play_sound("play_gui_start_menu_button_click")
+	elseif self:_is_button_pressed(cinematics_button) then
+		menu_functions[4](self)
 		self:_play_sound("play_gui_start_menu_button_click")
 	elseif self:_is_button_pressed(credits_button) then
 		menu_functions[3](self)
@@ -637,7 +651,8 @@ StartMenuStateOverview._init_menu_views = function (self)
 	local ingame_ui_context = self.ingame_ui_context
 	self._views = {
 		credits_view = CreditsView:new(ingame_ui_context),
-		options_view = OptionsView:new(ingame_ui_context)
+		options_view = OptionsView:new(ingame_ui_context),
+		cinematics_view = CinematicsView:new(ingame_ui_context)
 	}
 
 	for name, view in pairs(self._views) do

@@ -118,43 +118,47 @@ BTSpawningAction.run = function (self, unit, blackboard, t, dt)
 	local nav_world = blackboard.nav_world
 	local current_pos = POSITION_LOOKUP[unit]
 
-	if spawning_finished and not blackboard.spawn_landing_state then
-		local is_position_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, current_pos, 0.5, 0.5)
-
-		if is_position_on_navmesh then
-			local spawn_position = Vector3(current_pos.x, current_pos.y, altitude)
-			local network_manager = Managers.state.network
-			local unit_id = network_manager:unit_game_object_id(unit)
-
-			network_manager.network_transmit:send_rpc_clients("rpc_teleport_unit_to", unit_id, spawn_position, Unit.local_rotation(unit, 0))
-			locomotion_extension:teleport_to(spawn_position)
-
+	if spawning_finished then
+		if blackboard.instant_spawn then
 			return "done"
-		else
-			locomotion_extension:set_affected_by_gravity(true)
-			locomotion_extension:set_movement_type("script_driven")
-
-			blackboard.spawn_landing_state = "falling"
-			is_position_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, current_pos, 0, 20)
+		elseif not blackboard.spawn_landing_state then
+			local is_position_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, current_pos, 0.5, 0.5)
 
 			if is_position_on_navmesh then
-				local min_pos = Vector3(current_pos.x, current_pos.y, altitude)
+				local spawn_position = Vector3(current_pos.x, current_pos.y, altitude)
+				local network_manager = Managers.state.network
+				local unit_id = network_manager:unit_game_object_id(unit)
 
-				LocomotionUtils.constrain_on_clients(unit, true, min_pos, current_pos)
+				network_manager.network_transmit:send_rpc_clients("rpc_teleport_unit_to", unit_id, spawn_position, Unit.local_rotation(unit, 0))
+				locomotion_extension:teleport_to(spawn_position)
 
-				blackboard.constrained_on_client = true
-				blackboard.landing_destination = Vector3Box(current_pos.x, current_pos.y, altitude)
-
-				if not blackboard.spawn_animation then
-					Managers.state.network:anim_event(unit, "idle")
-				end
+				return "done"
 			else
-				local damage_type = "forced"
-				local damage_direction = Vector3(0, 0, -1)
+				locomotion_extension:set_affected_by_gravity(true)
+				locomotion_extension:set_movement_type("script_driven")
 
-				AiUtils.kill_unit(unit, nil, nil, damage_type, damage_direction)
+				blackboard.spawn_landing_state = "falling"
+				is_position_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, current_pos, 0, 20)
 
-				return
+				if is_position_on_navmesh then
+					local min_pos = Vector3(current_pos.x, current_pos.y, altitude)
+
+					LocomotionUtils.constrain_on_clients(unit, true, min_pos, current_pos)
+
+					blackboard.constrained_on_client = true
+					blackboard.landing_destination = Vector3Box(current_pos.x, current_pos.y, altitude)
+
+					if not blackboard.spawn_animation then
+						Managers.state.network:anim_event(unit, "idle")
+					end
+				else
+					local damage_type = "forced"
+					local damage_direction = Vector3(0, 0, -1)
+
+					AiUtils.kill_unit(unit, nil, nil, damage_type, damage_direction)
+
+					return
+				end
 			end
 		end
 	end

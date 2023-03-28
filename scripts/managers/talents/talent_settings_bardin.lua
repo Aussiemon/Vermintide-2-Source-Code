@@ -300,12 +300,12 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_gromril_delay = {
 		buffs = {
 			{
-				buff_after_delay = true,
+				buff_to_add = "bardin_ironbreaker_gromril_armour",
 				max_stacks = 1,
 				refresh_durations = true,
+				duration_end_func = "add_buff_local",
 				is_cooldown = true,
-				icon = "bardin_ironbreaker_gromril_armour",
-				delayed_buff_name = "bardin_ironbreaker_gromril_armour"
+				icon = "bardin_ironbreaker_gromril_armour"
 			}
 		}
 	},
@@ -602,13 +602,13 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_gromril_delay_short = {
 		buffs = {
 			{
-				buff_after_delay = true,
+				buff_to_add = "bardin_ironbreaker_gromril_armour",
 				name = "gromril_delay",
 				max_stacks = 1,
-				refresh_durations = true,
+				duration_end_func = "add_buff_local",
 				is_cooldown = true,
 				icon = "bardin_ironbreaker_gromril_armour",
-				delayed_buff_name = "bardin_ironbreaker_gromril_armour"
+				refresh_durations = true
 			}
 		}
 	},
@@ -1029,15 +1029,15 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_activated_ability = {
 		buffs = {
 			{
-				buff_to_add = "bardin_ranger_activated_ability_buff",
+				sound_to_play = "Play_career_ability_bardin_ranger_enter",
 				name = "bardin_ranger_activated_ability",
-				icon = "bardin_ranger_activated_ability",
+				buff_area_buff = "bardin_ranger_activated_ability_buff",
 				refresh_buff_area_position = true,
 				enter_area_func = "enter_buff_area",
 				refresh_durations = true,
 				apply_buff_func = "play_sound_synced",
 				area_unit_name = "units/hub_elements/empty",
-				sound_to_play = "Play_career_ability_bardin_ranger_enter",
+				icon = "bardin_ranger_activated_ability",
 				area_radius = 8,
 				buff_area = true,
 				max_stacks = 1,
@@ -1187,7 +1187,7 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_smoke_attack = {
 		buffs = {
 			{
-				buff_to_add = "bardin_ranger_activated_ability_buff",
+				icon = "bardin_ranger_activated_ability",
 				name = "bardin_ranger_activated_ability",
 				smoke_buff = "bardin_ranger_smoke_attack_buff",
 				area_unit_name = "units/hub_elements/empty",
@@ -1195,7 +1195,7 @@ TalentBuffTemplates.dwarf_ranger = {
 				refresh_durations = true,
 				refresh_buff_area_position = false,
 				update_func = "bardin_ranger_smoke_buff",
-				icon = "bardin_ranger_activated_ability",
+				buff_area_buff = "bardin_ranger_activated_ability_buff",
 				area_radius = 7,
 				buff_area = true,
 				max_stacks = 1,
@@ -1217,14 +1217,14 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_smoke_heal = {
 		buffs = {
 			{
-				buff_to_add = "bardin_ranger_activated_ability_buff",
+				max_stacks = 1,
 				name = "bardin_ranger_activated_ability",
 				smoke_buff = "bardin_ranger_smoke_heal_buff",
 				update_func = "bardin_ranger_smoke_buff",
 				enter_area_func = "enter_buff_area",
 				refresh_durations = true,
 				refresh_buff_area_position = false,
-				max_stacks = 1,
+				buff_area_buff = "bardin_ranger_activated_ability_buff",
 				area_radius = 7,
 				buff_area = true,
 				area_unit_name = "units/hub_elements/empty",
@@ -1245,10 +1245,10 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_activated_ability_stealth_outside_of_smoke = {
 		buffs = {
 			{
-				buff_to_add = "bardin_ranger_activated_ability_buff",
-				name = "bardin_ranger_activated_ability",
-				area_unit_name = "units/hub_elements/empty",
 				icon = "bardin_ranger_activated_ability",
+				name = "bardin_ranger_activated_ability",
+				buff_area_buff = "bardin_ranger_activated_ability_buff",
+				area_unit_name = "units/hub_elements/empty",
 				enter_area_func = "enter_buff_area",
 				refresh_durations = true,
 				refresh_buff_area_position = false,

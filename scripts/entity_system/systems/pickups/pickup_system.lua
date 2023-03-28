@@ -585,7 +585,7 @@ PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, 
 		end
 
 		if spawn_debt > 1 then
-			Application.warning("[PickupSystem] Remaining spawn debt when trying to spawn %s pickups ", pickup_type)
+			Application.warning("[PickupSystem] Remaining spawn debt when trying to spawn %s pickups %d", pickup_type, spawn_debt)
 		end
 	end
 end
@@ -1353,6 +1353,28 @@ PickupSystem.explosive_barrel = function (self, pickup_settings, position, rotat
 	local network_velocity = AiAnimUtils.velocity_network_scale(Vector3(0, 0, 0), true)
 	local network_angular_velocity = network_velocity
 	local item_name = "explosive_barrel"
+	local extension_init_data = {
+		projectile_locomotion_system = {
+			network_position = network_position,
+			network_rotation = network_rotation,
+			network_velocity = network_velocity,
+			network_angular_velocity = network_angular_velocity
+		},
+		health_system = {
+			in_hand = false,
+			item_name = item_name
+		}
+	}
+
+	return extension_init_data
+end
+
+PickupSystem.wizards_barrel = function (self, pickup_settings, position, rotation)
+	local network_position = AiAnimUtils.position_network_scale(position, true)
+	local network_rotation = AiAnimUtils.rotation_network_scale(rotation, true)
+	local network_velocity = AiAnimUtils.velocity_network_scale(Vector3(0, 0, 0), true)
+	local network_angular_velocity = network_velocity
+	local item_name = "wizards_barrel"
 	local extension_init_data = {
 		projectile_locomotion_system = {
 			network_position = network_position,

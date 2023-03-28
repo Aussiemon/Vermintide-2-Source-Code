@@ -1,10 +1,12 @@
 require("scripts/settings/level_settings")
 require("scripts/settings/perlin_light_configurations")
+require("scripts/unit_extensions/level/rotating_hazard_extension")
 
 PropsSystem = class(PropsSystem, ExtensionSystemBase)
 local RPCS = {
 	"rpc_thorn_bush_trigger_area_damage",
-	"rpc_thorn_bush_trigger_despawn"
+	"rpc_thorn_bush_trigger_despawn",
+	"rpc_sync_rotating_hazard"
 }
 local extensions = {
 	"PerlinLightExtension",
@@ -12,7 +14,8 @@ local extensions = {
 	"QuestChallengePropExtension",
 	"ThornMutatorExtension",
 	"ScaleUnitExtension",
-	"StoreDisplayItemGizmoExtension"
+	"StoreDisplayItemGizmoExtension",
+	"RotatingHazardExtension"
 }
 
 DLCUtils.append("prop_extension", extensions)
@@ -25,6 +28,7 @@ PropsSystem.init = function (self, entity_system_creation_context, system_name)
 	end
 
 	PerlinLightConfigurations_reload = false
+	self._extensions = {}
 	self._network_event_delegate = entity_system_creation_context.network_event_delegate
 
 	self._network_event_delegate:register(self, unpack(RPCS))
@@ -55,6 +59,8 @@ PropsSystem.on_add_extension = function (self, world, unit, extension_name, exte
 	else
 		extension = PropsSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
 	end
+
+	self._extensions[unit] = extension
 
 	return extension
 end
@@ -92,4 +98,11 @@ PropsSystem.rpc_thorn_bush_trigger_despawn = function (self, channel_id, unit_id
 	if script then
 		script:despawn()
 	end
+end
+
+PropsSystem.rpc_sync_rotating_hazard = function (self, channel_id, go_id, is_level_unit, start_t, pause_t, state, seed)
+	local unit = Managers.state.network:game_object_or_level_unit(go_id, is_level_unit)
+	local extension = self._extensions[unit]
+
+	extension:network_sync(start_t, pause_t, state, seed)
 end

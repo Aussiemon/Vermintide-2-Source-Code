@@ -1,10 +1,23 @@
+require("scripts/unit_extensions/weapons/projectiles/projectile_physics_husk_locomotion_extension")
+require("scripts/unit_extensions/weapons/projectiles/projectile_physics_unit_locomotion_extension")
+require("scripts/unit_extensions/weapons/projectiles/projectile_script_unit_locomotion_extension")
+
 ProjectileLocomotionSystem = class(ProjectileLocomotionSystem, ExtensionSystemBase)
 local RPCS = {
 	"rpc_set_projectile_state"
 }
+local extensions = {
+	"ProjectilePhysicsHuskLocomotionExtension",
+	"ProjectilePhysicsUnitLocomotionExtension",
+	"ProjectileScriptUnitLocomotionExtension",
+	"ProjectileTrueFlightLocomotionExtension",
+	"ProjectileHomingSkullLocomotionExtension",
+	"ProjectileExtrapolatedHuskLocomotionExtension",
+	"ProjectileEtherealSkullLocomotionExtension"
+}
 
-ProjectileLocomotionSystem.init = function (self, entity_system_creation_context, ...)
-	ProjectileLocomotionSystem.super.init(self, entity_system_creation_context, ...)
+ProjectileLocomotionSystem.init = function (self, entity_system_creation_context, name)
+	ProjectileLocomotionSystem.super.init(self, entity_system_creation_context, name, extensions)
 
 	local network_event_delegate = entity_system_creation_context.network_event_delegate
 	self.network_event_delegate = network_event_delegate
@@ -12,13 +25,6 @@ ProjectileLocomotionSystem.init = function (self, entity_system_creation_context
 	network_event_delegate:register(self, unpack(RPCS))
 
 	self._server_position_corrected_pickups = {}
-end
-
-ProjectileLocomotionSystem.rpc_set_projectile_state = function (self, channel_id, projectile_unit_id, state_id)
-	local projectile_unit = self.unit_storage:unit(projectile_unit_id)
-	local extension = ScriptUnit.extension(projectile_unit, "projectile_locomotion_system")
-
-	extension:set_projectile_state(projectile_unit, state_id)
 end
 
 ProjectileLocomotionSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data, ...)
@@ -100,4 +106,11 @@ ProjectileLocomotionSystem._client_validate_position_rotation = function (self, 
 			end
 		end
 	end
+end
+
+ProjectileLocomotionSystem.rpc_set_projectile_state = function (self, channel_id, projectile_unit_id, state_id)
+	local projectile_unit = self.unit_storage:unit(projectile_unit_id)
+	local extension = ScriptUnit.extension(projectile_unit, "projectile_locomotion_system")
+
+	extension:set_projectile_state(projectile_unit, state_id)
 end

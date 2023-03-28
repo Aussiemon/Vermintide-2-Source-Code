@@ -232,15 +232,14 @@ CareerAbilityBWAdept._run_ability = function (self)
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension:animation_event("battle_wizard_active_ability_blink")
+		career_extension:set_state("sienna_activate_adept")
 
 		MOOD_BLACKBOARD.skill_adept = true
-
-		career_extension:set_state("sienna_activate_adept")
 	end
 
 	locomotion_extension:set_external_velocity_enabled(false)
 	status_extension:reset_move_speed_multiplier()
-	status_extension:add_noclip_stacking()
+	status_extension:set_noclip(true, "skill_adept")
 
 	if Managers.state.network:game() then
 		status_extension:set_is_dodging(true)
@@ -265,7 +264,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 					local unit_3p = this.unit
 					local status_ext = ScriptUnit.extension(unit_3p, "status_system")
 
-					status_ext:add_stealth_stacking()
+					status_ext:set_invisible(true, nil, "skill_adept")
 				end
 			},
 			{
@@ -316,19 +315,8 @@ CareerAbilityBWAdept._run_ability = function (self)
 					area_damage_system:create_explosion(unit_3p, final_position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
 				end
 
-				status_ext:remove_noclip_stacking()
-
-				local removing_stealth = status_ext:remove_stealth_stacking()
-				local player = Managers.player:owner(unit_3p)
-				local local_player = player.local_player
-
-				if local_player and removing_stealth then
-					local first_person_extension = ScriptUnit.extension(unit_3p, "first_person_system")
-
-					first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
-
-					MOOD_BLACKBOARD.skill_shade = false
-				end
+				status_ext:set_invisible(false, nil, "skill_adept")
+				status_ext:set_noclip(false, "skill_adept")
 
 				if Managers.state.network:game() then
 					status_ext:set_is_dodging(false)

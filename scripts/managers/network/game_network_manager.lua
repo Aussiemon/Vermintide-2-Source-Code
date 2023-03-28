@@ -1164,6 +1164,12 @@ GameNetworkManager.rpc_flow_event = function (self, channel_id, unit_id, event_i
 		return
 	end
 
+	if self.is_server then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_flow_event", peer_id, unit_id, event_id)
+	end
+
 	local event_name = NetworkLookup.flow_events[event_id]
 
 	Unit.flow_event(unit, event_name)

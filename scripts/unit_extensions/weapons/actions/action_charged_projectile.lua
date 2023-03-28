@@ -185,9 +185,17 @@ ActionChargedProjectile._shoot = function (self, t)
 		end
 	end
 
-	local angle = ActionUtils.pitch_from_rotation(rotation)
-	local speed = current_action.speed
-	local target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
+	local angle = nil
+	local charge_level = self.charge_level
+	local speed = nil
+
+	if current_action.charged_speed then
+		speed = math.lerp(current_action.speed, current_action.charged_speed, math.clamp(charge_level, 0, 1))
+	else
+		speed = current_action.speed
+	end
+
+	local target_vector = nil
 	local projectile_info = current_action.projectile_info
 
 	if projectile_info.fire_from_muzzle then
@@ -201,11 +209,23 @@ ActionChargedProjectile._shoot = function (self, t)
 			life_time = projectile_info.timed_data.life_time
 		end
 
+		angle = ActionUtils.pitch_from_rotation(rotation)
+		target_vector = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
 		local radians = math.degrees_to_radians(angle)
 		local gravity = ProjectileGravitySettings[projectile_info.gravity_settings]
 		local position_on_trajectory = WeaponHelper:position_on_trajectory(position, target_vector, speed / 100, radians, gravity, life_time)
 		target_vector = Vector3.normalize(Vector3.flat(position_on_trajectory - muzzle_pos))
 		position = muzzle_pos
+	end
+
+	local flatten_target_vector = current_action.flatten_target_vector ~= false
+
+	if flatten_target_vector then
+		angle = angle or ActionUtils.pitch_from_rotation(rotation)
+		target_vector = target_vector or Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
+	else
+		angle = 0
+		target_vector = Quaternion.forward(rotation)
 	end
 
 	if current_action.fire_at_gaze_setting and current_action.throw_up_this_much_in_target_direction and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
@@ -243,8 +263,8 @@ ActionChargedProjectile._shoot = function (self, t)
 	local item_template_name = lookup_data.item_template_name
 	local action_name = lookup_data.action_name
 	local sub_action_name = lookup_data.sub_action_name
-	local charge_level = self.charge_level
-	local scale = math.round(math.max(charge_level, 0) * 100)
+	local scale_projectile = current_action.scale_projectile ~= false
+	local scale = scale_projectile and math.round(math.max(charge_level, 0) * 100) or 1
 	local projectile_power_level = self.power_level
 	local full_charge_boost = self.owner_buff_extension:has_buff_perk("full_charge_boost")
 

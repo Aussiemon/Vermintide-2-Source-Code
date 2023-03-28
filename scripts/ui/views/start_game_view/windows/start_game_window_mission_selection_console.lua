@@ -214,7 +214,7 @@ StartGameWindowMissionSelectionConsole._present_act_levels = function (self, act
 				content.text = Localize(level_display_name)
 				local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_key)
 				local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_key)
-				local selection_frame_texture = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
+				local selection_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
 				content.frame = selection_frame_texture
 				content.locked = not level_unlocked
 				content.act_key = act_key
@@ -240,18 +240,6 @@ StartGameWindowMissionSelectionConsole._present_act_levels = function (self, act
 
 	self._active_node_widgets = assigned_widgets
 	self._active_act_widgets = act_widgets
-end
-
-StartGameWindowMissionSelectionConsole._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
-	local completed_frame_texture = "map_frame_00"
-
-	if difficulty_index and difficulty_index > 0 then
-		local difficulty_key = DefaultDifficulties[difficulty_index]
-		local settings = DifficultySettings[difficulty_key]
-		completed_frame_texture = settings.completed_frame_texture
-	end
-
-	return completed_frame_texture
 end
 
 StartGameWindowMissionSelectionConsole._select_level = function (self, level_id)
@@ -295,7 +283,7 @@ StartGameWindowMissionSelectionConsole._set_presentation_info = function (self, 
 		local display_name = level_settings.display_name
 		level_description_text = level_settings.description_text
 		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_id)
-		frame_texture = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
+		frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
 		local is_locked = not LevelUnlockUtils.level_unlocked(statistics_db, stats_id, level_id)
 
 		if is_locked then

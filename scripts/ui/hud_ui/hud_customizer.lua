@@ -22,8 +22,6 @@ HudCustomizer.reset_button = function (ui_renderer)
 	if not HudCustomizer.is_active() then
 		return
 	end
-
-	error("@TODO: Rewrite")
 end
 
 HudCustomizer.run = function (ui_renderer, ui_scenegraph, customizer_data)

@@ -271,7 +271,7 @@ ModManager._build_mod_table = function (self, mod_handles)
 
 	local mod_metadata = self._mod_metadata
 
-	print("user_setting.mods =>")
+	print("[ModManager] user_setting.mods =:")
 
 	for i, mod_data in ipairs(user_settings_mod_list) do
 		local id = mod_data.id or -9999
@@ -288,23 +288,16 @@ ModManager._build_mod_table = function (self, mod_handles)
 		local metadata = mod_metadata[id]
 
 		if enabled and metadata then
-			local last_updated_string = mod_data.last_updated
-			local month, day, year, hour, minute, second, am_pm = string.match(last_updated_string, "(%d+)/(%d+)/(%d+) (%d+):(%d+):(%d+) ([AP]M)")
+			local ok, timestamp = SteamUGC.get_item_install_info(id)
 
-			if month then
-				if am_pm == "PM" then
-					hour = tonumber(hour) + 12
-				end
+			if ok then
+				local iso8601 = os.date("!%Y%m%dT%H%M%SZ", timestamp)
 
-				local last_updated = string.format("%04d%02d%02dT%02d%02d%02dZ", year, month, day, hour, minute, second)
-
-				printf("[ModManager] id=%s last_updated=%s metadata=%s", id, last_updated, metadata)
-
-				if last_updated < metadata then
+				if iso8601 < metadata then
 					enabled = false
 				end
 			else
-				printf("[ModManager] Could not parse date for %s", id)
+				printf("[ModManager] Could not get item install info for item %q", id)
 
 				enabled = false
 			end

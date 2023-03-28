@@ -123,9 +123,23 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	credits_button = {
+	cinematics_button = {
 		vertical_alignment = "center",
 		parent = "tutorial_button",
+		horizontal_alignment = "center",
+		size = {
+			380,
+			70
+		},
+		position = {
+			0,
+			-85,
+			1
+		}
+	},
+	credits_button = {
+		vertical_alignment = "center",
+		parent = "cinematics_button",
 		horizontal_alignment = "center",
 		size = {
 			380,
@@ -588,6 +602,7 @@ local tobii_description_style = {
 }
 local widgets = {
 	tutorial_button = UIWidgets.create_default_button("tutorial_button", scenegraph_definition.tutorial_button.size, nil, nil, Localize("start_menu_tutorial"), 24),
+	cinematics_button = UIWidgets.create_default_button("cinematics_button", scenegraph_definition.cinematics_button.size, nil, nil, Localize("start_menu_cinematics"), 24),
 	credits_button = UIWidgets.create_default_button("credits_button", scenegraph_definition.credits_button.size, nil, nil, Localize("start_menu_credits"), 24),
 	quit_button = UIWidgets.create_default_button("quit_button", scenegraph_definition.quit_button.size, nil, nil, Localize("start_menu_quit"), 24),
 	play_button = UIWidgets.create_default_button("play_button", scenegraph_definition.play_button.size, nil, nil, Localize("start_menu_play"), 24, "green"),

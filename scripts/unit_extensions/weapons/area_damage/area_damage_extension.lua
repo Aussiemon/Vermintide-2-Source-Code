@@ -134,7 +134,7 @@ AreaDamageExtension.enable = function (self, enable)
 			for i = 1, #ids do
 				local id = ids[i]
 
-				World.stop_spawning_particles(world, id)
+				World.stop_spawning_particles(self.world, id)
 			end
 		end
 

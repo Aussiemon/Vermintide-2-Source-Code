@@ -853,4 +853,10 @@ AnimationCallbackTemplates.server.anim_cb_attack_grabbed_smash = function (unit,
 	end
 end
 
+AnimationCallbackTemplates.client.anim_cb_enable_skeleton_collison = function (unit, param)
+	local breed = Unit.get_data(unit, "breed")
+	local ai_extension = ScriptUnit.extension(unit, "ai_system")
+	ai_extension.player_locomotion_constrain_radius = breed.player_locomotion_constrain_radius or nil
+end
+
 DLCUtils.require_list("animation_callback_template_files")

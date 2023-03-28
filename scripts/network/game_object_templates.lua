@@ -580,6 +580,18 @@ local game_object_templates = {
 	priest_career_data = {
 		game_object_created_func_name = "game_object_created_career_data",
 		game_object_destroyed_func_name = "game_object_destroyed_career_data"
+	},
+	rotating_hazard = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = true
+	},
+	dialogue_node = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		is_level_unit = false,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit"
 	}
 }
 

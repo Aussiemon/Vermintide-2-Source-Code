@@ -5,6 +5,13 @@ MoodPriority = {
 	"heal_medikit",
 	"heal_trait",
 	"skill_shade",
+	"skill_shade_restealth",
+	"skill_shade_short",
+	"shade_dash",
+	"killer_in_the_shadows",
+	"hidden_escape",
+	"twitch_invis",
+	"gutter_runner_f",
 	"skill_maiden_guard",
 	"skill_slayer",
 	"skill_zealot",
@@ -82,6 +89,55 @@ MoodSettings = {
 		particle_effects_on_exit = {}
 	},
 	skill_shade = {
+		environment_setting = "skill_shade",
+		blend_in_time = 0.5,
+		blend_out_time = 0.25,
+		particle_effects_on_enter = {},
+		particle_effects_on_exit = {}
+	},
+	skill_shade_restealth = {
+		environment_setting = "skill_shade",
+		blend_in_time = 0.5,
+		blend_out_time = 0.25,
+		particle_effects_on_enter = {},
+		particle_effects_on_exit = {}
+	},
+	skill_shade_short = {
+		environment_setting = "skill_shade",
+		blend_in_time = 0.5,
+		blend_out_time = 0.25,
+		particle_effects_on_enter = {},
+		particle_effects_on_exit = {}
+	},
+	shade_dash = {
+		environment_setting = "skill_shade",
+		blend_in_time = 0.5,
+		blend_out_time = 0.25,
+		particle_effects_on_enter = {},
+		particle_effects_on_exit = {}
+	},
+	killer_in_the_shadows = {
+		environment_setting = "skill_shade",
+		blend_in_time = 0.5,
+		blend_out_time = 0.25,
+		particle_effects_on_enter = {},
+		particle_effects_on_exit = {}
+	},
+	hidden_escape = {
+		environment_setting = "skill_shade",
+		blend_in_time = 0.5,
+		blend_out_time = 0.25,
+		particle_effects_on_enter = {},
+		particle_effects_on_exit = {}
+	},
+	twitch_invis = {
+		environment_setting = "skill_shade",
+		blend_in_time = 0.5,
+		blend_out_time = 0.25,
+		particle_effects_on_enter = {},
+		particle_effects_on_exit = {}
+	},
+	gutter_runner_f = {
 		environment_setting = "skill_shade",
 		blend_in_time = 0.5,
 		blend_out_time = 0.25,

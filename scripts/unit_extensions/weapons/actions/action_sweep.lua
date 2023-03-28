@@ -421,8 +421,10 @@ ActionSweep._get_target_hit_mass = function (self, difficulty_rank, shield_block
 	local hit_mass_total = shield_blocked and (breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank] or breed.hit_mass_count_block) or breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank] or breed.hit_mass_count or 1
 	local action_mass_override = current_action.hit_mass_count
 
-	if self._ignore_mass_and_armour then
-		hit_mass_total = 1
+	if self._unlimited_cleave then
+		hit_mass_total = 0
+
+		return hit_mass_total
 	elseif action_mass_override and action_mass_override[breed.name] then
 		local mass_cost_multiplier = action_mass_override[breed.name]
 		hit_mass_total = hit_mass_total * (mass_cost_multiplier or 1)
@@ -473,8 +475,8 @@ ActionSweep._calculate_hit_mass_level_object = function (self, unit, target_heal
 	if target_health_extension:is_alive() then
 		local hit_mass_total = unit_get_data(unit, "hit_mass")
 
-		if self._ignore_mass_and_armour then
-			hit_mass_total = 1
+		if self._unlimited_cleave then
+			hit_mass_total = 0
 		end
 
 		self._amount_of_mass_hit = self._amount_of_mass_hit + hit_mass_total
@@ -822,7 +824,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 			if is_character and not is_friendly_fire and not hit_self and in_view and (has_hit_precision_target_and_has_last_hit_result or self._hit_units[hit_unit] == nil) then
 				hit_units[hit_unit] = true
 				local status_extension = self._status_extension
-				shield_blocked = is_dodging or AiUtils.attack_is_shield_blocked(hit_unit, owner_unit) and not current_action.ignore_armour_hit and not self._ignore_mass_and_armour and not status_extension:is_invisible()
+				shield_blocked = is_dodging or not self._unlimited_cleave and AiUtils.attack_is_shield_blocked(hit_unit, owner_unit) and not current_action.ignore_armour_hit and not status_extension:is_invisible()
 				local target_health_extension = ScriptUnit.extension(hit_unit, "health_system")
 				local can_damage = false
 				local can_stagger = false
@@ -871,10 +873,10 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 						hit_zone_name = "torso"
 					end
 
-					local abort_attack = self._max_targets <= self._number_of_hit_enemies or self._max_targets <= self._amount_of_mass_hit and not self._ignore_mass_and_armour or hit_armor and not current_action.slide_armour_hit and not current_action.ignore_armour_hit and not self._ignore_mass_and_armour
+					local abort_attack = not self._unlimited_cleave and (self._max_targets <= self._number_of_hit_enemies or self._max_targets <= self._amount_of_mass_hit or hit_armor and not current_action.slide_armour_hit and not current_action.ignore_armour_hit)
 
 					if shield_blocked then
-						abort_attack = self._max_targets <= self._amount_of_mass_hit + 3 or hit_armor and not current_action.slide_armour_hit and not current_action.ignore_armour_hit and not self._ignore_mass_and_armour
+						abort_attack = not self._unlimited_cleave and (self._max_targets <= self._amount_of_mass_hit + 3 or hit_armor and not current_action.slide_armour_hit and not current_action.ignore_armour_hit)
 					end
 
 					if sound_effect_extension and AiUtils.unit_alive(hit_unit) then
@@ -1002,7 +1004,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 
 						hit_environment_rumble = true
 						local is_armored = hit_unit_armor and hit_unit_armor == 2
-						local abort_attack = self._max_targets <= self._number_of_hit_enemies or (is_armored or self._max_targets <= self._amount_of_mass_hit) and not current_action.slide_armour_hit and not self._ignore_mass_and_armour
+						local abort_attack = not self._unlimited_cleave and (self._max_targets <= self._number_of_hit_enemies or (is_armored or self._max_targets <= self._amount_of_mass_hit) and not current_action.slide_armour_hit)
 
 						self:_play_hit_animations(owner_unit, current_action, abort_attack)
 
@@ -1197,7 +1199,7 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 	elseif predicted_damage <= 0 then
 		hit_effect = current_action.no_damage_impact_particle_effect
 	elseif not breed.no_blood_splatter_on_damage then
-		hit_effect = current_action.impact_particle_effect or BloodSettings:get_hit_effect_for_race(breed.race)
+		hit_effect = current_action.impact_particle_effect or BloodSettings:get_hit_effect_for_race(breed.race) or breed.hit_effect
 
 		EffectHelper.player_critical_hit(world, is_critical_strike, attacker_unit, hit_unit, hit_position)
 	end

@@ -80,6 +80,7 @@ require("scripts/entity_system/systems/weaves/weave_objective_system")
 require("scripts/entity_system/systems/weaves/weave_item_spawner_system")
 require("scripts/entity_system/systems/weaves/weave_loadout_system")
 require("scripts/entity_system/systems/career/career_system")
+require("scripts/entity_system/systems/disrupt_ritual/disrupt_ritual_system")
 DLCUtils.require_list("systems")
 require("scripts/unit_extensions/human/ai_player_unit/ai_anim_utils")
 require("scripts/unit_extensions/human/ai_player_unit/ai_husk_base_extension")
@@ -140,9 +141,6 @@ require("scripts/unit_extensions/weapons/area_damage/liquid/liquid_area_damage_e
 require("scripts/unit_extensions/weapons/area_damage/liquid/liquid_area_damage_husk_extension")
 require("scripts/unit_extensions/weapons/area_damage/liquid/liquid_area_damage_templates")
 require("scripts/unit_extensions/weapons/area_damage/area_damage_templates")
-require("scripts/unit_extensions/weapons/projectiles/projectile_physics_husk_locomotion_extension")
-require("scripts/unit_extensions/weapons/projectiles/projectile_physics_unit_locomotion_extension")
-require("scripts/unit_extensions/weapons/projectiles/projectile_script_unit_locomotion_extension")
 require("scripts/unit_extensions/weapons/ammo/active_reload_ammo_user_extension")
 require("scripts/unit_extensions/weapons/spread/weapon_spread_extension")
 require("scripts/unit_extensions/default_player_unit/buffs/buff_area_extension")
@@ -168,16 +166,9 @@ require("scripts/unit_extensions/weaves/weave_item_extension")
 require("scripts/unit_extensions/weaves/weave_interaction_extension")
 require("scripts/unit_extensions/weaves/weave_kill_enemies_extension")
 require("scripts/unit_extensions/level/event_light_spawner_extension")
+require("scripts/unit_extensions/level/disrupt_ritual_extension")
 DLCUtils.require_list("entity_extensions")
 
-local projectile_locomotion_extensions = {
-	"ProjectilePhysicsHuskLocomotionExtension",
-	"ProjectilePhysicsUnitLocomotionExtension",
-	"ProjectileScriptUnitLocomotionExtension",
-	"ProjectileTrueFlightLocomotionExtension",
-	"ProjectileHomingSkullLocomotionExtension",
-	"ProjectileExtrapolatedHuskLocomotionExtension"
-}
 local ai_supplementary_system_extension = {
 	"TentacleSplineExtension",
 	"VortexExtension",
@@ -258,7 +249,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 		"PlayerUnitSmartTargetingExtension"
 	})
 	self:_add_system("weapon_system", WeaponSystem, entity_system_creation_context)
-	self:_add_system("projectile_locomotion_system", ProjectileLocomotionSystem, entity_system_creation_context, projectile_locomotion_extensions)
+	self:_add_system("projectile_locomotion_system", ProjectileLocomotionSystem, entity_system_creation_context)
 	self:_add_system("projectile_impact_system", ProjectileImpactSystem, entity_system_creation_context)
 	self:_add_system("projectile_linker_system", ProjectileLinkerSystem, entity_system_creation_context)
 	self:_add_system("projectile_system", ProjectileSystem, entity_system_creation_context)
@@ -338,6 +329,9 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("career_system", CareerSystem, entity_system_creation_context)
 	self:_add_system("event_spawner_system", ExtensionSystemBase, entity_system_creation_context, {
 		"EventLightSpawnerExtension"
+	})
+	self:_add_system("disrupt_ritual_system", DisruptRitualSystem, entity_system_creation_context, {
+		"DisruptRitualExtension"
 	})
 
 	if Managers.state.game_mode:settings().use_keep_decorations then

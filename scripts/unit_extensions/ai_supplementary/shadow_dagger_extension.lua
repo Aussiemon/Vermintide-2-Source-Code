@@ -18,7 +18,7 @@ ShadowDaggerExtension.update = function (self, unit, input, dt, context, t)
 		return
 	end
 
-	local current_life_time = self._projectile_locomotion_extension.life_time
+	local current_life_time = self._projectile_locomotion_extension.time_lived
 	local unit_alive = Unit.alive(unit)
 
 	if not unit_alive then

@@ -28,6 +28,12 @@ MissionObjectiveUI.init = function (self, parent, ingame_ui_context)
 		event_manager:register(self, "ui_event_complete_mission", "complete_mission")
 		event_manager:register(self, "ui_event_update_mission", "update_mission")
 		event_manager:register(self, "ui_event_block_mission_ui", "block_mission_ui")
+
+		local mission_system = Managers.state.entity:system("mission_system")
+
+		if mission_system then
+			mission_system:trigger_active_mission_ui_events()
+		end
 	end
 end
 

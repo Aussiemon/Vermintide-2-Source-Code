@@ -1951,6 +1951,30 @@ go_type_table = {
 			}
 
 			return data_table
+		end,
+		rotating_hazard = function (unit, unit_name, unit_template, gameobject_functor_context)
+			local rotating_hazard_extension = ScriptUnit.extension(unit, "props_system")
+			local data_table = {
+				go_type = NetworkLookup.go_types.rotating_hazard,
+				husk_unit = NetworkLookup.husks[unit_name],
+				position = Unit.local_position(unit, 0),
+				rotation = Unit.local_rotation(unit, 0),
+				start_network_time = rotating_hazard_extension._start_t,
+				state = rotating_hazard_extension._state
+			}
+
+			return data_table
+		end,
+		dialogue_node = function (unit, unit_name, unit_template, gameobject_functor_context)
+			local dialogue_extension = ScriptUnit.extension(unit, "dialogue_system")
+			local dialogue_profile = dialogue_extension.dialogue_profile
+			local data_table = {
+				go_type = NetworkLookup.go_types.dialogue_node,
+				husk_unit = NetworkLookup.husks[unit_name],
+				dialogue_profile = NetworkLookup.dialogue_profiles[dialogue_profile]
+			}
+
+			return data_table
 		end
 	},
 	extractors = {
@@ -4433,6 +4457,30 @@ go_type_table = {
 		end,
 		sync_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			error("We don't use this path for this kind of game object")
+		end,
+		rotating_hazard = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
+			local unit_template_name = "rotating_hazard"
+			local start_network_time = GameSession.game_object_field(game_session, go_id, "start_network_time")
+			local state = GameSession.game_object_field(game_session, go_id, "state")
+			local extension_init_data = {
+				props_system = {
+					start_network_time = start_network_time,
+					state = state
+				}
+			}
+
+			return unit_template_name, extension_init_data
+		end,
+		dialogue_node = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
+			local dialogue_profile_id = GameSession.game_object_field(game_session, go_id, "dialogue_profile")
+			local extension_init_data = {
+				dialogue_system = {
+					dialogue_profile = NetworkLookup.dialogue_profiles[dialogue_profile_id]
+				}
+			}
+			local unit_template_name = "dialogue_node"
+
+			return unit_template_name, extension_init_data
 		end
 	},
 	unit_from_gameobject_creator_func = function (unit_spawner, game_session, go_id, go_template)

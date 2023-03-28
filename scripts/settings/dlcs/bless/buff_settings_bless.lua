@@ -1,10 +1,8 @@
 local stagger_types = require("scripts/utils/stagger_types")
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local settings = DLCSettings.bless
-local on_damage_taken_hit_unit = 1
 local on_damage_taken_damage_amount = 2
 local on_damage_taken_damage_type = 3
-local on_hit_attack_type = 2
 settings.buff_templates = {
 	victor_priest_activated_ability_invincibility = {
 		activation_sound = "career_ability_priest_buff_shield",
@@ -216,8 +214,7 @@ settings.buff_templates = {
 	}
 }
 settings.proc_functions = {
-	add_buff_to_hit_enemy = function (player, buff, params, world)
-		local owner_unit = player.player_unit
+	add_buff_to_hit_enemy = function (owner_unit, buff, params, world)
 		local hit_unit = params[1]
 		local attack_type = params[7]
 
@@ -242,15 +239,13 @@ settings.proc_functions = {
 			end
 		end
 	end,
-	victor_priest_4_1_on_push = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if ALIVE[player_unit] then
+	victor_priest_4_1_on_push = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
 			local new_action = params[1]
 			local kind = new_action.kind
 
 			if kind == "push_stagger" then
-				local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
+				local career_extension = ScriptUnit.has_extension(owner_unit, "career_system")
 
 				if not career_extension then
 					return
@@ -260,20 +255,19 @@ settings.proc_functions = {
 
 				if passive_ability and passive_ability:is_active() then
 					local area_damage_system = Managers.state.entity:system("area_damage_system")
-					local position = POSITION_LOOKUP[player_unit]
+					local position = POSITION_LOOKUP[owner_unit]
 					local career_power_level = career_extension:get_career_power_level()
 
-					area_damage_system:create_explosion(player_unit, position, Quaternion.identity(), "victor_priest_melee_explosion", 1, "career_ability", career_power_level, false)
+					area_damage_system:create_explosion(owner_unit, position, Quaternion.identity(), "victor_priest_melee_explosion", 1, "career_ability", career_power_level, false)
 
-					local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
+					local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
 					first_person_extension:play_hud_sound_event("career_talent_priest_unbreakable_push")
 				end
 			end
 		end
 	end,
-	add_buff_to_first_hit_enemy = function (player, buff, params)
-		local owner_unit = player.player_unit
+	add_buff_to_first_hit_enemy = function (owner_unit, buff, params)
 		local hit_unit = params[1]
 		local attack_type = params[7]
 		local hit_index = params[8]
@@ -296,16 +290,13 @@ settings.proc_functions = {
 			end
 		end
 	end,
-	victor_priest_book_buff_heal_on_kill_proc = function (player, buff, params)
+	victor_priest_book_buff_heal_on_kill_proc = function (owner_unit, buff, params)
 		if not Managers.state.network.is_server then
 			return
 		end
 
-		local player_unit = player.player_unit
-
-		if ALIVE[player_unit] then
-			local killed_unit = params[1]
-			local side = Managers.state.side.side_by_unit[player_unit]
+		if ALIVE[owner_unit] then
+			local side = Managers.state.side.side_by_unit[owner_unit]
 			local breed = params[2]
 			local amount_to_heal = breed.bloodlust_health or 0
 			amount_to_heal = amount_to_heal / 2
@@ -317,29 +308,25 @@ settings.proc_functions = {
 					local status_extension = ScriptUnit.extension(player_and_bot_units[i], "status_system")
 
 					if not status_extension:is_knocked_down() and not status_extension:is_assisted_respawning() and health_extension:is_alive() then
-						DamageUtils.heal_network(player_and_bot_units[i], player_unit, amount_to_heal, "career_passive")
+						DamageUtils.heal_network(player_and_bot_units[i], owner_unit, amount_to_heal, "career_passive")
 					end
 				end
 			end
 		end
 	end,
-	add_buff_on_elite_kill = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if ALIVE[player_unit] then
+	add_buff_on_elite_kill = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
 			local killing_blow = params[1]
 			local killer_unit = killing_blow[DamageDataIndex.ATTACKER]
 
-			if killer_unit == player_unit then
-				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			if killer_unit == owner_unit then
+				local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
 				buff_extension:add_buff(buff.template.buff_to_add)
 			end
 		end
 	end,
-	victor_priest_store_damage = function (player, buff, params)
-		local owner_unit = player.player_unit
-
+	victor_priest_store_damage = function (owner_unit, buff, params)
 		if ALIVE[owner_unit] then
 			if not buff.damage_table then
 				buff.damage_table = {}
@@ -406,10 +393,8 @@ settings.proc_functions = {
 			end
 		end
 	end,
-	victor_priest_damage_stagger = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if ALIVE[player_unit] then
+	victor_priest_damage_stagger = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
 			local damage_type = params[on_damage_taken_damage_type]
 			local valid_damage_type = damage_type ~= "life_tap" and damage_type ~= "knockdown_bleed"
 
@@ -418,15 +403,14 @@ settings.proc_functions = {
 			end
 
 			local damage_amount = params[on_damage_taken_damage_amount]
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 			local template = buff.template
-			local update_frequency = template.update_frequency
 			local staggered_damage_taken = template.staggered_damage_taken
 			local percent_non_mitigated_damage = 1 - staggered_damage_taken
 			local percent_to_absorb = staggered_damage_taken / percent_non_mitigated_damage
 			local damage_to_take = damage_amount * percent_to_absorb
 			local percentage_of_original = (damage_amount + damage_to_take) * template.percentage_to_take
-			local params = {
+			local buff_params = {
 				external_optional_value = percentage_of_original
 			}
 			local damage_stagger_dot = buff_extension:get_buff_type("damage_stagger")
@@ -444,13 +428,11 @@ settings.proc_functions = {
 
 			local buff_to_add = template.buff_to_add
 
-			buff_extension:add_buff(buff_to_add, params)
+			buff_extension:add_buff(buff_to_add, buff_params)
 		end
 	end,
-	add_buff_on_num_targets_hit = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if ALIVE[player_unit] then
+	add_buff_on_num_targets_hit = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
 			local buff_template = buff.template
 			local num_targets = buff_template.num_targets
 			local target_number = params[4]
@@ -466,7 +448,7 @@ settings.proc_functions = {
 			end
 
 			local block_buff = buff_template.block_buff
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
 			if block_buff and buff_extension:has_buff_type(block_buff) then
 				return
@@ -475,13 +457,11 @@ settings.proc_functions = {
 			local buff_name = buff_template.buff_to_add
 			local buff_system = Managers.state.entity:system("buff_system")
 
-			buff_system:add_buff(player_unit, buff_name, player_unit, false)
+			buff_system:add_buff(owner_unit, buff_name, owner_unit, false)
 		end
 	end,
-	victor_priest_knockback_on_hit = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if ALIVE[player_unit] then
+	victor_priest_knockback_on_hit = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
 			local target_number = params[4]
 
 			if target_number > 1 then
@@ -494,24 +474,22 @@ settings.proc_functions = {
 				return
 			end
 
-			local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
+			local career_extension = ScriptUnit.has_extension(owner_unit, "career_system")
 			local career_power_level = career_extension:get_career_power_level()
 			local hit_unit = params[1]
 			local postion = POSITION_LOOKUP[hit_unit]
 			local area_damage_system = Managers.state.entity:system("area_damage_system")
 
-			area_damage_system:create_explosion(player_unit, postion, Quaternion.identity(), "victor_priest_melee_explosion", 1, "career_ability", career_power_level, false)
+			area_damage_system:create_explosion(owner_unit, postion, Quaternion.identity(), "victor_priest_melee_explosion", 1, "career_ability", career_power_level, false)
 
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
 			buff_extension:add_buff(buff.template.buff_to_add)
 			buff_extension:remove_buff(buff.id)
 		end
 	end,
-	victor_priest_add_buff_first_target = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if ALIVE[player_unit] then
+	victor_priest_add_buff_first_target = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
 			local target_number = params[4]
 
 			if target_number > 1 then
@@ -523,15 +501,13 @@ settings.proc_functions = {
 			end
 
 			local buff_name = buff.template.buff_to_add
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 			buff.buff_ids[#buff.buff_ids + 1] = buff_extension:add_buff(buff_name)
 		end
 	end,
-	victor_priest_passive_resource = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if ALIVE[player_unit] then
-			local fury_to_add = 0
+	victor_priest_passive_resource = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
+			local fury_to_add = nil
 			local template = buff.template
 			local breed_data = params[2]
 
@@ -545,30 +521,16 @@ settings.proc_functions = {
 				fury_to_add = template.fury_on_normal
 			end
 
-			local talent_extension = ScriptUnit.has_extension(player_unit, "talent_system")
-			local add_buff = false
-			local overcharge_extension = ScriptUnit.has_extension(player_unit, "overcharge_system")
+			local overcharge_extension = ScriptUnit.has_extension(owner_unit, "overcharge_system")
 
 			if overcharge_extension then
 				overcharge_extension:add_charge(fury_to_add)
-
-				if overcharge_extension:overcharge_fraction() >= 1 and add_buff then
-					local buff_to_add = "victor_priest_passive_aftershock"
-					local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-					local has_buff = buff_extension:get_buff_type(buff_to_add)
-
-					if not has_buff then
-						buff_extension:add_buff(buff_to_add)
-					end
-				end
 			end
 		end
 	end,
-	victor_priest_passive_resource_activate = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if ALIVE[player_unit] then
-			local overcharge_extension = ScriptUnit.has_extension(player_unit, "overcharge_system")
+	victor_priest_passive_resource_activate = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
+			local overcharge_extension = ScriptUnit.has_extension(owner_unit, "overcharge_system")
 
 			if not overcharge_extension then
 				return
@@ -585,38 +547,36 @@ settings.proc_functions = {
 			end
 
 			local buff_to_add = buff.template.buff_to_add
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 			local has_buff = buff_extension:get_buff_type(buff_to_add)
 
 			if not has_buff then
 				buff_extension:add_buff(buff_to_add)
 
-				local player = Managers.player:owner(player_unit)
+				local player = Managers.player:owner(owner_unit)
 				local is_local = player and not player.remote
 
 				if is_local then
-					local dialogue_input = ScriptUnit.extension_input(player_unit, "dialogue_system")
+					local dialogue_input = ScriptUnit.extension_input(owner_unit, "dialogue_system")
 					local event_data = FrameTable.alloc_table()
 
 					dialogue_input:trigger_networked_dialogue_event("activate_ability", event_data)
 
-					local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
+					local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
 					first_person_extension:play_hud_sound_event("career_ability_priest_cast_t1")
-					first_person_extension:play_remote_unit_sound_event("career_ability_priest_cast_t1", player_unit, 0)
+					first_person_extension:play_remote_unit_sound_event("career_ability_priest_cast_t1", owner_unit, 0)
 				end
 			end
 		end
 	end,
-	victor_priest_4_3_heal_on_kill = function (player, buff, params)
+	victor_priest_4_3_heal_on_kill = function (owner_unit, buff, params)
 		if not Managers.state.network.is_server then
 			return
 		end
 
-		local player_unit = player.player_unit
-
-		if ALIVE[player_unit] then
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+		if ALIVE[owner_unit] then
+			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
 			if not buff_extension or not buff_extension:has_buff_type("victor_priest_passive_aftershock") then
 				return
@@ -632,8 +592,7 @@ settings.proc_functions = {
 
 			if breed and not breed.is_hero then
 				local heal_amount = breed.bloodlust_health or 0
-				local owner_position = POSITION_LOOKUP[player_unit]
-				local side = Managers.state.side.side_by_unit[player_unit]
+				local side = Managers.state.side.side_by_unit[owner_unit]
 
 				if not side then
 					return
@@ -647,7 +606,7 @@ settings.proc_functions = {
 					local unit = player_and_bot_units[i]
 
 					if ALIVE[unit] then
-						DamageUtils.heal_network(unit, player_unit, heal_amount, "career_passive")
+						DamageUtils.heal_network(unit, owner_unit, heal_amount, "career_passive")
 					end
 				end
 			end
@@ -682,7 +641,6 @@ settings.buff_function_templates = {
 			end
 
 			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-			local buff_system = Managers.state.entity:system("buff_system")
 
 			if buff_extension:get_buff_type("victor_priest_righteous_fury_active_buff") then
 				buff.stack_ids[#buff.stack_ids + 1] = buff_extension:add_buff(buff.template.buff_to_add)
@@ -770,7 +728,6 @@ settings.buff_function_templates = {
 			local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
 			local career_power_level = career_extension:get_career_power_level()
 			local position = POSITION_LOOKUP[owner_unit] + Vector3.up() * 0.5
-			local area_damage_system = Managers.state.entity:system("area_damage_system")
 			local weapon_system = Managers.state.entity:system("weapon_system")
 			local damage_source = "career_ability"
 			local damage_source_id = NetworkLookup.damage_sources[damage_source]
@@ -792,7 +749,6 @@ settings.buff_function_templates = {
 				return
 			end
 
-			local network_manager = Managers.state.network
 			local game_object_id = Managers.state.unit_storage:go_id(owner_unit)
 
 			if game_object_id then
@@ -1043,8 +999,6 @@ settings.buff_function_templates = {
 		local is_husk = player and (player.remote or player.bot_player) or false
 
 		if ALIVE[owner_unit] and is_husk then
-			local audio_system = Managers.state.entity:system("audio_system")
-
 			WwiseUtils.trigger_unit_event(world, "career_ability_priest_buildup_husk", owner_unit, 0)
 		end
 	end,
@@ -1081,18 +1035,11 @@ settings.buff_function_templates = {
 		local damage_source = "career_ability"
 		local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
 		local career_power_level = career_extension:get_career_power_level()
-		local network_manager = Managers.state.network
 		local is_server = Managers.state.network.is_server
-		local attacker_unit_go_id = network_manager:unit_game_object_id(attacker_unit)
-		local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
-		local damage_source_id = NetworkLookup.damage_sources[damage_source]
-		local world = Managers.world:world("level_world")
 		local player = Managers.player:owner(owner_unit)
 		local is_husk = player and (player.remote or player.bot_player) or false
 
 		if ALIVE[owner_unit] and is_husk then
-			local audio_system = Managers.state.entity:system("audio_system")
-
 			WwiseUtils.trigger_unit_event(world, "career_ability_priest_buildup_husk_stop", owner_unit, 0)
 		end
 

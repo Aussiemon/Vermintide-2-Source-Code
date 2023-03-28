@@ -314,18 +314,6 @@ MissionVotingUI.on_vote_ended = function (self)
 	self.vote_started = nil
 end
 
-MissionVotingUI._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
-	local completed_frame_texture = "map_frame_00"
-
-	if difficulty_index and difficulty_index > 0 then
-		local difficulty_key = DefaultDifficulties[difficulty_index]
-		local settings = DifficultySettings[difficulty_key]
-		completed_frame_texture = settings.completed_frame_texture
-	end
-
-	return completed_frame_texture
-end
-
 MissionVotingUI._set_weave_quickplay_presentation = function (self, difficulty)
 	local difficulty_settings = DifficultySettings[difficulty]
 	local difficulty_display_name = difficulty_settings.display_name
@@ -392,7 +380,7 @@ MissionVotingUI._set_custom_game_presentation = function (self, difficulty, leve
 	local level_display_name = level_settings.display_name
 	local level_image = level_settings.level_image
 	local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(self.statistics_db, self._stats_id, level_key) or 0
-	local level_frame = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
+	local level_frame = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
 	local custom_game_widgets_by_name = self._custom_game_widgets_by_name
 	local game_option_1 = custom_game_widgets_by_name.game_option_1
 	game_option_1.content.option_text = Localize(level_display_name)

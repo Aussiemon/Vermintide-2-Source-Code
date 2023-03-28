@@ -8,6 +8,11 @@ table_trap.callstack = function (operation, key, value)
 	print(table_trap._trap_information(operation, key, value) .. "\n" .. Script.callstack())
 end
 
+table_trap.crash = function (operation, key, value)
+	print(table_trap._trap_information(operation, key, value))
+	error("Table trap crash")
+end
+
 table_trap.noop = function ()
 	return
 end

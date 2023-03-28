@@ -1,17 +1,15 @@
 local settings = DLCSettings.cog
-local buff_params = {}
 settings.buff_templates = {}
 settings.proc_functions = {
-	add_debuff_on_drakefire_hit = function (player, buff, params)
+	add_debuff_on_drakefire_hit = function (owner_unit, buff, params)
 		if not Managers.state.network.is_server then
 			return
 		end
 
-		local player_unit = player.player_unit
 		local target_unit = params[1]
 
-		if ALIVE[player_unit] and ALIVE[target_unit] then
-			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+		if ALIVE[owner_unit] and ALIVE[target_unit] then
+			local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 			local wielded_slot_data = inventory_extension:get_wielded_slot_item_template()
 
 			if wielded_slot_data and wielded_slot_data.weapon_type == "DRAKEFIRE" then
@@ -19,33 +17,29 @@ settings.proc_functions = {
 				local template = buff.template
 				local buff_to_add = template.buff_to_add
 
-				buff_system:add_buff(target_unit, buff_to_add, player_unit, false)
+				buff_system:add_buff(target_unit, buff_to_add, owner_unit, false)
 			end
 		end
 	end,
-	bardin_engineer_remove_pump_stacks = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if ALIVE[player_unit] then
-			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+	bardin_engineer_remove_pump_stacks = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
+			local buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
 
 			if buff_extension and not buff_extension:has_buff_perk("engineer_persistent_pump_stacks") then
-				ProcFunctions.remove_buff_stack(player, buff, params)
+				ProcFunctions.remove_buff_stack(owner_unit, buff, params)
 			end
 		end
 	end,
-	bardin_engineer_remove_pump_stacks_on_fire = function (player, buff, params)
+	bardin_engineer_remove_pump_stacks_on_fire = function (owner_unit, buff, params)
 		local action = params[1]
 		local kind = action and action.kind
 
 		if kind and kind == "career_dr_four" then
-			settings.proc_functions.bardin_engineer_remove_pump_stacks(player, buff, params)
+			settings.proc_functions.bardin_engineer_remove_pump_stacks(owner_unit, buff, params)
 		end
 	end,
-	bardin_engineer_piston_power_add = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if ALIVE[player_unit] then
+	bardin_engineer_piston_power_add = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
 			local attack_type = params[2]
 
 			if attack_type ~= "heavy_attack" then
@@ -56,7 +50,7 @@ settings.proc_functions = {
 			local buff_to_add = template.buff_to_add
 			local buff_to_remove = template.buff_to_remove
 			local buff_to_check = template.buff_to_check
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
 			if buff_extension:has_buff_type(buff_to_remove) then
 				local has_buff_to_remove = buff_extension:get_non_stacking_buff(buff_to_remove)
@@ -67,15 +61,13 @@ settings.proc_functions = {
 
 				local buff_system = Managers.state.entity:system("buff_system")
 
-				buff_system:add_buff(player_unit, buff_to_add, player_unit, false)
+				buff_system:add_buff(owner_unit, buff_to_add, owner_unit, false)
 				buff_extension:add_buff(buff_to_check)
 			end
 		end
 	end,
-	bardin_engineer_piston_power_sound = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if ALIVE[player_unit] then
+	bardin_engineer_piston_power_sound = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
 			local kind = params[1].charge_value
 
 			if kind and kind == "heavy_attack" then
@@ -87,10 +79,8 @@ settings.proc_functions = {
 			end
 		end
 	end,
-	bardin_engineer_power_on_next_range = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if ALIVE[player_unit] then
+	bardin_engineer_power_on_next_range = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
 			local action = params[1]
 
 			if action and action.ranged_attack then
@@ -98,9 +88,9 @@ settings.proc_functions = {
 				local template = buff.template
 				local buff_to_add = template.buff_to_add
 
-				buff_system:add_buff(player_unit, buff_to_add, player_unit, false)
+				buff_system:add_buff(owner_unit, buff_to_add, owner_unit, false)
 
-				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+				local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
 				buff_extension:remove_buff(buff.id)
 			end
@@ -137,7 +127,6 @@ settings.buff_function_templates = {
 			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 
 			if first_person_extension then
-				local template = buff.template
 				local unit_animation_set_variable = Unit.animation_set_variable
 				local first_person_unit = first_person_extension:get_first_person_unit()
 				local anim_var = Unit.animation_find_variable(first_person_unit, "crank_speed")

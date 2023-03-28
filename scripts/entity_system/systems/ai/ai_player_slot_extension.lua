@@ -1836,8 +1836,6 @@ AIPlayerSlotExtension._assign_slot = function (self, slot, slot_consumer_ext)
 		return
 	end
 
-	print("[AIPlayerSlotExtension] assigning slot", slot_consumer_ext._debug_id, slot.index)
-
 	local previous_owner = slot.ai_unit_slot_extension
 
 	if previous_owner then
@@ -1946,12 +1944,9 @@ AIPlayerSlotExtension.get_destination = function (self, slot_consumer_ext, slot,
 end
 
 AIPlayerSlotExtension.free_slot = function (self, slot_consumer_ext, slot, in_queue)
-	print("[AIPlayerSlotExtension] slot freed", slot_consumer_ext._debug_id, slot.index)
 	slot_consumer_ext:on_slot_lost()
 
 	if in_queue then
-		print("[AIPlayerSlotExtension] left queue", slot_consumer_ext._debug_id, slot.index)
-
 		local queue = slot.queue
 		local queue_n = #queue
 
@@ -1981,7 +1976,6 @@ AIPlayerSlotExtension.free_slot = function (self, slot_consumer_ext, slot, in_qu
 				slot.ai_unit_slot_extension = queued_unit_ext
 				queue[queue_n] = nil
 
-				print("[AIPlayerSlotExtension] from queue", slot.index)
 				queued_unit_ext:on_slot_lost()
 				queued_unit_ext:on_slot_gained(self, slot)
 			else

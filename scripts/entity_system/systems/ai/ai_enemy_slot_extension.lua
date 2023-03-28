@@ -15,6 +15,12 @@ AIEnemySlotExtension.init = function (self, extension_init_context, unit, extens
 	self._debug_id = debug_id
 	debug_id = debug_id + 1
 	self.belongs_to_ai = true
+
+	self:_reroll_preferred_ai_slot_distance()
+end
+
+AIEnemySlotExtension._reroll_preferred_ai_slot_distance = function (self)
+	self._ai_random_slot_dist = 0.4 + math.random() * 0.2
 end
 
 AIEnemySlotExtension.extensions_ready = function (self, world, unit)
@@ -125,7 +131,7 @@ AIEnemySlotExtension._improve_ai_slot_position = function (self, self_unit, t, n
 	end
 
 	if self.improve_wait_slot_position_t < t then
-		self.improve_wait_slot_position_t = t + Math.random() * 0.4
+		self.improve_wait_slot_position_t = t + 0.2 + Math.random() * 0.4
 	else
 		return
 	end
@@ -337,9 +343,6 @@ end
 
 AIEnemySlotExtension.on_slot_lost = function (self)
 	local slot = self.slot
-
-	print("[AIEnemySlotExtension] slot lost", self._debug_id, slot and slot.index)
-
 	self.waiting_on_slot = nil
 	self.slot = nil
 end
@@ -362,8 +365,6 @@ AIEnemySlotExtension.on_slot_gained = function (self, slot_provider_ext, slot)
 
 	self.waiting_on_slot = nil
 	self.slot = slot
-
-	print("[AIEnemySlotExtension] slot gained", self._debug_id, slot.index)
 end
 
 AIEnemySlotExtension.on_entered_slot_queue = function (self, slot_provider_ext, slot)
@@ -384,8 +385,6 @@ AIEnemySlotExtension.on_entered_slot_queue = function (self, slot_provider_ext, 
 
 	self.waiting_on_slot = slot
 	self.slot = nil
-
-	print("[AIEnemySlotExtension] slot queued", self._debug_id, slot.index)
 end
 
 AIEnemySlotExtension.get_current_slot = function (self)
@@ -396,7 +395,7 @@ AIEnemySlotExtension.get_preferred_slot_type = function (self)
 	return self.use_slot_type or DEFAULT_SLOT_TYPE
 end
 
-local amount_lean_slots = 8
+local AMOUNT_LEAN_SLOTS = 8
 
 local function find_free_lean_slot(lean_slots, unit)
 	if lean_slots[unit] and lean_slots[unit] > 0 then
@@ -407,10 +406,10 @@ local function find_free_lean_slot(lean_slots, unit)
 		return 1
 	end
 
-	local start_idx = math.random(2, amount_lean_slots)
+	local start_idx = math.random(2, AMOUNT_LEAN_SLOTS)
 
-	for i = start_idx, start_idx + amount_lean_slots do
-		local idx = i % amount_lean_slots + 1
+	for i = start_idx, start_idx + AMOUNT_LEAN_SLOTS do
+		local idx = i % AMOUNT_LEAN_SLOTS + 1
 
 		if not lean_slots[idx] then
 			return idx
@@ -420,7 +419,7 @@ local function find_free_lean_slot(lean_slots, unit)
 	return nil
 end
 
-local slot_angle = math.pi * 2 / 8
+local SLOT_SPREAD_ANGLE = math.pi * 2 / AMOUNT_LEAN_SLOTS
 
 AIEnemySlotExtension.request_best_slot = function (self, attacker_slot_extension)
 	local unit = self.unit
@@ -439,14 +438,14 @@ AIEnemySlotExtension.request_best_slot = function (self, attacker_slot_extension
 	attacker_blackboard.lean_slot_index = slot_index
 	local target_position = POSITION_LOOKUP[unit]
 	local attacker_position = POSITION_LOOKUP[attacker_unit]
-	local dist = attacker_blackboard.breed.radius + target_blackboard.breed.radius
+	local dist = target_blackboard.breed.radius
 
 	if not lean_slots.center_angle then
 		lean_slots.center_angle = math.atan2(attacker_position.y - target_position.y, attacker_position.x - target_position.x)
 	end
 
-	local angle = lean_slots.center_angle + slot_index * slot_angle
-	local slot_dist = dist * (0.5 + math.random() * 0.4)
+	local angle = lean_slots.center_angle + (slot_index - 1) * SLOT_SPREAD_ANGLE
+	local slot_dist = dist + attacker_slot_extension._ai_random_slot_dist
 	local x = math.cos(angle) * slot_dist + target_position.x
 	local y = math.sin(angle) * slot_dist + target_position.y
 	local z = target_position.z
@@ -488,6 +487,8 @@ AIEnemySlotExtension.on_ai_slot_lost = function (self, slot_provier_ext)
 
 	if blackboard then
 		blackboard.lean_slot_index = nil
+
+		self:_reroll_preferred_ai_slot_distance()
 	end
 end
 
@@ -520,20 +521,34 @@ AIEnemySlotExtension.debug_draw = function (self, drawer, t, nav_world, i_target
 	local slot_position_boxed = blackboard and blackboard.slot_position_boxed
 
 	if slot_position_boxed then
-		local slot_color = script_data.debug_unit == unit and Color(255, 0, 255) or Color(255, 255, 255)
+		local debug_color = script_data.debug_unit == unit and Color(255, 0, 255) or Color(255, 255, 255)
 
-		QuickDrawer:sphere(slot_position_boxed:unbox(), 0.3, slot_color)
+		drawer:sphere(slot_position_boxed:unbox(), 0.2, debug_color)
 
-		local head_node = Unit.node(unit, "c_head")
-		local viewport_name = "player_1"
-		local color_table = Colors.get_table("gray")
-		local color_vector = Vector3(color_table[2], color_table[3], color_table[4])
-		local offset_vector = Vector3(0, 0, -1)
-		local text_size = 0.4
-		local text = blackboard.lean_slot_index
-		local category = "slot_index"
+		local unit_position = POSITION_LOOKUP[self.unit]
+		local center_angle = blackboard.lean_slots.center_angle or 0
+		local breed_radius = blackboard.breed.radius
+		local lean_slot_center_height = 0.2
+		local center_x = math.cos(center_angle) * breed_radius
+		local center_y = math.sin(center_angle) * breed_radius
 
-		Managers.state.debug_text:clear_unit_text(unit, category)
-		Managers.state.debug_text:output_unit_text(text, text_size, unit, head_node, offset_vector, nil, category, color_vector, viewport_name)
+		drawer:line(unit_position, unit_position + Vector3(center_x, center_y, 0), debug_color)
+		drawer:line(unit_position + Vector3(center_x, center_y, 0), unit_position + Vector3(center_x, center_y, lean_slot_center_height), debug_color)
+		drawer:line(unit_position, unit_position + Vector3(center_x, center_y, lean_slot_center_height), debug_color)
+		drawer:circle(unit_position, breed_radius, Vector3.up(), debug_color)
+		drawer:arrow_2d(unit_position, self.target_position:unbox(), debug_color)
+		drawer:arrow_2d(unit_position, slot_position_boxed:unbox(), debug_color)
+
+		if script_data.debug_unit == unit then
+			for i = 1, AMOUNT_LEAN_SLOTS do
+				local occupied = blackboard.lean_slots[i]
+				local slot_color = occupied and Color(255, 0, 0) or Color(255, 255, 0)
+				local slot_angle = center_angle + (i - 1) * SLOT_SPREAD_ANGLE
+				local x = math.cos(slot_angle) * (breed_radius + 1)
+				local y = math.sin(slot_angle) * (breed_radius + 1)
+
+				drawer:circle(unit_position + Vector3(x, y, 0.1), 0.35, Vector3.up(), slot_color)
+			end
+		end
 	end
 end

@@ -2854,6 +2854,9 @@ Cosmetics = {
 	frame_wizards_trail_01 = {
 		icon = "unit_frame_02"
 	},
+	frame_wizards_tower_01 = {
+		icon = "unit_frame_02"
+	},
 	frame_mondstille_01 = {
 		icon = "unit_frame_02"
 	},

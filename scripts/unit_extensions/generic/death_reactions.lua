@@ -193,7 +193,9 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 
 	local owner_unit = AiUtils.get_actual_attacker_unit(killer_unit)
 
-	play_screen_space_blood(context.world, unit, owner_unit, killing_blow, damage_type)
+	if not breed.no_blood then
+		play_screen_space_blood(context.world, unit, owner_unit, killing_blow, damage_type)
+	end
 
 	if breed.death_sound_event then
 		local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(context.world, unit, Unit.node(unit, "c_head"))
@@ -430,16 +432,17 @@ local function ai_default_husk_start(unit, context, t, killing_blow, is_server)
 	end
 
 	local owner_unit = AiUtils.get_actual_attacker_unit(killer_unit)
+	local breed = Unit.get_data(unit, "breed")
 
-	play_screen_space_blood(context.world, unit, owner_unit, killing_blow, damage_type)
+	if not breed.no_blood then
+		play_screen_space_blood(context.world, unit, owner_unit, killing_blow, damage_type)
+	end
 
 	if ScriptUnit.has_extension(unit, "ai_inventory_system") then
 		local inventory_system = Managers.state.entity:system("ai_inventory_system")
 
 		inventory_system:drop_item(unit)
 	end
-
-	local breed = Unit.get_data(unit, "breed")
 
 	if breed.death_sound_event and not is_hot_join_sync(killing_blow) then
 		local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(context.world, unit, Unit.node(unit, "c_head"))
@@ -2192,9 +2195,88 @@ DeathReactions.templates.shadow_skull.husk.start = function (unit, context, t, k
 	return data, result
 end
 
+DeathReactions.templates.tower_homing_skull = table.clone(DeathReactions.templates.ai_default)
+
+DeathReactions.templates.tower_homing_skull.unit.start = function (unit, context, t, killing_blow, is_server)
+	local data, result = DeathReactions.templates.ai_default.unit.start(unit, context, t, killing_blow, is_server)
+	data.despawn_after_time = t + 2.5
+	local projectile_extension = ScriptUnit.extension(unit, "projectile_system")
+
+	projectile_extension:destroy()
+
+	local projectile_locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
+
+	projectile_locomotion_extension:destroy()
+
+	return data, result
+end
+
+DeathReactions.templates.tower_homing_skull.unit.update = function (unit, dt, context, t, data)
+	if data.despawn_after_time < t and not data.marked_for_deletion then
+		Managers.state.unit_spawner:mark_for_deletion(unit)
+
+		data.marked_for_deletion = true
+
+		return DeathReactions.IS_DONE
+	end
+
+	return DeathReactions.IS_NOT_DONE
+end
+
+DeathReactions.templates.tower_homing_skull.husk.start = function (unit, context, t, killing_blow, is_server)
+	local data, result = DeathReactions.templates.ai_default.husk.start(unit, context, t, killing_blow, is_server)
+	local projectile_extension = ScriptUnit.extension(unit, "projectile_system")
+
+	projectile_extension:destroy()
+
+	local projectile_locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
+
+	projectile_locomotion_extension:destroy()
+
+	if is_hot_join_sync(killing_blow) then
+		Unit.flow_event(unit, "lua_on_death")
+	end
+
+	return data, result
+end
+
 DLCUtils.map_list("death_reactions", function (file)
 	return table.merge(DeathReactions.templates, require(file))
 end)
+
+DeathReactions.templates.destructible_ward = {
+	unit = {
+		pre_start = function (unit, context, t, killing_blow)
+			return
+		end,
+		start = function (unit, context, t, killing_blow, is_server)
+			Managers.state.game_mode:level_object_killed(unit, killing_blow)
+			Unit.set_flow_variable(unit, "current_health", 0)
+			Unit.flow_event(unit, "lua_on_death")
+			Managers.state.entity:remove_extensions_from_unit(unit, {
+				"WardExtension"
+			})
+		end,
+		update = function (unit, dt, context, t, data)
+			return
+		end
+	},
+	husk = {
+		pre_start = function (unit, context, t, killing_blow)
+			return
+		end,
+		start = function (unit, context, t, killing_blow, is_server)
+			Managers.state.game_mode:level_object_killed(unit, killing_blow)
+			Unit.flow_event(unit, "lua_on_death")
+			Managers.state.entity:remove_extensions_from_unit(unit, {
+				"WardExtension"
+			})
+		end,
+		update = function (unit, dt, context, t, data)
+			return
+		end
+	}
+}
 
 DeathReactions.get_reaction = function (death_reaction_template, is_husk)
 	local templates = DeathReactions.templates

@@ -1567,6 +1567,14 @@ CameraEffectSettings = {
 			duration = 0.2,
 			fade_out = 0.5,
 			octaves = 3
+		},
+		wizards_tower_barrel_splash = {
+			persistance = 1,
+			fade_out = 1,
+			amplitude = 0.9,
+			duration = 1,
+			fade_in = 0.1,
+			octaves = 8
 		}
 	}
 }

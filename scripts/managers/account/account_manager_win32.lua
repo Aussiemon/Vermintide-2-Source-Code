@@ -12,6 +12,12 @@ AccountManager.init = function (self)
 	if HAS_STEAM then
 		self._initial_user_id = Steam.user_id()
 	end
+
+	if DEDICATED_SERVER then
+		self._country_code = string.lower(SteamGameServer.country_code())
+	elseif HAS_STEAM then
+		self._country_code = string.lower(Steam.user_country_code())
+	end
 end
 
 AccountManager.user_id = function (self)
@@ -137,6 +143,10 @@ AccountManager.active_controller = function (self)
 	return nil
 end
 
+AccountManager.region = function (self)
+	return self._country_code
+end
+
 AccountManager.friends_list_initiated = function (self)
 	return
 end
@@ -173,14 +183,14 @@ AccountManager.has_session = function (self)
 	return true
 end
 
-AccountManager.region = function (self)
-	return
-end
-
 AccountManager.has_access = function (self)
 	return false
 end
 
 AccountManager.should_throttle = function (self)
 	return false
+end
+
+AccountManager.console_type_setting = function (self)
+	return true
 end

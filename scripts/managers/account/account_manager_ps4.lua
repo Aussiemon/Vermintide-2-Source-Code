@@ -14,6 +14,21 @@ local function dprint(...)
 	print("[AccountManager] ", ...)
 end
 
+local CONSOLE_TYPE_SETTINGS = {
+	ps4 = {
+		allow_dismemberment = false
+	},
+	ps4_pro = {
+		allow_dismemberment = false
+	},
+	ps5 = {
+		allow_dismemberment = true
+	},
+	default = {
+		allow_dismemberment = false
+	}
+}
+
 AccountManager.init = function (self)
 	if self:is_online() then
 		self:fetch_user_data()
@@ -26,6 +41,7 @@ AccountManager.init = function (self)
 		Trophies.create_context(self._initial_user_id)
 	end
 
+	self._country_code = PS4.user_country(self._initial_user_id)
 	self._room_state = nil
 	self._current_room = nil
 	self._offline_mode = nil
@@ -411,11 +427,7 @@ AccountManager.friends_list_initiated = function (self)
 end
 
 AccountManager.region = function (self)
-	local country = PS4.user_country(self._initial_user_id)
-
-	print("Country:", tostring(country))
-
-	return country
+	return self._country_code
 end
 
 AccountManager._update_matchmaking_data = function (self, dt)
@@ -973,4 +985,23 @@ AccountManager.should_throttle = function (self)
 	else
 		return true
 	end
+end
+
+AccountManager.console_type = function (self)
+	local console_type = "ps4"
+
+	if PS4.is_ps5() then
+		console_type = "ps5"
+	elseif PS4.is_pro() then
+		console_type = "ps4_pro"
+	end
+
+	return console_type
+end
+
+AccountManager.console_type_setting = function (self, setting)
+	local console_type = self:console_type()
+	local console_settings = CONSOLE_TYPE_SETTINGS[console_type] or CONSOLE_TYPE_SETTINGS.default
+
+	return console_settings[setting]
 end

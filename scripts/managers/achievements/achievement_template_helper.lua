@@ -598,3 +598,23 @@ AchievementTemplateHelper.add_meta_challenge = function (achievements, id, achie
 	}
 	achievements[id] = template
 end
+
+AchievementTemplateHelper.add_console_achievements = function (xb1_achievements, ps4_achievements)
+	local achievements = AchievementTemplates.achievements
+
+	for name, id in pairs(xb1_achievements) do
+		if achievements[name] then
+			achievements[name].ID_XB1 = id
+		else
+			Application.error(string.format("Missing xbox achievement %q", name))
+		end
+	end
+
+	for name, id in pairs(ps4_achievements) do
+		if achievements[name] then
+			achievements[name].ID_PS4 = id
+		else
+			Application.error(string.format("Missing xbox achievement %q", name))
+		end
+	end
+end

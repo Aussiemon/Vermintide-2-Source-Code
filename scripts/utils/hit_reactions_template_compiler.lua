@@ -27,6 +27,7 @@ dofile("scripts/settings/hit_effects/hit_effects_chaos_sorcerer")
 dofile("scripts/settings/hit_effects/hit_effects_chaos_exalted_sorcerer")
 dofile("scripts/settings/hit_effects/hit_effects_chaos_zombie")
 dofile("scripts/settings/hit_effects/hit_effects_chaos_spawn")
+dofile("scripts/settings/hit_effects/hit_effects_undead_ethereal_skeleton")
 dofile("scripts/settings/breeds")
 DLCUtils.dofile_list("hit_effects")
 

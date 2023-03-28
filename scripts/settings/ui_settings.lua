@@ -2,14 +2,14 @@ require("scripts/ui/ui_layer")
 require("scripts/utils/colors")
 
 UISettings = UISettings or {
-	tooltip_fade_in_speed = 4,
 	start_drag_threshold = 0.15,
+	tooltip_fade_in_speed = 4,
 	double_click_threshold = 0.1,
 	crafting_progress_time = 0.3,
 	max_craft_material_presentation_amount = 999,
-	console_menu_camera_move_duration = 0.5,
 	bots_level_display_text = "BOT",
-	crafting_animation_wait_time = 0.3,
+	console_menu_camera_move_duration = 0.5,
+	items_per_chest = 3,
 	max_inventory_items = 1000,
 	hero_panel_height = 120,
 	wait_for_mip_streaming_items = false,
@@ -21,6 +21,7 @@ UISettings = UISettings or {
 	tooltip_wait_duration = 0.1,
 	crafting_animation_in_time = 0.2,
 	wait_for_mip_streaming_character = true,
+	crafting_animation_wait_time = 0.3,
 	console_menu_rect_color = Colors.get_color_table_with_alpha("console_menu_rect", 125),
 	console_start_game_menu_rect_color = Colors.get_color_table_with_alpha("console_menu_rect", 125),
 	game_start_windows = {
@@ -1387,6 +1388,30 @@ UISettings.dlc_order_data = {
 	{
 		dlc = "five_career_bundle_0005",
 		display_name = "display_name_five_career_bundle_0005"
+	},
+	{
+		dlc = "engineer_bundle_0001",
+		display_name = "display_name_engineer_bundle_0001"
+	},
+	{
+		dlc = "maidenguard_bundle_0003",
+		display_name = "display_name_maidenguard_bundle_0003"
+	},
+	{
+		dlc = "questing_knight_bundle_0001",
+		display_name = "display_name_questing_knight_bundle_0001"
+	},
+	{
+		dlc = "adept_bundle_0002",
+		display_name = "display_name_adept_bundle_0002"
+	},
+	{
+		dlc = "priest_bundle_0001",
+		display_name = "display_name_priest_bundle_0001"
+	},
+	{
+		dlc = "five_career_bundle_0006",
+		display_name = "display_name_five_career_bundle_0006"
 	}
 }
 local pc_button_icon = {

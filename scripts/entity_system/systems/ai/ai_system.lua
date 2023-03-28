@@ -1123,6 +1123,8 @@ local function update_blackboard(unit, blackboard, t, dt)
 		if target_locomotion then
 			if target_locomotion.average_velocity then
 				blackboard.target_speed_away = Vector3_dot(target_locomotion:average_velocity(), Vector3_normalize(POSITION_LOOKUP[target_unit] - current_position))
+			elseif target_locomotion.current_velocity then
+				blackboard.target_speed_away = Vector3_dot(target_locomotion:current_velocity(), Vector3_normalize(POSITION_LOOKUP[target_unit] - current_position))
 			else
 				blackboard.target_speed_away = 0
 			end

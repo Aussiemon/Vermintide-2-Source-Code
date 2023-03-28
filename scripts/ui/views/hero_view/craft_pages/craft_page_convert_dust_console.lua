@@ -50,6 +50,8 @@ CraftPageConvertDustConsole.on_enter = function (self, params, settings)
 	self._item_grid:disable_item_drag()
 	self.super_parent:clear_disabled_backend_ids()
 	self:setup_recipe_requirements()
+	self.super_parent:disable_filter(true)
+	self.super_parent:disable_search(true)
 end
 
 CraftPageConvertDustConsole._has_required_item_amount = function (self, backend_id)
@@ -230,6 +232,9 @@ CraftPageConvertDustConsole.on_exit = function (self, params)
 	print("[HeroWindowCraft] Exit Substate CraftPageConvertDustConsole")
 
 	self.ui_animator = nil
+
+	self.super_parent:disable_filter(false)
+	self.super_parent:disable_search(false)
 
 	if self._craft_input_time then
 		self:_play_sound("play_gui_craft_forge_button_aborted")

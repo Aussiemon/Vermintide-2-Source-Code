@@ -768,6 +768,11 @@ BTMeleeOverlapAttackAction.weapon_sweep_overlap = function (self, unit, blackboa
 	end
 end
 
+local debug_drawer_info = {
+	mode = "retained",
+	name = "BTMeleeOverlapAttackAction"
+}
+
 BTMeleeOverlapAttackAction.overlap_checks = function (self, unit, blackboard, physics_world, t, action, attack, oobb_pos, box_rot, box_size, hit_units, overlap_update_radius)
 	if blackboard.is_illusion then
 		return 0
@@ -778,6 +783,17 @@ BTMeleeOverlapAttackAction.overlap_checks = function (self, unit, blackboard, ph
 	PhysicsWorld.prepare_actors_for_overlap(physics_world, oobb_pos, overlap_update_radius)
 
 	local hit_actors, num_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "position", oobb_pos, "rotation", box_rot, "size", box_size, "shape", "oobb", "types", "dynamics", "collision_filter", filter_name, "use_global_table")
+
+	if Development.parameter("debug_weapons") then
+		local drawer = Managers.state.debug:drawer(debug_drawer_info)
+
+		drawer:reset()
+
+		local pose = Matrix4x4.from_quaternion_position(box_rot, oobb_pos)
+
+		drawer:box(pose, box_size)
+	end
+
 	local self_pos = POSITION_LOOKUP[unit]
 	local unit_rotation = Unit.local_rotation(unit, 0)
 	local forward_dir = Quaternion.forward(unit_rotation)
@@ -786,7 +802,7 @@ BTMeleeOverlapAttackAction.overlap_checks = function (self, unit, blackboard, ph
 
 	for i = 1, num_hit_actors do
 		local hit_actor = hit_actors[i]
-		local hit_unit = Actor.unit(hit_actor)
+		local hit_unit = hit_actor and Actor.unit(hit_actor)
 
 		if Unit.alive(hit_unit) and not hit_units[hit_unit] then
 			local hit_unit_pos = POSITION_LOOKUP[hit_unit]

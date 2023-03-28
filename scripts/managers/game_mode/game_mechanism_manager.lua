@@ -456,8 +456,9 @@ GameMechanismManager._init_mechanism = function (self)
 		end
 
 		if switching_mechanism then
-			Managers.backend:commit(true)
-			Managers.backend:load_mechanism_loadout(mechanism_key)
+			Managers.backend:commit(true, function ()
+				Managers.backend:load_mechanism_loadout(mechanism_key)
+			end)
 		end
 	end
 
@@ -653,6 +654,10 @@ GameMechanismManager.profile_changed = function (self, peer_id, local_player_id,
 	end
 
 	return false
+end
+
+GameMechanismManager.profile_synchronizer = function (self)
+	return self._profile_synchronizer
 end
 
 GameMechanismManager.get_players_session_score = function (self, statistics_db, profile_synchronizer, saved_scoreboard_stats)

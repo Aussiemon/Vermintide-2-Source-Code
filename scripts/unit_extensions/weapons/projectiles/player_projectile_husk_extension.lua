@@ -65,6 +65,7 @@ PlayerProjectileHuskExtension.init = function (self, extension_init_context, uni
 	local projectile_info = current_action.projectile_info
 	local impact_data = current_action.impact_data
 	local timed_data = current_action.timed_data
+	self.charge_data = current_action.charge_data
 
 	if impact_data.grenade and owner_buff_extension and owner_buff_extension:has_buff_perk("frag_fire_grenades") then
 		impact_data = table.shallow_copy(impact_data)
@@ -93,7 +94,9 @@ PlayerProjectileHuskExtension.init = function (self, extension_init_context, uni
 end
 
 PlayerProjectileHuskExtension.destroy = function (self)
-	return
+	if self._projectile_unit and self._active and not self.is_server then
+		self:stop()
+	end
 end
 
 PlayerProjectileHuskExtension.extensions_ready = function (self, world, unit)
@@ -164,7 +167,15 @@ PlayerProjectileHuskExtension.update = function (self, unit, input, _, context, 
 	end
 end
 
-PlayerProjectileHuskExtension.stop = function (self)
+PlayerProjectileHuskExtension.stop = function (self, hit_unit, hit_zone_name)
+	local custom_stop_func = self.projectile_info.custom_stop_func
+
+	if custom_stop_func and custom_stop_func(self, hit_unit, hit_zone_name) then
+		self._stop_impacts = true
+
+		return
+	end
+
 	local timed_data = self._timed_data
 	local activate_life_time_on_impact = timed_data and timed_data.activate_life_time_on_impact
 
@@ -193,7 +204,7 @@ PlayerProjectileHuskExtension.handle_timed_events = function (self, t)
 	if self._life_time <= t then
 		local unit = self._projectile_unit
 		local timed_data = self._timed_data
-		local aoe_data = timed_data.aoe
+		local aoe_data = self._charge_t and self._charge_t <= t and timed_data.charged_aoe or timed_data.aoe
 
 		if aoe_data then
 			local position = POSITION_LOOKUP[unit]
@@ -220,6 +231,11 @@ PlayerProjectileHuskExtension.handle_timed_events = function (self, t)
 		end
 
 		self:_stop_by_life_time()
+	end
+
+	if self._charge_t and self._charge_t <= t then
+		self._charge_t = nil
+		self.is_charged = true
 	end
 end
 
@@ -249,6 +265,10 @@ PlayerProjectileHuskExtension._activate_life_time = function (self, game_time)
 	end
 
 	self._life_time = game_time + timed_data.life_time
+
+	if timed_data.charge_time then
+		self._charge_t = game_time + timed_data.charge_time
+	end
 end
 
 PlayerProjectileHuskExtension.impact_dynamic = function (self, hit_unit, hit_position, hit_direction, hit_normal, hit_actor)
@@ -326,7 +346,7 @@ PlayerProjectileHuskExtension.hit_enemy = function (self, impact_data, hit_unit,
 			end
 		end
 
-		self:stop()
+		self:stop(hit_unit, hit_zone_name)
 	end
 
 	local current_action = self._current_action
@@ -340,7 +360,7 @@ PlayerProjectileHuskExtension.hit_enemy = function (self, impact_data, hit_unit,
 					self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, true)
 				end
 
-				self:stop()
+				self:stop(hit_unit, hit_zone_name)
 			end
 		end
 	elseif self._max_mass <= self._amount_of_mass_hit then
@@ -351,7 +371,7 @@ PlayerProjectileHuskExtension.hit_enemy = function (self, impact_data, hit_unit,
 				self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, true)
 			end
 
-			self:stop()
+			self:stop(hit_unit, hit_zone_name)
 		end
 	end
 
@@ -419,7 +439,7 @@ PlayerProjectileHuskExtension.hit_enemy_damage = function (self, damage_profile,
 		else
 			self._amount_of_mass_hit = self._max_mass
 
-			self:stop()
+			self:stop(hit_unit, hit_zone_name)
 		end
 	elseif was_alive and not action.ignore_armor and (breed.armor_category == 2 or breed.armor_category == 3 or shield_blocked) then
 		self._did_damage = predicted_damage
@@ -429,7 +449,7 @@ PlayerProjectileHuskExtension.hit_enemy_damage = function (self, damage_profile,
 		else
 			self._amount_of_mass_hit = self._max_mass
 
-			self:stop()
+			self:stop(hit_unit, hit_zone_name)
 		end
 	else
 		self._did_damage = predicted_damage

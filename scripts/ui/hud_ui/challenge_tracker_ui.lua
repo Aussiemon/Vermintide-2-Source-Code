@@ -35,14 +35,16 @@ ChallengeTrackerUI._create_ui_elements = function (self)
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
 end
 
+local function sort_by_category(a, b)
+	return a:get_category() < b:get_category()
+end
+
 ChallengeTrackerUI._refresh_challenge_data = function (self, data)
 	table.clear(data.challenges)
 
 	local challenges, n = Managers.venture.challenge:get_challenges_filtered(data.challenges)
 
-	table.sort(challenges, function (a, b)
-		return a:get_category() < b:get_category()
-	end)
+	table.sort(challenges, sort_by_category)
 
 	local active_widgets = data.widgets
 	local num_active_widgets = #active_widgets

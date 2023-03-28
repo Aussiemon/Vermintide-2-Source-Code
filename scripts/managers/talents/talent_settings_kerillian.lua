@@ -292,15 +292,32 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_shade_stealth_crits = {
 		buffs = {
 			{
-				event = "on_stealth_stacks_modified",
+				event = "on_invisible",
 				buff_to_add = "kerillian_shade_stealth_crits_buff",
-				buff_func = "kerillian_shade_stealth_crits_proc"
+				buff_func = "add_buff_local"
+			}
+		}
+	},
+	kerillian_shade_stealth_crits_remover = {
+		buffs = {
+			{
+				event = "on_visible",
+				remove_buff_func = "remove_buff_stack",
+				buff_func = "remove_buff_stack",
+				remove_buff_stack_data = {
+					{
+						num_stacks = 1,
+						buff_to_remove = "kerillian_shade_stealth_crits_buff",
+						server_controlled = false
+					}
+				}
 			}
 		}
 	},
 	kerillian_shade_stealth_crits_buff = {
 		buffs = {
 			{
+				max_stacks = 1,
 				icon = "kerillian_shade_perk_dagger_in_the_dark",
 				stat_buff = "critical_strike_chance_melee",
 				bonus = 1
@@ -341,12 +358,12 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				duration = 1.5,
-				remove_buff_func = "end_shade_activated_ability_short",
+				remove_buff_func = "on_remove_shade_dash_stealth",
 				proc_weight = 5,
 				buff_func = "shade_short_stealth_on_hit",
 				event = "on_hit",
 				refresh_durations = true,
-				apply_buff_func = "apply_shade_activated_ability",
+				apply_buff_func = "on_apply_shade_dash_stealth",
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
 				icon = "kerillian_shade_perk_blur"
@@ -357,18 +374,20 @@ TalentBuffTemplates.wood_elf = {
 		deactivation_effect = "fx/screenspace_shade_skill_02",
 		buffs = {
 			{
-				remove_buff_func = "shade_activated_ability_on_remove",
+				icon = "passive_bonus_kerillian_shade",
 				name = "kerillian_shade_activated_ability",
 				proc_weight = 5,
 				buff_func = "shade_activated_ability_on_hit",
 				event = "on_hit",
 				refresh_durations = true,
 				apply_buff_func = "apply_shade_activated_ability",
-				restealth = true,
+				can_restealth_combo = true,
+				remove_buff_func = "on_shade_activated_ability_remove",
 				perk = "shade_melee_boost",
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
-				icon = "passive_bonus_kerillian_shade"
+				can_restealth_on_remove = true,
+				stealth_identifier = "skill_shade"
 			}
 		}
 	},
@@ -376,18 +395,20 @@ TalentBuffTemplates.wood_elf = {
 		deactivation_effect = "fx/screenspace_shade_skill_02",
 		buffs = {
 			{
-				remove_buff_func = "shade_activated_ability_on_remove",
+				stealth_identifier = "skill_shade_restealth",
 				name = "kerillian_shade_activated_ability_restealth",
 				proc_weight = 5,
 				buff_func = "shade_activated_ability_on_hit",
 				event = "on_hit",
 				refresh_durations = true,
 				apply_buff_func = "apply_shade_activated_ability",
-				restealth = false,
+				can_restealth_on_remove = false,
+				remove_buff_func = "on_shade_activated_ability_remove",
 				perk = "shade_melee_boost",
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
 				icon = "passive_bonus_kerillian_shade",
+				can_restealth_combo = true,
 				duration = buff_tweak_data.kerillian_shade_activated_ability.duration
 			}
 		}
@@ -564,16 +585,18 @@ TalentBuffTemplates.wood_elf = {
 		deactivation_effect = "fx/screenspace_shade_skill_02",
 		buffs = {
 			{
-				remove_buff_func = "end_shade_activated_ability_short",
+				stealth_identifier = "skill_shade_short",
 				name = "kerillian_shade_activated_ability_short",
 				proc_weight = 5,
 				buff_func = "shade_short_stealth_on_hit",
 				event = "on_hit",
 				refresh_durations = true,
 				apply_buff_func = "apply_shade_activated_ability",
+				remove_buff_func = "on_shade_activated_ability_remove",
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
-				icon = "kerillian_shade_passive_stealth_on_backstab_kill"
+				icon = "kerillian_shade_passive_stealth_on_backstab_kill",
+				can_restealth_combo = false
 			}
 		}
 	},
@@ -641,10 +664,12 @@ TalentBuffTemplates.wood_elf = {
 				event = "on_hit",
 				refresh_durations = true,
 				apply_buff_func = "apply_shade_activated_ability",
-				remove_buff_func = "end_shade_activated_ability_short",
+				remove_buff_func = "on_shade_activated_ability_remove",
+				stealth_identifier = "skill_shade_short",
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
-				icon = "kerillian_shade_activated_ability_quick_cooldown"
+				icon = "kerillian_shade_activated_ability_quick_cooldown",
+				can_restealth_combo = false
 			}
 		}
 	},
@@ -684,17 +709,20 @@ TalentBuffTemplates.wood_elf = {
 		deactivation_effect = "fx/screenspace_shade_skill_02",
 		buffs = {
 			{
-				remove_buff_func = "shade_activated_ability_on_remove",
+				remove_buff_func = "on_shade_activated_ability_remove",
 				name = "kerillian_shade_activated_ability_phasing",
 				proc_weight = 5,
 				buff_func = "shade_activated_ability_on_hit",
 				event = "on_hit",
 				refresh_durations = true,
 				apply_buff_func = "apply_shade_activated_ability",
+				can_restealth_combo = true,
+				icon = "passive_bonus_kerillian_shade",
 				duration = 5,
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
-				icon = "passive_bonus_kerillian_shade"
+				can_restealth_on_remove = true,
+				stealth_identifier = "skill_shade"
 			}
 		}
 	},
@@ -1058,6 +1086,7 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				event = "on_dodge",
+				status_identifier = "kerillian_maidenguard_passive_noclip_dodge",
 				set_status = true,
 				buff_func = "set_noclip"
 			}
@@ -1067,6 +1096,7 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				event = "on_dodge_finished",
+				status_identifier = "kerillian_maidenguard_passive_noclip_dodge",
 				set_status = false,
 				buff_func = "set_noclip"
 			}

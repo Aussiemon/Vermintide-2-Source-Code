@@ -634,7 +634,7 @@ HeroWindowWeaveProperties._populate_menu_option_widget = function (self, entry_d
 		content.used_amount = used_amount
 		local num_uses = 1
 		local cost = backend_interface_weaves:get_talent_mastery_cost(talent_key)
-		local value_text = not locked and used_amount < num_uses and cost
+		local value_text = not locked and used_amount < num_uses and tostring(cost)
 		local price_text = nil
 
 		if value_text then
@@ -667,7 +667,7 @@ HeroWindowWeaveProperties._populate_menu_option_widget = function (self, entry_d
 		content.used_amount = used_amount
 		local num_uses = 1
 		local cost = backend_interface_weaves:get_trait_mastery_cost(trait_key)
-		local value_text = not locked and used_amount < num_uses and cost
+		local value_text = not locked and used_amount < num_uses and tostring(cost)
 		local price_text = nil
 
 		if value_text then

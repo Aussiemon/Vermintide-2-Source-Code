@@ -4863,6 +4863,41 @@ UIWidgets.create_tiled_texture = function (scenegraph_id, texture, texture_size,
 	}
 end
 
+UIWidgets.create_shader_tiled_texture = function (scenegraph_id, texture, texture_size, offset, masked, color)
+	return {
+		element = {
+			passes = {
+				{
+					pass_type = "shader_tiled_texture",
+					style_id = "tiling_texture",
+					texture_id = "tiling_texture"
+				}
+			}
+		},
+		content = {
+			tiling_texture = texture
+		},
+		style = {
+			tiling_texture = {
+				masked = masked,
+				offset = offset or {
+					0,
+					0,
+					0
+				},
+				tile_size = texture_size,
+				color = color or {
+					255,
+					255,
+					255,
+					255
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
 UIWidgets.create_texture_with_text = function (texture, text, scenegraph_id, text_scenegraph_id, text_style)
 	return {
 		element = {
@@ -5367,68 +5402,6 @@ UIWidgets.create_simple_multi_texture = function (textures, texture_sizes, axis,
 					0,
 					0
 				},
-				masked = masked
-			}
-		},
-		scenegraph_id = scenegraph_id
-	}
-end
-
-UIWidgets.create_simple_centered_uv_texture_amount = function (texture, texture_size, amount, axis, scenegraph_id, masked)
-	local texture_uvs = {}
-	local texture_sizes = {}
-
-	for i = 1, amount do
-		texture_uvs[i] = {
-			{
-				0,
-				0
-			},
-			{
-				1,
-				1
-			}
-		}
-		texture_sizes[i] = {
-			texture_size[1],
-			texture_size[2]
-		}
-	end
-
-	return {
-		element = {
-			passes = {
-				{
-					texture_id = "texture_id",
-					style_id = "texture_id",
-					pass_type = "centered_uv_texture_amount"
-				}
-			}
-		},
-		content = {
-			texture_id = texture
-		},
-		style = {
-			texture_id = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					0,
-					0
-				},
-				texture_size = texture_size or {
-					10,
-					10
-				},
-				texture_axis = axis or 1,
-				texture_amount = amount or 3,
-				texture_uvs = texture_uvs,
-				texture_sizes = texture_sizes,
 				masked = masked
 			}
 		},

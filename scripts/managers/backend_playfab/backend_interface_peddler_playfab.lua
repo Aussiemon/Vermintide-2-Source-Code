@@ -117,12 +117,6 @@ BackendInterfacePeddlerPlayFab.refresh_stock = function (self, external_cb)
 end
 
 local function verify_stock_item(item_master_list_data)
-	local required_dlc = item_master_list_data.required_dlc
-
-	if required_dlc and not Managers.unlock:is_dlc_unlocked(required_dlc) then
-		return false
-	end
-
 	local has_platform_id = nil
 
 	if IS_CONSOLE then
@@ -422,7 +416,7 @@ BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, e
 		bundle_item_data.bundle_price = price_sum
 	end
 
-	self._steam_item_currency = string.gsub(currency, "%z", "")
+	self._steam_item_currency = currency
 	self._steam_stock_ready = true
 
 	if external_cb then
@@ -852,8 +846,11 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 					ItemId = item_key,
 					ItemInstanceId = steam_backend_unique_id
 				}
+				local backend_id = backend_mirror:add_item(steam_backend_unique_id, steam_item, true)
 
-				backend_mirror:add_item(steam_backend_unique_id, steam_item, true)
+				if backend_id then
+					rewards_claimed = true
+				end
 			end
 		end
 	end

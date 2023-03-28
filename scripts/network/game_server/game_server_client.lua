@@ -16,8 +16,6 @@ GameServerLobbyClient.init = function (self, network_options, game_server_data, 
 	if reserve_peers then
 		self._game_server_lobby = GameServerInternal.reserve_server(self._game_server_info, password, reserve_peers)
 	else
-		fassert(false, "[GameServerLobbyClient] This shouldn't happen")
-
 		self._game_server_lobby = GameServerInternal.join_server(self._game_server_info, password)
 	end
 

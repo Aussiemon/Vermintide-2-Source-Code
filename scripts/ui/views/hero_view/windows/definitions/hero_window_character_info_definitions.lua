@@ -44,8 +44,8 @@ local scenegraph_definition = {
 			61
 		},
 		position = {
-			-184,
-			0,
+			-0,
+			60,
 			1
 		}
 	},
@@ -110,12 +110,12 @@ local scenegraph_definition = {
 		parent = "divider_2",
 		horizontal_alignment = "right",
 		size = {
-			800,
+			350,
 			0
 		},
 		position = {
 			-20,
-			44,
+			18,
 			1
 		}
 	},
@@ -124,12 +124,12 @@ local scenegraph_definition = {
 		parent = "divider_2",
 		horizontal_alignment = "right",
 		size = {
-			800,
+			350,
 			0
 		},
 		position = {
 			-20,
-			18,
+			46,
 			1
 		}
 	}
@@ -290,12 +290,16 @@ local function create_window_divider(scenegraph_id, size)
 end
 
 local widgets = {
-	divider_1 = UIWidgets.create_simple_texture("menu_divider", "divider_1", nil, nil, {
-		255,
-		255,
-		255,
-		255
-	}),
+	divider_1 = UIWidgets.create_simple_uv_texture("menu_divider", {
+		{
+			0,
+			1
+		},
+		{
+			1,
+			0
+		}
+	}, "divider_1", nil, nil),
 	divider_2 = UIWidgets.create_simple_texture("menu_divider", "divider_2", nil, nil, {
 		255,
 		255,

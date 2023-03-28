@@ -67,6 +67,7 @@ DLCUtils.dofile_list("breeds")
 CHAOS = {}
 SKAVEN = {}
 BEASTMEN = {}
+UNDEAD = {}
 CRITTER = {}
 ELITES = {}
 local DEFAULT_NAVTAG_LAYERS = {
@@ -345,6 +346,8 @@ for name, breed in pairs(Breeds) do
 		SKAVEN[breed.name] = true
 	elseif breed.race == "beastmen" then
 		BEASTMEN[breed.name] = true
+	elseif breed.race == "undead" then
+		UNDEAD[breed.name] = true
 	elseif breed.race == "critter" then
 		CRITTER[breed.name] = true
 	elseif breed.race then

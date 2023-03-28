@@ -183,7 +183,13 @@ LobbyHost.lobby_host = function (self)
 end
 
 LobbyHost.user_name = function (self, peer_id)
-	return string.gsub(self.lobby:user_name(peer_id), "%c", "")
+	if HAS_STEAM then
+		return string.gsub(Steam.user_name(), "%c", "")
+	elseif IS_PS4 then
+		return string.gsub(self.lobby:user_name(peer_id), "%c", "")
+	else
+		return peer_id
+	end
 end
 
 LobbyHost.id = function (self)

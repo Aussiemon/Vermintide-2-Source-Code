@@ -5,6 +5,26 @@ local MIN_INTOXICATION_LEVEL = -3
 local NUM_PACK_MASTER_GRABS = 2
 local NUM_GLOBADIER_POISONS = 2
 local NUM_TIMES_KNOCKED_DOWN = 2
+local block_breaking_fatigue_types = {
+	blocked_slam = true,
+	blocked_attack_2 = true,
+	blocked_berzerker = true,
+	chaos_cleave = true,
+	blocked_sv_sweep_2 = true,
+	blocked_sv_cleave = true,
+	complete = true,
+	blocked_running = true,
+	blocked_charge = true,
+	sv_shove = true,
+	sv_push = true,
+	blocked_sv_sweep = true,
+	shield_blocked_slam = true,
+	chaos_spawn_combo = true,
+	blocked_headbutt = true,
+	blocked_attack = true,
+	blocked_ranged = true,
+	blocked_attack_3 = true
+}
 
 GenericStatusExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
@@ -17,7 +37,7 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	self.pacing_intensity_decay_delay = 0
 	self.move_speed_multiplier = 1
 	self.move_speed_multiplier_timer = 1
-	self.invisible = false
+	self.invisible = {}
 	self.crouching = false
 	self.blocking = false
 	self.override_blocking = nil
@@ -108,8 +128,7 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	end
 
 	self._intoxication_level = 0
-	self.stealth_counter = 0
-	self.noclip_counter = 0
+	self.noclip = {}
 	self._incapacitated_outline_ids = {}
 	self._assisted_respawn_outline_id = -1
 	self._invisible_outline_id = -1
@@ -432,7 +451,8 @@ GenericStatusExtension.update_falling = function (self, t)
 		local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(self.unit)
 		local min_fall_damage_height = movement_settings_table.fall.heights.MIN_FALL_DAMAGE_HEIGHT
 		local hard_landing_fall_height = movement_settings_table.fall.heights.HARD_LANDING_FALL_HEIGHT
-		local fall_distance = self:fall_distance()
+		local gravity_scale = self.locomotion_extension:get_script_driven_gravity_scale()
+		local fall_distance = math.abs(self:fall_distance() * gravity_scale)
 		local fall_event = "landed"
 
 		if min_fall_damage_height < fall_distance then
@@ -755,16 +775,9 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 		buff_extension:trigger_procs("on_block", attacking_unit, fatigue_type, blocking_weapon_unit)
 	end
 
-	if self:_block_breaking_fatigue_gain(fatigue_type, max_fatigue) then
+	if max_fatigue <= self.fatigue and block_breaking_fatigue_types[fatigue_type] then
 		buff_extension:trigger_procs("on_block_broken", attacking_unit, fatigue_type, blocking_weapon_unit)
-	end
-
-	local block_breaking = false
-
-	if self:_block_breaking_fatigue_gain(fatigue_type, max_fatigue) then
 		self:set_block_broken(true, t)
-
-		block_breaking = true
 	end
 
 	if fatigue_cost > 0 then
@@ -840,14 +853,6 @@ GenericStatusExtension.get_dodge_cooldown = function (self)
 	end
 
 	return 0.4 + 0.6 * (1 - math.max(self.dodge_cooldown - self.dodge_count, 0) / 3)
-end
-
-GenericStatusExtension._block_breaking_fatigue_gain = function (self, fatigue_type, max_fatigue)
-	return max_fatigue <= self.fatigue and self:_block_breaking_fatigue_type(fatigue_type)
-end
-
-GenericStatusExtension._block_breaking_fatigue_type = function (self, fatigue_type)
-	return fatigue_type == "blocked_attack" or fatigue_type == "sv_shove" or fatigue_type == "complete" or fatigue_type == "blocked_ranged" or fatigue_type == "blocked_running" or fatigue_type == "blocked_sv_cleave" or fatigue_type == "blocked_sv_sweep" or fatigue_type == "blocked_sv_sweep_2" or fatigue_type == "sv_push" or fatigue_type == "chaos_cleave" or fatigue_type == "blocked_berzerker" or fatigue_type == "chaos_spawn_combo" or fatigue_type == "blocked_attack_2" or fatigue_type == "blocked_attack_3" or fatigue_type == "blocked_headbutt" or fatigue_type == "blocked_slam" or fatigue_type == "shield_blocked_slam" or fatigue_type == "blocked_charge"
 end
 
 GenericStatusExtension.current_fatigue = function (self)
@@ -2024,62 +2029,6 @@ GenericStatusExtension.has_blocked = function (self)
 	return self._has_blocked
 end
 
-GenericStatusExtension.add_stealth_stacking = function (self)
-	if self.stealth_counter <= 0 then
-		self:set_invisible(true)
-	end
-
-	self.stealth_counter = self.stealth_counter + 1
-	local buff_extension = self.buff_extension
-
-	if buff_extension then
-		buff_extension:trigger_procs("on_stealth_stacks_modified", self.stealth_counter)
-	end
-
-	return self.stealth_counter == 1
-end
-
-GenericStatusExtension.remove_stealth_stacking = function (self)
-	local about_to_remove_stealth = self.stealth_counter == 1
-	self.stealth_counter = math.max(self.stealth_counter - 1, 0)
-
-	if self.stealth_counter <= 0 then
-		self:set_invisible(false)
-	end
-
-	local buff_extension = self.buff_extension
-
-	if buff_extension then
-		buff_extension:trigger_procs("on_stealth_stacks_modified", self.stealth_counter)
-	end
-
-	return about_to_remove_stealth and self.stealth_counter == 0
-end
-
-GenericStatusExtension.current_stealth_counter = function (self)
-	return self.stealth_counter
-end
-
-GenericStatusExtension.add_noclip_stacking = function (self)
-	if self.noclip_counter <= 0 then
-		self:set_noclip(true)
-	end
-
-	self.noclip_counter = self.noclip_counter + 1
-
-	return self.noclip_counter == 1
-end
-
-GenericStatusExtension.remove_noclip_stacking = function (self)
-	self.noclip_counter = math.max(self.noclip_counter - 1, 0)
-
-	if self.noclip_counter <= 0 then
-		self:set_noclip(false)
-	end
-
-	return self.noclip_counter == 0
-end
-
 GenericStatusExtension.reset_move_speed_multiplier = function (self)
 	self.move_speed_multiplier = 1
 	self.move_speed_multiplier_timer = 1
@@ -2091,8 +2040,20 @@ GenericStatusExtension.current_move_speed_multiplier = function (self)
 	return math.lerp(self.move_speed_multiplier, 1, lerp_t)
 end
 
-GenericStatusExtension.set_invisible = function (self, invisible, force_third_person)
-	self.invisible = invisible
+GenericStatusExtension.set_invisible = function (self, invisible, force_third_person, reason)
+	assert(not not reason ~= not not self.is_husk, "Setting invisibility is only allowed locally.")
+
+	if not self.is_husk then
+		local was_invisible = self:is_invisible()
+		self.invisible[reason] = invisible or nil
+
+		if was_invisible == self:is_invisible() then
+			return false
+		end
+	else
+		self.invisible.network_sync = invisible or nil
+	end
+
 	local unit = self.unit
 	local flow_event_name = nil
 	local player = self.player
@@ -2174,17 +2135,28 @@ end
 GenericStatusExtension.set_move_through_ai = function (self, move_through_ai)
 	self.move_through_ai = move_through_ai
 
-	self:set_noclip(move_through_ai)
+	self:set_noclip(move_through_ai, "move_through_ai")
 end
 
-GenericStatusExtension.set_noclip = function (self, no_clip)
+GenericStatusExtension.has_noclip = function (self)
+	return not table.is_empty(self.noclip)
+end
+
+GenericStatusExtension.set_noclip = function (self, no_clip, reason)
+	local had_noclip = self:has_noclip()
+	self.noclip[reason] = no_clip or nil
+
+	if had_noclip == self:has_noclip() then
+		return
+	end
+
 	if not self.is_husk then
 		self.locomotion_extension:set_mover_filter_property("enemy_noclip", no_clip)
 	end
 end
 
 GenericStatusExtension.is_invisible = function (self)
-	return self.invisible
+	return not table.is_empty(self.invisible)
 end
 
 GenericStatusExtension.set_inspecting = function (self, inspecting)

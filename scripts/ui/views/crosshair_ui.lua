@@ -353,11 +353,9 @@ CrosshairUI.draw = function (self, dt, t, pitch_percentage, yaw_percentage)
 	local crosshair_style = self.crosshair_style
 
 	if self._enabled_crosshair_styles[crosshair_style] then
-		for i, _ in pairs(CROSSHAIR_STYLE_FUNCTIONS) do
-			local draw_func_name = CROSSHAIR_STYLE_FUNCTIONS[crosshair_style]
+		local draw_func_name = CROSSHAIR_STYLE_FUNCTIONS[crosshair_style]
 
-			self[draw_func_name](self, ui_renderer, pitch_percentage, yaw_percentage, i)
-		end
+		self[draw_func_name](self, ui_renderer, pitch_percentage, yaw_percentage)
 	end
 
 	local hit_markers = self.hit_markers

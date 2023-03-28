@@ -62,7 +62,7 @@ StateSplashScreen.on_enter = function (self)
 			Managers.package:load("resource_packages/start_menu_splash", "StateSplashScreen", callback(self, "cb_splashes_loaded"), true, true)
 		end
 	elseif IS_XB1 then
-		if self:_is_in_esrb_terratory() then
+		if self:_is_in_esrb_region() then
 			self:setup_esrb_logo()
 		else
 			Managers.package:load("resource_packages/start_menu_splash", "StateSplashScreen", callback(self, "cb_splashes_loaded"), true, true)
@@ -127,12 +127,13 @@ StateSplashScreen.on_enter = function (self)
 	self.parent.loading_context.show_profile_on_startup = true
 end
 
-StateSplashScreen._is_in_esrb_terratory = function (self)
-	local esrb_regions = {
-		CA = true,
-		US = true,
-		MX = true
-	}
+local esrb_regions = {
+	CA = true,
+	US = true,
+	MX = true
+}
+
+StateSplashScreen._is_in_esrb_region = function (self)
 	local region_info = XboxLive.region_info()
 	local iso2 = region_info.GEO_ISO2
 

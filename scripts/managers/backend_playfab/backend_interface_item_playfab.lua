@@ -63,9 +63,11 @@ BackendInterfaceItemPlayfab._refresh_items = function (self)
 	if new_backend_ids then
 		for backend_id, _ in pairs(new_backend_ids) do
 			if not items[backend_id] then
-				ItemHelper.unmark_backend_id_as_new(backend_id)
+				ItemHelper.unmark_backend_id_as_new(backend_id, true)
 			end
 		end
+
+		Managers.save:auto_save(SaveFileName, SaveData, nil)
 	end
 end
 
@@ -238,6 +240,27 @@ BackendInterfaceItemPlayfab.get_weapon_skin_from_skin_key = function (self, skin
 			return id, item
 		end
 	end
+end
+
+local fake_item_types = {
+	frame = true,
+	weapon_skin = true,
+	hat = true,
+	skin = true
+}
+
+BackendInterfaceItemPlayfab.free_inventory_slots = function (self)
+	local items = self:get_all_backend_items()
+	local item_count = 0
+	local is_fake_item = ItemHelper.is_fake_item
+
+	for _, item in pairs(items) do
+		if not is_fake_item(item.data.item_type) then
+			item_count = item_count + 1
+		end
+	end
+
+	return UISettings.max_inventory_items - item_count
 end
 
 BackendInterfaceItemPlayfab.get_all_backend_items = function (self)
@@ -453,15 +476,26 @@ end
 
 BackendInterfaceItemPlayfab.has_bundle_contents = function (self, bundle_contains)
 	if not bundle_contains then
-		return false, false
+		return false, false, nil
 	end
 
 	local all_owned = true
 	local any_owned = false
+	local required_dlcs = {}
 
 	for i = 1, #bundle_contains do
 		local steam_itemdefid = bundle_contains[i]
 		local item_key = SteamitemdefidToMasterList[steam_itemdefid]
+		local item_data = ItemMasterList[item_key]
+		local required_dlc = item_data.required_dlc
+
+		if required_dlc then
+			local owns_required_dlc = Managers.unlock:is_dlc_unlocked(required_dlc)
+
+			if not owns_required_dlc and not table.find(required_dlcs, required_dlc) then
+				required_dlcs[#required_dlcs + 1] = required_dlc
+			end
+		end
 
 		if self:has_item(item_key) or self:has_weapon_illusion(item_key) then
 			any_owned = true
@@ -470,7 +504,7 @@ BackendInterfaceItemPlayfab.has_bundle_contents = function (self, bundle_contain
 		end
 	end
 
-	return all_owned, any_owned
+	return all_owned, any_owned, required_dlcs
 end
 
 BackendInterfaceItemPlayfab.get_item_template = function (self, item_data, backend_id)

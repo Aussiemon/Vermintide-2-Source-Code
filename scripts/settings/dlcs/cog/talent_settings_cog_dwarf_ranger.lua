@@ -539,12 +539,12 @@ local talent_buff_templates = {
 	bardin_engineer_piston_powered_delay = {
 		buffs = {
 			{
-				buff_after_delay = true,
+				buff_to_add = "bardin_engineer_piston_powered_ready",
 				is_cooldown = true,
 				icon = "bardin_engineer_no_overheat_explosion",
+				duration_end_func = "add_buff_local",
 				max_stacks = 1,
-				refresh_durations = true,
-				delayed_buff_name = "bardin_engineer_piston_powered_ready"
+				refresh_durations = true
 			}
 		}
 	},

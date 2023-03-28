@@ -305,6 +305,7 @@ PlayerBotBase.update = function (self, unit, input, dt, context, t)
 		self:_update_interactables(dt, t)
 		self:_update_weapon_loadout_data()
 		self:_update_best_weapon()
+		self:_update_reload()
 		self._brain:update(unit, t, dt)
 
 		local moving_platform = locomotion_extension:get_moving_platform()
@@ -2109,9 +2110,44 @@ PlayerBotBase._update_best_weapon = function (self)
 	weapons_scores.slot_melee = slot_melee
 	weapons_scores.slot_ranged = slot_ranged
 	blackboard.weapon_scores = weapons_scores
+end
 
-	if script_data.debug_bot_weapon_preference then
-		Debug.text(string.format("Melee: %.3f - %s", slot_melee.score, slot_melee.input))
-		Debug.text(string.format("Ranged: %.3f - %s", slot_ranged.score, slot_ranged.input))
+PlayerBotBase._update_reload = function (self)
+	local blackboard = self._blackboard
+	local inventory = blackboard.inventory_extension
+	local ranged_slot_data = inventory:get_slot_data("slot_ranged")
+	local right_unit_1p = ranged_slot_data and ranged_slot_data.right_unit_1p
+	local left_unit_1p = ranged_slot_data and ranged_slot_data.left_unit_1p
+	local ammo_extension = GearUtils.get_ammo_extension(right_unit_1p, left_unit_1p)
+	local wanted_slot_to_reload = nil
+
+	if ammo_extension then
+		local should_reload = nil
+
+		if inventory:has_unique_ammo_type_weapon_equipped() then
+			local remaining_ammo = ammo_extension:total_remaining_ammo()
+			local max_ammo = ammo_extension:max_ammo()
+			should_reload = remaining_ammo < max_ammo
+		else
+			should_reload = not ammo_extension:clip_full() and (ammo_extension:remaining_ammo() > 0 or ammo_extension:infinite_ammo())
+		end
+
+		if should_reload then
+			wanted_slot_to_reload = "slot_ranged"
+		end
 	end
+
+	if wanted_slot_to_reload == nil then
+		local career_extension = blackboard.career_extension
+
+		if career_extension then
+			local career_name = career_extension:career_name()
+
+			if career_name == "dr_engineer" and career_extension:current_ability_cooldown() > 0 and #blackboard.proximite_enemies == 0 then
+				wanted_slot_to_reload = "slot_career_skill_weapon"
+			end
+		end
+	end
+
+	blackboard.wanted_slot_to_reload = wanted_slot_to_reload
 end

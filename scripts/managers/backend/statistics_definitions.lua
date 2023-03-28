@@ -617,9 +617,6 @@ LevelDifficultyDBNames = {}
 for level_key, level in pairs(LevelSettings) do
 	if table.contains(UnlockableLevels, level_key) then
 		local is_dlc_level = level.dlc_name ~= nil
-
-		print("level display name ", level_key)
-
 		local completed_levels_definition = {
 			value = 0,
 			sync_on_hot_join = true,

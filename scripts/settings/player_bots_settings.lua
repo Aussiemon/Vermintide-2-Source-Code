@@ -53,6 +53,9 @@ BotActions.default = {
 	switch_grenade = {
 		wanted_slot = "slot_grenade"
 	},
+	switch_reload_slot = {
+		wanted_slot_key = "wanted_slot_to_reload"
+	},
 	fight_melee_priority_target = {
 		engage_range = math.huge,
 		engage_range_threat = math.huge,

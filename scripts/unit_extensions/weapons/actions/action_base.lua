@@ -31,6 +31,7 @@ ActionBase.client_owner_start_action = function (self, new_action, t, chain_acti
 
 	self._fatigue_reset = true
 	self._extra_shots_procced = false
+	self.action_start_t = t
 end
 
 ActionBase._handle_critical_strike = function (self, is_critical_strike, buff_extension, hud_extension, first_person_extension, proc_type, hud_sound_event)

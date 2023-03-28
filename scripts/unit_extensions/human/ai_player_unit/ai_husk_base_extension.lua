@@ -12,6 +12,14 @@ AiHuskBaseExtension.init = function (self, extension_init_context, unit, extensi
 		DamageUtils.create_hit_zone_lookup(unit, breed)
 	end
 
+	local blackboard_init_data = breed.blackboard_init_data
+
+	if blackboard_init_data and blackboard_init_data.player_locomotion_constrain_radius ~= nil then
+		self.player_locomotion_constrain_radius = blackboard_init_data.player_locomotion_constrain_radius or nil
+	else
+		self.player_locomotion_constrain_radius = breed.player_locomotion_constrain_radius or nil
+	end
+
 	local run_on_husk_spawn = breed.run_on_husk_spawn
 
 	if run_on_husk_spawn then

@@ -1,4 +1,5 @@
 WwiseUtils = WwiseUtils or {}
+WwiseUtils.EVENT_ID_NONE = 0
 
 WwiseUtils.trigger_position_event = function (world, event, position)
 	local source, wwise_world = WwiseUtils.make_position_auto_source(world, position)

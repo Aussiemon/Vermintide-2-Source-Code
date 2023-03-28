@@ -178,13 +178,19 @@ CraftPageApplySkinConsole._weapon_slot_updated = function (self)
 		local item_filter = "item_key == " .. weapon_skin_name
 
 		self.parent.parent:set_craft_optional_item_filter(item_filter)
+		self.parent.parent:disable_filter(true)
+		self.parent.parent:disable_search(true)
 	else
 		self.parent.parent:set_craft_optional_item_filter(nil)
+		self.parent.parent:disable_filter(false)
+		self.parent.parent:disable_search(false)
 	end
 end
 
 CraftPageApplySkinConsole.on_exit = function (self, params)
 	self.parent.parent:set_craft_optional_item_filter(nil)
+	self.parent.parent:disable_filter(false)
+	self.parent.parent:disable_search(false)
 	print("[HeroWindowCraft] Exit Substate CraftPageApplySkinConsole")
 
 	self.ui_animator = nil

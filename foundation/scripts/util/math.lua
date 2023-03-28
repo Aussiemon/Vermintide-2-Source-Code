@@ -1,4 +1,12 @@
 local math = math
+local math_sqrt = math.sqrt
+local math_cos = math.cos
+local math_sin = math.sin
+local math_random = math.random
+local math_max = math.max
+local pi = math.pi
+math.half_pi = pi * 0.5
+math.inverse_sqrt_2 = 1 / math_sqrt(2)
 math.degrees_to_radians = math.rad
 math.radians_to_degrees = math.deg
 
@@ -22,9 +30,23 @@ math.clamp = function (value, min, max)
 	end
 end
 
+math.clamp01 = function (value)
+	if value > 1 then
+		return 1
+	elseif value < 0 then
+		return 0
+	else
+		return value
+	end
+end
+
+local math_clamp = math.clamp
+
 math.lerp = function (a, b, p)
 	return a * (1 - p) + b * p
 end
+
+local math_lerp = math.lerp
 
 math.inv_lerp = function (a, b, v)
 	return (v - a) / (b - a)
@@ -35,33 +57,25 @@ math.remap = function (imin, imax, omin, omax, v)
 end
 
 math.radian_lerp = function (a, b, p)
-	local pi = math.pi
-	local half_pi = math.pi * 0.5
+	local two_pi = pi * 2
 
-	return a + (((b - a) % pi + pi + half_pi) % pi - half_pi) * p
+	return a + p * (((b - a) % two_pi + pi) % two_pi - pi)
 end
 
 math.angle_lerp = function (a, b, p)
 	return a + (((b - a) % 360 + 540) % 360 - 180) * p
 end
 
-math.radian_lerp = function (a, b, p)
-	a = math.radians_to_degrees(a)
-	b = math.radians_to_degrees(b)
-
-	return math.degrees_to_radians(math.angle_lerp(a, b, p))
-end
-
 math.sirp = function (a, b, t)
-	local p = 0.5 + 0.5 * math.cos((1 + t) * math.pi)
+	local p = 0.5 + 0.5 * math_cos((1 + t) * pi)
 
-	return math.lerp(a, b, p)
+	return math_lerp(a, b, p)
 end
 
 math.auto_lerp = function (index_1, index_2, val_1, val_2, val)
 	local t = (val - index_1) / (index_2 - index_1)
 
-	return math.lerp(val_1, val_2, t)
+	return math_lerp(val_1, val_2, t)
 end
 
 math.round_with_precision = function (value, precision)
@@ -87,60 +101,27 @@ math.round_to_closest_multiple = function (value, multiple)
 end
 
 math.smoothstep = function (value, min, max)
-	local x = math.clamp((value - min) / (max - min), 0, 1)
+	fassert(min ~= max, "Division by zero.")
 
-	return x^3 * (x * (x * 6 - 15) + 10)
+	local x = math_clamp((value - min) / (max - min), 0, 1)
+
+	return x * x * x * (x * (x * 6 - 15) + 10)
 end
 
 Math.random_range = function (min, max)
-	return min + Math.random() * (max - min)
+	return min + math_random() * (max - min)
 end
-
-math.half_pi = math.pi * 0.5
-math.inverse_sqrt_2 = 1 / math.sqrt(2)
 
 math.point_is_inside_2d_box = function (pos, lower_left_corner, size)
-	if lower_left_corner[1] < pos[1] and pos[1] < lower_left_corner[1] + size[1] and lower_left_corner[2] < pos[2] and pos[2] < lower_left_corner[2] + size[2] then
-		return true
-	else
-		return false
-	end
+	return lower_left_corner[1] < pos[1] and pos[1] < lower_left_corner[1] + size[1] and lower_left_corner[2] < pos[2] and pos[2] < lower_left_corner[2] + size[2]
 end
 
-math.box_overlap_box = function (box_pos, box_extent, box2_pos, box2_extent)
-	if box_pos[1] < box2_pos[1] + box2_extent[1] and box2_pos[1] < box_pos[1] + box_extent[1] and box_pos[2] < box2_pos[2] + box2_extent[2] and box2_pos[2] < box_pos[2] + box_extent[2] then
-		return true
-	else
-		return false
-	end
+math.box_overlap_box = function (a_pos, a_size, b_pos, b_size)
+	return b_pos[1] <= a_pos[1] + a_size[1] and a_pos[1] <= b_pos[1] + b_size[1] and b_pos[2] <= a_pos[2] + a_size[2] and a_pos[2] <= b_pos[2] + b_size[2]
 end
 
 math.point_is_inside_aabb = function (pos, aabb_pos, aabb_half_extents)
-	if pos.x < aabb_pos.x - aabb_half_extents.x then
-		return false
-	end
-
-	if pos.x > aabb_pos.x + aabb_half_extents.x then
-		return false
-	end
-
-	if pos.y < aabb_pos.y - aabb_half_extents.y then
-		return false
-	end
-
-	if pos.y > aabb_pos.y + aabb_half_extents.y then
-		return false
-	end
-
-	if pos.z < aabb_pos.z - aabb_half_extents.z then
-		return false
-	end
-
-	if pos.z > aabb_pos.z + aabb_half_extents.z then
-		return false
-	end
-
-	return true
+	return pos.x >= aabb_pos.x - aabb_half_extents.x and pos.x <= aabb_pos.x + aabb_half_extents.x and pos.y >= aabb_pos.y - aabb_half_extents.y and pos.y <= aabb_pos.y + aabb_half_extents.y and pos.z >= aabb_pos.z - aabb_half_extents.z and pos.z <= aabb_pos.z + aabb_half_extents.z
 end
 
 math.point_is_inside_oobb = function (pos, oobb_pose, oobb_radius)
@@ -194,7 +175,7 @@ math.point_is_inside_view = function (pos, view_position, view_rotation, vertica
 		local c_y = dot
 		local c_z = Vector3.dot(to_pos_dir, camera_up)
 		local dot_xy = c_y
-		local c_to_pos_dir_length_xy = math.sqrt(c_x * c_x + c_y * c_y)
+		local c_to_pos_dir_length_xy = math_sqrt(c_x * c_x + c_y * c_y)
 
 		if c_to_pos_dir_length_xy == 0 then
 			return false
@@ -205,7 +186,7 @@ math.point_is_inside_view = function (pos, view_position, view_rotation, vertica
 
 		if yaw <= horizontal_fov_rad / 2 then
 			local dot_uz = c_to_pos_dir_length_xy
-			local to_pos_dir_length_uz = math.sqrt(c_to_pos_dir_length_xy * c_to_pos_dir_length_xy + c_z * c_z)
+			local to_pos_dir_length_uz = math_sqrt(c_to_pos_dir_length_xy * c_to_pos_dir_length_xy + c_z * c_z)
 			local cos_uz = dot_uz / to_pos_dir_length_uz
 			local pitch = math.acos(cos_uz)
 
@@ -223,7 +204,7 @@ end
 math.cartesian_to_polar = function (x, y)
 	fassert(x ~= 0 and y ~= 0, "Can't convert a zero vector to polar coordinates")
 
-	local radius = math.sqrt(x * x + y * y)
+	local radius = math_sqrt(x * x + y * y)
 	local theta = math.atan(y / x) * 180 / math.pi
 
 	if x < 0 then
@@ -235,26 +216,21 @@ math.cartesian_to_polar = function (x, y)
 	return radius, theta
 end
 
-math.circular_to_square_coordinates = function (v)
-	local u = v.x
-	local v = v.y
-	local uu = u * u
-	local vv = v * v
-	local sqrt = math.sqrt
-	local max = math.max
-	local sqrt_2 = sqrt(2)
-	local x = 0.5 * (sqrt(max(2 + 2 * u * sqrt_2 + uu - vv, 0)) - sqrt(max(2 - 2 * u * sqrt_2 + uu - vv, 0)))
-	local y = 0.5 * (sqrt(max(2 + 2 * v * sqrt_2 - uu + vv, 0)) - sqrt(max(2 - 2 * v * sqrt_2 - uu + vv, 0)))
+math.circular_to_square_coordinates = function (pos)
+	local x = pos.x
+	local y = pos.y
+	local w = x * x - y * y
+	local k = 4 * math.inverse_sqrt_2
+	local u = x * k
+	local v = y * k
 
-	return Vector3(x, y, 0)
+	return Vector2(0.5 * (math_sqrt(math_max(2 + u + w, 0)) - math_sqrt(math_max(2 - u + w, 0))), 0.5 * (math_sqrt(math_max(2 + v - w, 0)) - math_sqrt(math_max(2 - v - w, 0))))
 end
 
-math.polar_to_cartesian = function (radius, theta)
-	local theta_rad = theta * math.pi / 180
-	local x = radius * math.cos(theta_rad)
-	local y = radius * math.sin(theta_rad)
+math.polar_to_cartesian = function (radius, theta_degrees)
+	local theta = theta_degrees * pi / 180
 
-	return x, y
+	return radius * math_cos(theta), radius * math_sin(theta)
 end
 
 math.catmullrom = function (t, p0, p1, p2, p3)
@@ -516,18 +492,22 @@ end
 
 math.ease_exp = function (t)
 	if t < 0.5 then
-		return 0.5 * math.pow(2, 20 * (t - 0.5))
+		return 0.5 * 2^(20 * (t - 0.5))
 	end
 
-	return 1 - 0.5 * math.pow(2, 20 * (0.5 - t))
+	return 1 - 0.5 * 2^(20 * (0.5 - t))
 end
 
 math.ease_in_exp = function (t)
-	return math.pow(2, 10 * (t - 1))
+	return 2^(10 * (t - 1))
 end
 
 math.ease_out_exp = function (t)
-	return 1 - math.pow(2, -10 * t)
+	return 1 - 2^(-10 * t)
+end
+
+math.ease_out_sine = function (t)
+	return math.sin(t * math.half_pi)
 end
 
 math.easeCubic = function (t)
@@ -556,6 +536,18 @@ math.ease_out_quad = function (t)
 	return -1 * t * (t - 2)
 end
 
+math.ease_in_quart = function (t)
+	return t * t * t * t
+end
+
+math.ease_out_quart = function (t)
+	return 1 - math.pow(1 - t, 4)
+end
+
+math.ease_in_out_quart = function (t)
+	return t < 0.5 and 8 * t * t * t * t or 1 - (-2 * t + 2)^4 / 2
+end
+
 local math_ease_cubic = math.easeCubic
 
 math.ease_pulse = function (t)
@@ -566,12 +558,48 @@ math.ease_pulse = function (t)
 	end
 end
 
+math.ease_in_circ = function (t)
+	return 1 - math.sqrt(1 - t^2)
+end
+
+math.ease_out_circ = function (t)
+	return math.sqrt(1 - (t - 1)^2)
+end
+
+math.ease_in_back = function (t)
+	local c1 = 1.70158
+	local c3 = c1 + 1
+
+	return c3 * t * t * t - c1 * t * t
+end
+
+math.ease_out_back = function (t)
+	c1 = 1.70158
+	c3 = c1 + 1
+
+	return 1 + c3 * (t - 1)^3 + c1 * (t - 1)^2
+end
+
+math.ease_in_out_back = function (t)
+	local c1 = 1.70158
+	local c2 = c1 * 1.525
+
+	return t < 0.5 and (2 * t)^2 * ((c2 + 1) * 2 * t - c2) / 2 or ((2 * t - 2)^2 * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2
+end
+
+math.easeOutQuint = function (t)
+	return 1 - (1 - t)^5
+end
+
+math.easeInQuint = function (t)
+	return t * t * t * t * t
+end
+
 math.bounce = function (t)
-	return math.abs(math.sin(6.28 * (t + 1) * (t + 1)) * (1 - t))
+	return math.abs(math_sin(6.28 * (t + 1) * (t + 1)) * (1 - t))
 end
 
 math.ease_out_elastic = function (t)
-	local s = 1.70158
 	local p = 0
 	local a = 1
 
@@ -587,6 +615,8 @@ math.ease_out_elastic = function (t)
 		p = 0.3
 	end
 
+	local s = nil
+
 	if a < 1 then
 		a = 1
 		s = p / 4
@@ -594,44 +624,7 @@ math.ease_out_elastic = function (t)
 		s = p / (2 * math.pi) * math.asin(1 / a)
 	end
 
-	return a * math.pow(2, -10 * t) * math.sin((t * 1 - s) * 2 * math.pi / p) + 1
-end
-
-local function internal_rand_normal()
-	local x1, x2, w, y1, y2 = nil
-
-	repeat
-		x1 = 2 * math.random() - 1
-		x2 = 2 * math.random() - 1
-		w = x1 * x1 + x2 * x2
-	until w < 1
-
-	w = math.sqrt(-2 * math.log(w) / w)
-	y1 = x1 * w
-	y2 = x2 * w
-
-	return y1, y2
-end
-
-math.rand_normal = function (min, max, variance, strict_min, strict_max)
-	local average = (min + max) / 2
-
-	if variance == nil then
-		variance = 2.4
-	end
-
-	local escala = (max - average) / variance
-	local x = escala * internal_rand_normal() + average
-
-	if strict_min ~= nil then
-		x = math.max(x, strict_min)
-	end
-
-	if strict_max ~= nil then
-		x = math.min(x, strict_max)
-	end
-
-	return x
+	return a * 2^(-10 * t) * math_sin((t * 1 - s) * 2 * math.pi / p) + 1
 end
 
 math.rand_utf8_string = function (string_length, ignore_chars)
@@ -649,7 +642,7 @@ math.rand_utf8_string = function (string_length, ignore_chars)
 		local char = nil
 
 		while not char or table.contains(ignore_chars, char) do
-			char = string.char(math.random(32, 126))
+			char = string.char(math_random(32, 126))
 		end
 
 		array[i] = char
@@ -659,7 +652,7 @@ math.rand_utf8_string = function (string_length, ignore_chars)
 end
 
 math.uuid = function ()
-	local random = math.random
+	local random = math_random
 
 	return string.format("%08x-%04x-4%03x-%x%03x-%012x", random(0, 4294967295.0), random(0, 65535), random(0, 4095), random(0, 11), random(0, 4095), random(0, 281474976710655.0))
 end
@@ -667,22 +660,24 @@ end
 math.get_uniformly_random_point_inside_sector = function (radius1, radius2, angle1, angle2)
 	local radius1_squared = radius1 * radius1
 	local radius2_squared = radius2 * radius2
-	local angle = angle1 + (angle2 - angle1) * Math.random()
-	local r = math.sqrt(radius1_squared + (radius2_squared - radius1_squared) * Math.random())
+	local angle = angle1 + (angle2 - angle1) * math_random()
+	local r = math_sqrt(radius1_squared + (radius2_squared - radius1_squared) * math_random())
+
+	return r * math_sin(angle), r * math_cos(angle)
+end
+
+math.get_uniformly_random_point_inside_sector_seeded = function (seed, radius1, radius2, angle1, angle2)
+	local radius1_squared = radius1 * radius1
+	local radius2_squared = radius2 * radius2
+	local rnd1, rnd2 = nil
+	seed, rnd1 = Math.next_random(seed)
+	seed, rnd2 = Math.next_random(seed)
+	local angle = angle1 + (angle2 - angle1) * rnd1
+	local r = math.sqrt(radius1_squared + (radius2_squared - radius1_squared) * rnd2)
 	local dx = r * math.sin(angle)
 	local dy = r * math.cos(angle)
 
-	return dx, dy
-end
-
-math.clamp_direction = function (direction, clamp_direction, xy_angle, z_angle)
-	local direction_xy_rotation = Quaternion.look(direction)
-	local direction_xy_angle = Quaternion.angle(direction_xy_rotation)
-	local clamp_direction_xy_rotation = Quaternion.look(clamp_direction)
-	local clamp_direction_xy_angle = Quaternion.angle(clamp_direction_xy_rotation)
-	local result = Vector3(math.cos(direction_xy_angle) * math.cos(z_angle), math.sin(direction_xy_angle) * math.cos(z_angle), math.sin(z_angle))
-
-	return result
+	return seed, dx, dy
 end
 
 math.random_seed = function ()

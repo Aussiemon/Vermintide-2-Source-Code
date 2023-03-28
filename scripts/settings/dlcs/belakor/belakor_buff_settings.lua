@@ -3,26 +3,8 @@ require("scripts/settings/dlcs/belakor/belakor_balancing")
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local settings = DLCSettings.belakor
 
-local function is_local(unit)
-	local player = Managers.player:owner(unit)
-
-	return player and not player.remote
-end
-
-local function is_bot(unit)
-	local player = Managers.player:owner(unit)
-
-	return player and player.bot_player
-end
-
 local function is_server()
 	return Managers.state.network.is_server
-end
-
-local function is_husk(unit)
-	local player = Managers.player:owner(unit)
-
-	return player and (player.remote or player.bot_player) or false
 end
 
 local function teleport_validation_func(pos, validation_data)
@@ -273,7 +255,7 @@ settings.buff_function_templates = {
 	end
 }
 settings.proc_functions = {
-	belakor_crystal_drop = function (player, buff, params)
+	belakor_crystal_drop = function (owner_unit, buff, params)
 		if is_server() then
 			local killed_unit = params[1]
 			local position = Unit.world_position(killed_unit, 0) + Vector3(0, 0, 1.5)
@@ -293,7 +275,7 @@ settings.proc_functions = {
 
 		return true
 	end,
-	belakor_shadow_lieutenant_drop_crystal = function (player, buff, params)
+	belakor_shadow_lieutenant_drop_crystal = function (owner_unit, buff, params)
 		if is_server() then
 			local killed_unit = params[1]
 			local parent_node = Unit.node(killed_unit, "c_spine")

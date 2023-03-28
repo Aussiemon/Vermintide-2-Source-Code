@@ -1641,7 +1641,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 	if not hide_price then
 		if steam_itemdefid then
 			real_currency = true
-			price_text, price_text_original = self:get_steam_item_price_text(steam_itemdefid, content, item_data)
+			price_text, price_text_original = self:get_steam_item_price_text(steam_itemdefid, content, item)
 			local steam_data = item.steam_data
 
 			if not steam_data then
@@ -1651,7 +1651,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 			if steam_data and steam_data.discount_is_active then
 				local backend_store = Managers.backend:get_interface("peddler")
 				local current, currency = backend_store:get_steam_item_price(steam_itemdefid)
-				local regular = item_data.bundle_price or steam_data.regular_prices[currency]
+				local regular = steam_data.regular_prices[currency]
 				local discount = 1 - current / regular
 
 				self:_calculate_discount_textures(widget, math.round(100 * discount))
@@ -1697,6 +1697,12 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 	content.owned = item_owned
 	local item_type_icon = item_type_store_icons[item_type] or item_type_store_icons.default
 	content.type_tag_icon = rarity and item_type_icon .. "_" .. rarity or item_type_icon
+
+	if item_data.item_type == "bundle" then
+		content.bundle_content_amount_text = string.format("%dx ", #item_data.bundle_contains)
+		style.bundle_content_amount_text.offset[1] = #item_data.bundle_contains < 10 and content.size[1] - 70 or content.size[1] - 80
+	end
+
 	local ui_top_renderer = self._ui_top_renderer
 	local top_gui = ui_top_renderer.gui
 	self._reference_id = (self._reference_id or 0) + 1
@@ -1727,6 +1733,8 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 	end
 
 	Application.warning("Icon package not accessable for product_id: (%s) and package_name: (%s)", product_id, package_name)
+
+	content.icon = "icons_placeholder"
 end
 
 HeroViewStateStore._set_product_price_text_comparison = function (self, widget, price_text_now, price_text_before, real_currency, platform_price_data)
@@ -1953,7 +1961,8 @@ HeroViewStateStore._setup_xb1_price_data = function (self, widget, price_data)
 	end
 end
 
-HeroViewStateStore.get_steam_item_price_text = function (self, steam_itemdefid, content, item_data)
+HeroViewStateStore.get_steam_item_price_text = function (self, steam_itemdefid, content, item)
+	local item_data = item and item.data
 	local discount = item_data and item_data.discount
 	local backend_store = Managers.backend:get_interface("peddler")
 	local price, currency = backend_store:get_steam_item_price(steam_itemdefid)
@@ -1965,7 +1974,8 @@ HeroViewStateStore.get_steam_item_price_text = function (self, steam_itemdefid, 
 		price_text = tostring(currency) .. " " .. string.format("%.2f", price * 0.01)
 
 		if item_data and item_data.item_type == "bundle" then
-			price_text_original = tostring(currency) .. " " .. string.format("%.2f", item_data.bundle_price * 0.01)
+			local regular_price = item.steam_data.regular_prices[currency] or item_data.bundle_price
+			price_text_original = tostring(currency) .. " " .. string.format("%.2f", regular_price * 0.01)
 		else
 			price_text_original = discount and tostring(currency) .. " " .. string.format("%.2f", price * 100 / (100 - discount) * 0.01)
 		end

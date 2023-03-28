@@ -216,6 +216,12 @@ StartGameWindowHeroicDeedOverviewConsole._can_play = function (self)
 		self._selected_backend_id = nil
 	end
 
+	local backend_id = self._parent:get_selected_heroic_deed_backend_id()
+
+	if not backend_id then
+		return false
+	end
+
 	local can_play = self._selected_backend_id ~= nil
 
 	return can_play
@@ -227,9 +233,11 @@ StartGameWindowHeroicDeedOverviewConsole._option_selected = function (self, inpu
 	if selected_widget_name == "heroic_deed_setting" then
 		self._parent:set_layout_by_name("heroic_deed_selection")
 	elseif selected_widget_name == "play_button" then
-		self._play_button_pressed = true
+		if self:_can_play() then
+			self._play_button_pressed = true
 
-		self._parent:play(t, "deed")
+			self._parent:play(t, "deed")
+		end
 	else
 		ferror("Unknown selector_input_definition: %s", selected_widget_name)
 	end

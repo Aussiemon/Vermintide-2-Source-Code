@@ -251,12 +251,13 @@ end
 
 BloodManager.add_blood_ball = function (self, position, direction, damage_type, hit_unit)
 	if BloodSettings.blood_decals.enabled then
-		if BloodSettings.blood_decals.num_decals > 0 and Vector3.is_valid(position) then
+		local breed = Unit.get_data(hit_unit, "breed")
+
+		if BloodSettings.blood_decals.num_decals > 0 and Vector3.is_valid(position) and not breed.no_blood then
 			self:_add_blood_ball_data_to_buffer(position, direction, damage_type)
 		end
 
 		local health_ext = ScriptUnit.extension(hit_unit, "health_system")
-		local breed = Unit.get_data(hit_unit, "breed")
 
 		if breed.blood_effect_name then
 			self:_spawn_effects(hit_unit, breed, health_ext)

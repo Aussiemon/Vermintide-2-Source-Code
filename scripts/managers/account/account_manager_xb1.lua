@@ -20,36 +20,44 @@ end
 
 local CONSOLE_TYPE_SETTINGS = {
 	[XboxOne.CONSOLE_TYPE_UNKNOWN] = {
-		should_throttle = true,
-		console_type_name = "Unknown"
+		allow_dismemberment = false,
+		console_type_name = "Unknown",
+		should_throttle = true
 	},
 	[XboxOne.CONSOLE_TYPE_XBOX_ONE] = {
-		should_throttle = true,
-		console_type_name = "Xbox One"
+		allow_dismemberment = false,
+		console_type_name = "Xbox One",
+		should_throttle = true
 	},
 	[XboxOne.CONSOLE_TYPE_XBOX_ONE_S] = {
-		should_throttle = true,
-		console_type_name = "Xbox One S"
+		allow_dismemberment = false,
+		console_type_name = "Xbox One S",
+		should_throttle = true
 	},
 	[XboxOne.CONSOLE_TYPE_XBOX_ONE_X] = {
-		should_throttle = true,
-		console_type_name = "Xbox One X"
+		allow_dismemberment = false,
+		console_type_name = "Xbox One X",
+		should_throttle = true
 	},
 	[XboxOne.CONSOLE_TYPE_XBOX_ONE_X_DEVKIT] = {
-		should_throttle = true,
-		console_type_name = "Xbox One X Devkit"
+		allow_dismemberment = false,
+		console_type_name = "Xbox One X Devkit",
+		should_throttle = true
 	},
 	[XboxOne.CONSOLE_TYPE_XBOX_LOCKHART] = {
-		should_throttle = false,
-		console_type_name = "Xbox Series S"
+		allow_dismemberment = true,
+		console_type_name = "Xbox Series S",
+		should_throttle = false
 	},
 	[XboxOne.CONSOLE_TYPE_XBOX_ANACONDA] = {
-		should_throttle = false,
-		console_type_name = "Xbox Series X"
+		allow_dismemberment = true,
+		console_type_name = "Xbox Series X",
+		should_throttle = false
 	},
 	[XboxOne.CONSOLE_TYPE_XBOX_SERIES_X_DEVKIT] = {
-		should_throttle = false,
-		console_type_name = "Xbox Series X Devkit"
+		allow_dismemberment = true,
+		console_type_name = "Xbox Series X Devkit",
+		should_throttle = false
 	}
 }
 
@@ -72,6 +80,8 @@ AccountManager.init = function (self)
 	self._unlocked_achievements = {}
 	self._offline_achievement_progress = {}
 	self._social_graph_callbacks = {}
+	local region_info = XboxLive.region_info()
+	self._country_code = string.lower(region_info.GEO_ISO2)
 end
 
 AccountManager.set_achievement_unlocked = function (self, template_id)
@@ -1080,12 +1090,19 @@ AccountManager.should_throttle = function (self)
 	return console_settings.should_throttle
 end
 
+AccountManager.console_type_setting = function (self, setting)
+	local console_type = XboxOne.console_type()
+	local console_settings = CONSOLE_TYPE_SETTINGS[console_type] or CONSOLE_TYPE_SETTINGS[XboxOne.CONSOLE_TYPE_UNKNOWN]
+
+	return console_settings[setting]
+end
+
 AccountManager.has_session = function (self)
 	return true
 end
 
 AccountManager.region = function (self)
-	return
+	return self._country_code
 end
 
 AccountManager.update_presence = function (self)

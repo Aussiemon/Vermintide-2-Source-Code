@@ -826,4 +826,17 @@ action_data.stagger = {
 		}
 	}
 }
+action_data.defend_destructible = {
+	function_call_interval = 0.25,
+	find_move_pos = {
+		max_below = 1.3,
+		radius = 2,
+		tries = 15,
+		spread = 2,
+		max_above = 0.1
+	},
+	has_overlap_at_pos = {
+		radius = 0.8
+	}
+}
 BreedActions.skaven_clan_rat = table.create_copy(BreedActions.skaven_clan_rat, action_data)

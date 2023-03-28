@@ -612,6 +612,10 @@ BTConditions.can_activate_ability = function (blackboard, args)
 end
 
 BTConditions.should_reload_ability_weapon = function (blackboard, args)
+	if blackboard.reloading and blackboard.reloading_slot ~= args.wanted_slot then
+		return false
+	end
+
 	local career_extension = blackboard.career_extension
 	local career_name = career_extension:career_name()
 	local condition_function = BTConditions.reload_ability_weapon[career_name]
@@ -898,6 +902,18 @@ BTConditions.is_slot_not_wielded = function (blackboard, args)
 	end
 end
 
+BTConditions.is_wanted_slot_not_wielded = function (blackboard, args)
+	local wielded_slot = blackboard.inventory_extension:equipment().wielded_slot
+	local wanted_slot = blackboard[args[1]]
+	local only_wanted_slot = args[2]
+
+	if only_wanted_slot and wanted_slot ~= only_wanted_slot then
+		return false
+	else
+		return wanted_slot ~= wielded_slot
+	end
+end
+
 BTConditions.has_double_weapon_slots = function (blackboard, args)
 	return blackboard.double_weapons == args[1]
 end
@@ -1093,16 +1109,16 @@ BTConditions.should_reload_weapon = function (blackboard, args)
 	local should_reload = nil
 
 	if blackboard.reloading then
-		if ammo_extension:remaining_ammo() > 0 then
-			should_reload = not ammo_extension:clip_full()
-		else
-			should_reload = false
-		end
+		should_reload = ammo_extension:remaining_ammo() > 0 and not ammo_extension:clip_full() and blackboard.reloading_slot == args[1]
 	else
 		should_reload = ammo_extension:can_reload()
 	end
 
 	return should_reload
+end
+
+BTConditions.wants_to_reload_weapon = function (blackboard, args)
+	return blackboard.wanted_slot_to_reload ~= nil
 end
 
 BTConditions.can_open_door = function (blackboard)

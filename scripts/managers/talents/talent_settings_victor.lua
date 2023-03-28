@@ -263,12 +263,12 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_invulnerability_cooldown = {
 		buffs = {
 			{
-				buff_after_delay = true,
+				buff_to_add = "victor_zealot_gain_invulnerability_on_lethal_damage_taken",
 				max_stacks = 1,
 				refresh_durations = true,
+				duration_end_func = "add_buff_local",
 				is_cooldown = true,
-				icon = "victor_zealot_passive_invulnerability",
-				delayed_buff_name = "victor_zealot_gain_invulnerability_on_lethal_damage_taken"
+				icon = "victor_zealot_passive_invulnerability"
 			}
 		}
 	},
@@ -602,12 +602,12 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_passive_crit_cooldown = {
 		buffs = {
 			{
-				buff_after_delay = true,
+				buff_to_add = "victor_bountyhunter_passive_crit_buff",
 				max_stacks = 1,
 				refresh_durations = true,
+				duration_end_func = "add_buff_local",
 				is_cooldown = true,
-				icon = "victor_bountyhunter_passive",
-				delayed_buff_name = "victor_bountyhunter_passive_crit_buff"
+				icon = "victor_bountyhunter_passive"
 			}
 		}
 	},
@@ -722,12 +722,12 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_passive_reduced_cooldown = {
 		buffs = {
 			{
-				buff_after_delay = true,
+				buff_to_add = "victor_bountyhunter_passive_crit_buff",
 				max_stacks = 1,
 				refresh_durations = true,
+				duration_end_func = "add_buff_local",
 				is_cooldown = true,
-				icon = "victor_bountyhunter_passive",
-				delayed_buff_name = "victor_bountyhunter_passive_crit_buff"
+				icon = "victor_bountyhunter_passive"
 			}
 		}
 	},

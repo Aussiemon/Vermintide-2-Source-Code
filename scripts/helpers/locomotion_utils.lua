@@ -520,10 +520,10 @@ LocomotionUtils.new_random_goal_in_front_of_unit = function (nav_world, unit, mi
 	local start_pos = Unit.local_position(unit, 0)
 
 	while tries < max_tries do
-		local locomotion_ext = ScriptUnit.has_extension(unit, "locomotion_system") and ScriptUnit.extension(unit, "locomotion_system")
+		local locomotion_ext = ScriptUnit.has_extension(unit, "locomotion_system")
 		local direction, speed = nil
 
-		if locomotion_ext then
+		if locomotion_ext and locomotion_ext.average_velocity then
 			local average_velocity = Vector3.flat(locomotion_ext:average_velocity())
 			speed = Vector3.length(average_velocity)
 

@@ -355,7 +355,7 @@ HeroWindowPanelConsole._handle_input = function (self, dt, t)
 			input_made = true
 		end
 
-		if not input_made then
+		if not input_made and not self.parent.parent:input_blocked() then
 			local current_index = self._selected_index or 1
 			local max_index = 5
 

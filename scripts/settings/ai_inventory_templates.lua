@@ -801,6 +801,22 @@ local items = {
 		weak_spot = "head",
 		attachment_node_linking = AttachmentNodeLinking.ai_zombie_blob_head
 	},
+	wpn_undead_ethereal_skeleton_sword_01 = {
+		drop_on_hit = true,
+		unit_name = "units/weapons/enemy/wpn_undead_ethereal_set/wpn_undead_ethereal_sword_01",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_weapon
+	},
+	wpn_undead_ethereal_skeleton_shield_01 = {
+		unit_extension_template = "ai_shield_unit",
+		unit_name = "units/weapons/enemy/wpn_undead_ethereal_set/wpn_undead_ethereal_shield_01",
+		drop_on_hit = true,
+		attachment_node_linking = AttachmentNodeLinking.ai_shield
+	},
+	wpn_undead_ethereal_skeleton_2h_hammer_01 = {
+		drop_on_hit = true,
+		unit_name = "units/weapons/enemy/wpn_undead_ethereal_set/wpn_undead_ethereal_2h_hammer_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_2h
+	},
 	wpn_beastmen_2h_axe_2_moc = {
 		unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_moc_2h_axe_02",
 		attachment_node_linking = AttachmentNodeLinking.ai_spear
@@ -1382,6 +1398,15 @@ local item_categories = {
 		items.zombie_blob_02,
 		items.zombie_blob_03,
 		items.zombie_blob_04
+	},
+	undead_ethereal_skeleton_sword = {
+		items.wpn_undead_ethereal_skeleton_sword_01
+	},
+	undead_ethereal_skeleton_shield = {
+		items.wpn_undead_ethereal_skeleton_shield_01
+	},
+	undead_ethereal_skeleton_2h_hammer = {
+		items.wpn_undead_ethereal_skeleton_2h_hammer_01
 	},
 	berzerker_helmet = {},
 	berzerker_right = {
@@ -2076,6 +2101,21 @@ InventoryConfigurations = {
 		items = {
 			item_categories.blk_shadow_lieutenant_axe,
 			item_categories.blk_shadow_lieutenant_warrior_helmet
+		}
+	},
+	undead_ethereal_skeleton_with_shield = {
+		enemy_hit_sound = "sword",
+		anim_state_event = "to_shield",
+		items = {
+			item_categories.undead_ethereal_skeleton_sword,
+			item_categories.undead_ethereal_skeleton_shield
+		}
+	},
+	undead_ethereal_skeleton_2h = {
+		enemy_hit_sound = "sword",
+		anim_state_event = "to_2h_hammer",
+		items = {
+			item_categories.undead_ethereal_skeleton_2h_hammer
 		}
 	},
 	critter_nurgling = {

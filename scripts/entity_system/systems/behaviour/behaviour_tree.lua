@@ -178,6 +178,8 @@ require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_cha
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_exalted_champion_norsca")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_spawn")
 require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_chaos_zombie")
+require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_ethereal_skeleton_with_hammer")
+require("scripts/entity_system/systems/behaviour/nodes/generated/bt_selector_ethereal_skeleton_with_shield")
 DLCUtils.dofile_list("behaviour_tree_nodes")
 DLCUtils.require_list("behaviour_trees_precompiled")
 

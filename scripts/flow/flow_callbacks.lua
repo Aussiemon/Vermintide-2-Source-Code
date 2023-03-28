@@ -1885,6 +1885,23 @@ function flow_callback_update_mission(params)
 	end
 end
 
+function flow_callback_reset_mission(params)
+	local mission_name = params.mission_name
+
+	fassert(mission_name, "[flow_callback_reset_mission] No mission name passed")
+	fassert(Missions[mission_name], "[flow_callback_start_mission] There is no mission by the name %q", mission_name)
+
+	local mission_template = Missions[mission_name]
+
+	if mission_template.is_tutorial_input then
+		Managers.state.event:trigger("event_update_tutorial_input", mission_name)
+	else
+		local mission_system = Managers.state.entity:system("mission_system")
+
+		mission_system:flow_callback_reset_mission(mission_name)
+	end
+end
+
 function flow_callback_end_mission(params)
 	local mission_name = params.mission_name
 
@@ -2139,9 +2156,16 @@ function flow_callback_damage_player_bot_ai(params)
 		local damage_type = "forced"
 		local hit_position = Unit.world_position(unit, 0)
 		local damage_direction = Vector3.up()
+		local max_damage = NetworkConstants.damage.max
 		local health_extension = ScriptUnit.extension(unit, "health_system")
+		local clamped_damage = math.min(damage, health_extension:current_health())
+		local damage_chunks = math.ceil(clamped_damage / max_damage)
 
-		health_extension:add_damage(unit, damage, hit_zone_name, damage_type, hit_position, damage_direction)
+		for i = 0, damage_chunks - 1 do
+			local damage_to_apply = math.min(clamped_damage - damage_chunks * i, damage_chunks)
+
+			DamageUtils.add_damage_network(unit, unit, damage_to_apply, hit_zone_name, damage_type, hit_position, damage_direction)
+		end
 	end
 end
 
@@ -2157,8 +2181,8 @@ function flow_callback_get_health_player_bot_ai(params)
 		fassert(ScriptUnit.has_extension(unit, "health_system"), "Tried to get unit %s health from flow but the unit has no health extension", unit)
 
 		local health_extension = ScriptUnit.extension(unit, "health_system")
-		local status_extension = ScriptUnit.extension(unit, "status_system")
-		current_health = (status_extension:is_knocked_down() or status_extension:is_ready_for_assisted_respawn()) and 0 or health_extension:current_health()
+		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+		current_health = status_extension and (status_extension:is_knocked_down() or status_extension:is_ready_for_assisted_respawn()) and 0 or health_extension:current_health()
 	end
 
 	flow_return_table.currenthealth = current_health
@@ -3350,6 +3374,10 @@ function flow_callback_chr_enemy_inventory_send_event(params)
 end
 
 function flow_callback_unit_spawner_mark_for_deletion(params)
+	if not unit_alive(params.unit) then
+		return
+	end
+
 	fassert(Managers.state.network.is_server or not NetworkUnit.is_network_unit(params.unit), "'flow_callback_unit_spawner_mark_for_deletion' can only delete units spawned locally on client")
 
 	local unit_spawner = Managers.state.unit_spawner
@@ -4547,6 +4575,23 @@ function flow_callback_set_player_fall_height(params)
 	end
 end
 
+function flow_callback_set_local_player_gravity_scale(params)
+	local gravity_scale = params.gravity_scale or 1
+	local player_manager = Managers.player
+	local players = player_manager:human_and_bot_players()
+
+	for _, player in pairs(players) do
+		if player.local_player or player.bot_player and player.is_server then
+			local unit = player.player_unit
+			local locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system")
+
+			if locomotion_extension and locomotion_extension.set_script_driven_gravity_scale then
+				locomotion_extension:set_script_driven_gravity_scale(gravity_scale)
+			end
+		end
+	end
+end
+
 function flow_callback_enable_generic_unit_aim_extension(params)
 	local unit = params.unit
 	local enable = params.enable
@@ -4676,7 +4721,7 @@ function flow_callback_set_unit_faded_status(params)
 	local status_extension = ScriptUnit.extension(unit, "status_system")
 
 	if status_extension then
-		status_extension:set_invisible(faded)
+		status_extension:set_invisible(faded, nil, "flow_faded")
 	end
 end
 
@@ -4860,4 +4905,351 @@ function flow_callback_hazard_push_damage_player_and_husks(params)
 
 		locomotion_extension:add_external_velocity(pushed_velocity)
 	end
+end
+
+function flow_callback_start_disrupt_ritual(params)
+	fassert(params.unit, "[flow_callbacks] DISRUPT RITUAL: No level unit name provided [required]")
+	fassert(params.volume_name, "[flow_callbacks] DISRUPT RITUAL: No volume name provided [required]")
+	fassert(params.num_progression_events > 1, "[flow_callbacks] DISRUPT RITUAL: num_progession_events have to be atleast 2: one for start and one for end [required]")
+	fassert(params.num_progression_events, "[flow_callbacks] DISRUPT RITUAL: No num progression events provided [required]")
+	fassert(params.tick_length, "[flow_callbacks] DISRUPT RITUAL: No tick length provided [required]")
+	fassert(params.damage_per_tick, "[flow_callbacks] DISRUPT RITUAL: No damage per tick provided [required]")
+	fassert(params.heal_per_tick, "[flow_callbacks] DISRUPT RITUAL: No heal per tick provided [required]")
+	Managers.state.event:trigger("start_disrupt_ritual", params.unit, params.volume_name, params.volume_type, params.num_progression_events, params.tick_length, params.damage_per_tick, params.heal_per_tick)
+end
+
+function flow_callback_spawn_sofia_defenders(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local unit = params.unit
+	local spawn_positions = {
+		params.spawn_position1,
+		params.spawn_position2,
+		params.spawn_position3
+	}
+	local extension = ScriptUnit.extension(unit, "ward_system")
+
+	extension:spawn_sofia_defenders(spawn_positions)
+end
+
+function flow_callback_spawn_skulls_tower_end(params)
+	if not Managers.player.is_server then
+		return
+	end
+
+	local num_skulls = params.num_skulls
+	local optional_data = {}
+	local sofia_pos = Unit.world_position(params.sofia_unit, 0)
+	optional_data.sofia_unit_pos = Vector3Box(sofia_pos)
+
+	optional_data.spawned_func = function (unit, breed, optional_data)
+		local blackboard = BLACKBOARDS[unit]
+
+		if blackboard then
+			blackboard.sofia_unit_pos = optional_data.sofia_unit_pos
+		end
+	end
+
+	optional_data.prepare_func = function (breed, extension_init_data)
+		local is_husk = false
+
+		breed:modify_extension_init_data(is_husk, extension_init_data)
+	end
+
+	local up = Vector3.up()
+	local right = Vector3.right()
+	local spawn_rot = Quaternion.identity()
+	local height = Vector3(0, 0, 3)
+	local dist_from_origin = 0.1
+	local step = math.pi * 2 / num_skulls
+
+	for i = 1, num_skulls do
+		local relative_pos = Quaternion.rotate(Quaternion(up, step * i), right) * dist_from_origin + height
+		local spawn_pos = sofia_pos + height
+		local teleport_effect = "fx/ethereal_skulls_teleport_01"
+
+		if teleport_effect then
+			local effect_name_id = NetworkLookup.effects[teleport_effect]
+			local node_id = 0
+			local rotation_offset = Quaternion.identity()
+			local network_manager = Managers.state.network
+
+			network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, spawn_pos, rotation_offset, false)
+		end
+
+		Managers.state.conflict:spawn_queued_unit(Breeds.tower_homing_skull, Vector3Box(spawn_pos), QuaternionBox(spawn_rot), nil, "spawn_idle", nil, optional_data)
+	end
+end
+
+function flow_callback_trigger_sofia_explosion(params)
+	local damage_data = {
+		enemy_damage = params.enemy_damage
+	}
+
+	Managers.state.event:trigger("on_failed_guardians_event", damage_data)
+end
+
+function flow_callback_spawn_magic_missile_two_targets(params)
+	local unit = params.unit
+	local first_character = params.first_character
+	local second_character = params.second_character
+
+	assert(first_character, "[flow_callback_spawn_two_targets_vfx_projectile_tower] assign a first_character")
+
+	local target = nil
+
+	if Unit.get_data(first_character, "visible") then
+		target = first_character
+	else
+		assert(second_character, "[flow_callback_spawn_two_targets_vfx_projectile_tower] first_character is not visible and second_character is not assigned")
+
+		target = second_character
+	end
+
+	local spawn_node_name = params.spawn_node_name
+	local target_node_name = params.target_node_name
+	local second_target = params.optional_second_target
+	local second_target_node_name = params.optional_second_target_node_name
+	local speed = params.speed
+	local trajectory_template_name = params.trajectory_template_name
+	local impact_with_last_target = params.impact_with_last_target
+	local character_name = params.character_name
+
+	assert(trajectory_template_name, "[flow_callback_spawn_two_targets_vfx_projectile_tower] needs a trajectory_template_name choosen")
+	assert(target, "[flow_callback_spawn_two_targets_vfx_projectile_tower] assign a target")
+	assert(character_name, "[flow_callback_spawn_two_targets_vfx_projectile_tower] assign character name")
+
+	local projectile_settings = Projectiles.vfx_scripted_projectile_unit
+	local projectile_name = projectile_settings.name
+	local gravity_settings = projectile_settings.gravity_settings
+	local angle = projectile_settings.angle
+	local impact_template_name = projectile_settings.impact_template_name
+	local impact_collision_filter = projectile_settings.impact_collision_filter
+	local sphere_radius = projectile_settings.radius
+	local only_one_impact = projectile_settings.only_one_impact
+	local projectile_unit = nil
+
+	if character_name == "sofia" then
+		projectile_unit = ProjectileUnits.sofia_vfx_scripted_projectile_unit
+	else
+		projectile_unit = ProjectileUnits.olesya_vfx_scripted_projectile_unit
+	end
+
+	local unit_name = projectile_unit.projectile_unit_name
+	local spawn_node = Unit.node(unit, spawn_node_name) or 0
+	local spawn_position = Unit.world_position(unit, spawn_node)
+	local spawn_rotation = Unit.local_rotation(unit, 0)
+	local target_node = Unit.node(target, target_node_name) or 0
+	local target_position = Unit.world_position(target, target_node)
+	local target_direction = Vector3.normalize(target_position - spawn_position)
+	spawn_position = spawn_position + target_direction * 0.25
+	local target_positions = {
+		Vector3Box(target_position)
+	}
+	local target_units = {
+		target
+	}
+
+	if Unit.alive(second_target) then
+		local second_target_node = Unit.node(second_target, second_target_node_name) or 0
+		local second_target_position = Unit.world_position(second_target, second_target_node)
+		target_positions[2] = Vector3Box(second_target_position)
+		target_units[2] = second_target
+	end
+
+	local extension_init_data = {
+		projectile_locomotion_system = {
+			angle = angle,
+			speed = speed,
+			target_vector = target_direction,
+			target_positions = target_positions,
+			target_units = target_units,
+			initial_position = spawn_position,
+			trajectory_template_name = trajectory_template_name,
+			gravity_settings = gravity_settings,
+			impact_with_last_target = impact_with_last_target
+		},
+		projectile_impact_system = {
+			sphere_radius = sphere_radius,
+			only_one_impact = only_one_impact,
+			collision_filter = impact_collision_filter
+		},
+		projectile_system = {
+			impact_template_name = impact_template_name
+		}
+	}
+
+	Managers.state.unit_spawner:spawn_local_unit_with_extensions(unit_name, projectile_name, extension_init_data, spawn_position, spawn_rotation)
+end
+
+function flow_callback_set_rotating_hazard_state(params)
+	if not Managers.state.network.is_server then
+		return
+	end
+
+	local unit = params.unit
+	local rotating_hazard_extension = ScriptUnit.has_extension(unit, "props_system")
+
+	if rotating_hazard_extension then
+		local state = params.state
+
+		if state == "start" then
+			rotating_hazard_extension:start(false)
+		elseif state == "restart" then
+			rotating_hazard_extension:start(true)
+		elseif state == "pause" then
+			rotating_hazard_extension:pause()
+		elseif state == "stop" then
+			rotating_hazard_extension:stop()
+		end
+	end
+end
+
+function flow_callback_trigger_event_on_all_sub_levels(params)
+	local event_name = params.event_name
+
+	if not event_name then
+		return
+	end
+
+	local level = Application.flow_callback_context_level()
+
+	if not level then
+		return
+	end
+
+	local sub_levels = Level.get_data(level, "sub_levels")
+
+	if sub_levels then
+		for sublevel_name, sub_level in pairs(sub_levels) do
+			Level.trigger_event(sub_level, event_name)
+		end
+	end
+end
+
+function flow_callback_trigger_event_on_sub_level(params)
+	local event_name = params.event_name
+
+	if not event_name then
+		return
+	end
+
+	local level = Application.flow_callback_context_level()
+
+	if not level then
+		return
+	end
+
+	local sub_levels = Level.get_data(level, "sub_levels")
+
+	if sub_levels then
+		local sub_level = sub_levels[params.sub_level_name]
+
+		if sub_level then
+			Level.trigger_event(sub_level, event_name)
+		end
+	end
+end
+
+function flow_callback_trigger_event_of_parent_level(params)
+	local event_name = params.event_name
+
+	if not event_name then
+		return
+	end
+
+	local level = Application.flow_callback_context_level()
+
+	if not level then
+		return
+	end
+
+	local parent_level = Level.get_data(level, "parent_level")
+
+	if not parent_level then
+		return
+	end
+
+	Level.trigger_event(parent_level, event_name)
+end
+
+function flow_callback_trigger_event_on_context_level(params)
+	local event_name = params.event_name
+
+	if not event_name then
+		return
+	end
+
+	local level = Application.flow_callback_context_level()
+
+	if not level then
+		return
+	end
+
+	Level.trigger_event(level, event_name)
+end
+
+function flow_callback_get_intro_wwise_id(params)
+	local level = Application.flow_callback_context_level()
+
+	if not level then
+		return
+	end
+
+	flow_return_table.wwise_id = Level.get_data(level, "intro_wwise_id") or 0
+
+	return flow_return_table
+end
+
+function flow_callback_on_tower_skull_found(params)
+	Managers.state.achievement:trigger_event("on_tower_skull_found")
+end
+
+function flow_callback_tower_wall_illusion_found(params)
+	Managers.state.achievement:trigger_event("tower_wall_illusion_found", params.index)
+end
+
+function flow_callback_update_tower_invisible_bridge_challenge(params)
+	Managers.state.achievement:trigger_event("update_tower_invisible_bridge_challenge", params.succeeded)
+end
+
+function flow_callback_note_puzzle_solved(params)
+	Managers.state.achievement:trigger_event("tower_note_puzzle")
+end
+
+function flow_callback_tower_potion_created(params)
+	Managers.state.achievement:trigger_event("tower_potion_created", params.type)
+end
+
+function flow_callback_tower_time_challenge_done(params)
+	return
+end
+
+function tower_guardian_of_lustria_challenge_done(params)
+	Managers.state.achievement:trigger_event("tower_enable_guardian_of_lustria")
+end
+
+function flow_callback_tower_skulls_set_target(params)
+	Managers.state.event:trigger("set_tower_skulls_target", params.unit, true)
+end
+
+function flow_callback_tower_barrel_achievement(params)
+	local event_name = params.event_name
+
+	Managers.state.achievement:trigger_event("tower_barrels", event_name, params.unit)
+end
+
+function flow_callback_tower_barrel_challenge_done(params)
+	Managers.state.achievement:trigger_event("tower_barrels", "done")
+end
+
+function flow_callback_once_in_play_session(params)
+	local key = params.key
+	script_data.once_in_play_session = script_data.once_in_play_session or {}
+	flow_return_table.out = not script_data.once_in_play_session[key]
+	script_data.once_in_play_session[key] = true
+
+	return flow_return_table
 end

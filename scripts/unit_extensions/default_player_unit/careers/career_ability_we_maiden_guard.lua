@@ -131,11 +131,6 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 	}
 
 	if talent_extension:has_talent("kerillian_maidenguard_activated_ability_invis_duration", "wood_elf", true) then
-		if buff_extension and buff_extension:has_buff_type("kerillian_maidenguard_activated_ability_invis_duration") then
-			status_extension:remove_noclip_stacking()
-			status_extension:remove_stealth_stacking()
-		end
-
 		buff_names = {
 			"kerillian_maidenguard_activated_ability_invis_duration"
 		}
@@ -173,10 +168,14 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 		end
 	end
 
-	status_extension:add_noclip_stacking()
+	status_extension:set_noclip(true, "skill_maiden_guard")
 
 	if talent_extension:has_talent("kerillian_maidenguard_activated_ability_invis_duration", "wood_elf", true) then
-		status_extension:add_stealth_stacking()
+		status_extension:set_invisible(true, nil, "skill_maiden_guard")
+
+		if local_player then
+			MOOD_BLACKBOARD.skill_maiden_guard = true
+		end
 	end
 
 	if network_manager:game() then

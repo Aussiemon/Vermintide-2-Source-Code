@@ -289,6 +289,28 @@ Pickups.level_events.magic_barrel = {
 	wield_on_pickup = true,
 	hud_description = "magic_barrel"
 }
+Pickups.level_events.wizards_barrel = {
+	only_once = true,
+	individual_pickup = false,
+	type = "explosive_inventory_item",
+	item_description = "wizards_barrel",
+	spawn_weighting = 1e-06,
+	debug_pickup_category = "level_event",
+	slot_name = "slot_level_event",
+	item_name = "wizards_barrel",
+	unit_name = "units/weapons/player/pup_wizards_barrel_01/pup_wizards_barrel_01",
+	additional_data_func = "wizards_barrel",
+	unit_template_name = "explosive_pickup_projectile_unit_limited",
+	wield_on_pickup = true,
+	hud_description = "wizards_barrel",
+	on_pick_up_func = function (world, interactor_unit, is_server)
+		Managers.state.event:trigger("set_tower_skulls_target", interactor_unit)
+
+		if is_server then
+			AIGroupTemplates.ethereal_skulls.try_spawn_group("picked_up", interactor_unit)
+		end
+	end
+}
 Pickups.level_events.grimoire = {
 	only_once = true,
 	individual_pickup = false,
@@ -592,6 +614,10 @@ Pickups.special = {
 				return true
 			end
 
+			if not params then
+				return true
+			end
+
 			local dice_keeper = params.dice_keeper
 
 			return dice_keeper:num_bonus_dice_spawned() < 2
@@ -628,32 +654,8 @@ Pickups.special = {
 
 			return not is_in_cooldown and not is_falling_down
 		end
-	},
-	endurance_badge_01 = {
-		only_once = true,
-		individual_pickup = false,
-		mission_name = "endurance_badge_01_mission",
-		type = "endurance_badge",
-		pickup_sound_event = "Play_hud_pickup_badge",
-		debug_pickup_category = "special",
-		spawn_weighting = 1e-06,
-		unit_name = "units/props/endurance_badges/prop_endurance_badge_01",
-		local_pickup_sound = false,
-		hud_description = "interaction_endurance_badge"
 	}
 }
-Pickups.special.endurance_badge_02 = table.clone(Pickups.special.endurance_badge_01)
-Pickups.special.endurance_badge_02.unit_name = "units/props/endurance_badges/prop_endurance_badge_02"
-Pickups.special.endurance_badge_02.mission_name = "endurance_badge_02_mission"
-Pickups.special.endurance_badge_03 = table.clone(Pickups.special.endurance_badge_01)
-Pickups.special.endurance_badge_03.unit_name = "units/props/endurance_badges/prop_endurance_badge_03"
-Pickups.special.endurance_badge_03.mission_name = "endurance_badge_03_mission"
-Pickups.special.endurance_badge_04 = table.clone(Pickups.special.endurance_badge_01)
-Pickups.special.endurance_badge_04.unit_name = "units/props/endurance_badges/prop_endurance_badge_04"
-Pickups.special.endurance_badge_04.mission_name = "endurance_badge_04_mission"
-Pickups.special.endurance_badge_05 = table.clone(Pickups.special.endurance_badge_01)
-Pickups.special.endurance_badge_05.unit_name = "units/props/endurance_badges/prop_endurance_badge_05"
-Pickups.special.endurance_badge_05.mission_name = "endurance_badge_05_mission"
 
 if script_data then
 	script_data.lorebook_enabled = script_data.lorebook_enabled or Development.parameter("lorebook_enabled")

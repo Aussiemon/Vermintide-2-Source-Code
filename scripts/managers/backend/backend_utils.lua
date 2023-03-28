@@ -84,7 +84,7 @@ end
 
 BackendUtils.get_average_item_power_level = function (career_name)
 	local backend_items = Managers.backend:get_interface("items")
-	local slots = InventorySettings.slots_by_slot_index
+	local slots = InventorySettings.equipment_slots
 	local num_slots = 5
 	local total_item_power_level = 0
 

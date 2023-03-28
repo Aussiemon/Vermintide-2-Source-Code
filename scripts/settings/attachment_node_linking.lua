@@ -5914,22 +5914,6 @@ AttachmentNodeLinking = {
 				source = "j_chin_amim"
 			},
 			{
-				target = "j_tongue_01",
-				source = "j_tongue_01"
-			},
-			{
-				target = "j_tongue_02",
-				source = "j_tongue_02"
-			},
-			{
-				target = "j_tongue_03",
-				source = "j_tongue_03"
-			},
-			{
-				target = "j_tongue_04",
-				source = "j_tongue_04"
-			},
-			{
 				target = "j_lowerlipleft1_anim",
 				source = "j_lowerlipleft1_anim"
 			},
@@ -6018,20 +6002,12 @@ AttachmentNodeLinking = {
 				source = "j_rightcheek_03_anim"
 			},
 			{
-				target = "j_lefteye",
-				source = "j_lefteye"
-			},
-			{
 				target = "j_lefteyelidtop",
 				source = "j_lefteyelidtop"
 			},
 			{
 				target = "j_lefteyelidbottom",
 				source = "j_lefteyelidbottom"
-			},
-			{
-				target = "j_righteye",
-				source = "j_righteye"
 			},
 			{
 				target = "j_righteyelidtop",
@@ -7736,6 +7712,46 @@ AttachmentNodeLinking = {
 		{
 			target = "j_packmaster_sling",
 			source = "j_packmaster_sling"
+		}
+	},
+	skeleton_weapon = {
+		wielded = {
+			{
+				target = 0,
+				source = "j_rightweaponattach"
+			}
+		},
+		unwielded = {
+			{
+				target = 0,
+				source = "j_hips"
+			}
+		}
+	},
+	skeleton_weapon_offhand = {
+		wielded = {
+			{
+				target = 0,
+				source = "j_leftweaponattach"
+			}
+		},
+		unwielded = {
+			{
+				target = 0,
+				source = "j_hips"
+			}
+		}
+	},
+	skeleton_armor = {
+		{
+			target = 0,
+			source = "j_spine2"
+		}
+	},
+	skeleton_helmet = {
+		{
+			target = 0,
+			source = "j_head"
 		}
 	},
 	ai_mace = {

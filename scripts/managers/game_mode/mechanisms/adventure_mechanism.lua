@@ -679,12 +679,12 @@ AdventureMechanism._load_live_event_packages = function (self)
 			local event_name = event_data.name
 			local event_packages = live_event_packages[event_name]
 
-			if event_packages then
+			if event_packages and event_packages.resource_packages then
 				if not additional_packages[event_name] then
 					additional_packages[event_name] = {}
 				end
 
-				table.append(additional_packages[event_name], event_packages)
+				table.append(additional_packages[event_name], event_packages.resource_packages)
 			end
 		end
 

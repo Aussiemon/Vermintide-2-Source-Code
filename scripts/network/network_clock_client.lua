@@ -187,7 +187,7 @@ NetworkClockClient._debug_stuff = function (self, dt)
 	local debug_text_manager = Managers.state.debug_text
 
 	if debug_text_manager then
-		local text = tostring(math.floor(self._clock))
+		local text = string.format("%.3f", self._clock)
 
 		debug_text_manager:output_screen_text(text, 22, 0.1)
 	end

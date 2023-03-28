@@ -14,8 +14,12 @@ KeystrokeHelper.num_utf8chars = function (text)
 	return num_chars
 end
 
+local _reusable_text_table = {}
+
 KeystrokeHelper.parse_strokes = function (text, index, mode, keystrokes, optional_text_length_cap)
-	local text_table = KeystrokeHelper._build_utf8_table(text)
+	table.clear(_reusable_text_table)
+
+	local text_table = KeystrokeHelper._build_utf8_table(text, _reusable_text_table)
 
 	for _, stroke in ipairs(keystrokes) do
 		if type(stroke) == "string" then

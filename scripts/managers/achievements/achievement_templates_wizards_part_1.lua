@@ -4,8 +4,17 @@ local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
 local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local achievements = AchievementTemplates.achievements
 local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
-local XB1_ACHIEVEMENT_ID = {}
-local PS4_ACHIEVEMENT_ID = {}
+local add_console_achievements = AchievementTemplateHelper.add_console_achievements
+local XB1_ACHIEVEMENT_ID = {
+	trail_sleigher = 104,
+	trail_shatterer = 102,
+	trail_beacons_are_lit = 105,
+	onions_complete_trail_legend = 106,
+	trail_cog_strike = 103
+}
+local PS4_ACHIEVEMENT_ID = {
+	trail_beacons_are_lit = "087"
+}
 local all_difficulties = {}
 local portals = {
 	LevelSettings.dlc_wizards_trail
@@ -142,3 +151,4 @@ all_trail_challenges[#all_trail_challenges + 1] = "trail_sleigher"
 all_trail_challenges[#all_trail_challenges + 1] = "trail_beacons_are_lit"
 
 add_meta_challenge(achievements, "onions_complete_all", all_trail_challenges, "achievement_wizards_trail_complete_all_challenges", nil, XB1_ACHIEVEMENT_ID[name], PS4_ACHIEVEMENT_ID[name])
+add_console_achievements(XB1_ACHIEVEMENT_ID, PS4_ACHIEVEMENT_ID)

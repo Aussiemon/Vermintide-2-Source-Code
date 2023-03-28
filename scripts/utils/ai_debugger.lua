@@ -71,7 +71,7 @@ AIDebugger.update = function (self, t, dt)
 		if breed then
 			local blackboard = BLACKBOARDS[unit]
 
-			if blackboard.mode then
+			if blackboard and blackboard.mode then
 				Debug.text("debug_unit = %s, mode=%s, phase=%s", breed.name, tostring(blackboard.mode), tostring(blackboard.phase))
 			else
 				Debug.text("script_data.debug_unit = %s", breed.name)

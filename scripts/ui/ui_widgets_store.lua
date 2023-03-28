@@ -356,7 +356,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 			style_id = "price_strike_through",
 			pass_type = "rotated_texture",
 			content_check_function = function (content)
-				return not content.owned and (IS_WINDOWS or not content.real_currency) and not content.hide_price and content.old_price
+				return not content.owned and (IS_WINDOWS or not content.real_currency) and not content.hide_price and content.old_price and content.discount
 			end
 		},
 		{
@@ -404,7 +404,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 			pass_type = "text",
 			text_id = "price_text_before",
 			content_check_function = function (content)
-				return not content.owned and (IS_WINDOWS or not content.real_currency) and not content.hide_price and content.old_price
+				return not content.owned and (IS_WINDOWS or not content.real_currency) and not content.hide_price and content.old_price and content.discount
 			end
 		},
 		{
@@ -476,6 +476,11 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 			content_check_function = function (content)
 				return content.icon and not content.rendering_loading_icon
 			end
+		},
+		{
+			style_id = "bundle_content_amount_text",
+			pass_type = "text",
+			text_id = "bundle_content_amount_text"
 		},
 		{
 			pass_type = "texture",
@@ -570,32 +575,33 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 	}
 	local content = {
 		expire_time_icon = "icon_store_timer",
-		price_icon = "store_icon_currency_ingame",
 		old_price = false,
-		owned_icon = "store_owned_sigil",
-		hide_price = false,
-		draw_price_icon = true,
-		owned = false,
-		background_price_center = "store_thumbnail_pricetag_middle",
 		price_strike_through = "shop_bundle_line",
-		price_text_now = "-",
-		optional_item_name = "",
+		background_price_center = "store_thumbnail_pricetag_middle",
+		optional_subtitle = "",
 		psplus_icon = "psplus_logo",
-		console_third_price_text = "",
+		price_text_now = "-",
+		bundle_content_amount_text = "",
+		owned_icon = "store_owned_sigil",
+		optional_item_name = "",
+		price_icon = "store_icon_currency_ingame",
+		draw_price_icon = true,
 		price_text = "-",
+		console_third_price_text = "",
 		show_secondary_stroke = false,
-		show_third_stroke = false,
 		show_ps4_plus = false,
 		price_text_before = "-",
 		type_tag_icon = "store_tag_icon_dlc",
 		discount = false,
+		show_third_stroke = false,
 		loading_icon = "loot_loading",
 		new_marker = "list_item_tag_new",
 		background_price = "store_thumbnail_pricetag_left",
 		price_gradient = "gradient",
 		real_currency = false,
+		owned = false,
 		console_secondary_price_text = "",
-		optional_subtitle = "",
+		hide_price = false,
 		owned_icon_bg = "store_owned_ribbon",
 		background_price_right = "store_thumbnail_pricetag_right",
 		discount_bg = "store_thumbnail_sale",
@@ -837,6 +843,31 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 				0,
 				0,
 				8
+			}
+		},
+		bundle_content_amount_text = {
+			upper_case = false,
+			localize = false,
+			font_size = 28,
+			horizontal_alignment = "left",
+			text_horizontal_alignment = "right",
+			vertical_alignment = "top",
+			dynamic_font_size = false,
+			size = {
+				30,
+				30
+			},
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
+			text_color = {
+				255,
+				255,
+				116,
+				246
+			},
+			offset = {
+				size[1] - 80,
+				-44,
+				12
 			}
 		},
 		type_tag_icon = {
@@ -2781,6 +2812,14 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 					content_check_function = function (content)
 						return content.console_third_price_text ~= "" and IS_PS4 and content.real_currency
 					end
+				},
+				{
+					texture_id = "lock",
+					style_id = "lock",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return not content.owns_required_dlc
+					end
 				}
 			}
 		},
@@ -2801,9 +2840,11 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 			console_secondary_price_stroke = "simple_rect_texture",
 			hover_glow = "button_state_default",
 			real_currency = false,
+			owns_required_dlc = true,
 			owned = false,
 			console_background_rect = "simple_rect_texture",
 			console_secondary_price_text = "",
+			lock = "hero_icon_locked_gold",
 			owned_icon_bg = "store_owned_ribbon",
 			title_text_gradient = "text_gradient",
 			console_first_price_text = "",
@@ -3397,6 +3438,25 @@ UIWidgets.create_store_purchase_button = function (scenegraph_id, size, text, fo
 				offset = {
 					0,
 					10,
+					50
+				}
+			},
+			lock = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "center",
+				texture_size = {
+					83.60000000000001,
+					95.7
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					-20,
 					50
 				}
 			}

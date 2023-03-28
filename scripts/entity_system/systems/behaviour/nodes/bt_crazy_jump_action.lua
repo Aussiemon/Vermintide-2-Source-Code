@@ -29,6 +29,15 @@ BTCrazyJumpAction.enter = function (self, unit, blackboard, t)
 		data.state = "align_for_push_off"
 		data.start_jump = t + (prepare_jump_time or 0.3)
 		data.delay_jump_start = nil
+	elseif data.instant_jump then
+		network_manager:anim_event(unit, "to_crouch")
+		network_manager:anim_event(unit, "jump_start")
+
+		data.state = "push_off"
+		data.start_jump = t
+		data.start_check_obstacles = t + 0.8
+
+		self:create_bot_threat(unit, blackboard, t)
 	else
 		network_manager:anim_event(unit, "jump_start")
 
@@ -444,7 +453,7 @@ BTCrazyJumpAction.setup_jump = function (self, unit, blackboard, data)
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:set_affected_by_gravity(true)
-	locomotion_extension:set_movement_type("constrained_by_mover", override_mover_move_distance)
+	locomotion_extension:set_movement_type("constrained_by_mover", override_mover_move_distance, data.instant_jump)
 	locomotion_extension:set_wanted_velocity(jump_velocity)
 
 	data.overlap_context.spine_node = Unit.node(unit, "j_neck")

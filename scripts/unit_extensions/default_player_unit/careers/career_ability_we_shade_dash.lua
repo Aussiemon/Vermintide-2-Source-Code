@@ -42,9 +42,9 @@ CareerAbilityWEShadeDash.init = function (self, extension_init_context, unit, ex
 			end
 
 			if local_player or is_server and bot_player then
-				local applying_stealth = status_extension:add_stealth_stacking()
+				local applying_stealth = status_extension:set_invisible(true, nil, "skill_shade")
 
-				status_extension:add_noclip_stacking()
+				status_extension:set_noclip(true, "skill_shade")
 
 				local events = {
 					"Play_career_ability_kerillian_shade_enter",
@@ -210,7 +210,7 @@ CareerAbilityWEShadeDash._run_ability = function (self)
 		career_extension:set_state("kerillian_activate_maiden_guard")
 	end
 
-	status_extension:set_noclip(true)
+	status_extension:set_noclip(true, "skill_shade")
 
 	if network_manager:game() then
 		status_extension:set_is_dodging(true)

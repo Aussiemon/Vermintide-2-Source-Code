@@ -485,6 +485,10 @@ BTAttackAction.anim_cb_running_attack_start = function (self, unit, blackboard)
 end
 
 BTAttackAction.anim_cb_attack_finished = function (self, unit, blackboard)
+	if blackboard.attack_finished then
+		return
+	end
+
 	local network_manager = Managers.state.network
 	local game = network_manager:game()
 

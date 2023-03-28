@@ -35,12 +35,79 @@ TitleMainUI.init = function (self, world)
 	self._disable_input = false
 	self._alpha_multiplier = 0
 	self._disabled_buttons = {}
+	local materials = {}
 
 	if IS_WINDOWS then
-		self._ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_start_screen", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", "materials/ui/ui_1080p_menu_single_textures", "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", attract_mode_video.video_name, "material", menu_videos.main.video_name, "material", menu_videos.main_menu.video_name)
+		materials = {
+			"material",
+			"materials/ui/ui_1080p_title_screen",
+			"material",
+			"materials/ui/ui_1080p_start_screen",
+			"material",
+			"materials/ui/ui_1080p_menu_atlas_textures",
+			"material",
+			"materials/ui/ui_1080p_menu_single_textures",
+			"material",
+			"materials/fonts/gw_fonts",
+			"material",
+			"materials/ui/ui_1080p_common",
+			"material",
+			attract_mode_video.video_name,
+			"material",
+			menu_videos.main.video_name,
+			"material",
+			menu_videos.main_menu.video_name
+		}
 	else
-		self._ui_renderer = UIRenderer.create(world, "material", "materials/ui/ui_1080p_title_screen", "material", "materials/ui/ui_1080p_start_screen", "material", "materials/ui/ui_1080p_menu_atlas_textures", "material", "materials/ui/ui_1080p_menu_single_textures", "material", "materials/ui/ui_1080p_news_splash", "material", "materials/fonts/gw_fonts", "material", "materials/ui/ui_1080p_common", "material", attract_mode_video.video_name, "material", menu_videos.main.video_name, "material", menu_videos.main_menu.video_name)
+		materials = {
+			"material",
+			"materials/ui/ui_1080p_title_screen",
+			"material",
+			"materials/ui/ui_1080p_start_screen",
+			"material",
+			"materials/ui/ui_1080p_menu_atlas_textures",
+			"material",
+			"materials/ui/ui_1080p_menu_single_textures",
+			"material",
+			"materials/ui/ui_1080p_hud_single_textures",
+			"material",
+			"materials/ui/ui_1080p_news_splash",
+			"material",
+			"materials/fonts/gw_fonts",
+			"material",
+			"materials/ui/ui_1080p_common",
+			"material",
+			attract_mode_video.video_name,
+			"material",
+			menu_videos.main.video_name,
+			"material",
+			menu_videos.main_menu.video_name
+		}
 	end
+
+	for _, dlc in pairs(DLCSettings) do
+		local ui_materials = dlc.ui_materials
+
+		if ui_materials then
+			for _, path in ipairs(ui_materials) do
+				materials[#materials + 1] = "material"
+				materials[#materials + 1] = path
+			end
+		end
+	end
+
+	for i = 1, #CinematicsViewSettings do
+		local category_cinematics_view_settings = CinematicsViewSettings[i]
+
+		for j = 1, #category_cinematics_view_settings do
+			local cinematics_settings = category_cinematics_view_settings[j]
+			local video_data = cinematics_settings.video_data
+			materials[#materials + 1] = "material"
+			materials[#materials + 1] = video_data.resource
+		end
+	end
+
+	self._ui_renderer = UIRenderer.create(world, unpack(materials))
 
 	UISetupFontHeights(self._ui_renderer.gui)
 

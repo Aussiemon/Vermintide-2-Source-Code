@@ -59,6 +59,10 @@ PlayerHuskLocomotionExtension.small_sample_size_average_velocity = function (sel
 	return GameSession.game_object_field(self.game, self.id, "small_sample_size_average_velocity")
 end
 
+PlayerHuskLocomotionExtension.get_script_driven_gravity_scale = function (self)
+	return 1
+end
+
 PlayerHuskLocomotionExtension.extensions_ready = function (self, world, unit)
 	self.status_extension = ScriptUnit.extension(self.unit, "status_system")
 end

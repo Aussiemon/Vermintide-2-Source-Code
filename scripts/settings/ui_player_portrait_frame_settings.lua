@@ -394,6 +394,56 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_wizards_tower_01 = {
+		{
+			texture = "portrait_frame_wizards_tower_01",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		{
+			texture = "portrait_frame_wizards_tower_01_effect",
+			layer = 11,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				116,
+				136
+			},
+			offset = {
+				0,
+				-59,
+				0
+			}
+		},
+		{
+			texture = "portrait_frame_wizards_tower_01_glow",
+			layer = 12,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				116,
+				136
+			},
+			offset = {
+				0,
+				-59,
+				0
+			}
+		}
+	},
 	default = {
 		{
 			texture = "portrait_frame_0000",

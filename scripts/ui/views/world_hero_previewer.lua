@@ -293,7 +293,7 @@ HeroPreviewer._set_character_visibility = function (self, visible)
 				Unit.set_unit_visibility(data, show_unit)
 
 				if slot_type == "hat" then
-					local equip_hat_event = self.character_unit_skin_data.equip_hat_event
+					local equip_hat_event = self.character_unit_skin_data.equip_hat_event or "using_skin_default"
 
 					if equip_hat_event then
 						Unit.flow_event(data, equip_hat_event)
@@ -987,7 +987,7 @@ HeroPreviewer._trigger_equip_events = function (self)
 	if character_unit_skin_data then
 		local hat_index = InventorySettings.slots_by_name.slot_hat.slot_index
 		local hat_data = equipment_units[hat_index]
-		local equip_hat_event = self.character_unit_skin_data.equip_hat_event
+		local equip_hat_event = self.character_unit_skin_data.equip_hat_event or "using_skin_default"
 
 		if hat_data and equip_hat_event then
 			Unit.flow_event(hat_data, equip_hat_event)

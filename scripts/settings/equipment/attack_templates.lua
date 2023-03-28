@@ -777,7 +777,12 @@ AttackTemplates = {
 	payload_wagon = {},
 	sled = {},
 	trail_cog = {},
-	sawblade = {}
+	sawblade = {},
+	tower_wipe = {
+		stagger_value = 2,
+		sound_type = "medium",
+		damage_type = "tower_wipe"
+	}
 }
 
 DLCUtils.require_list("attack_template_files_names")

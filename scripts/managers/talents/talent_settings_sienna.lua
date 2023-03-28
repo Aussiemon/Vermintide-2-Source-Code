@@ -451,24 +451,24 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_adept_passive = {
 		buffs = {
 			{
-				buff_after_delay = true,
+				buff_to_add = "tranquility",
 				is_cooldown = true,
 				icon = "sienna_adept_passive",
+				duration_end_func = "add_buff_local",
 				max_stacks = 1,
-				refresh_durations = true,
-				delayed_buff_name = "tranquility"
+				refresh_durations = true
 			}
 		}
 	},
 	sienna_adept_passive_cooldown = {
 		buffs = {
 			{
-				buff_after_delay = true,
+				buff_to_add = "tranquility",
 				is_cooldown = true,
 				icon = "sienna_adept_passive",
+				duration_end_func = "add_buff_local",
 				max_stacks = 1,
-				refresh_durations = true,
-				delayed_buff_name = "tranquility"
+				refresh_durations = true
 			}
 		}
 	},

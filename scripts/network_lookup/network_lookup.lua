@@ -461,6 +461,12 @@ NetworkLookup.husks = {
 	"units/weapons/player/pup_magic_barrel/pup_magic_barrel_01",
 	"units/weapons/player/pup_magic_barrel/wpn_magic_barrel_01",
 	"units/weapons/player/pup_magic_barrel/wpn_magic_barrel_01_3p",
+	"units/weapons/player/pup_wizards_barrel_01/pup_wizards_barrel_01",
+	"units/weapons/player/pup_wizards_barrel_01/wpn_wizards_barrel_01",
+	"units/weapons/player/pup_wizards_barrel_01/wpn_wizards_barrel_01_3p",
+	"units/beings/enemies/undead_ethereal_skeleton/chr_undead_ethereal_skeleton",
+	"units/beings/enemies/undead_ethereal_skeleton/chr_undead_ethereal_skeleton_skull",
+	"units/gameplay/wizards_tower_rotating_wall/wizards_tower_rotating_wall",
 	"units/weapons/projectile/poison_wind_globe/poison_wind_globe",
 	"units/weapons/projectile/vortex_rune/vortex_rune",
 	"units/weapons/projectile/magic_missile/magic_missile",
@@ -479,11 +485,6 @@ NetworkLookup.husks = {
 	"units/hub_elements/interest_points/pack_spawning/ai_interest_point_6pack_01",
 	"units/hub_elements/interest_points/pack_spawning/ai_interest_point_6pack_02",
 	"units/hub_elements/interest_points/pack_spawning/ai_interest_point_8pack",
-	"units/props/endurance_badges/prop_endurance_badge_01",
-	"units/props/endurance_badges/prop_endurance_badge_02",
-	"units/props/endurance_badges/prop_endurance_badge_03",
-	"units/props/endurance_badges/prop_endurance_badge_04",
-	"units/props/endurance_badges/prop_endurance_badge_05",
 	"units/weapons/enemy/wpn_chaos_set/wpn_chaos_2h_axe_03",
 	"units/weapons/enemy/wpn_chaos_set/wpn_chaos_2h_axe_03_boss",
 	"units/gameplay/timed_door_base_02/timed_door_stick_pup",
@@ -573,6 +574,7 @@ NetworkLookup.go_types = {
 	"player_unit_health",
 	"liquid_aoe_unit",
 	"payload",
+	"rotating_hazard",
 	"twitch_vote",
 	"lure_unit",
 	"pickup_training_dummy_unit",
@@ -593,7 +595,8 @@ NetworkLookup.go_types = {
 	"versus_character_selection_unit",
 	"horde_surge",
 	"engineer_career_data",
-	"priest_career_data"
+	"priest_career_data",
+	"dialogue_node"
 }
 
 DLCUtils.append("network_go_types", NetworkLookup.go_types)
@@ -1035,6 +1038,7 @@ NetworkLookup.damage_types = {
 	"sync_health",
 	"killing_blow",
 	"military_finish",
+	"tower_wipe",
 	"belakor_arena_finish",
 	"life_tap",
 	"volume_generic_dot",
@@ -1130,7 +1134,9 @@ NetworkLookup.projectile_templates = {
 	"spawn_pickup",
 	"skull_staff",
 	"direct_impact",
-	"no_owner_direct_impact"
+	"no_owner_direct_impact",
+	"straight_target_traversal",
+	"straight_direction_traversal"
 }
 NetworkLookup.overpowered_templates = create_lookup({}, PlayerUnitMovementSettings.overpowered_templates)
 NetworkLookup.vortex_templates = create_lookup({}, VortexTemplates)
@@ -1273,7 +1279,8 @@ NetworkLookup.flow_events = {
 	"arrow_left",
 	"arrow_right",
 	"arrow_center",
-	"despawned"
+	"despawned",
+	"vfx_career_ability_start"
 }
 NetworkLookup.localized_strings = {
 	"level_completed",
@@ -1707,7 +1714,9 @@ NetworkLookup.ai_inventory = {
 	"beastmen_ungor_archer_bow_and_spear",
 	"opt_beastmen_ungor_archer_bow_and_spear",
 	"beastmen_minotaur_dual_axes",
-	"critter_nurgling"
+	"critter_nurgling",
+	"undead_ethereal_skeleton_with_shield",
+	"undead_ethereal_skeleton_2h"
 }
 
 DLCUtils.append("ai_inventory", NetworkLookup.ai_inventory)
@@ -1794,6 +1803,7 @@ NetworkLookup.dialogue_event_data_names = {
 	"weave_gargoyle_head",
 	"magic_crystal",
 	"magic_barrel",
+	"wizards_barrel",
 	"shadow_flare",
 	"shadow_gargoyle_head",
 	"explosive_barrel",
@@ -2256,6 +2266,9 @@ end
 
 local DialogueLookup = DialogueLookup
 NetworkLookup.dialogues = DialogueLookup
+NetworkLookup.dialogue_profiles = {
+	"inn_keeper"
+}
 local MarkerLookup = MarkerLookup
 NetworkLookup.markers = MarkerLookup or {}
 

@@ -868,7 +868,7 @@ MatchmakingManager.set_matchmaking_data = function (self, next_mission_id, diffi
 	lobby_data.num_players = num_players
 	lobby_data.difficulty = difficulty
 	lobby_data.quick_game = quick_game and "true" or "false"
-	lobby_data.country_code = rawget(_G, "Steam") and Steam.user_country_code() or Managers.account:region()
+	lobby_data.country_code = Managers.account:region()
 	lobby_data.twitch_enabled = GameSettingsDevelopment.twitch_enabled and Managers.twitch:is_connected() and Managers.twitch:game_mode_supported(matchmaking_type, difficulty) and "true" or "false"
 	lobby_data.eac_authorized = eac_authorized and "true" or "false"
 	lobby_data.mechanism = mechanism
@@ -1538,7 +1538,7 @@ MatchmakingManager.add_broken_lobby_client = function (self, lobby_client, t, is
 		return
 	end
 
-	local time_to_ignore = is_bad_connection_or_otherwise_not_nice and 120 or 20
+	local time_to_ignore = is_bad_connection_or_otherwise_not_nice and math.huge or 20
 	local broken_until = t + time_to_ignore
 
 	if lobby_client:is_dedicated_server() then

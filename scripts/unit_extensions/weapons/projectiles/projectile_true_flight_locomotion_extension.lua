@@ -660,7 +660,7 @@ ProjectileTrueFlightLocomotionExtension.legitimate_target_keep_target = function
 	local wanted_direction = Vector3.normalize(direction_to_target)
 	local dot_value = Vector3.dot(current_direction, wanted_direction)
 
-	if dot_value > -0.75 then
+	if dot_value > -0.75 and Vector3.length_squared(wanted_direction) > 0 then
 		local physics_world = World.get_data(self.world, "physics_world")
 		local result = PhysicsWorld.immediate_raycast_actors(physics_world, position, wanted_direction, 10000, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
 		local INDEX_ACTOR = 4

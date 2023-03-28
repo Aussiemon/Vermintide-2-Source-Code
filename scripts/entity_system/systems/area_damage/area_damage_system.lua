@@ -372,8 +372,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 
 		local t = Managers.time:time("game")
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
-		local target_index = nil
-		target_index = target_number
+		local target_index = target_number
 		local boost_curve_multiplier = 0
 		local backstab_multiplier = 1
 		is_critical_strike = false

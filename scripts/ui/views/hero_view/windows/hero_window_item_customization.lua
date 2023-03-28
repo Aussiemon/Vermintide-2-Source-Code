@@ -359,9 +359,8 @@ HeroWindowItemCustomization._create_item_preview_widget_definition = function (s
 	}
 	local passes = {
 		{
-			style_id = "viewport",
 			pass_type = "viewport",
-			content_id = "viewport"
+			style_id = "viewport"
 		},
 		{
 			pass_type = "hotspot",

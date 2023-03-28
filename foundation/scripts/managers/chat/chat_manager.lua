@@ -68,7 +68,10 @@ ChatManager.init = function (self)
 	self.recently_sent_messages = {}
 	self.peer_ignore_list = SaveData.chat_ignore_list or {}
 
-	self:create_chat_gui()
+	if not DEDICATED_SERVER then
+		self:create_chat_gui()
+	end
+
 	self:set_chat_enabled(Application.user_setting("chat_enabled"))
 
 	self.message_targets = {}
@@ -463,7 +466,7 @@ ChatManager.enable_gui = function (self, enable)
 end
 
 ChatManager.update = function (self, dt, t, menu_active, menu_input_service, no_unblock)
-	if self.gui_enabled and not IS_LINUX then
+	if self.gui_enabled and not DEDICATED_SERVER then
 		self.chat_gui:update(dt, menu_active, menu_input_service, no_unblock, self._chat_enabled)
 	end
 end

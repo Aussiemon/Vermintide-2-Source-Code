@@ -149,28 +149,35 @@ CraftPageSalvageConsole._handle_input = function (self, dt, t)
 	local widgets_by_name = self._widgets_by_name
 	local super_parent = self.super_parent
 	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local unblocked = true
+	local filter_selected = super_parent:filter_selected()
+	local filter_active = super_parent:filter_active()
+	local filter_inactive = not filter_selected and not filter_active
+	unblocked = filter_inactive
 	local input_service = self.super_parent:window_input_service()
 	local widget = widgets_by_name.craft_button
 	local is_button_enabled = not widget.content.button_hotspot.disable_button
 	local auto_fill_rarity = nil
 
-	if UIUtils.is_button_pressed(widgets_by_name.auto_fill_plentiful) then
-		auto_fill_rarity = "plentiful"
-	end
+	if unblocked then
+		if UIUtils.is_button_pressed(widgets_by_name.auto_fill_plentiful) then
+			auto_fill_rarity = "plentiful"
+		end
 
-	if UIUtils.is_button_pressed(widgets_by_name.auto_fill_common) then
-		auto_fill_rarity = "common"
-	end
+		if UIUtils.is_button_pressed(widgets_by_name.auto_fill_common) then
+			auto_fill_rarity = "common"
+		end
 
-	if UIUtils.is_button_pressed(widgets_by_name.auto_fill_rare) then
-		auto_fill_rarity = "rare"
-	end
+		if UIUtils.is_button_pressed(widgets_by_name.auto_fill_rare) then
+			auto_fill_rarity = "rare"
+		end
 
-	if UIUtils.is_button_pressed(widgets_by_name.auto_fill_exotic) then
-		auto_fill_rarity = "exotic"
-	end
+		if UIUtils.is_button_pressed(widgets_by_name.auto_fill_exotic) then
+			auto_fill_rarity = "exotic"
+		end
 
-	self.super_parent:set_auto_fill_rarity(auto_fill_rarity)
+		self.super_parent:set_auto_fill_rarity(auto_fill_rarity)
+	end
 
 	local clear_input = UIUtils.is_button_pressed(widgets_by_name.auto_fill_clear)
 	local craft_input_held = UIUtils.is_button_held(widgets_by_name.craft_button)
@@ -178,9 +185,9 @@ CraftPageSalvageConsole._handle_input = function (self, dt, t)
 	local craft_input_keyboard = is_button_enabled and not gamepad_active and input_service:get("skip")
 	local craft_input_accepted = false
 
-	if input_service:get("special_1") or clear_input then
+	if (input_service:get("special_1") or clear_input) and unblocked then
 		self:reset()
-	elseif craft_input_held or craft_input_gamepad or craft_input_keyboard then
+	elseif (craft_input_held or craft_input_gamepad or craft_input_keyboard) and unblocked then
 		if not self._craft_input_time then
 			self._craft_input_time = 0
 

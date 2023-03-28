@@ -258,6 +258,14 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 			[BOT] = {
 				speed_multiplier = 0.8
 			}
+		},
+		generic_slowdown_glue = {
+			[PLAYER] = {
+				speed_multiplier = 0.1
+			},
+			[BOT] = {
+				speed_multiplier = 0.1
+			}
 		}
 	},
 	location_volume = {

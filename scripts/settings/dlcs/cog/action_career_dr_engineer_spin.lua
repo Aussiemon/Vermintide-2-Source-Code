@@ -23,7 +23,6 @@ ActionCareerDREngineerSpin.client_owner_start_action = function (self, new_actio
 	self._visual_spinup_min = new_action.visual_spinup_min
 	self._visual_spinup_max = new_action.visual_spinup_max
 	self._visual_spinup_time = new_action.visual_spinup_time
-	self._action_start_t = t
 	self._last_update_t = t
 
 	if self.talent_extension:has_talent("bardin_engineer_reduced_ability_fire_slowdown") then
@@ -48,7 +47,7 @@ ActionCareerDREngineerSpin.finish = function (self, reason)
 	local visual_spinup = self._current_windup
 
 	if self._override_visual_spinup then
-		local time_spent = self._last_update_t - self._action_start_t
+		local time_spent = self._last_update_t - self.action_start_t
 		local lerp_t = time_spent / self._visual_spinup_time
 		visual_spinup = math.lerp(self._visual_spinup_min, self._visual_spinup_max, lerp_t)
 	end

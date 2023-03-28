@@ -14,6 +14,18 @@ table.size = function (t)
 	return elements
 end
 
+if pcall(require, "table.new") then
+	Script.new_array = function (narr)
+		return table.new(narr, 0)
+	end
+
+	Script.new_map = function (nrec)
+		return table.new(0, nrec)
+	end
+
+	Script.new_table = table.new
+end
+
 table.clone = function (t, skip_metatable)
 	local clone = {}
 
@@ -644,6 +656,18 @@ table.enum = function (...)
 	return t
 end
 
+table.ordered_enum = function (...)
+	local t = {}
+
+	for i = 1, select("#", ...) do
+		local v = select(i, ...)
+		t[v] = v
+		t[i] = v
+	end
+
+	return t
+end
+
 table.map = function (t, func)
 	local copy = {}
 
@@ -751,4 +775,38 @@ table.flat = function (t, max_depth, current_depth)
 	end
 
 	return out
+end
+
+table.make_strict = function (tab, interface, interface_name)
+	assert(getmetatable(tab) == nil, "Cannot call make_strict on a table with a metatable")
+
+	interface_name = interface_name or "strict table"
+
+	return setmetatable(tab, {
+		__class_name = interface_name,
+		__index = function (t, k)
+			if not interface[k] then
+				ferror("Reading from key %q not in interface <%s>", k, interface_name)
+			end
+
+			return nil
+		end,
+		__newindex = function (t, k, v)
+			if not interface[k] then
+				ferror("Writing to key %q not in interface <%s>", k, interface_name)
+			end
+
+			return rawset(t, k, v)
+		end
+	})
+end
+
+table.select_array = function (t, selector)
+	local new_t = {}
+
+	for i = 1, #t do
+		new_t[#new_t + 1] = selector(new_t, t[i])
+	end
+
+	return new_t
 end

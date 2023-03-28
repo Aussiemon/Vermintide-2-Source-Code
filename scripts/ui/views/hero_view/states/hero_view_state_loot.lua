@@ -420,23 +420,6 @@ HeroViewStateLoot.transitioning = function (self)
 	end
 end
 
-HeroViewStateLoot._can_open_chests = function (self, num_chests)
-	local extra_items = (num_chests or 1) * 3
-	local backend_items = Managers.backend:get_interface("items")
-	local items = backend_items:get_all_backend_items()
-	local item_count = 0
-
-	for _, item in pairs(items) do
-		if item.data.item_type ~= "weapon_skin" then
-			item_count = item_count + 1
-		end
-	end
-
-	local can_open = item_count + extra_items < UISettings.max_inventory_items
-
-	return can_open
-end
-
 HeroViewStateLoot.wanted_menu_state = function (self)
 	return self._wanted_menu_state
 end
@@ -1072,11 +1055,16 @@ HeroViewStateLoot._select_grid_item = function (self, item, t, reset_num_chests)
 
 	item_grid:set_item_selected(item)
 
+	local num_chests = 0
+	local num_chests_to_multi_open = 2
+
 	if item then
 		local item_data = item.data
 		local chest_category = item_data.chest_category
 		local chest_tier = item_data.chest_tier
 		local chests_by_category = LootChestData.chests_by_category
+		num_chests = item.RemainingUses
+		num_chests_to_multi_open = math.clamp(num_chests, 2, num_loot_options)
 		local unit_name, sound_event, package_name = nil
 
 		for key, chests_data in pairs(chests_by_category) do
@@ -1124,8 +1112,7 @@ HeroViewStateLoot._select_grid_item = function (self, item, t, reset_num_chests)
 		self:set_chest_title_alpha_progress(1)
 		self.menu_input_description:set_input_description(generic_input_actions.chest_selected)
 
-		local num_chests = math.clamp(item.RemainingUses, 2, num_loot_options)
-		local open_string = Localize("interaction_action_open") .. " " .. num_chests
+		local open_string = Localize("interaction_action_open") .. " " .. num_chests_to_multi_open
 		widgets_by_name.open_multiple_button.content.title_text = open_string
 		generic_input_actions.chest_selected.actions[3].description_text = open_string
 	else
@@ -1138,17 +1125,19 @@ HeroViewStateLoot._select_grid_item = function (self, item, t, reset_num_chests)
 	end
 
 	self._selected_item = item
-	local can_open_one = self:_can_open_chests()
-	local can_open_multiple = item and item.RemainingUses > 1 and self:_can_open_chests(math.min(item.RemainingUses, num_loot_options))
-	self._open_chests_enabled = can_open_one
-	self._open_multiple_chests_enabled = can_open_multiple
-	widgets_by_name.item_cap_warning_text.content.visible = not can_open_one and item ~= nil
-	widgets_by_name.open_button.content.button_hotspot.disable_button = not can_open_one or item == nil
-	widgets_by_name.open_multiple_button.content.button_hotspot.disable_button = not can_open_multiple or item == nil or item and item.RemainingUses < 2
+	local free_inventory_slots = backend_items:free_inventory_slots()
+	local items_per_chest = UISettings.items_per_chest
+	local has_space_for_one = items_per_chest <= free_inventory_slots
+	local has_space_for_multiple = free_inventory_slots >= items_per_chest * num_chests_to_multi_open
+	self._open_chests_enabled = num_chests >= 1 and has_space_for_one
+	self._open_multiple_chests_enabled = num_chests >= 2 and has_space_for_multiple
+	widgets_by_name.item_cap_warning_text.content.visible = not has_space_for_one or not has_space_for_multiple
+	widgets_by_name.open_button.content.button_hotspot.disable_button = not self._open_chests_enabled
+	widgets_by_name.open_multiple_button.content.button_hotspot.disable_button = not self._open_multiple_chests_enabled
 
-	if not can_open_one or item == nil then
+	if not self._open_chests_enabled then
 		self.menu_input_description:set_input_description(generic_input_actions.chest_not_selected)
-	elseif item.RemainingUses < 2 or not can_open_multiple then
+	elseif not self._open_multiple_chests_enabled then
 		self.menu_input_description:set_input_description(generic_input_actions.chest_selected_single_use)
 	else
 		self.menu_input_description:set_input_description(generic_input_actions.chest_selected)
@@ -1538,8 +1527,10 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 
 		if chests_to_open then
 			self._num_chests = chests_to_open
+			local backend_items = Managers.backend:get_interface("items")
+			local free_inventory_slots = backend_items:free_inventory_slots()
 
-			if self:_can_open_chests(chests_to_open) then
+			if free_inventory_slots >= chests_to_open * UISettings.items_per_chest then
 				self._auto_open_rewards_on_complete = chests_to_open > 1
 
 				self:_open_chest(self._selected_item, chests_to_open)

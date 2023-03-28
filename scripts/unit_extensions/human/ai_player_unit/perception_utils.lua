@@ -315,7 +315,12 @@ PerceptionUtils.perception_regular = function (unit, blackboard, breed, pick_tar
 
 	if target_unit and target_alive and best_enemy == target_unit then
 		local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
-		blackboard.target_is_not_downed = status_extension and not status_extension.is_ledge_hanging and not status_extension.knocked_down
+
+		if status_extension then
+			blackboard.target_is_not_downed = not status_extension.is_ledge_hanging and not status_extension.knocked_down
+		else
+			blackboard.target_is_not_downed = true
+		end
 	else
 		if best_enemy and best_enemy ~= target_unit then
 			blackboard.previous_target_unit = blackboard.target_unit

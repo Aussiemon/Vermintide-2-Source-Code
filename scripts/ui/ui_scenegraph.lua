@@ -37,11 +37,12 @@ local ALIGN_KWORD_MULT = {
 	right = 1
 }
 
-local function align(x, dx, align)
-	return x + dx * (ALIGN_KWORD_MULT[align] or 0)
+local function align(x, dx, alignment)
+	return x + dx * (ALIGN_KWORD_MULT[alignment] or 0)
 end
 
 local NEWINDEX_ERR_MT = {
+	__class_name = "scenegraph",
 	__newindex = function (t, k, v)
 		local err_msg = string.format("[UIScenegraph] Cannot add field %q to %s", k, t)
 
@@ -54,7 +55,7 @@ local NEWINDEX_ERR_MT = {
 local function legacy_merge_no_override(node, node_def)
 	for k, v in pairs(node_def) do
 		if node[k] == nil then
-			Application.warning(string.format("[UIScenegraph] Node polluted: scenegraph[%q][%q]\n%s", node.name, k, Script.callstack()))
+			Application.warning("[UIScenegraph] Node polluted: scenegraph[%q][%q]\n%s", node.name, k, Script.callstack())
 
 			node[k] = type(v) == "table" and table.clone(v) or v
 		end
@@ -166,8 +167,8 @@ local function scenegraph_update_children(world_position, children, num_children
 		y = box[2]
 		x = box[1]
 		local size = child.size
-		local child_size_x = child.size[1]
-		local child_size_y = child.size[2]
+		local child_size_x = size[1]
+		local child_size_y = size[2]
 		x = align(x + world_position[1], size_x - child_size_x, child.horizontal_alignment)
 		y = align(y + world_position[2], size_y - child_size_y, child.vertical_alignment)
 		local offset = child.offset

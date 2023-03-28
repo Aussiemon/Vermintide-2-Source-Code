@@ -127,6 +127,11 @@ settings[11] = {
 
 			if Unit.alive(player_unit) then
 				local portals = ConflictUtils.get_teleporter_portals()
+
+				if table.is_empty(portals) then
+					return
+				end
+
 				local portal_id = options[index]
 				local pos = portals[portal_id][1]:unbox()
 				local rot = portals[portal_id][2]:unbox()
@@ -169,6 +174,10 @@ settings[12] = {
 			local player_unit = local_player.player_unit
 
 			if not Unit.alive(player_unit) then
+				return
+			end
+
+			if table.is_empty(data) then
 				return
 			end
 
@@ -662,7 +671,7 @@ settings[53] = {
 			local status_extension = ScriptUnit.extension(player_unit, "status_system")
 			local invisibility = not status_extension:is_invisible()
 
-			status_extension:set_invisible(invisibility)
+			status_extension:set_invisible(invisibility, nil, "debug_invis")
 
 			local debug_text = invisibility and "Local player is now invisible" or "Local player is now visible"
 
@@ -1035,24 +1044,30 @@ settings[83] = {
 	category = "Player mechanics"
 }
 settings[84] = {
+	description = "Show animation events triggered via actions.",
+	is_boolean = true,
+	setting_name = "debug_action_anim_events",
+	category = "Player mechanics"
+}
+settings[85] = {
 	description = "Visualize ledges",
 	is_boolean = true,
 	setting_name = "visualize_ledges",
 	category = "Player mechanics"
 }
-settings[85] = {
+settings[86] = {
 	description = "Enable Buff Debug Information",
 	is_boolean = true,
 	setting_name = "buff_debug",
 	category = "Player mechanics"
 }
-settings[86] = {
+settings[87] = {
 	description = "Disable Buff system optimization",
 	is_boolean = true,
 	setting_name = "buff_no_opt",
 	category = "Player mechanics"
 }
-settings[87] = {
+settings[88] = {
 	description = "Adds any buff in the game to player.",
 	setting_name = "Add Buff",
 	category = "Player mechanics",
@@ -1081,79 +1096,79 @@ settings[87] = {
 		buff_system:add_buff(unit, key, unit, server_controlled)
 	end
 }
-settings[88] = {
+settings[89] = {
 	description = "Enable OverCharge Debug Information",
 	is_boolean = true,
 	setting_name = "overcharge_debug",
 	category = "Player mechanics"
 }
-settings[89] = {
+settings[90] = {
 	description = "Enable OverCharge Debug Information",
 	is_boolean = true,
 	setting_name = "disable_overcharge",
 	category = "Player mechanics"
 }
-settings[90] = {
+settings[91] = {
 	description = "Enable Energy Debug Information",
 	is_boolean = true,
 	setting_name = "energy_debug",
 	category = "Player mechanics"
 }
-settings[91] = {
+settings[92] = {
 	description = "Disables Energy loss",
 	is_boolean = true,
 	setting_name = "disable_energy",
 	category = "Player mechanics"
 }
-settings[92] = {
+settings[93] = {
 	description = "Makes it so you cant fall and hang from ledges.",
 	is_boolean = true,
 	setting_name = "ledge_hanging_turned_off",
 	category = "Player mechanics"
 }
-settings[93] = {
+settings[94] = {
 	description = "Visualizes hang ledges positioning and rotation",
 	is_boolean = true,
 	setting_name = "debug_hang_ledges",
 	category = "Player mechanics"
 }
-settings[94] = {
+settings[95] = {
 	description = "Makes it so you dont die when you hang from ledge and fall.",
 	is_boolean = true,
 	setting_name = "ledge_hanging_fall_and_die_turned_off",
 	category = "Player mechanics"
 }
-settings[95] = {
+settings[96] = {
 	description = "Tutorial stuffs",
 	is_boolean = true,
 	setting_name = "tutorial_disabled",
 	category = "Player mechanics"
 }
-settings[96] = {
+settings[97] = {
 	description = "Tutorial stuffs",
 	is_boolean = true,
 	setting_name = "tutorial_debug",
 	category = "Player mechanics"
 }
-settings[97] = {
+settings[98] = {
 	description = "Debug statistics stuff",
 	is_boolean = true,
 	setting_name = "statistics_debug",
 	category = "Player mechanics"
 }
-settings[98] = {
+settings[99] = {
 	description = "Debug achievements/trophies",
 	is_boolean = true,
 	setting_name = "achievement_debug",
 	category = "Player mechanics"
 }
-settings[99] = {
+settings[100] = {
 	description = "Use debug platform for achievements",
 	is_boolean = true,
 	setting_name = "achievement_debug_platform",
 	category = "Player mechanics"
 }
-settings[100] = {
+settings[101] = {
 	description = "RESETS all achievements/trophies",
 	category = "Player mechanics",
 	setting_name = "achievement_reset",
@@ -1161,55 +1176,55 @@ settings[100] = {
 		Managers.state.achievement:reset()
 	end
 }
-settings[101] = {
+settings[102] = {
 	description = "Debug in game challenges",
 	is_boolean = true,
 	setting_name = "debug_in_game_challenges",
 	category = "Player mechanics"
 }
-settings[102] = {
+settings[103] = {
 	description = "Debug info for missions",
 	is_boolean = true,
 	setting_name = "debug_mission_system",
 	category = "Player mechanics"
 }
-settings[103] = {
+settings[104] = {
 	description = "Show the player's position on the screen",
 	is_boolean = true,
 	setting_name = "debug_player_position",
 	category = "Player mechanics"
 }
-settings[104] = {
+settings[105] = {
 	description = "Never causes critical strikes",
 	is_boolean = true,
 	setting_name = "no_critical_strikes",
 	category = "Player mechanics"
 }
-settings[105] = {
+settings[106] = {
 	description = "Always causes critical strikes",
 	is_boolean = true,
 	setting_name = "always_critical_strikes",
 	category = "Player mechanics"
 }
-settings[106] = {
+settings[107] = {
 	description = "Causes a critical strike every second attack",
 	is_boolean = true,
 	setting_name = "alternating_critical_strikes",
 	category = "Player mechanics"
 }
-settings[107] = {
+settings[108] = {
 	description = "Draws debug lines to show your blocking arcs",
 	is_boolean = true,
 	setting_name = "debug_draw_block_arcs",
 	category = "Player mechanics"
 }
-settings[108] = {
+settings[109] = {
 	description = "Draws debug lines to show your pushing arcs",
 	is_boolean = true,
 	setting_name = "debug_draw_push_arcs",
 	category = "Player mechanics"
 }
-settings[109] = {
+settings[110] = {
 	description = "Sets a static power level, ignoring actual career and equipment power",
 	category = "Player mechanics",
 	setting_name = "power_level_override",
@@ -1258,7 +1273,7 @@ settings[109] = {
 		end
 	end
 }
-settings[110] = {
+settings[111] = {
 	description = "Sets the power level of the damage dealt when triggering debug damage.",
 	category = "Player mechanics",
 	setting_name = "debug_damage_power_level",
@@ -1297,193 +1312,193 @@ settings[110] = {
 		end
 	end
 }
-settings[111] = {
+settings[112] = {
 	description = "Show player health",
 	is_boolean = true,
 	setting_name = "show_player_health",
 	category = "Player mechanics"
 }
-settings[112] = {
+settings[113] = {
 	description = "Show player ammo",
 	is_boolean = true,
 	setting_name = "show_player_ammo",
 	category = "Player mechanics"
 }
-settings[113] = {
+settings[114] = {
 	description = "Enables players and bots to respawn quickly at respawn points",
 	is_boolean = true,
 	setting_name = "fast_respawns",
 	category = "Player mechanics"
 }
-settings[114] = {
+settings[115] = {
 	description = "Disables triggering weapon animations for third person. Useful for testing new weapons. öddfg (to spite Seb)",
 	is_boolean = true,
 	setting_name = "disable_third_person_weapon_animation_events",
 	category = "Player mechanics"
 }
-settings[115] = {
+settings[116] = {
 	description = "Draw some helpful lines for player leaps",
 	is_boolean = true,
 	setting_name = "debug_draw_player_leap",
 	category = "Player mechanics"
 }
-settings[116] = {
+settings[117] = {
 	description = "Stops Manny from cheating in playtests. Hopefully.",
 	is_boolean = true,
 	setting_name = "disable_time_travel",
 	category = "Player mechanics"
 }
-settings[117] = {
+settings[118] = {
 	description = "Disables external velocity influences (Knockback from punches or enemies pushing the player)",
 	is_boolean = true,
 	setting_name = "disable_external_velocity",
 	category = "Player mechanics"
 }
-settings[118] = {
+settings[119] = {
 	description = "Disables catapulting players (Ratogre has a attack that catapults the player for example)",
 	is_boolean = true,
 	setting_name = "disable_catapulting",
 	category = "Player mechanics"
 }
-settings[119] = {
+settings[120] = {
 	description = "Will show debug lines for projectiles when true",
 	is_boolean = true,
 	setting_name = "debug_projectiles",
 	category = "Weapons"
 }
-settings[120] = {
+settings[121] = {
 	description = "Will show debug lines for projectiles when true",
 	is_boolean = true,
 	setting_name = "debug_light_weight_projectiles",
 	category = "Weapons"
 }
-settings[121] = {
+settings[122] = {
 	description = "Writes into the console whenever a new action starts or finishes",
 	is_boolean = true,
 	setting_name = "log_actions",
 	category = "Weapons"
 }
-settings[122] = {
+settings[123] = {
 	description = "Add/remove test attachments",
 	is_boolean = true,
 	setting_name = "attachment_debug",
 	category = "Attachments"
 }
-settings[123] = {
+settings[124] = {
 	description = "Turns on chieftain spawn debug",
 	is_boolean = true,
 	setting_name = "ai_champion_spawn_debug",
 	category = "AI recommended"
 }
-settings[124] = {
+settings[125] = {
 	description = "Disables AI spawning due to pacing.",
 	is_boolean = true,
 	setting_name = "ai_pacing_disabled",
 	category = "AI recommended"
 }
-settings[125] = {
+settings[126] = {
 	description = "Disables AI rush intervention (specials & hordes)",
 	is_boolean = true,
 	setting_name = "ai_rush_intervention_disabled",
 	category = "AI recommended"
 }
-settings[126] = {
+settings[127] = {
 	description = "Disables AI speed run intervention(specials and small hordes)",
 	is_boolean = true,
 	setting_name = "ai_speed_run_intervention_disabled",
 	category = "AI recommended"
 }
-settings[127] = {
+settings[128] = {
 	description = "Disables AI roam spawning.",
 	is_boolean = true,
 	setting_name = "ai_roaming_spawning_disabled",
 	category = "AI recommended"
 }
-settings[128] = {
+settings[129] = {
 	description = "Disables AI roaming patrols spawning. (there will only be normal packs)",
 	is_boolean = true,
 	setting_name = "ai_roaming_patrols_disabled",
 	category = "AI recommended"
 }
-settings[129] = {
+settings[130] = {
 	description = "Disables boss/rare event spawning.",
 	is_boolean = true,
 	setting_name = "ai_boss_spawning_disabled",
 	category = "AI recommended"
 }
-settings[130] = {
+settings[131] = {
 	description = "Disables specials spawning",
 	is_boolean = true,
 	setting_name = "ai_specials_spawning_disabled",
 	category = "AI recommended"
 }
-settings[131] = {
+settings[132] = {
 	description = "Disables critter spawning",
 	is_boolean = true,
 	setting_name = "ai_critter_spawning_disabled",
 	category = "AI recommended"
 }
-settings[132] = {
+settings[133] = {
 	description = "Disables AI terror events spawning",
 	is_boolean = true,
 	setting_name = "ai_terror_events_disabled",
 	category = "AI recommended"
 }
-settings[133] = {
+settings[134] = {
 	description = "Disables gutter runners from spawning (requires restart!!!)",
 	is_boolean = true,
 	setting_name = "disable_gutter_runner",
 	category = "AI recommended"
 }
-settings[134] = {
+settings[135] = {
 	description = "Disables globadiers from spawning (requires restart!!!)",
 	is_boolean = true,
 	setting_name = "disable_globadier",
 	category = "AI recommended"
 }
-settings[135] = {
+settings[136] = {
 	description = "Disables pack masters from spawning (requires restart!!!)",
 	is_boolean = true,
 	setting_name = "disable_pack_master",
 	category = "AI recommended"
 }
-settings[136] = {
+settings[137] = {
 	description = "Disables ratling gunners from spawning (requires restart!!!)",
 	is_boolean = true,
 	setting_name = "disable_ratling_gunner",
 	category = "AI recommended"
 }
-settings[137] = {
+settings[138] = {
 	description = "Disables warpfire throwers from spawning (requires restart!!!)",
 	is_boolean = true,
 	setting_name = "disable_warpfire_thrower",
 	category = "AI recommended"
 }
-settings[138] = {
+settings[139] = {
 	description = "Disables vortex sorcerers from spawning (requires restart!!!)",
 	is_boolean = true,
 	setting_name = "disable_vortex_sorcerer",
 	category = "AI recommended"
 }
-settings[139] = {
+settings[140] = {
 	description = "Disables plague sorcerers from spawning (requires restart!!!)",
 	is_boolean = true,
 	setting_name = "disable_plague_sorcerer",
 	category = "AI recommended"
 }
-settings[140] = {
+settings[141] = {
 	description = "Disables tentacle sorcerers from spawning (requires restart!!!)",
 	is_boolean = true,
 	setting_name = "disable_tentacle_sorcerer",
 	category = "AI recommended"
 }
-settings[141] = {
+settings[142] = {
 	description = "Disables hordes spawning",
 	is_boolean = true,
 	setting_name = "ai_horde_spawning_disabled",
 	category = "AI recommended"
 }
-settings[142] = {
+settings[143] = {
 	description = "When pressing 'h for a debug horde, set what kind of horde will spawn, instead of a random variant",
 	setting_name = "ai_set_horde_type_debug",
 	category = "AI recommended",
@@ -1494,13 +1509,13 @@ settings[142] = {
 		random = "random"
 	}
 }
-settings[143] = {
+settings[144] = {
 	description = "Disables mini patrols from spawning",
 	is_boolean = true,
 	setting_name = "ai_mini_patrol_disabled",
 	category = "AI recommended"
 }
-settings[144] = {
+settings[145] = {
 	setting_name = "debug spawn mini patrol",
 	description = "Spawns a mini patrol right now",
 	category = "AI",
@@ -1530,55 +1545,55 @@ settings[144] = {
 		end
 	end
 }
-settings[145] = {
+settings[146] = {
 	description = "Enemy ragdolls are despawned immediately.",
 	is_boolean = true,
 	setting_name = "disable_ragdolls",
 	category = "AI"
 }
-settings[146] = {
+settings[147] = {
 	description = "Players deal no direct damage to enemies.",
 	is_boolean = true,
 	setting_name = "players_deal_no_damage",
 	category = "AI"
 }
-settings[147] = {
+settings[148] = {
 	description = "Enables horde logging in console",
 	is_boolean = true,
 	setting_name = "ai_horde_logging",
 	category = "AI recommended"
 }
-settings[148] = {
+settings[149] = {
 	description = "Presents current amount of alive breeds on screen.",
 	is_boolean = true,
 	setting_name = "show_alive_ai",
 	category = "AI recommended"
 }
-settings[149] = {
+settings[150] = {
 	description = "Writes out max-health / current health above ai units",
 	is_boolean = true,
 	setting_name = "show_ai_health",
 	category = "AI recommended"
 }
-settings[150] = {
+settings[151] = {
 	description = "Writes out from what BreedPack the unit was picked. What zone he spawned in. If he was replaced.",
 	is_boolean = true,
 	setting_name = "show_ai_spawn_info",
 	category = "AI recommended"
 }
-settings[151] = {
+settings[152] = {
 	description = "Draws a spinning line abouve each pickup in game",
 	is_boolean = true,
 	setting_name = "show_spawned_pickups",
 	category = "AI recommended"
 }
-settings[152] = {
+settings[153] = {
 	description = "Collects the data needed for drawing pickup spawners and spawn sections. Restart required.",
 	is_boolean = true,
 	setting_name = "debug_pickup_spawners",
 	category = "Pickup Spawners"
 }
-settings[153] = {
+settings[154] = {
 	description = "The debug_pickup_spawners option must be set to true when using this feature",
 	category = "Pickup Spawners",
 	setting_name = "Toggle Pickup Spawners Draw Mode",
@@ -1586,181 +1601,181 @@ settings[153] = {
 		Managers.state.entity:system("pickup_system"):debug_draw_spread_pickups()
 	end
 }
-settings[154] = {
+settings[155] = {
 	description = "Draws lines up in the sky where each ai is",
 	is_boolean = true,
 	setting_name = "show_where_ai_is",
 	category = "AI recommended"
 }
-settings[155] = {
+settings[156] = {
 	description = "Draws lines up in the sky where each inactive ai is",
 	is_boolean = true,
 	setting_name = "show_where_inactive_ai_is",
 	category = "AI recommended"
 }
-settings[156] = {
+settings[157] = {
 	description = "turns on animation debug on your current ai debug target.",
 	is_boolean = true,
 	setting_name = "anim_debug_ai_debug_target",
 	category = "AI recommended"
 }
-settings[157] = {
+settings[158] = {
 	description = "Choose between different conflict director settings.",
 	setting_name = "override_conflict_settings",
 	category = "Conflict & Pacing",
 	item_source = ConflictDirectors
 }
-settings[158] = {
+settings[159] = {
 	description = "Displays current conflict settings on screen.",
 	is_boolean = true,
 	setting_name = "show_current_conflict_settings",
 	category = "Conflict & Pacing"
 }
-settings[159] = {
+settings[160] = {
 	description = "Shows the contained breeds of the current conflict_director.",
 	is_boolean = true,
 	setting_name = "debug_conflict_director_breeds",
 	category = "Conflict & Pacing"
 }
-settings[160] = {
+settings[161] = {
 	description = "Displays current threat value from aggroed enemies, and what systems will delay their spawning.",
 	is_boolean = true,
 	setting_name = "debug_current_threat_value",
 	category = "Conflict & Pacing"
 }
-settings[161] = {
+settings[162] = {
 	description = "Dump lots of debug in the console when constructing the zones & packs. Will draw 1m spheres around units that gets replaced via BreedPacks zone_checks. Each hi/low segment will have the same colored spheres. Units that are not replaced, but counted will have small spheres.",
 	is_boolean = true,
 	setting_name = "debug_zone_baker",
 	category = "Conflict & Pacing"
 }
-settings[162] = {
+settings[163] = {
 	description = "Draws zones on screen, and lots of debug on ground",
 	is_boolean = true,
 	setting_name = "debug_zone_baker_on_screen",
 	category = "Conflict & Pacing"
 }
-settings[163] = {
+settings[164] = {
 	description = "Show all hidden spawners with vertical lines.",
 	is_boolean = true,
 	setting_name = "show_hidden_spawners",
 	category = "Conflict & Pacing"
 }
-settings[164] = {
+settings[165] = {
 	description = "Shows clustering, loneliness, crumbs...",
 	is_boolean = true,
 	setting_name = "debug_player_positioning",
 	category = "Conflict & Pacing"
 }
-settings[165] = {
+settings[166] = {
 	description = "Shows rushing player...",
 	is_boolean = true,
 	setting_name = "debug_rush_intervention",
 	category = "Conflict & Pacing"
 }
-settings[166] = {
+settings[167] = {
 	description = "Handles speedrunners by spawning specials or small hordes ahead of players, activate this to see its states",
 	is_boolean = true,
 	setting_name = "debug_speed_running_intervention",
 	category = "Conflict & Pacing"
 }
-settings[167] = {
+settings[168] = {
 	description = "Show data for pacing of the game",
 	is_boolean = true,
 	setting_name = "debug_ai_pacing",
 	category = "Conflict & Pacing"
 }
-settings[168] = {
+settings[169] = {
 	description = "Shows player intensity",
 	is_boolean = true,
 	setting_name = "debug_player_intensity",
 	category = "Conflict & Pacing"
 }
-settings[169] = {
+settings[170] = {
 	description = "debug the peak delayer.",
 	is_boolean = true,
 	setting_name = "debug_peak_delayer",
 	category = "Conflict & Pacing"
 }
-settings[170] = {
+settings[171] = {
 	description = "Show exclamation point icon above heads of alerted skaven",
 	is_boolean = true,
 	setting_name = "enable_alert_icon",
 	category = "AI"
 }
-settings[171] = {
+settings[172] = {
 	description = "Make AI not perceive anyone",
 	is_boolean = true,
 	setting_name = "disable_ai_perception",
 	category = "AI"
 }
-settings[172] = {
+settings[173] = {
 	description = "Check no spawn volumes when spawning specials",
 	is_boolean = true,
 	setting_name = "check_no_spawn_volumes_for_special_spawning",
 	category = "AI"
 }
-settings[173] = {
+settings[174] = {
 	description = "Shows perception for some units",
 	is_boolean = true,
 	setting_name = "debug_ai_perception",
 	category = "AI"
 }
-settings[174] = {
+settings[175] = {
 	description = "Shows attack patterns for enemies. Gray -> has no slot. Lime -> has slot. Red -> is attacking. Orange -> is in attack cooldown. Blue -> is staggered or blocked.",
 	is_boolean = true,
 	setting_name = "debug_ai_attack_pattern",
 	category = "AI"
 }
-settings[175] = {
+settings[176] = {
 	description = "Automagically destroys AI that are at a far enough distance from all the players.",
 	is_boolean = true,
 	setting_name = "ai_far_off_despawn_disabled",
 	category = "AI"
 }
-settings[176] = {
+settings[177] = {
 	description = "Shows the workings of the ai recycler and area sets",
 	is_boolean = true,
 	setting_name = "debug_ai_recycler",
 	category = "AI"
 }
-settings[177] = {
+settings[178] = {
 	description = "Shows frozen breed units",
 	is_boolean = true,
 	setting_name = "debug_breed_freeze",
 	category = "AI"
 }
-settings[178] = {
+settings[179] = {
 	description = "Disables AI freeze optimization",
 	is_boolean = true,
 	setting_name = "disable_breed_freeze_opt",
 	category = "AI"
 }
-settings[179] = {
+settings[180] = {
 	description = "Enemy recycler will spawn rats wile in free-flight",
 	is_boolean = true,
 	setting_name = "recycler_in_freeflight",
 	category = "AI"
 }
-settings[180] = {
+settings[181] = {
 	description = "Shows the active respawns as yellow spheres with distance from start. removed respawns due to crossroads are bluish spheres",
 	is_boolean = true,
 	setting_name = "debug_player_respawns",
 	category = "AI"
 }
-settings[181] = {
+settings[182] = {
 	description = "Horde debugging, shows how it picks spawn points",
 	is_boolean = true,
 	setting_name = "debug_hordes",
 	category = "AI"
 }
-settings[182] = {
+settings[183] = {
 	description = "Mini patrol debugging",
 	is_boolean = true,
 	setting_name = "debug_mini_patrols",
 	category = "AI"
 }
-settings[183] = {
+settings[184] = {
 	description = "Draws patrols routes",
 	category = "AI",
 	setting_name = "draw_patrol_routes",
@@ -1768,7 +1783,7 @@ settings[183] = {
 		Managers.state.conflict.level_analysis:draw_patrol_routes()
 	end
 }
-settings[184] = {
+settings[185] = {
 	description = "Draws patrol start positions",
 	category = "AI",
 	setting_name = "draw_patrol_start_positions",
@@ -1776,7 +1791,7 @@ settings[184] = {
 		Managers.state.conflict.level_analysis:draw_patrol_start_positions()
 	end
 }
-settings[185] = {
+settings[186] = {
 	description = "Spawns a boss patrol at the closest spawner, use draw_patrol_start_positions to see spawners",
 	category = "AI",
 	setting_name = "spawn_patrol_at_closest_spawner",
@@ -1784,25 +1799,25 @@ settings[185] = {
 		Managers.state.conflict:debug_spawn_spline_patrol_closest_spawner()
 	end
 }
-settings[186] = {
+settings[187] = {
 	description = "AI behviour trees text over unit.",
 	is_boolean = true,
 	setting_name = "debug_behaviour_trees",
 	category = "AI"
 }
-settings[187] = {
+settings[188] = {
 	description = "Show debug data for terror events.",
 	is_boolean = true,
 	setting_name = "debug_terror",
 	category = "AI"
 }
-settings[188] = {
+settings[189] = {
 	description = "Change which difficulty terror events will be played at",
 	setting_name = "terror_event_difficulty",
 	category = "AI",
 	item_source = DifficultySettings
 }
-settings[189] = {
+settings[190] = {
 	setting_name = "terror_event_difficulty_tweak",
 	category = "AI",
 	description = "Change which difficulty tweak terror events will be played at.",
@@ -1819,7 +1834,7 @@ settings[189] = {
 		options[#options + 1] = "[clear value]"
 	end
 }
-settings[190] = {
+settings[191] = {
 	description = "Draws a sphere and text at each respawner unit in the level. Must set 'debug_ai_recycler=true'",
 	category = "AI",
 	setting_name = "debug_spawn_ogre_from_closest_boss_spawner",
@@ -1831,7 +1846,7 @@ settings[190] = {
 		end
 	end
 }
-settings[191] = {
+settings[192] = {
 	description = "Injects all patrols into the main path'",
 	category = "AI",
 	setting_name = "debug_spawn_all_boss_patrols",
@@ -1840,7 +1855,7 @@ settings[191] = {
 		Managers.state.conflict.level_analysis:spawn_all_boss_spline_patrols()
 	end
 }
-settings[192] = {
+settings[193] = {
 	description = "Injects all bosses into the main path'",
 	category = "AI",
 	setting_name = "debug_inject_bosses_in_all_boss_spawners",
@@ -1849,7 +1864,7 @@ settings[192] = {
 		Managers.state.conflict.level_analysis:inject_all_bosses_into_main_path()
 	end
 }
-settings[193] = {
+settings[194] = {
 	description = "Debug spawns one special through the specials spawning system.",
 	category = "AI",
 	setting_name = "debug_spawn_special",
@@ -1857,13 +1872,13 @@ settings[193] = {
 		Managers.state.conflict.specials_pacing:debug_spawn()
 	end
 }
-settings[194] = {
+settings[195] = {
 	description = "Enable navigation group debugging.",
 	is_boolean = true,
 	setting_name = "debug_navigation_group_manager",
 	category = "AI"
 }
-settings[195] = {
+settings[196] = {
 	description = "Draws lines between all navigation-groups. Remove lines by pressing 'X'. ",
 	category = "AI",
 	setting_name = "draw_navigation_group_connections",
@@ -1871,13 +1886,13 @@ settings[195] = {
 		Managers.state.conflict.navigation_group_manager:draw_group_connections()
 	end
 }
-settings[196] = {
+settings[197] = {
 	description = "Enables debugging for spawning packs using perlin noise.",
 	is_boolean = true,
 	setting_name = "debug_perlin_noise_spawning",
 	category = "AI"
 }
-settings[197] = {
+settings[198] = {
 	description = "Visual debugging for movement.",
 	setting_name = "debug_ai_movement",
 	category = "AI",
@@ -1886,49 +1901,49 @@ settings[197] = {
 		text_and_graphics = "text_and_graphics"
 	}
 }
-settings[198] = {
+settings[199] = {
 	description = "Shows which of nav tag volume layer 20-29 that are enabled.",
 	is_boolean = true,
 	setting_name = "debug_nav_tag_volume_layers",
 	category = "AI"
 }
-settings[199] = {
+settings[200] = {
 	description = "Visual debugging for skeleton for debug_unit.",
 	is_boolean = true,
 	setting_name = "debug_skeleton",
 	category = "AI"
 }
-settings[200] = {
+settings[201] = {
 	description = "Fades out debug_unit.",
 	is_boolean = true,
 	setting_name = "fade_debug_unit",
 	category = "AI"
 }
-settings[201] = {
+settings[202] = {
 	description = "Visual debugging for big boy turning.",
 	is_boolean = true,
 	setting_name = "debug_big_boy_turning",
 	category = "AI"
 }
-settings[202] = {
+settings[203] = {
 	description = "Visual debugging when enemy AI pathfinding fails.",
 	is_boolean = true,
 	setting_name = "ai_debug_failed_pathing",
 	category = "AI"
 }
-settings[203] = {
+settings[204] = {
 	description = "Will hide then node-history list on the left side of the screen, when in the behavior debugger screen. (CTRL+B)",
 	is_boolean = true,
 	setting_name = "hide_behavior_tree_node_history",
 	category = "AI"
 }
-settings[204] = {
+settings[205] = {
 	description = "Displays engine debug for EngineOptimizedExtensions",
 	is_boolean = true,
 	setting_name = "show_engine_locomotion_debug",
 	category = "AI"
 }
-settings[205] = {
+settings[206] = {
 	description = "Policy to use for the enemy package loader (see EnemyPackageLoaderSettings). [NEED TO RESTART GAME]",
 	setting_name = "enemy_package_loader_policy",
 	category = "AI",
@@ -1936,97 +1951,97 @@ settings[205] = {
 		console = "console"
 	}
 }
-settings[206] = {
+settings[207] = {
 	description = "Shows which dynamic packages that have been loaded or unloaded.",
 	is_boolean = true,
 	setting_name = "debug_enemy_package_loader",
 	category = "AI"
 }
-settings[207] = {
+settings[208] = {
 	description = "Visual debugging for ai attacks",
 	is_boolean = true,
 	setting_name = "debug_ai_attack",
 	category = "AI"
 }
-settings[208] = {
+settings[209] = {
 	description = "Visual debugging for ai targeting.",
 	is_boolean = true,
 	setting_name = "debug_ai_targets",
 	category = "AI"
 }
-settings[209] = {
+settings[210] = {
 	description = "Only enables AI debugger during freeflight",
 	is_boolean = true,
 	setting_name = "ai_debugger_freeflight_only",
 	category = "AI"
 }
-settings[210] = {
+settings[211] = {
 	description = "Shows the aoe targeting alternatives and which target position chosen",
 	is_boolean = true,
 	setting_name = "ai_debug_aoe_targeting",
 	category = "AI"
 }
-settings[211] = {
+settings[212] = {
 	description = "Shows the raycasts when testing trajectories",
 	is_boolean = true,
 	setting_name = "ai_debug_trajectory_raycast",
 	category = "AI"
 }
-settings[212] = {
+settings[213] = {
 	description = "Visualize AI slots",
 	is_boolean = true,
 	setting_name = "ai_debug_slots",
 	category = "AI"
 }
-settings[213] = {
+settings[214] = {
 	description = "Will log when stuff happens",
 	is_boolean = true,
 	setting_name = "ai_debug_inventory",
 	category = "AI"
 }
-settings[214] = {
+settings[215] = {
 	description = "Will visualize ai sound detection and reactions",
 	is_boolean = true,
 	setting_name = "ai_debug_sound_detection",
 	category = "AI"
 }
-settings[215] = {
+settings[216] = {
 	description = "Visual debugging and logging for groups/patrols",
 	is_boolean = true,
 	setting_name = "ai_debug_smartobject",
 	category = "AI"
 }
-settings[216] = {
+settings[217] = {
 	description = "Pack master will attack regardless of if the player is already under attack or not.",
 	is_boolean = true,
 	setting_name = "ai_packmaster_ignore_dogpile",
 	category = "AI"
 }
-settings[217] = {
+settings[218] = {
 	description = "If not true, when quick-spawning enemies the ai debugger will auto select them.",
 	is_boolean = true,
 	setting_name = "ai_disable_auto_ai_debugger_target",
 	category = "AI"
 }
-settings[218] = {
+settings[219] = {
 	description = "show globadiers areas for decision making",
 	is_boolean = true,
 	setting_name = "ai_globadier_behavior",
 	category = "AI"
 }
-settings[219] = {
+settings[220] = {
 	description = "show gutter runner debug",
 	is_boolean = true,
 	setting_name = "ai_gutter_runner_behavior",
 	category = "AI"
 }
-settings[220] = {
+settings[221] = {
 	description = "show loot rat debug",
 	is_boolean = true,
 	setting_name = "ai_loot_rat_behavior",
 	category = "AI"
 }
-settings[221] = {
+settings[222] = {
 	description = "Toggle navmesh debug draw mode.",
 	setting_name = "nav_mesh_debug",
 	category = "AI",
@@ -2035,103 +2050,103 @@ settings[221] = {
 		continuous = "continuous"
 	}
 }
-settings[222] = {
+settings[223] = {
 	description = "Shows cover points as green spheres. Bad cover points as red capsules, only draws at level startup.",
 	is_boolean = true,
 	setting_name = "show_hidden_cover_points",
 	category = "AI"
 }
-settings[223] = {
+settings[224] = {
 	description = "Shows all coverpoints within 35m from the player",
 	is_boolean = true,
 	setting_name = "debug_near_cover_points",
 	category = "AI"
 }
-settings[224] = {
+settings[225] = {
 	description = "AI group/patrols",
 	is_boolean = true,
 	setting_name = "ai_group_debug",
 	category = "AI"
 }
-settings[225] = {
+settings[226] = {
 	description = "Debug patrols",
 	is_boolean = true,
 	setting_name = "debug_patrols",
 	category = "AI"
 }
-settings[226] = {
+settings[227] = {
 	description = "Debug which groups are being considered for despawning by recycler",
 	is_boolean = true,
 	setting_name = "debug_group_recycling",
 	category = "AI"
 }
-settings[227] = {
+settings[228] = {
 	description = "Debug chaos troll",
 	is_boolean = true,
 	setting_name = "debug_chaos_troll",
 	category = "AI"
 }
-settings[228] = {
+settings[229] = {
 	description = "Debug Skaven Stormfiend",
 	is_boolean = true,
 	setting_name = "debug_stormfiend",
 	category = "AI"
 }
-settings[229] = {
+settings[230] = {
 	description = "Debug the Chaos Vortex",
 	is_boolean = true,
 	setting_name = "debug_vortex",
 	category = "AI"
 }
-settings[230] = {
+settings[231] = {
 	description = "Debug liquid system used for AoE effects.",
 	is_boolean = true,
 	setting_name = "debug_liquid_system",
 	category = "AI"
 }
-settings[231] = {
+settings[232] = {
 	description = "Debug damage wave used for AoE attacks.",
 	is_boolean = true,
 	setting_name = "debug_damage_wave",
 	category = "AI"
 }
-settings[232] = {
+settings[233] = {
 	description = "Debug damage blobs used for AoE attacks.",
 	is_boolean = true,
 	setting_name = "debug_damage_blobs",
 	category = "AI"
 }
-settings[233] = {
+settings[234] = {
 	description = "AI interest points",
 	is_boolean = true,
 	setting_name = "ai_interest_point_debug",
 	category = "AI"
 }
-settings[234] = {
+settings[235] = {
 	description = "AI interest points gets randomly disabled without this",
 	is_boolean = true,
 	setting_name = "ai_dont_randomize_interest_points",
 	category = "AI"
 }
-settings[235] = {
+settings[236] = {
 	description = "ratling gunner debug",
 	is_boolean = true,
 	setting_name = "ai_ratling_gunner_debug",
 	category = "AI"
 }
-settings[236] = {
+settings[237] = {
 	description = "disable to debug crashes more clearly or to profile.",
 	is_boolean = true,
 	setting_name = "navigation_thread_disabled",
 	category = "AI"
 }
-settings[237] = {
+settings[238] = {
 	description = "Disable rats spreading out more.",
 	is_boolean = true,
 	setting_name = "disable_crowd_dispersion",
 	category = "AI"
 }
-settings[238] = {
+settings[239] = {
 	description = "Sets the time available for pathfinding",
 	setting_name = "navigation_pathfinder_budget",
 	category = "AI",
@@ -2159,86 +2174,86 @@ settings[238] = {
 		end
 	end
 }
-settings[239] = {
+settings[240] = {
 	description = "Enables visual debugging.",
 	category = "AI",
 	setting_name = "navigation_visual_debug_enabled",
 	callback = "enable_navigation_visual_debug",
 	is_boolean = true
 }
-settings[240] = {
+settings[241] = {
 	description = "Show stagger immunity info on enemies.",
 	is_boolean = true,
 	setting_name = "debug_stagger",
 	category = "AI"
 }
-settings[241] = {
+settings[242] = {
 	description = "Shows the values for current attack intensity",
 	is_boolean = true,
 	setting_name = "debug_attack_intensity",
 	category = "AI"
 }
-settings[242] = {
+settings[243] = {
 	description = "Find it annoying that the game ends every time you die? Well enable this setting then!",
 	is_boolean = true,
 	setting_name = "disable_gamemode_end",
 	category = "Gamemode/level"
 }
-settings[243] = {
+settings[244] = {
 	description = "Unlock all levels in the map",
 	is_boolean = true,
 	setting_name = "unlock_all_levels",
 	category = "Gamemode/level"
 }
-settings[244] = {
+settings[245] = {
 	description = "Unlock all difficulties in the map",
 	is_boolean = true,
 	setting_name = "unlock_all_difficulties",
 	category = "Gamemode/level"
 }
-settings[245] = {
+settings[246] = {
 	description = "Various level debug stuff",
 	is_boolean = true,
 	setting_name = "debug_level",
 	category = "Gamemode/level"
 }
-settings[246] = {
+settings[247] = {
 	description = "Shows debug information about Weave spawning",
 	is_boolean = true,
 	setting_name = "debug_weave_spawning",
 	category = "Gamemode/level"
 }
-settings[247] = {
+settings[248] = {
 	description = "Save debug info for server seeded randoms, can be printed on server/client with debug_print_random_values() in console",
 	is_boolean = true,
 	setting_name = "debug_server_seeded_random",
 	category = "Gamemode/level"
 }
-settings[248] = {
+settings[249] = {
 	description = "Normally the level_seed will be 0 when starting a map from toolcenter, but with this you will get a random level-seed.",
 	is_boolean = true,
 	setting_name = "random_level_seed_from_toolcenter",
 	category = "Gamemode/level"
 }
-settings[249] = {
+settings[250] = {
 	description = "Enables room debuging using f1-f4",
 	is_boolean = true,
 	setting_name = "debug_rooms",
 	category = "Gamemode/level"
 }
-settings[250] = {
+settings[251] = {
 	description = "Allows you to skip ingame cutscenes",
 	is_boolean = true,
 	setting_name = "skippable_cutscenes",
 	category = "Gamemode/level"
 }
-settings[251] = {
+settings[252] = {
 	description = "Change which difficulty you play at. Restart required.",
 	setting_name = "current_difficulty_setting",
 	category = "Gamemode/level",
 	item_source = DifficultySettings
 }
-settings[252] = {
+settings[253] = {
 	setting_name = "current_difficulty_tweak_setting",
 	category = "Gamemode/level",
 	description = "Change which difficulty tweak you play at. Restart required.",
@@ -2255,7 +2270,7 @@ settings[252] = {
 		options[#options + 1] = "[clear value]"
 	end
 }
-settings[253] = {
+settings[254] = {
 	description = "Set difficulty. No restart required for most stuff, mostly used for testing enemies. Some stuff might need restart of level.",
 	setting_name = "set_difficulty",
 	category = "Gamemode/level",
@@ -2290,7 +2305,7 @@ settings[253] = {
 		print("Set difficulty to " .. difficulty .. current_difficulty_tweak)
 	end
 }
-settings[254] = {
+settings[255] = {
 	setting_name = "set_difficulty_tweak",
 	category = "Gamemode/level",
 	description = "Set difficulty tweak to make the current difficulty slightly easier/harder. " .. "No restart required for most stuff, mostly used for testing enemies. Some stuff might need restart of level.",
@@ -2312,139 +2327,139 @@ settings[254] = {
 		print("Set difficulty to " .. current_difficulty .. difficulty_tweak)
 	end
 }
-settings[255] = {
+settings[256] = {
 	description = "Enables debug options for mutators",
 	is_boolean = true,
 	setting_name = "debug_mutators",
 	category = "Gamemode/level"
 }
-settings[256] = {
+settings[257] = {
 	description = "Debug for darkness in drachenfells castle dungeon level.",
 	is_boolean = true,
 	setting_name = "debug_darkness",
 	category = "Gamemode/level"
 }
-settings[257] = {
+settings[258] = {
 	description = "Shows state of the game-mode and in what parties different players are.",
 	is_boolean = true,
 	setting_name = "show_gamemode_debug",
 	category = "Gamemode/level"
 }
-settings[258] = {
+settings[259] = {
 	description = "Disable horde surge events.",
 	is_boolean = true,
 	setting_name = "disable_horde_surge",
 	category = "Gamemode/level"
 }
-settings[259] = {
+settings[260] = {
 	description = "Displays debug info for Horde Surge events.",
 	is_boolean = true,
 	setting_name = "debug_horde_surge",
 	category = "Gamemode/level"
 }
-settings[260] = {
+settings[261] = {
 	description = "Disables the level introduction by Lohner / Olesya",
 	is_boolean = true,
 	setting_name = "disable_level_intro_dialogue",
 	category = "Visual/audio"
 }
-settings[261] = {
+settings[262] = {
 	description = "Debug print Hit Effects Templates",
 	is_boolean = true,
 	setting_name = "debug_hit_effects_templates",
 	category = "Visual/audio"
 }
-settings[262] = {
+settings[263] = {
 	description = "Prints total ammount of particles currently simulated in the game world",
 	is_boolean = true,
 	setting_name = "debug_particle_simulation",
 	category = "Visual/audio"
 }
-settings[263] = {
+settings[264] = {
 	description = "Disabled blood splatter on screen from other players' kills",
 	is_boolean = true,
 	setting_name = "disable_remote_blood_splatter",
 	category = "Visual/audio"
 }
-settings[264] = {
+settings[265] = {
 	description = "Disabled blood splatter on screen from behind camera",
 	is_boolean = true,
 	setting_name = "disable_behind_blood_splatter",
 	category = "Visual/audio"
 }
-settings[265] = {
+settings[266] = {
 	description = "Disable combat music",
 	is_boolean = true,
 	setting_name = "debug_disable_combat_music",
 	category = "Visual/audio"
 }
-settings[266] = {
+settings[267] = {
 	description = "Show material effect visual debug info.",
 	is_boolean = true,
 	setting_name = "debug_material_effects",
 	category = "Visual/audio"
 }
-settings[267] = {
+settings[268] = {
 	description = "Sound debugging",
 	is_boolean = true,
 	setting_name = "sound_debug",
 	category = "Visual/audio"
 }
-settings[268] = {
+settings[269] = {
 	description = "Shows Wwise Timestamp.",
 	is_boolean = true,
 	setting_name = "debug_wwise_timestamp",
 	category = "Visual/audio"
 }
-settings[269] = {
+settings[270] = {
 	description = "Visual debug for the sound sector system",
 	is_boolean = true,
 	setting_name = "sound_sector_system_debug",
 	category = "Visual/audio"
 }
-settings[270] = {
+settings[271] = {
 	description = "debug info for sound environments",
 	is_boolean = true,
 	setting_name = "debug_sound_environments",
 	category = "Visual/audio"
 }
-settings[271] = {
+settings[272] = {
 	description = "music stuff",
 	is_boolean = true,
 	setting_name = "debug_music",
 	category = "Visual/audio"
 }
-settings[272] = {
+settings[273] = {
 	description = "debug lua_elevation parameter sent to wwise",
 	is_boolean = true,
 	setting_name = "debug_wwise_elevation",
 	category = "Visual/audio"
 }
-settings[273] = {
+settings[274] = {
 	description = "debug current environment blend",
 	is_boolean = true,
 	setting_name = "debug_environment_blend",
 	category = "Visual/audio"
 }
-settings[274] = {
+settings[275] = {
 	description = "debug nav mesh pasted particle effects",
 	is_boolean = true,
 	setting_name = "debug_nav_mesh_vfx",
 	category = "Visual/audio"
 }
-settings[275] = {
+settings[276] = {
 	description = "debug sorting for proximity dependent sfx and vfx",
 	is_boolean = true,
 	setting_name = "debug_proximity_fx",
 	category = "Visual/audio"
 }
-settings[276] = {
+settings[277] = {
 	description = "show values sent to wwise",
 	is_boolean = true,
 	setting_name = "debug_drunk_sound_values",
 	category = "Visual/audio"
 }
-settings[277] = {
+settings[278] = {
 	description = "maximum allowed skaven to play proximity dependent sfx and vfx settings: 5/10/12/15/20/25/30/40/60",
 	setting_name = "max_allowed_proximity_fx",
 	category = "Visual/audio",
@@ -2516,7 +2531,7 @@ settings[277] = {
 		true
 	}
 }
-settings[278] = {
+settings[279] = {
 	no_nil = true,
 	description = "Stuffs",
 	setting_name = "visual_debug",
@@ -5275,7 +5290,7 @@ settings[278] = {
 		}
 	}
 }
-settings[279] = {
+settings[280] = {
 	description = "Bind to a numpad key and do it.",
 	category = "Visual/audio",
 	setting_name = "take_screenshot",
@@ -5283,13 +5298,13 @@ settings[279] = {
 		FrameCapture.screen_shot("console_send", 2)
 	end
 }
-settings[280] = {
+settings[281] = {
 	description = "Disables all debug draws",
 	is_boolean = true,
 	setting_name = "disable_debug_draw",
 	category = "Visual/audio"
 }
-settings[281] = {
+settings[282] = {
 	description = "Draw pretty lines for sound occlusion.",
 	setting_name = "visualize_sound_occlusion",
 	callback = "visualize_sound_occlusion",
@@ -5298,19 +5313,19 @@ settings[281] = {
 		["toggle sound occlusion"] = true
 	}
 }
-settings[282] = {
+settings[283] = {
 	description = "Print out debugging for VoIP",
 	is_boolean = true,
 	setting_name = "debug_voip",
 	category = "Visual/audio"
 }
-settings[283] = {
+settings[284] = {
 	description = "Disable VoIP",
 	is_boolean = true,
 	setting_name = "disable_voip",
 	category = "Visual/audio"
 }
-settings[284] = {
+settings[285] = {
 	setting_name = "simulate_color_blindness",
 	category = "Visual/audio",
 	description = BUILD == "dev" and "Enables or disables different color blindness simulations." or "This is only available in dev builds for performance reasons. Switch exe to dev to see the effects of the changes.",
@@ -5346,19 +5361,19 @@ settings[284] = {
 		Application.apply_user_settings()
 	end
 }
-settings[285] = {
+settings[286] = {
 	description = "This is used to turn off the fading of AI characters that collide with the camera. This is useful when recording cutscenes.",
 	is_boolean = true,
 	setting_name = "fade_on_camera_ai_collision",
 	category = "Replay"
 }
-settings[286] = {
+settings[287] = {
 	description = "This is used to turn off the screenspace effects that is aimed at a first person view. This is useful when recording cutscenes.",
 	is_boolean = true,
 	setting_name = "screen_space_player_camera_reactions",
 	category = "Replay"
 }
-settings[287] = {
+settings[288] = {
 	no_nil = true,
 	description = "Enables chain constraints",
 	setting_name = "enable_chain_constraints",
@@ -5366,43 +5381,43 @@ settings[287] = {
 	category = "Constraints",
 	is_boolean = true
 }
-settings[288] = {
+settings[289] = {
 	description = "Network debugging",
 	is_boolean = true,
 	setting_name = "network_debug",
 	category = "Network"
 }
-settings[289] = {
+settings[290] = {
 	description = "Fakes mismatching network hash",
 	is_boolean = true,
 	setting_name = "fake_network_hash",
 	category = "Network"
 }
-settings[290] = {
+settings[291] = {
 	description = "Keeps track of the number of times an rpc send request has been triggered from a certain code row and prints the top 5 most occurring ones. Note: Disregards exclusive local rpc send calls.",
 	is_boolean = true,
 	setting_name = "rpc_send_count_debug",
 	category = "Network"
 }
-settings[291] = {
+settings[292] = {
 	description = "Set network logging to Network.MESSAGES on startup",
 	is_boolean = true,
 	setting_name = "network_log_messages",
 	category = "Network"
 }
-settings[292] = {
+settings[293] = {
 	description = "Set network logging to Network.SPEW on startup",
 	is_boolean = true,
 	setting_name = "network_log_spew",
 	category = "Network"
 }
-settings[293] = {
+settings[294] = {
 	description = "matchmaking debug logging",
 	is_boolean = true,
 	setting_name = "matchmaking_debug",
 	category = "Network"
 }
-settings[294] = {
+settings[295] = {
 	no_nil = true,
 	description = "Sets latency",
 	setting_name = "network_latency",
@@ -5520,7 +5535,7 @@ settings[294] = {
 		}
 	}
 }
-settings[295] = {
+settings[296] = {
 	description = "Sets Backend Response Latency",
 	setting_name = "backend_response_latency",
 	category = "Network",
@@ -5543,7 +5558,7 @@ settings[295] = {
 		script_data.backend_response_latency = option
 	end
 }
-settings[296] = {
+settings[297] = {
 	no_nil = true,
 	description = "Sets packet loss",
 	setting_name = "packet_loss",
@@ -5592,7 +5607,7 @@ settings[296] = {
 		}
 	}
 }
-settings[297] = {
+settings[298] = {
 	no_nil = true,
 	description = "Sets bandwidth limits",
 	setting_name = "network connection",
@@ -5664,109 +5679,109 @@ settings[297] = {
 		}
 	}
 }
-settings[298] = {
+settings[299] = {
 	description = "Shows the current clock time",
 	is_boolean = true,
 	setting_name = "network_clock_debug",
 	category = "Network"
 }
-settings[299] = {
+settings[300] = {
 	description = "Debug Print Profile Package Loading",
 	is_boolean = true,
 	setting_name = "profile_package_loading_debug",
 	category = "Network"
 }
-settings[300] = {
+settings[301] = {
 	description = "Debugs connections for the network",
 	is_boolean = true,
 	setting_name = "network_debug_connections",
 	category = "Network"
 }
-settings[301] = {
+settings[302] = {
 	description = "Debugs lobbies and matchmaking",
 	is_boolean = true,
 	setting_name = "debug_lobbies",
 	category = "Network"
 }
-settings[302] = {
+settings[303] = {
 	description = "Shows lobby data key/values",
 	is_boolean = true,
 	setting_name = "debug_lobby_data",
 	category = "Network"
 }
-settings[303] = {
+settings[304] = {
 	description = "Debug draw peer state machine states.",
 	is_boolean = true,
 	setting_name = "network_draw_peer_states",
 	category = "Network"
 }
-settings[304] = {
+settings[305] = {
 	description = "Logs information about the profile synchronizer. Best used together with shared_state_debug.",
 	is_boolean = true,
 	setting_name = "profile_synchronizer_debug_logging",
 	category = "Network"
 }
-settings[305] = {
+settings[306] = {
 	description = "Allows host to query himself. Fixes the time_left of votes to 1s.",
 	is_boolean = true,
 	setting_name = "debug_vote_manager",
 	category = "Network"
 }
-settings[306] = {
+settings[307] = {
 	description = "Do not check the network hash when joining a game as a client.",
 	is_boolean = true,
 	setting_name = "do_not_check_network_hash_when_joining",
 	category = "Network"
 }
-settings[307] = {
+settings[308] = {
 	description = "Do not blacklist lobbies when exiting/cancelling as a client.",
 	is_boolean = true,
 	setting_name = "do_not_add_broken_lobby_client",
 	category = "Network"
 }
-settings[308] = {
+settings[309] = {
 	description = "Debug All Contexts",
 	is_boolean = true,
 	setting_name = "dialogue_debug_all_contexts",
 	category = "Dialogue"
 }
-settings[309] = {
+settings[310] = {
 	description = "Debug Last Query",
 	is_boolean = true,
 	setting_name = "dialogue_debug_last_query",
 	category = "Dialogue"
 }
-settings[310] = {
+settings[311] = {
 	description = "Debug Print Successful Queries",
 	is_boolean = true,
 	setting_name = "dialogue_debug_last_played_query",
 	category = "Dialogue"
 }
-settings[311] = {
+settings[312] = {
 	description = "Debug Print Queries",
 	is_boolean = true,
 	setting_name = "dialogue_debug_queries",
 	category = "Dialogue"
 }
-settings[312] = {
+settings[313] = {
 	description = "Debug show Proximities",
 	is_boolean = true,
 	setting_name = "dialogue_debug_proximity_system",
 	category = "Dialogue"
 }
-settings[313] = {
+settings[314] = {
 	description = "Visualize lookat system",
 	is_boolean = true,
 	setting_name = "dialogue_debug_lookat",
 	category = "Dialogue"
 }
-settings[314] = {
+settings[315] = {
 	description = "Debug subtitles",
 	is_boolean = true,
 	setting_name = "subtitle_debug",
 	category = "Dialogue"
 }
-settings[315] = {
+settings[316] = {
 	setting_name = "debug_dialogue_files",
 	description = "Used to debug dialog files, facial expressions and missing vo/subtitles. To skip use: DebugVo_jump_to('line_number/line_id')",
 	category = "Dialogue",
@@ -5774,20 +5789,17 @@ settings[315] = {
 	load_items_source_func = function (options)
 		table.clear(options)
 
-		local dialogue_files = DialogueSettings.auto_load_files
+		local dialogue_system = Managers.state.entity:system("dialogue_system")
 
-		if dialogue_files ~= nil then
-			for _, file in pairs(dialogue_files) do
-				options[#options + 1] = string.match(file, "^.+/(.+)$")
-			end
-		end
+		if dialogue_system then
+			local loaded_files = dialogue_system.tagquery_loader.debug_loaded_files
 
-		local level_key = Managers.state.game_mode:level_key()
-		local level_dialogue_files = DialogueSettings.level_specific_load_files[level_key]
+			if loaded_files then
+				for file_name in pairs(loaded_files) do
+					options[#options + 1] = string.match(file_name, "^.+/(.+)$")
+				end
 
-		if level_dialogue_files ~= nil then
-			for _, file in pairs(level_dialogue_files) do
-				options[#options + 1] = string.match(file, "^.+/(.+)$")
+				table.sort(options)
 			end
 		end
 	end,
@@ -5795,153 +5807,153 @@ settings[315] = {
 		DebugVoByFile(options[index], false)
 	end
 }
-settings[316] = {
+settings[317] = {
 	description = "Missing vo sound event triggers an error sound",
 	is_boolean = true,
 	setting_name = "dialogue_debug_missing_vo_trigger_error_sound",
 	category = "Dialogue"
 }
-settings[317] = {
+settings[318] = {
 	description = "Enables Text-To-Speech for ALL dialogues",
 	is_boolean = true,
 	setting_name = "debug_text_to_speech_forced",
 	category = "Dialogue"
 }
-settings[318] = {
+settings[319] = {
 	description = "Enables Text-To-Speech for dialogues with missing VO",
 	is_boolean = true,
 	setting_name = "debug_text_to_speech_missing",
 	category = "Dialogue"
 }
-settings[319] = {
+settings[320] = {
 	description = "Disable auto block on input loss",
 	is_boolean = true,
 	setting_name = "disable_auto_block",
 	category = "Input"
 }
-settings[320] = {
+settings[321] = {
 	description = "Debug print input device statuses",
 	is_boolean = true,
 	setting_name = "input_debug_device_state",
 	category = "Input"
 }
-settings[321] = {
+settings[322] = {
 	description = "Debug input filters output",
 	is_boolean = true,
 	setting_name = "input_debug_filters",
 	category = "Input"
 }
-settings[322] = {
+settings[323] = {
 	description = "Enables additional assertions to help catch errors in UI code. Only has an effect when DEBUG is enabled.",
 	is_boolean = true,
 	setting_name = "strict_ui_checks",
 	category = "UI"
 }
-settings[323] = {
+settings[324] = {
 	description = "Reverts back to the old Deus Map UI in case the new one is buggy",
 	is_boolean = true,
 	setting_name = "FEATURE_old_map_ui",
 	category = "UI"
 }
-settings[324] = {
+settings[325] = {
 	description = "Debug UI Hover elements",
 	is_boolean = true,
 	setting_name = "ui_debug_hover",
 	category = "UI"
 }
-settings[325] = {
+settings[326] = {
 	description = "Enable/Disable the Lorebook (need to restart level to spawn page pickups)",
 	is_boolean = true,
 	setting_name = "lorebook_enabled",
 	category = "UI"
 }
-settings[326] = {
+settings[327] = {
 	description = "Debug UI Scenegraph Areas and Sizes",
 	is_boolean = true,
 	setting_name = "ui_debug_scenegraph",
 	category = "UI"
 }
-settings[327] = {
+settings[328] = {
 	description = "Debug UI Pixeldistance (by keybinding",
 	is_boolean = true,
 	setting_name = "ui_debug_pixeldistance",
 	category = "UI"
 }
-settings[328] = {
+settings[329] = {
 	description = "Debug ui textures.",
 	is_boolean = true,
 	setting_name = "ui_debug_draw_texture",
 	category = "UI"
 }
-settings[329] = {
+settings[330] = {
 	description = "Disable UI Rendering.",
 	is_boolean = true,
 	setting_name = "disable_ui",
 	category = "UI"
 }
-settings[330] = {
+settings[331] = {
 	description = "Disable Outlines.",
 	category = "UI",
 	setting_name = "disable_outlines",
 	callback = "disable_outlines",
 	is_boolean = true
 }
-settings[331] = {
+settings[332] = {
 	description = "Disables the screens at the end of the level, getting you directly back to the inn.",
 	is_boolean = true,
 	setting_name = "disable_end_screens",
 	category = "UI"
 }
-settings[332] = {
+settings[333] = {
 	description = "Disable Tutorial UI Rendering.",
 	is_boolean = true,
 	setting_name = "disable_tutorial_ui",
 	category = "UI"
 }
-settings[333] = {
+settings[334] = {
 	description = "Disable Info Slate UI Rendering.",
 	is_boolean = true,
 	setting_name = "disable_info_slate_ui",
 	category = "UI"
 }
-settings[334] = {
+settings[335] = {
 	description = "Disables the loading icon.",
 	is_boolean = true,
 	setting_name = "disable_loading_icon",
 	category = "UI"
 }
-settings[335] = {
+settings[336] = {
 	description = "Disables the Water Mark if present.",
 	is_boolean = true,
 	setting_name = "disable_water_mark",
 	category = "UI"
 }
-settings[336] = {
+settings[337] = {
 	description = "Looks through all the localizations and selects the longest text for each item.",
 	is_boolean = true,
 	setting_name = "show_longest_localizations",
 	category = "UI"
 }
-settings[337] = {
+settings[338] = {
 	description = "Disable localization and show the source strings instead. Useful to find the string being used somewhere.",
 	is_boolean = true,
 	setting_name = "disable_localization",
 	category = "UI"
 }
-settings[338] = {
+settings[339] = {
 	description = "Cycles through available localizations",
 	category = "UI",
 	setting_name = "enable_localization_cycling",
 	callback = "enable_locale_cycling",
 	is_boolean = true
 }
-settings[339] = {
+settings[340] = {
 	description = "Turns off positive reinforcement UI",
 	is_boolean = true,
 	setting_name = "disable_reinforcement_ui",
 	category = "UI"
 }
-settings[340] = {
+settings[341] = {
 	description = "Switches reinforcement UI local sound",
 	setting_name = "reinforcement_ui_local_sound",
 	category = "UI",
@@ -5952,49 +5964,49 @@ settings[340] = {
 		hud_achievement_unlock_02 = true
 	}
 }
-settings[341] = {
+settings[342] = {
 	description = "Toggles reinforcement UI remote sound",
 	is_boolean = true,
 	setting_name = "enable_reinforcement_ui_remote_sound",
 	category = "UI"
 }
-settings[342] = {
+settings[343] = {
 	description = "The whole menu is unlocked, there is no end to the possibilities!",
 	is_boolean = true,
 	setting_name = "pause_menu_full_access",
 	category = "UI"
 }
-settings[343] = {
+settings[344] = {
 	description = "Enables option to give yourself lootboxes for free!",
 	is_boolean = true,
 	setting_name = "debug_loot_opening",
 	category = "UI"
 }
-settings[344] = {
+settings[345] = {
 	description = "If inventory is open it will cycle select items automatically",
 	is_boolean = true,
 	setting_name = "debug_cycle_select_inventory_item",
 	category = "UI"
 }
-settings[345] = {
+settings[346] = {
 	description = "Enables or disables detailed tooltips on weapns, accessable by pressing SHIFT or CTRL",
 	is_boolean = true,
 	setting_name = "enable_detailed_tooltips",
 	category = "UI"
 }
-settings[346] = {
+settings[347] = {
 	description = "Always allow buying bundles (even if you already own them).",
 	is_boolean = true,
 	setting_name = "always_allow_buying_bundles",
 	category = "UI"
 }
-settings[347] = {
+settings[348] = {
 	description = "Show all news feed items when entering the keep.",
 	is_boolean = true,
 	setting_name = "show_all_news_feed_items",
 	category = "UI"
 }
-settings[348] = {
+settings[349] = {
 	description = "Marks all shop items as unseen.",
 	category = "UI",
 	setting_name = "mark_all_unseen",
@@ -6004,68 +6016,68 @@ settings[348] = {
 		Managers.save:auto_save(SaveFileName, SaveData)
 	end
 }
-settings[349] = {
+settings[350] = {
 	description = "Disables position lookup validation. Can turn this on for extra performance.",
 	is_boolean = true,
 	setting_name = "disable_debug_position_lookup",
 	category = "Misc"
 }
-settings[350] = {
+settings[351] = {
 	description = "Will paste the content and engine revision to the user's clipboard.",
 	is_boolean = true,
 	setting_name = "paste_revision_to_clipboard",
 	category = "Misc"
 }
-settings[351] = {
+settings[352] = {
 	description = "Enable logging of telemetry debugging information.",
 	is_boolean = true,
 	setting_name = "debug_telemetry",
 	category = "Misc"
 }
-settings[352] = {
+settings[353] = {
 	description = "Enable logging of leaderboard debugging information.",
 	is_boolean = true,
 	setting_name = "debug_leaderboard",
 	category = "Misc"
 }
-settings[353] = {
+settings[354] = {
 	description = "Enable logging of the forge",
 	is_boolean = true,
 	setting_name = "forge_debug",
 	category = "Misc"
 }
-settings[354] = {
+settings[355] = {
 	description = "Enables logging for the package manager",
 	is_boolean = true,
 	setting_name = "package_debug",
 	category = "Misc"
 }
-settings[355] = {
+settings[356] = {
 	description = "Shows currently loaded levels and the level_seed.",
 	is_boolean = true,
 	setting_name = "debug_level_packages",
 	category = "Misc"
 }
-settings[356] = {
+settings[357] = {
 	description = "Disable luajit ",
 	category = "Misc",
 	setting_name = "luajit_disabled",
 	callback = "update_using_luajit",
 	is_boolean = true
 }
-settings[357] = {
+settings[358] = {
 	description = "Restart the game to view dice chances",
 	is_boolean = true,
 	setting_name = "dice_chance_simulation",
 	category = "Misc"
 }
-settings[358] = {
+settings[359] = {
 	description = "Shows a rect in topcenter of the current color of lightfx. Restart required",
 	is_boolean = true,
 	setting_name = "debug_lightfx",
 	category = "Misc"
 }
-settings[359] = {
+settings[360] = {
 	description = "Spawns all player characters base and husk units, and prints to console if any unit is missing any hit-zone actors etc. Units will spawn in base/husk pairs at (0,0,0) upwards into the sky. They will not be removed.",
 	category = "Misc",
 	setting_name = "check_player_base_and_husk_hitzones",
@@ -6073,7 +6085,7 @@ settings[359] = {
 		CHECK_PLAYER_HITZONES()
 	end
 }
-settings[360] = {
+settings[361] = {
 	description = "Throttles FPS to a value. Default means no throttle. Note that this doesn't automatically gets set at startup.",
 	setting_name = "force_limit_fps",
 	category = "Misc",
@@ -6120,25 +6132,25 @@ settings[360] = {
 		Application.set_time_step_policy("throttle", fps)
 	end
 }
-settings[361] = {
+settings[362] = {
 	description = "Don't show dark background behind debug texts.",
 	is_boolean = true,
 	setting_name = "hide_debug_text_background",
 	category = "Misc"
 }
-settings[362] = {
+settings[363] = {
 	description = "Will log transitions fade in/fade out",
 	is_boolean = true,
 	setting_name = "debug_transition_manager",
 	category = "Misc"
 }
-settings[363] = {
+settings[364] = {
 	description = "Disable that the vortex can attract anything / swirl anything around in the air",
 	is_boolean = true,
 	setting_name = "disable_vortex_attraction",
 	category = "Misc"
 }
-settings[364] = {
+settings[365] = {
 	no_nil = true,
 	description = "Sets the time that a stall must take in order for it to be logged. Default is 0.1 seconds.",
 	setting_name = "stall_time",
@@ -6206,37 +6218,37 @@ settings[364] = {
 		}
 	}
 }
-settings[365] = {
+settings[366] = {
 	description = "Enable logging of mismatched profiling scopes.",
 	is_boolean = true,
 	setting_name = "debug_profiling_scopes",
 	category = "Performance"
 }
-settings[366] = {
+settings[367] = {
 	description = "Enable visual 'profiling' of function calls.",
 	is_boolean = true,
 	setting_name = "profile_function_calls",
 	category = "Performance"
 }
-settings[367] = {
+settings[368] = {
 	description = "Enable asserts on mismatched profiling scopes.",
 	is_boolean = true,
 	setting_name = "validate_profiling_scopes",
 	category = "Performance"
 }
-settings[368] = {
+settings[369] = {
 	description = "Disable lodding of animation bones.",
 	is_boolean = true,
 	setting_name = "bone_lod_disable",
 	category = "Performance"
 }
-settings[369] = {
+settings[370] = {
 	description = "Enable floating text over AI head which states the animation that animation merge is currently enabled for.",
 	is_boolean = true,
 	setting_name = "animation_merge_debug",
 	category = "Performance"
 }
-settings[370] = {
+settings[371] = {
 	no_nil = false,
 	description = "Gamma (2.2 default)",
 	setting_name = "Gamma",
@@ -6367,7 +6379,7 @@ settings[370] = {
 		}
 	}
 }
-settings[371] = {
+settings[372] = {
 	no_nil = false,
 	description = "Enabled is default",
 	setting_name = "Global Shadows",
@@ -6397,7 +6409,7 @@ settings[371] = {
 		}
 	}
 }
-settings[372] = {
+settings[373] = {
 	no_nil = false,
 	description = "Enabled is default. You'll need to restart game/engine.",
 	setting_name = "Local Light Shadows",
@@ -6439,7 +6451,7 @@ settings[372] = {
 		}
 	}
 }
-settings[373] = {
+settings[374] = {
 	no_nil = false,
 	description = "Enabled is default",
 	setting_name = "AO Enable/Disable",
@@ -6469,7 +6481,7 @@ settings[373] = {
 		}
 	}
 }
-settings[374] = {
+settings[375] = {
 	no_nil = false,
 	description = "Full is default. You'll need to restart game/engine.",
 	setting_name = "AO Resolution",
@@ -6499,7 +6511,7 @@ settings[374] = {
 		}
 	}
 }
-settings[375] = {
+settings[376] = {
 	description = "You have to restart the game for the settings to take effect",
 	category = "Render Settings",
 	setting_name = "Set high texture quality",
@@ -6507,7 +6519,7 @@ settings[375] = {
 		DebugScreen.set_texture_quality(0)
 	end
 }
-settings[376] = {
+settings[377] = {
 	description = "You have to restart the game for the settings to take effect",
 	category = "Render Settings",
 	setting_name = "Set low texture quality",
@@ -6515,115 +6527,115 @@ settings[376] = {
 		DebugScreen.set_texture_quality(3)
 	end
 }
-settings[377] = {
+settings[378] = {
 	description = "Don't render the game if the window is not focused",
 	is_boolean = true,
 	setting_name = "only_render_if_window_focused",
 	category = "Render Settings"
 }
-settings[378] = {
+settings[379] = {
 	description = "Show bot debug visualizers",
 	is_boolean = true,
 	setting_name = "ai_bots_debug",
 	category = "Bots"
 }
-settings[379] = {
+settings[380] = {
 	description = "Make bots not see/attack anyone",
 	is_boolean = true,
 	setting_name = "ai_bots_disable_perception",
 	category = "Bots"
 }
-settings[380] = {
+settings[381] = {
 	description = "Bot won't shot at enemy players, but still attack ai enemies. Versus Specific",
 	is_boolean = true,
 	setting_name = "ai_bots_disable_player_range_attacks",
 	category = "Bots"
 }
-settings[381] = {
+settings[382] = {
 	description = "Make bots not dodge attacks",
 	is_boolean = true,
 	setting_name = "ai_bots_disable_dodging",
 	category = "Bots"
 }
-settings[382] = {
+settings[383] = {
 	description = "Bot won't melee at enemy players, but still attack ai enemies. Versus Specific",
 	is_boolean = true,
 	setting_name = "ai_bots_disable_player_melee_attacks",
 	category = "Bots"
 }
-settings[383] = {
+settings[384] = {
 	description = "Bots will only use ranged attacks.",
 	is_boolean = true,
 	setting_name = "ai_bots_disable_ranged_attacks",
 	category = "Bots"
 }
-settings[384] = {
+settings[385] = {
 	description = "Bots will only use melee attacks.",
 	is_boolean = true,
 	setting_name = "ai_bots_disable_melee_attacks",
 	category = "Bots"
 }
-settings[385] = {
+settings[386] = {
 	description = "Bots use ranged attacks as much as possible.",
 	is_boolean = true,
 	setting_name = "ai_bots_ranged_attack_always_valid",
 	category = "Bots"
 }
-settings[386] = {
+settings[387] = {
 	description = "Enable debug printing related to bot weapons.",
 	is_boolean = true,
 	setting_name = "ai_bots_weapon_debug",
 	category = "Bots"
 }
-settings[387] = {
+settings[388] = {
 	description = "Enable debug information related to bot orders - press t to order bot to pickup item using raycast.",
 	is_boolean = true,
 	setting_name = "ai_bots_order_debug",
 	category = "Bots"
 }
-settings[388] = {
+settings[389] = {
 	description = "Shows which inputs that the bot is doing at the moment.",
 	is_boolean = true,
 	setting_name = "ai_bots_input_debug",
 	category = "Bots"
 }
-settings[389] = {
+settings[390] = {
 	description = "Visualizes the AoE threat that the bots are trying to avoid.",
 	is_boolean = true,
 	setting_name = "ai_bots_aoe_threat_debug",
 	category = "Bots"
 }
-settings[390] = {
+settings[391] = {
 	description = "Visualizes nearby breakable smart objects for the selected bot.",
 	is_boolean = true,
 	setting_name = "ai_bots_proximity_breakables_debug",
 	category = "Bots"
 }
-settings[391] = {
+settings[392] = {
 	description = "Bots will not follow player.",
 	is_boolean = true,
 	setting_name = "bots_dont_follow",
 	category = "Bots"
 }
-settings[392] = {
+settings[393] = {
 	description = "Disables automatic spawning of bots",
 	is_boolean = true,
 	setting_name = "ai_bots_disabled",
 	category = "Bots"
 }
-settings[393] = {
+settings[394] = {
 	description = "Enables bots on Weaves",
 	is_boolean = true,
 	setting_name = "enable_bots_in_weaves",
 	category = "Bots"
 }
-settings[394] = {
+settings[395] = {
 	description = "Disables bot usage of career abilities.",
 	is_boolean = true,
 	setting_name = "ai_bots_career_abilities_disabled",
 	category = "Bots"
 }
-settings[395] = {
+settings[396] = {
 	description = "Will cap the total number of bots in game",
 	setting_name = "cap_num_bots",
 	category = "Bots",
@@ -6633,7 +6645,7 @@ settings[395] = {
 		2
 	}
 }
-settings[396] = {
+settings[397] = {
 	description = "Next spawned bot will use this profile if available (Tip: Toggle ai_bots_disabled on/off).",
 	setting_name = "wanted_bot_profile",
 	category = "Bots",
@@ -6645,7 +6657,7 @@ settings[396] = {
 		bright_wizard = true
 	}
 }
-settings[397] = {
+settings[398] = {
 	description = "Next spawned bot will use this career index, clear to use the last choosen one (Tip: Toggle ai_bots_disabled on/off).",
 	setting_name = "wanted_bot_career_index",
 	category = "Bots",
@@ -6657,13 +6669,13 @@ settings[397] = {
 		}
 	}
 }
-settings[398] = {
+settings[399] = {
 	description = "Only works together with wanted_bot_profile. Will make all spawned the same as defined in wanted_bot_profile. (Might need to toggle_ai_bots on/off.)",
 	is_boolean = true,
 	setting_name = "allow_same_bots",
 	category = "Bots"
 }
-settings[399] = {
+settings[400] = {
 	no_nil = false,
 	description = "",
 	setting_name = "Perfhud Artist",
@@ -6720,7 +6732,7 @@ settings[399] = {
 		}
 	}
 }
-settings[400] = {
+settings[401] = {
 	no_nil = false,
 	description = "",
 	setting_name = "Perfhud Memory",
@@ -6737,19 +6749,19 @@ settings[400] = {
 		}
 	}
 }
-settings[401] = {
+settings[402] = {
 	description = "Performance Manager Debug",
 	is_boolean = true,
 	setting_name = "performance_debug",
 	category = "Perfhud"
 }
-settings[402] = {
+settings[403] = {
 	description = "Requires restart. Disables the backend and emulates it with a local save.",
 	is_boolean = true,
 	setting_name = "use_local_backend",
 	category = "Backend"
 }
-settings[403] = {
+settings[404] = {
 	description = "Sets the amount of logging on the backend",
 	setting_name = "backend_logging_level",
 	category = "Backend",
@@ -6762,25 +6774,25 @@ settings[403] = {
 		Managers.backend:refresh_log_level()
 	end
 }
-settings[404] = {
+settings[405] = {
 	description = "Connect to a backend running locally. Can be set to a string to use that as a URL.",
 	is_boolean = true,
 	setting_name = "backend_base_url",
 	category = "Backend"
 }
-settings[405] = {
+settings[406] = {
 	description = "Unlock all careers",
 	is_boolean = true,
 	setting_name = "unlock_all_careers",
 	category = "Progression"
 }
-settings[406] = {
+settings[407] = {
 	description = "You have to reload the inn for the setting to take effect",
 	is_boolean = true,
 	setting_name = "unlock_full_keep",
 	category = "Progression"
 }
-settings[407] = {
+settings[408] = {
 	description = "Win",
 	close_when_selected = true,
 	setting_name = "Complete current level",
@@ -6789,7 +6801,7 @@ settings[407] = {
 		Managers.state.game_mode:complete_level()
 	end
 }
-settings[408] = {
+settings[409] = {
 	description = "Restart",
 	close_when_selected = true,
 	setting_name = "Retry current level",
@@ -6798,7 +6810,7 @@ settings[408] = {
 		Managers.state.game_mode:retry_level()
 	end
 }
-settings[409] = {
+settings[410] = {
 	description = "Lose",
 	close_when_selected = true,
 	setting_name = "Fail current level",
@@ -6807,7 +6819,7 @@ settings[409] = {
 		Managers.state.game_mode:fail_level()
 	end
 }
-settings[410] = {
+settings[411] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Complete act \"prologue\"",
@@ -6815,7 +6827,7 @@ settings[410] = {
 		LevelUnlockUtils.debug_completed_act_levels("prologue", true)
 	end
 }
-settings[411] = {
+settings[412] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Uncomplete act \"prologue\"",
@@ -6823,7 +6835,7 @@ settings[411] = {
 		LevelUnlockUtils.debug_completed_act_levels("prologue", false)
 	end
 }
-settings[412] = {
+settings[413] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Complete act \"act_1\"",
@@ -6831,7 +6843,7 @@ settings[412] = {
 		LevelUnlockUtils.debug_completed_act_levels("act_1", true)
 	end
 }
-settings[413] = {
+settings[414] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Uncomplete act \"act_1\"",
@@ -6839,7 +6851,7 @@ settings[413] = {
 		LevelUnlockUtils.debug_completed_act_levels("act_1", false)
 	end
 }
-settings[414] = {
+settings[415] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Complete act \"act_2\"",
@@ -6847,7 +6859,7 @@ settings[414] = {
 		LevelUnlockUtils.debug_completed_act_levels("act_2", true)
 	end
 }
-settings[415] = {
+settings[416] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Uncomplete act \"act_2\"",
@@ -6855,7 +6867,7 @@ settings[415] = {
 		LevelUnlockUtils.debug_completed_act_levels("act_2", false)
 	end
 }
-settings[416] = {
+settings[417] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Complete act \"act_3\"",
@@ -6863,7 +6875,7 @@ settings[416] = {
 		LevelUnlockUtils.debug_completed_act_levels("act_3", true)
 	end
 }
-settings[417] = {
+settings[418] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Uncomplete act \"act_3\"",
@@ -6871,7 +6883,7 @@ settings[417] = {
 		LevelUnlockUtils.debug_completed_act_levels("act_3", false)
 	end
 }
-settings[418] = {
+settings[419] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Complete act \"act_4\"",
@@ -6879,7 +6891,7 @@ settings[418] = {
 		LevelUnlockUtils.debug_completed_act_levels("act_4", true)
 	end
 }
-settings[419] = {
+settings[420] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Uncomplete act \"act_4\"",
@@ -6887,7 +6899,7 @@ settings[419] = {
 		LevelUnlockUtils.debug_completed_act_levels("act_4", false)
 	end
 }
-settings[420] = {
+settings[421] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Set completed game difficulty Normal",
@@ -6895,7 +6907,7 @@ settings[420] = {
 		LevelUnlockUtils.debug_set_completed_game_difficulty(2)
 	end
 }
-settings[421] = {
+settings[422] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Set completed game difficulty Hard",
@@ -6903,7 +6915,7 @@ settings[421] = {
 		LevelUnlockUtils.debug_set_completed_game_difficulty(3)
 	end
 }
-settings[422] = {
+settings[423] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Set completed game difficulty Nightmare",
@@ -6911,7 +6923,7 @@ settings[422] = {
 		LevelUnlockUtils.debug_set_completed_game_difficulty(4)
 	end
 }
-settings[423] = {
+settings[424] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Set completed game difficulty Cataclysm",
@@ -6919,7 +6931,7 @@ settings[423] = {
 		LevelUnlockUtils.debug_set_completed_game_difficulty(5)
 	end
 }
-settings[424] = {
+settings[425] = {
 	description = " ",
 	category = "Progression",
 	setting_name = "Complete DLC Celebrate",
@@ -6931,7 +6943,7 @@ settings[424] = {
 		LevelHelper:flow_event(world, "lua_unlock_challenge_debug_event")
 	end
 }
-settings[425] = {
+settings[426] = {
 	setting_name = "Add Experience",
 	description = "Adds Experience to your account.",
 	category = "Progression",
@@ -6974,7 +6986,7 @@ settings[425] = {
 		request_queue:enqueue(request, cb, false)
 	end
 }
-settings[426] = {
+settings[427] = {
 	description = "Sets experience to 0.",
 	category = "Progression",
 	setting_name = "Reset Level",
@@ -7003,7 +7015,7 @@ settings[426] = {
 		request_queue:enqueue(request, cb, false)
 	end
 }
-settings[427] = {
+settings[428] = {
 	description = "Will add experience to above prestige requirements",
 	category = "Progression",
 	setting_name = "Level up above prestige level requirements",
@@ -7035,7 +7047,7 @@ settings[427] = {
 		request_queue:enqueue(request, cb, false)
 	end
 }
-settings[428] = {
+settings[429] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Reset prestige level",
@@ -7050,7 +7062,7 @@ settings[428] = {
 		Debug.load_level("inn_level")
 	end
 }
-settings[429] = {
+settings[430] = {
 	description = "You have to reload the inn for the setting to take effect",
 	category = "Progression",
 	setting_name = "Wipe all progression(used for prestige)",
@@ -7058,7 +7070,7 @@ settings[429] = {
 		LevelUnlockUtils.set_all_acts_incompleted()
 	end
 }
-settings[430] = {
+settings[431] = {
 	description = "Set sum of best power levels, ignoring actual value in the backend",
 	category = "Progression",
 	setting_name = "sum_of_best_power_levels_override",
@@ -7098,25 +7110,25 @@ settings[430] = {
 		end
 	end
 }
-settings[431] = {
+settings[432] = {
 	description = "Override the returned value to flow node \"Leader Achievement Completed\"",
 	is_boolean = true,
 	setting_name = "achievement_completed_flow_override",
 	category = "Progression"
 }
-settings[432] = {
+settings[433] = {
 	description = "Override the returned value to flow node \"Leader Has DLC\" when checking for the Collectors Edition (Pre Order) DLC",
 	is_boolean = true,
 	setting_name = "has_dlc_pre_order_flow_override",
 	category = "Progression"
 }
-settings[433] = {
+settings[434] = {
 	description = "Disables the hero power requirements for difficulties",
 	is_boolean = true,
 	setting_name = "disable_hero_power_requirement",
 	category = "Progression"
 }
-settings[434] = {
+settings[435] = {
 	description = "Completely resets all stats for local player. Requires that the player is spawned inside a level. REQUIRES RESTART AFTERWARDS!",
 	category = "Progression",
 	setting_name = "reset_statistics_database",
@@ -7125,25 +7137,25 @@ settings[434] = {
 		Managers.backend:get_interface("statistics"):reset()
 	end
 }
-settings[435] = {
+settings[436] = {
 	description = "Shows test buffs in the buff tray for debugging.",
 	is_boolean = true,
 	setting_name = "debug_buff_ui",
 	category = "HUD"
 }
-settings[436] = {
+settings[437] = {
 	description = "Show more things in the player list UI right-hand panel for debugging.",
 	is_boolean = true,
 	setting_name = "debug_player_list_ui",
 	category = "HUD"
 }
-settings[437] = {
+settings[438] = {
 	description = "Will display all properties on the player",
 	is_boolean = true,
 	setting_name = "debug_show_player_properties",
 	category = "HUD"
 }
-settings[438] = {
+settings[439] = {
 	description = "Will display all properties on the player, all = all properties, limited = buffs chosen by QA",
 	setting_name = "debug_show_player_active_buffs",
 	category = "HUD",
@@ -7153,7 +7165,7 @@ settings[438] = {
 		limited = "limited"
 	}
 }
-settings[439] = {
+settings[440] = {
 	no_nil = false,
 	setting_name = "debug_hud_visibility_group",
 	description = "Force activate a specific HUD visibility group",
@@ -7185,37 +7197,37 @@ settings[439] = {
 		end
 	end
 }
-settings[440] = {
+settings[441] = {
 	description = "Used for spawning world markers on ping input",
 	is_boolean = true,
 	setting_name = "debug_world_marker_ping",
 	category = "UI"
 }
-settings[441] = {
+settings[442] = {
 	description = "Prints the number of server controlled buffs.",
 	is_boolean = true,
 	setting_name = "debug_server_controlled_buffs",
 	category = "Player mechanics"
 }
-settings[442] = {
+settings[443] = {
 	description = "Shows the bones of the player units",
 	is_boolean = true,
 	setting_name = "debug_player_skeletons",
 	category = "Player mechanics"
 }
-settings[443] = {
+settings[444] = {
 	description = "Shows current career sound state",
 	is_boolean = true,
 	setting_name = "debug_career_sound_state",
 	category = "Player mechanics"
 }
-settings[444] = {
+settings[445] = {
 	description = "Disables the weave score UI on screen",
 	is_boolean = true,
 	setting_name = "disable_weave_score_ui",
 	category = "Player mechanics"
 }
-settings[445] = {
+settings[446] = {
 	setting_name = "Add legend end of level chest.",
 	description = "Works on non-local backend. Adds a legend vault",
 	category = "Progression",
@@ -7296,7 +7308,7 @@ settings[445] = {
 		end
 	end
 }
-settings[446] = {
+settings[447] = {
 	description = "Lists all items with functionality to add them to inventory.",
 	setting_name = "Add Hat Items",
 	category = "Items",
@@ -7325,7 +7337,7 @@ settings[446] = {
 		})
 	end
 }
-settings[447] = {
+settings[448] = {
 	description = "Adds all hat items to your inventory.",
 	setting_name = "Add All Hat Items",
 	category = "Items",
@@ -7346,7 +7358,7 @@ settings[447] = {
 		add_items(hats, skip_autosave)
 	end
 }
-settings[448] = {
+settings[449] = {
 	description = "Lists all items with functionality to add them to inventory.",
 	setting_name = "Add Skin Items",
 	category = "Items",
@@ -7375,7 +7387,7 @@ settings[448] = {
 		})
 	end
 }
-settings[449] = {
+settings[450] = {
 	description = "Lists all items with functionality to add them to inventory.",
 	setting_name = "Add Chest Items",
 	category = "Items",
@@ -7404,7 +7416,7 @@ settings[449] = {
 		})
 	end
 }
-settings[450] = {
+settings[451] = {
 	description = "Lists all items with functionality to add them to inventory.",
 	setting_name = "Add Frame Items",
 	category = "Items",
@@ -7433,7 +7445,7 @@ settings[450] = {
 		})
 	end
 }
-settings[451] = {
+settings[452] = {
 	description = "Lists all deeds with functionality to add them to inventory.",
 	setting_name = "Add Deed Items",
 	category = "Items",
@@ -7462,7 +7474,7 @@ settings[451] = {
 		})
 	end
 }
-settings[452] = {
+settings[453] = {
 	description = "Adds one weapon per skin with that skin applied.",
 	setting_name = "Add All Weapon Skins",
 	category = "Items",
@@ -7512,7 +7524,7 @@ settings[452] = {
 		request_queue:enqueue(request, cb, false)
 	end
 }
-settings[453] = {
+settings[454] = {
 	description = "Lists all mutators with functionality to activate them. Requires restart of level",
 	setting_name = "Activate or Deactivate Mutator",
 	category = "Items",
@@ -7553,7 +7565,7 @@ settings[453] = {
 		end
 	end
 }
-settings[454] = {
+settings[455] = {
 	description = "Lists all blessings with functionality to activate them. Requires restart of a deus level or loading the next one",
 	setting_name = "Activate or Deactivate Blessings",
 	category = "Items",
@@ -7594,7 +7606,7 @@ settings[454] = {
 		end
 	end
 }
-settings[455] = {
+settings[456] = {
 	description = "Lists all Twitch Mode Vote Templates with functionality to activate them.",
 	setting_name = "Force Twitch Mode Vote Template",
 	category = "Items",
@@ -7622,13 +7634,13 @@ settings[455] = {
 		end
 	end
 }
-settings[456] = {
+settings[457] = {
 	description = "Show all paintings etc. You have to reload the inn for the setting to take effect.",
 	is_boolean = true,
 	setting_name = "debug_keep_decorations",
 	category = "Keep Decorations"
 }
-settings[457] = {
+settings[458] = {
 	description = "Unlocks a Challenge by setting by incrementing the appropriate statistics.",
 	setting_name = "Unlock Challenges",
 	category = "Progression",
@@ -7674,7 +7686,7 @@ settings[457] = {
 		print("Could not unlock challenge ", options[index])
 	end
 }
-settings[458] = {
+settings[459] = {
 	description = "Clears a Challenge by setting the appropriate statistics to 0.",
 	setting_name = "Clear Challenges",
 	category = "Progression",
@@ -7716,19 +7728,19 @@ settings[458] = {
 		print("Could not reset challenge ", options[index])
 	end
 }
-settings[459] = {
+settings[460] = {
 	description = "Sets all Okris challenges to be claimable in the UI",
 	is_boolean = true,
 	setting_name = "set_all_challenges_claimable",
 	category = "Progression"
 }
-settings[460] = {
+settings[461] = {
 	description = "Draws debug information for each active objective",
 	is_boolean = true,
 	setting_name = "show_weave_objectives",
 	category = "Gamemode/level"
 }
-settings[461] = {
+settings[462] = {
 	description = "Activates all objectives for the current weave",
 	setting_name = "activate_all_weave_objectives",
 	category = "Gamemode/level",
@@ -7764,19 +7776,19 @@ settings[461] = {
 		})
 	end
 }
-settings[462] = {
+settings[463] = {
 	description = "Use the standard loadout in weaves (requires restart)",
 	is_boolean = true,
 	setting_name = "disable_weave_loadout",
 	category = "Player mechanics"
 }
-settings[463] = {
+settings[464] = {
 	description = "Use the standard talents in weaves (requires restart)",
 	is_boolean = true,
 	setting_name = "disable_weave_talents",
 	category = "Player mechanics"
 }
-settings[464] = {
+settings[465] = {
 	description = "Adds 10 Weave Essence to your account",
 	setting_name = "10 Weave Essence",
 	category = "Gamemode/level",
@@ -7784,7 +7796,7 @@ settings[464] = {
 		Managers.backend:get_interface("weaves"):debug_grant_essence(10)
 	end
 }
-settings[465] = {
+settings[466] = {
 	description = "Adds 100 Weave Essence to your account",
 	setting_name = "100 Weave Essence",
 	category = "Gamemode/level",
@@ -7792,7 +7804,7 @@ settings[465] = {
 		Managers.backend:get_interface("weaves"):debug_grant_essence(100)
 	end
 }
-settings[466] = {
+settings[467] = {
 	description = "Adds 1000 Weave Essence to your account",
 	setting_name = "1,000 Weave Essence",
 	category = "Gamemode/level",
@@ -7800,7 +7812,7 @@ settings[466] = {
 		Managers.backend:get_interface("weaves"):debug_grant_essence(1000)
 	end
 }
-settings[467] = {
+settings[468] = {
 	description = "Adds 10000 Weave Essence to your account",
 	setting_name = "10,000 Weave Essence",
 	category = "Gamemode/level",
@@ -7808,7 +7820,7 @@ settings[467] = {
 		Managers.backend:get_interface("weaves"):debug_grant_essence(10000)
 	end
 }
-settings[468] = {
+settings[469] = {
 	description = "Adds $$$ ONE MILLION $$$ Weave Essence to your account",
 	setting_name = "1,000,000 Weave Essence",
 	category = "Gamemode/level",
@@ -7816,7 +7828,7 @@ settings[468] = {
 		Managers.backend:get_interface("weaves"):debug_grant_essence(1000000)
 	end
 }
-settings[469] = {
+settings[470] = {
 	description = "Removes all magic weave weapons from the inventory except for default weapons equipped ones",
 	setting_name = "Remove Magic Weave Weapons",
 	category = "Gamemode/level",
@@ -7824,7 +7836,7 @@ settings[469] = {
 		Managers.backend:get_interface("weaves"):debug_remove_magic_items()
 	end
 }
-settings[470] = {
+settings[471] = {
 	setting_name = "Weave Onboarding",
 	description = "change onboarding stat",
 	category = "Onboarding",
@@ -7860,7 +7872,7 @@ settings[470] = {
 		save_statistics()
 	end
 }
-settings[471] = {
+settings[472] = {
 	description = "complete the weave onboarding ui tutorial",
 	setting_name = "Weave Onboarding UI",
 	category = "Onboarding",
@@ -7873,7 +7885,7 @@ settings[471] = {
 		save_statistics()
 	end
 }
-settings[472] = {
+settings[473] = {
 	description = "resets weave onboarding ui tutorial",
 	setting_name = "Weave Onboarding UI Reset",
 	category = "Onboarding",
@@ -7886,7 +7898,7 @@ settings[472] = {
 		save_statistics()
 	end
 }
-settings[473] = {
+settings[474] = {
 	description = "resets the flag keeps track of Olesya's VO that is played when player first fails a weave.",
 	setting_name = "Clear Olesya Failed VO Played Flag ",
 	category = "Onboarding",
@@ -7899,37 +7911,37 @@ settings[473] = {
 		save_statistics()
 	end
 }
-settings[474] = {
+settings[475] = {
 	description = "Will make it so \"first_time_store_release\" is always triggered when players start the game and enter the keep",
 	is_boolean = true,
 	setting_name = "always_first_time_store_release",
 	category = "Onboarding"
 }
-settings[475] = {
+settings[476] = {
 	description = "Will make it so \"store_new_items\" is always triggered when players start the game and enter the keep",
 	is_boolean = true,
 	setting_name = "always_store_new_items",
 	category = "Onboarding"
 }
-settings[476] = {
+settings[477] = {
 	description = "Will make it so \"shop_closed_item_bought\" is always triggered when players close the store. Exclusive with other \"shop_closed\" events",
 	is_boolean = true,
 	setting_name = "always_shop_closed_item_bought",
 	category = "Onboarding"
 }
-settings[477] = {
+settings[478] = {
 	description = "Will make it so \"shop_closed_golden_key_redeemed\" is always triggered when players close the store. Exclusive with other \"shop_closed\" events",
 	is_boolean = true,
 	setting_name = "always_shop_closed_golden_key_redeemed",
 	category = "Onboarding"
 }
-settings[478] = {
+settings[479] = {
 	description = "Will make it so \"shop_closed_login_reward_claimed\" is always triggered when players close the store. Exclusive with other \"shop_closed\" events",
 	is_boolean = true,
 	setting_name = "always_shop_closed_login_reward_claimed",
 	category = "Onboarding"
 }
-settings[479] = {
+settings[480] = {
 	description = "Trigger the \"first_time_store_release\" level flow event",
 	setting_name = "Trigger \"first_time_store_release\"",
 	category = "Onboarding",
@@ -7939,7 +7951,7 @@ settings[479] = {
 		LevelHelper:flow_event(world, "first_time_store_release")
 	end
 }
-settings[480] = {
+settings[481] = {
 	description = "Trigger the \"store_new_items\" level flow event",
 	setting_name = "Trigger \"store_new_items\"",
 	category = "Onboarding",
@@ -7949,7 +7961,7 @@ settings[480] = {
 		LevelHelper:flow_event(world, "store_new_items")
 	end
 }
-settings[481] = {
+settings[482] = {
 	description = "Trigger the \"first_time_started_game\" level flow event",
 	setting_name = "Trigger \"first_time_started_game\"",
 	category = "Onboarding",
@@ -7959,31 +7971,31 @@ settings[481] = {
 		LevelHelper:flow_event(world, "first_time_started_game")
 	end
 }
-settings[482] = {
+settings[483] = {
 	description = "Disregard the store items set by the backend",
 	is_boolean = true,
 	setting_name = "disregard_backend_store_items",
 	category = "Store"
 }
-settings[483] = {
+settings[484] = {
 	description = "Prints out the current discounted items on screen",
 	is_boolean = true,
 	setting_name = "show_discounted_store_items",
 	category = "Store"
 }
-settings[484] = {
+settings[485] = {
 	description = "Randomizes a bunch of items on sale",
 	is_boolean = true,
 	setting_name = "fake_store_sale",
 	category = "Store"
 }
-settings[485] = {
+settings[486] = {
 	description = "Count owned DLCs as installed. Makes it easier to test DLCs through steam console with enable/disable_license",
 	is_boolean = true,
 	setting_name = "count_owned_dlc_as_installed",
 	category = "DLC"
 }
-settings[486] = {
+settings[487] = {
 	description = "Displays the diorama prototype",
 	close_when_selected = true,
 	setting_name = "Run Diorama Prototype",
@@ -7992,7 +8004,7 @@ settings[486] = {
 		Managers.ui:handle_transition("diorama_prototype", {})
 	end
 }
-settings[487] = {
+settings[488] = {
 	description = "Starts a Deus run directly on a map",
 	setting_name = "Run Deus Map Node",
 	category = "Deus",
@@ -8004,7 +8016,7 @@ settings[487] = {
 		end
 	end
 }
-settings[488] = {
+settings[489] = {
 	description = "Starts a Deus run directly on a shrine",
 	setting_name = "Run Deus Shrine Node",
 	category = "Deus",
@@ -8016,7 +8028,7 @@ settings[488] = {
 		end
 	end
 }
-settings[489] = {
+settings[490] = {
 	description = "Clears a finished a journey",
 	setting_name = "Clear Finished Journey",
 	category = "Deus",
@@ -8036,7 +8048,7 @@ settings[489] = {
 		LevelUnlockUtils.debug_set_completed_journey_difficulty(journey, 0)
 	end
 }
-settings[490] = {
+settings[491] = {
 	description = "Sets the completed difficulty for the selected journey temporary.",
 	setting_name = "Set completed journey difficulty",
 	category = "Deus",
@@ -8059,7 +8071,7 @@ settings[490] = {
 		LevelUnlockUtils.debug_set_completed_journey_difficulty(journey_name, difficulty_id)
 	end
 }
-settings[491] = {
+settings[492] = {
 	description = "Sets the hero completed difficulty for the selected journey temporary.",
 	setting_name = "Set completed hero journey difficulty",
 	category = "Deus",
@@ -8085,7 +8097,7 @@ settings[491] = {
 		LevelUnlockUtils.debug_set_completed_hero_journey_difficulty(hero, journey_name, difficulty_id)
 	end
 }
-settings[492] = {
+settings[493] = {
 	description = "Clears all deus meta progression, which is just rolled over coins at the moment.",
 	setting_name = "Clear Deus meta progression",
 	category = "Deus",
@@ -8095,7 +8107,7 @@ settings[492] = {
 		deus_interface:debug_clear_meta_progression()
 	end
 }
-settings[493] = {
+settings[494] = {
 	description = "Lists all powerups with functionality to activate them. Needs to be in a deus run.",
 	setting_name = "Activate Deus PowerUp",
 	category = "Deus",
@@ -8161,7 +8173,7 @@ settings[493] = {
 		end
 	end
 }
-settings[494] = {
+settings[495] = {
 	description = "Adds 10.000 deus soft currency",
 	setting_name = "add_soft_currency",
 	category = "Deus",
@@ -8172,7 +8184,7 @@ settings[494] = {
 		deus_run_controller:_add_soft_currency_to_peer(own_peer_id, 10000)
 	end
 }
-settings[495] = {
+settings[496] = {
 	description = "Adds a random boon, the type obtained from boon shrines",
 	setting_name = "add_random_boon",
 	category = "Deus",
@@ -8203,7 +8215,7 @@ settings[495] = {
 		})
 	end
 }
-settings[496] = {
+settings[497] = {
 	description = "Activates all non talent Deus PowerUps ",
 	setting_name = "Activate all non talent Deus PowerUps",
 	category = "Deus",
@@ -8257,7 +8269,7 @@ settings[496] = {
 		end
 	end
 }
-settings[497] = {
+settings[498] = {
 	description = "Draw the positions of the weapons as a path",
 	setting_name = "Draw Weapon Position",
 	category = "Weapons",
@@ -8276,37 +8288,37 @@ settings[497] = {
 		script_data.debug_draw_weapon_position = options[index]
 	end
 }
-settings[498] = {
+settings[499] = {
 	description = "Unlocks every deus chest aka weapon shrine",
 	is_boolean = true,
 	setting_name = "unlock_all_deus_chests",
 	category = "Deus"
 }
-settings[499] = {
+settings[500] = {
 	description = "debug any changes to the deus shared state.",
 	is_boolean = true,
 	setting_name = "shared_state_debug",
 	category = "Deus"
 }
-settings[500] = {
+settings[501] = {
 	description = "log any relevant event in the deus run controller.",
 	is_boolean = true,
 	setting_name = "deus_run_controller_debug",
 	category = "Deus"
 }
-settings[501] = {
+settings[502] = {
 	description = "draw a map with debug ui. This will draw either the current run seed being played, or the seed set by imgui_deus_map_gen",
 	is_boolean = true,
 	setting_name = "deus_debug_draw_map",
 	category = "Deus"
 }
-settings[502] = {
+settings[503] = {
 	description = "test fog without saving already seen nodes, essentially everything not accessed is fully foggy",
 	is_boolean = true,
 	setting_name = "deus_fog_with_no_memory",
 	category = "Deus"
 }
-settings[503] = {
+settings[504] = {
 	setting_name = "deus_force_load_run_progress",
 	category = "Deus",
 	description = "override the run progress when using this menu's load level. 900 == 0.9 ",
@@ -8323,7 +8335,7 @@ settings[503] = {
 		options[#options + 1] = "[clear value]"
 	end
 }
-settings[504] = {
+settings[505] = {
 	setting_name = "deus_seed",
 	category = "Deus",
 	description = "Force a default graph seed",
@@ -8340,7 +8352,7 @@ settings[504] = {
 		table.sort(options)
 	end
 }
-settings[505] = {
+settings[506] = {
 	setting_name = "deus_journey",
 	category = "Deus",
 	description = "Force a deus journey",
@@ -8357,7 +8369,7 @@ settings[505] = {
 		table.sort(options)
 	end
 }
-settings[506] = {
+settings[507] = {
 	setting_name = "deus_dominant_god",
 	category = "Deus",
 	description = "Force a deus dominant god",
@@ -8374,67 +8386,67 @@ settings[506] = {
 		table.sort(options)
 	end
 }
-settings[507] = {
+settings[508] = {
 	description = "Journeys will work in 10minute cycles for debugging. Only works in local backend.",
 	is_boolean = true,
 	setting_name = "deus_journey_ten_minute_cycle",
 	category = "Deus"
 }
-settings[508] = {
+settings[509] = {
 	description = "Shows how many enemies are marked by a curse",
 	is_boolean = true,
 	setting_name = "debug_deus_marked_enemies",
 	category = "Deus"
 }
-settings[509] = {
+settings[510] = {
 	description = "Check how the curse UI looks with all the different curses. Use left shift + q in order to cycle all the variations",
 	is_boolean = true,
 	setting_name = "deus_curse_ui",
 	category = "Deus"
 }
-settings[510] = {
+settings[511] = {
 	description = "Requires a restart/loading the next level/switching career. Unlocks all weapons in the pool used for generating random weapon at reliquaries.",
 	is_boolean = true,
 	setting_name = "deus_full_weapon_pool",
 	category = "Deus"
 }
-settings[511] = {
+settings[512] = {
 	description = "When active the next run you will start will consist only of shops (except start node and arena)",
 	is_boolean = true,
 	setting_name = "deus_shoppify_run",
 	category = "Deus"
 }
-settings[512] = {
+settings[513] = {
 	description = "Force only the new boons to be in the pool",
 	is_boolean = true,
 	setting_name = "belakor_force_new_boons",
 	category = "Deus"
 }
-settings[513] = {
+settings[514] = {
 	description = "Force a specific map layout on the belakor journey for the vertical slice build",
 	is_boolean = true,
 	setting_name = "belakor_force_vertical_slice_seed",
 	category = "Deus"
 }
-settings[514] = {
+settings[515] = {
 	description = "Forces all levels to be cursed by belakor where applicable",
 	is_boolean = true,
 	setting_name = "belakor_force_curses_on_map",
 	category = "Deus"
 }
-settings[515] = {
+settings[516] = {
 	description = "Hides the belakor journey from the UI",
 	is_boolean = true,
 	setting_name = "belakor_hide_journey",
 	category = "Deus"
 }
-settings[516] = {
+settings[517] = {
 	description = "While playing a belakor level, all possible positions for a Locus will be occupied by one",
 	is_boolean = true,
 	setting_name = "belakor_force_locus_on_all_positions",
 	category = "Deus"
 }
-settings[517] = {
+settings[518] = {
 	description = "Primes your user setting to trigger the new UI popup",
 	category = "New UI Popup",
 	setting_name = "Activate New Popup UI Prompt",
@@ -8445,7 +8457,7 @@ settings[517] = {
 		Application.save_user_settings()
 	end
 }
-settings[518] = {
+settings[519] = {
 	description = "",
 	setting_name = "Number of Crafted Items",
 	category = "Crafting",
@@ -8487,7 +8499,7 @@ settings[518] = {
 		Managers.state.crafting:debug_set_crafted_items_stat(option)
 	end
 }
-settings[519] = {
+settings[520] = {
 	description = "",
 	setting_name = "Number of Salvaged Items",
 	category = "Crafting",
@@ -8529,7 +8541,7 @@ settings[519] = {
 		Managers.state.crafting:debug_set_salvaged_items_stat(option)
 	end
 }
-settings[520] = {
+settings[521] = {
 	description = "Debug crafting crafting recipes",
 	is_boolean = true,
 	setting_name = "craft_recipe_debug",

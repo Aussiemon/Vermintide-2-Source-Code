@@ -10,7 +10,13 @@ BTBotInventorySwitchAction.name = "BTBotInventorySwitchAction"
 
 BTBotInventorySwitchAction.enter = function (self, unit, blackboard, t)
 	blackboard.node_timer = t
-	blackboard.wanted_slot = self._tree_node.action_data.wanted_slot
+	local action_data = self._tree_node.action_data
+
+	if action_data.wanted_slot_key then
+		blackboard.wanted_slot = blackboard[action_data.wanted_slot_key]
+	else
+		blackboard.wanted_slot = self._tree_node.action_data.wanted_slot
+	end
 end
 
 BTBotInventorySwitchAction.leave = function (self, unit, blackboard, t, reason, destroy)
@@ -19,6 +25,11 @@ end
 
 BTBotInventorySwitchAction.run = function (self, unit, blackboard, t, dt)
 	local wanted_slot = blackboard.wanted_slot
+
+	if wanted_slot == nil then
+		return "failed"
+	end
+
 	local inventory_ext = blackboard.inventory_extension
 	local input_extension = blackboard.input_extension
 

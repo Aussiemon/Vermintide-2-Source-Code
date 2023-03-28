@@ -151,7 +151,7 @@ BenchmarkHandler._setup_initial_values = function (self, t)
 	self._local_player_unit = player_unit
 	local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
-	status_extension:set_invisible(true)
+	status_extension:set_invisible(true, nil, "benchmark_handler")
 
 	self._overview_timer = t + BenchmarkSettings.initial_overview_time
 	self._overview = false

@@ -50,10 +50,6 @@ StateTitleScreenInitNetwork.update = function (self, dt, t)
 		self._title_start_ui:update(dt, t)
 	end
 
-	if not Managers.backend:is_disconnected() then
-		Managers.backend:update(dt, t)
-	end
-
 	if self._popup_id then
 		self:_handle_popup()
 

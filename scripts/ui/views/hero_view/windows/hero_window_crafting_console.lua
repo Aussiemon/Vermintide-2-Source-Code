@@ -160,7 +160,11 @@ end
 
 HeroWindowCraftingConsole.set_input_description = function (self, input_desc_name)
 	if not input_desc_name or input_actions[input_desc_name] then
-		self._menu_input_description:set_input_description(input_desc_name and input_actions[input_desc_name])
+		self._current_input_desc_name = input_desc_name
+
+		if not self.parent:filter_selected() then
+			self._menu_input_description:set_input_description(input_desc_name and input_actions[input_desc_name])
+		end
 	else
 		Application.warning("[HeroWindowCraftingConsole:set_input_description] Could not set input desc: " .. tostring(input_desc_name))
 	end
@@ -205,7 +209,32 @@ HeroWindowCraftingConsole.update = function (self, dt, t)
 
 	self:_update_animations(dt)
 	self:_handle_input(dt, t)
+	self:_update_input_desc()
 	self:draw(dt)
+end
+
+HeroWindowCraftingConsole._update_input_desc = function (self)
+	local filter_selected = self.parent:filter_selected()
+	local filter_active = self.parent:filter_active()
+
+	if filter_selected == self._filter_selected and filter_active == self._filter_active then
+		return
+	end
+
+	self._menu_input_description:set_input_description(nil)
+
+	if filter_selected then
+		self._menu_input_description:change_generic_actions(generic_input_actions.filter_selected)
+	elseif filter_active then
+		self._menu_input_description:change_generic_actions(generic_input_actions.filter_active)
+	else
+		local input_desc_name = self._current_input_desc_name
+
+		self._menu_input_description:change_generic_actions(generic_input_actions.default)
+		self._menu_input_description:set_input_description(input_desc_name and input_actions[input_desc_name])
+	end
+
+	self._filter_selected = filter_selected
 end
 
 HeroWindowCraftingConsole.post_update = function (self, dt, t)
@@ -268,8 +297,9 @@ end
 
 HeroWindowCraftingConsole._handle_input = function (self, dt, t)
 	local input_service = self.parent:window_input_service()
+	local filter_active = self.parent:filter_active()
 
-	if input_service:get("back") then
+	if input_service:get("back") and not filter_active then
 		self.parent:set_layout_by_name("forge")
 	end
 

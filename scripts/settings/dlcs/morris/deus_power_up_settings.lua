@@ -203,14 +203,14 @@ DeusPowerUpBuffTemplates = {
 	deus_second_wind_attack_speed = {
 		buffs = {
 			{
-				icon = "deus_second_wind",
+				buff_to_add = "deus_second_wind_cooldown",
 				name = "deus_second_wind_attack_speed",
 				stat_buff = "attack_speed",
+				duration_end_func = "add_buff_local",
 				remove_buff_func = "remove_second_wind",
 				apply_buff_func = "apply_second_wind",
-				buff_after_delay = true,
+				icon = "deus_second_wind",
 				max_stacks = 1,
-				delayed_buff_name = "deus_second_wind_cooldown",
 				perk = buff_perks.invulnerable,
 				duration = MorrisBuffTweakData.deus_second_wind_attack_speed.duration,
 				multiplier = MorrisBuffTweakData.deus_second_wind_attack_speed.multiplier

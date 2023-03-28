@@ -96,7 +96,7 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 	end
 
 	if lunge_data.noclip then
-		status_extension:add_noclip_stacking()
+		status_extension:set_noclip(true, "lunging")
 	end
 end
 
@@ -142,7 +142,7 @@ PlayerCharacterStateLunging.on_exit = function (self, unit, input, dt, context, 
 	end
 
 	if data.noclip then
-		self.status_extension:remove_noclip_stacking()
+		self.status_extension:set_noclip(false, "lunging")
 	end
 
 	if self._falling and next_state ~= "falling" then

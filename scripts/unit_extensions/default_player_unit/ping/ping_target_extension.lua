@@ -5,7 +5,12 @@ PingTargetExtension.init = function (self, extension_init_context, unit, extensi
 	self._unit = unit
 	self._pinged = 0
 	self._outline_ids = {}
-	self.always_pingable = extension_init_data.always_pingable
+
+	if extension_init_data.always_pingable == nil then
+		self.always_pingable = Unit.get_data(unit, "ping_data", "always_pingable")
+	else
+		self.always_pingable = extension_init_data.always_pingable
+	end
 end
 
 PingTargetExtension.extensions_ready = function (self, world, unit)

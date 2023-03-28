@@ -295,18 +295,6 @@ local function is_journey_cycle_expired(journey_cycle, current_time)
 	return journey_cycle.remaining_time - (current_time - journey_cycle.time_of_update) < 0
 end
 
-StartGameWindowDeusTwitch._get_selection_frame_by_difficulty_index = function (self, difficulty_index)
-	local completed_frame_texture = "map_frame_00"
-
-	if difficulty_index and difficulty_index > 0 then
-		local difficulty_key = DefaultDifficulties[difficulty_index]
-		local settings = DifficultySettings[difficulty_key]
-		completed_frame_texture = settings.completed_frame_texture
-	end
-
-	return completed_frame_texture
-end
-
 StartGameWindowDeusTwitch._gather_unlocked_journeys = function (self)
 	local unlocked_journeys = {}
 
@@ -343,7 +331,7 @@ StartGameWindowDeusTwitch._setup_journey_widgets = function (self)
 		offset[1] = journey_position_x
 		offset[2] = 0
 		local completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, journey_name)
-		local selection_frame_texture = self:_get_selection_frame_by_difficulty_index(completed_difficulty_index)
+		local selection_frame_texture = UIWidgetUtils.get_level_frame_by_difficulty_index(completed_difficulty_index)
 		local is_unlocked = unlocked_journeys[journey_name]
 		content.level_icon = journey_data.level_image
 		content.locked = not is_unlocked

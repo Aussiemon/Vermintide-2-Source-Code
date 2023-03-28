@@ -791,11 +791,10 @@ for weave_name, weave_template in pairs(WeaveSettings.templates) do
 			table.clear(TO_SPAWN)
 
 			local spawning_seed = objective.spawning_seed
-			local cnt = 0
-			cnt, _ = calculate_enemy_count(main_path_spawning, difficulty_key, weave_name, cnt, spawning_seed)
+			local cnt = calculate_enemy_count(main_path_spawning, difficulty_key, weave_name, 0, spawning_seed)
 
 			if objective_type and include_terror_event_from_objectives[objective_type] then
-				cnt, _ = calculate_enemy_count_from_terror_events(objective_terror_events, difficulty_key, weave_name, cnt, spawning_seed)
+				cnt = calculate_enemy_count_from_terror_events(objective_terror_events, difficulty_key, weave_name, cnt, spawning_seed)
 			end
 
 			enemy_count[difficulty_key] = cnt

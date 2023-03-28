@@ -387,7 +387,7 @@ local action_data = {
 		moving_attack = true,
 		damage_type = "cutting",
 		difficulty_attack_intensity = AttackIntensityPerDifficulty,
-		considerations = UtilityConsiderations.clan_rat_running_attack,
+		considerations = UtilityConsiderations.marauder_running_attack,
 		default_attack = {
 			anims = {
 				"attack_run",
@@ -410,7 +410,7 @@ local action_data = {
 		attack_intensity_type = "normal",
 		action_weight = 1,
 		difficulty_attack_intensity = AttackIntensityPerDifficulty,
-		considerations = UtilityConsiderations.clan_rat_attack,
+		considerations = UtilityConsiderations.marauder_attack,
 		default_attack = {
 			anims = {
 				"attack_pounce",

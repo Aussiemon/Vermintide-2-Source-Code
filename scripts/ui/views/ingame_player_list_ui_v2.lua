@@ -4,6 +4,7 @@ local definitions = local_require("scripts/ui/views/ingame_player_list_ui_v2_def
 local console_cursor_definition = definitions.console_cursor_definition
 local PLAYER_LIST_SIZE = definitions.PLAYER_LIST_SIZE
 local PLAYER_NAME_MAX_LENGTH = 16
+local KICK_VOTE_COOLDOWN = 60
 local temp_vote_data = {}
 local mission_settings = {
 	{
@@ -75,6 +76,8 @@ IngamePlayerListUI.init = function (self, parent, ingame_ui_context)
 	if not self._show_difficulty then
 		self:_set_difficulty_name("")
 	end
+
+	self._kick_vote_cooldown = nil
 
 	self:_setup_weave_display_info()
 	Managers.state.event:register(self, "weave_objective_synced", "event_weave_objective_synced")
@@ -1153,6 +1156,7 @@ IngamePlayerListUI._update_player_list = function (self, dt, t)
 	local players = self._players
 	local num_players = self._num_players
 	local removed_players = 0
+	local should_reset_cooldown = false
 
 	for i = num_players, 1, -1 do
 		local data = players[i]
@@ -1237,8 +1241,35 @@ IngamePlayerListUI._update_player_list = function (self, dt, t)
 				if not is_server and kick_button_hotspot.on_pressed then
 					kick_button_hotspot.on_pressed = nil
 
-					self:kick_player(data.player)
+					self:kick_player(data.player, t)
 				end
+			end
+		end
+
+		if self._kick_vote_cooldown then
+			if t >= self._kick_vote_cooldown + KICK_VOTE_COOLDOWN then
+				should_reset_cooldown = true
+			end
+
+			for i = num_players, 1, -1 do
+				local data = players[i]
+
+				if data then
+					local widget = data.widget
+					local is_local_player = data.is_local_player
+					local is_bot_player = data.is_bot_player
+					local is_server = data.is_server
+
+					if not is_local_player and not is_server and not is_bot_player then
+						local kick_button_hotspot = widget.content.kick_button_hotspot
+						kick_button_hotspot.disable_button = not should_reset_cooldown
+						widget.content.show_kick_button = should_reset_cooldown
+					end
+				end
+			end
+
+			if should_reset_cooldown then
+				self._kick_vote_cooldown = nil
 			end
 		end
 	end
@@ -1532,7 +1563,7 @@ IngamePlayerListUI._can_host_solo_kick = function (self)
 	return self._is_server and Managers.player:num_human_players() == 2
 end
 
-IngamePlayerListUI.kick_player = function (self, player)
+IngamePlayerListUI.kick_player = function (self, player, t)
 	local kick_peer_id = player.peer_id
 
 	if self:_can_host_solo_kick() then
@@ -1543,6 +1574,9 @@ IngamePlayerListUI.kick_player = function (self, player)
 		}
 
 		Managers.state.voting:request_vote("kick_player", vote_data, Network.peer_id())
+
+		self._kick_vote_cooldown = t
+
 		self:_set_active(false)
 	end
 end

@@ -441,8 +441,7 @@ return {
 
 		local sequence_with_travel_dist, best_event = Sequencer.apply_travel_dist_to_sequence_with_peaks_and_events(sequence, last_zone_travel_dist, peaks, possible_events, event_weight_table, seed)
 		data.event = best_event
-		local breed_selection = nil
-		_, breed_selection = Math.next_random(seed, 1, 2)
+		local _, breed_selection = Math.next_random(seed, 1, 2)
 		local sub_breeds = conflict_settings[conflict_director_name]
 		local breed_a = breed_selection == 1 and sub_breeds.breed1 or sub_breeds.breed2
 		local breed_b = breed_selection == 1 and sub_breeds.breed2 or sub_breeds.breed1

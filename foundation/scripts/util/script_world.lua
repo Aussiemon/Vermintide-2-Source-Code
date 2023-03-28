@@ -420,32 +420,45 @@ ScriptWorld.destroy_level = function (world, name)
 	local level_data = levels[name]
 
 	fassert(level_data, "Level %q doesn't exist", name)
-	World.destroy_level(world, level_data.level)
+
+	local level = level_data.level
+
+	ScriptWorld.destroy_sublevels(world, level)
+	World.destroy_level(world, level)
 
 	levels[name] = nil
 end
 
 ScriptWorld.destroy_level_from_reference = function (world, level)
 	local levels = World.get_data(world, "levels")
-	local removed_level_name = nil
 
 	for level_name, level_data in pairs(levels) do
 		local base_level = level_data.level
 		local nested_levels = level_data.nested_levels
 
 		if base_level == level or table.contains(nested_levels, level) then
+			ScriptWorld.destroy_sublevels(world, base_level)
 			World.destroy_level(world, base_level)
 
-			removed_level_name = level_name
+			levels[level_name] = nil
 
-			break
+			return
 		end
 	end
 
-	if removed_level_name then
-		levels[removed_level_name] = nil
-	else
-		fassert(false, "Level doesn't exist")
+	fassert(false, "Level doesn't exist")
+end
+
+ScriptWorld.destroy_sublevels = function (world, level)
+	local levels = World.get_data(world, "levels")
+	local sub_levels = Level.get_data(level, "sub_levels")
+
+	if sub_levels then
+		for sublevel_name, sub_level in pairs(sub_levels) do
+			World.destroy_level(world, sub_level)
+
+			levels[sublevel_name] = nil
+		end
 	end
 end
 
@@ -484,6 +497,26 @@ ScriptWorld.trigger_level_loaded = function (world, name)
 	end
 
 	Level.trigger_level_loaded(base_level)
+
+	local sub_levels = Level.get_data(base_level, "sub_levels")
+
+	if sub_levels then
+		for sublevel_name, sub_level in pairs(sub_levels) do
+			Level.trigger_level_loaded(sub_level)
+		end
+	end
+end
+
+ScriptWorld.trigger_level_shutdown = function (level)
+	local sub_levels = Level.get_data(level, "sub_levels")
+
+	if sub_levels then
+		for sublevel_name, sub_level in pairs(sub_levels) do
+			Level.trigger_level_shutdown(sub_level)
+		end
+	end
+
+	Level.trigger_level_shutdown(level)
 end
 
 ScriptWorld.create_particles_linked = function (world, effect_name, unit, node, policy, pose)

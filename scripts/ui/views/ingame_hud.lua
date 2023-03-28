@@ -10,6 +10,7 @@ IngameHud = class(IngameHud)
 IngameHud.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
 	self._peer_id = Network.peer_id()
+	self._player = Managers.player:local_player()
 	self._ingame_ui_context = ingame_ui_context
 
 	self:_setup_components()
@@ -358,9 +359,7 @@ IngameHud.update = function (self, dt, t)
 	self:_reset_hud_frame_variables()
 	self:_update_components_visibility()
 
-	local peer_id = self._peer_id
-	local player_manager = Managers.player
-	local player = player_manager:player_from_peer_id(peer_id)
+	local player = self._player
 	local currently_visible_components = self._currently_visible_components
 	local components_array = self._components_array
 	local use_custom_hud_scale = UISettings.use_custom_hud_scale
@@ -399,9 +398,7 @@ IngameHud.post_update = function (self, dt, t)
 	self:_reset_hud_frame_variables()
 	self:_update_components_post_visibility()
 
-	local peer_id = self._peer_id
-	local player_manager = Managers.player
-	local player = player_manager:player_from_peer_id(peer_id)
+	local player = self._player
 	local currently_visible_components = self._currently_visible_components
 	local components_array = self._components_array
 	local use_custom_hud_scale = UISettings.use_custom_hud_scale
@@ -453,19 +450,16 @@ IngameHud.input_service = function (self)
 	return false
 end
 
-local function is_own_player_dead_helper(peer_id)
-	if script_data.debug_hud_visibility_group == "dead" then
-		return true
-	end
-
-	local player = Managers.player:player_from_peer_id(peer_id)
+local function is_own_player_dead_helper(player)
 	local player_unit = player and player.player_unit
 
-	if not player_unit or not Unit.alive(player_unit) then
+	if not ALIVE[player_unit] then
 		return true
 	end
 
-	return ScriptUnit.extension(player_unit, "status_system"):is_ready_for_assisted_respawn()
+	local status_extension = ScriptUnit.extension(player_unit, "status_system")
+
+	return status_extension:is_ready_for_assisted_respawn()
 end
 
 IngameHud.is_in_inn = function (self)
@@ -475,7 +469,7 @@ end
 IngameHud._reset_hud_frame_variables = function (self)
 	self._crosshair_position_x = false
 	self._crosshair_position_y = false
-	self._is_own_player_dead = is_own_player_dead_helper(self._peer_id)
+	self._is_own_player_dead = is_own_player_dead_helper(self._player)
 end
 
 IngameHud.is_own_player_dead = function (self)
@@ -487,19 +481,16 @@ IngameHud.get_crosshair_position = function (self)
 		local inv_res_scale = RESOLUTION_LOOKUP.inv_scale
 		local position_x = RESOLUTION_LOOKUP.res_w * 0.5 * inv_res_scale
 		local position_y = RESOLUTION_LOOKUP.res_h * 0.5 * inv_res_scale
-		local peer_id = self._peer_id
-		local player_manager = Managers.player
-		local my_player = player_manager:player_from_peer_id(peer_id)
-		local player_unit = my_player and my_player.player_unit
+		local player = self._player
+		local player_unit = player and player.player_unit
 
-		if Unit.alive(player_unit) then
+		if ALIVE[player_unit] then
 			local eyetracking_extension = ScriptUnit.has_extension(player_unit, "eyetracking_system")
 
 			if eyetracking_extension and eyetracking_extension:get_is_feature_enabled("tobii_extended_view") then
 				local world_pos = eyetracking_extension:get_forward_rayhit()
 
 				if world_pos then
-					local player = Managers.player:owner(player_unit)
 					local viewport_name = player.viewport_name
 					local world_name = player.viewport_world_name
 					local world = Managers.world:world(world_name)

@@ -110,6 +110,12 @@ Boot.setup = function (self)
 	_G.Crashify = require("foundation/scripts/util/crashify")
 
 	foundation_require("util", "testify")
+	Script.configure_garbage_collection(Script.ACCEPTABLE_GARBAGE, 0.1, Script.MAXIMUM_GARBAGE, 0.5, Script.FORCE_FULL_COLLECT_GARBAGE_LEVEL, 1, Script.MINIMUM_COLLECT_TIME_MS, 0.1, Script.MAXIMUM_COLLECT_TIME_MS, 0.2)
+
+	if not DEDICATED_SERVER and IS_WINDOWS then
+		Application.set_time_step_policy("throttle", 30)
+	end
+
 	Script.set_index_offset(0)
 	print("Boot:setup() entered. time: ", 0, "os-clock: ", os.clock())
 

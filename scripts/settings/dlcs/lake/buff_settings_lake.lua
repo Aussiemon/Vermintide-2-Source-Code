@@ -132,19 +132,18 @@ settings.buff_templates = {
 	}
 }
 settings.proc_functions = {
-	markus_questing_knight_spread_temp_health = function (player, buff, params)
-		local player_unit = player.player_unit
+	markus_questing_knight_spread_temp_health = function (owner_unit, buff, params)
 		local healer_unit = params[1]
 		local heal_type = params[3]
-		local healed_self = healer_unit == player_unit
+		local healed_self = healer_unit == owner_unit
 		local temp_health_gain = heal_type == "heal_from_proc"
 
-		if Unit.alive(player_unit) and Managers.player.is_server and healed_self and temp_health_gain then
+		if ALIVE[owner_unit] and Managers.player.is_server and healed_self and temp_health_gain then
 			local buff_template = buff.template
 			local range = buff_template.range
 			local range_squared = range * range
 			local healer_position = POSITION_LOOKUP[healer_unit]
-			local side = Managers.state.side.side_by_unit[player_unit]
+			local side = Managers.state.side.side_by_unit[owner_unit]
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 			local closest_ally = nil
 			local closest_distance = 500
@@ -167,27 +166,24 @@ settings.proc_functions = {
 				local healed_unit = closest_ally
 				local heal_amount = params[2]
 				local multiplier = buff_template.multiplier
-				local heal_amount = heal_amount * multiplier
+				heal_amount = heal_amount * multiplier
 				local heal_type = "heal_from_proc"
 
-				DamageUtils.heal_network(healed_unit, player_unit, heal_amount, heal_type)
+				DamageUtils.heal_network(healed_unit, owner_unit, heal_amount, heal_type)
 			end
 		end
 	end,
-	add_heal_percent_of_damage_taken_over_time_buff = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if Unit.alive(player_unit) then
+	add_heal_percent_of_damage_taken_over_time_buff = function (owner_unit, buff, params)
+		if Unit.alive(owner_unit) then
 			local attacker_unit = params[1]
 			local damage_amount = params[2]
-			local damage_type = params[3]
 			local breed = AiUtils.unit_breed(attacker_unit)
 
 			if breed and not breed.is_hero then
-				local health_extension = ScriptUnit.has_extension(player_unit, "health_system")
+				local health_extension = ScriptUnit.has_extension(owner_unit, "health_system")
 
 				if health_extension and damage_amount < health_extension:current_health() then
-					local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+					local buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
 					local buff_template = buff.template
 					local heal_amount = buff_template.heal_amount_fraction * damage_amount
 					local buff_to_add = buff_template.buff_to_add
@@ -201,18 +197,17 @@ settings.proc_functions = {
 			end
 		end
 	end,
-	check_for_instantly_killing_crit = function (player, buff, params, world, param_order)
+	check_for_instantly_killing_crit = function (owner_unit, buff, params, world, param_order)
 		if not Managers.player.is_server then
 			return
 		end
 
-		local player_unit = player.player_unit
 		local hit_unit = params[param_order.attacked_unit]
 		local damage_amount = params[param_order.damage_amount]
 		local is_critical_strike = params[param_order.is_critical_strike]
 		local modifables_params = params[param_order.PROC_MODIFIABLE]
 
-		if is_critical_strike and ALIVE[player_unit] and ALIVE[hit_unit] then
+		if is_critical_strike and ALIVE[owner_unit] and ALIVE[hit_unit] then
 			local enemy_health_extension = ScriptUnit.extension(hit_unit, "health_system")
 			local buff_template = buff.template
 			local breed = Unit.get_data(hit_unit, "breed")
@@ -237,15 +232,13 @@ settings.proc_functions = {
 			end
 		end
 	end,
-	markus_questing_knight_boss_kill_func = function (player, buff, params)
+	markus_questing_knight_boss_kill_func = function (owner_unit, buff, params)
 		if not Managers.state.network.is_server then
 			return
 		end
 
-		local player_unit = player.player_unit
-
-		if Unit.alive(player_unit) then
-			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
+		if ALIVE[owner_unit] then
+			local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 			local increased_duration_talent = talent_extension:has_talent("markus_questing_knight_passive_longer_duration", "empire_soldier", true)
 			local buff_to_add = nil
 
@@ -255,7 +248,7 @@ settings.proc_functions = {
 				buff_to_add = "markus_questing_knight_passive_boss_kill_buff"
 			end
 
-			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
 			buff_extension:add_buff(buff_to_add)
 
@@ -266,15 +259,13 @@ settings.proc_functions = {
 			end
 		end
 	end,
-	markus_questing_knight_ability_kill_buff_func = function (player, buff, params)
-		local player_unit = player.player_unit
-
-		if Unit.alive(player_unit) then
+	markus_questing_knight_ability_kill_buff_func = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
 			local killing_blow_table = params[1]
 			local killing_blow_damage_source = killing_blow_table[DamageDataIndex.DAMAGE_SOURCE_NAME]
 
 			if killing_blow_table and killing_blow_damage_source == "markus_questingknight_career_skill_weapon" then
-				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+				local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 				local buff_template = buff.template
 				local buff_to_add = buff_template.buff_to_add
 
@@ -291,7 +282,6 @@ settings.buff_function_templates = {
 			return
 		end
 
-		local template = buff.template
 		local range = buff.range
 		local range_squared = range * range
 		local owner_position = POSITION_LOOKUP[owner_unit]
@@ -402,7 +392,6 @@ settings.buff_function_templates = {
 		end
 
 		if ALIVE[unit] then
-			local health_extension = ScriptUnit.extension(unit, "health_system")
 			local heal_amount = buff.bonus
 
 			DamageUtils.heal_network(unit, unit, heal_amount, "heal_from_proc")

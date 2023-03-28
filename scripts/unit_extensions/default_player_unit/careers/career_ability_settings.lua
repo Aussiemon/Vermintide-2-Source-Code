@@ -329,6 +329,7 @@ PassiveAbilitySettings = {
 			"kerillian_shade_passive_backstab_killing_blow",
 			"kerillian_shade_passive_stealth_parry",
 			"kerillian_shade_stealth_crits",
+			"kerillian_shade_stealth_crits_remover",
 			"kerillian_shade_ability_cooldown_on_hit",
 			"kerillian_shade_ability_cooldown_on_damage_taken"
 		},

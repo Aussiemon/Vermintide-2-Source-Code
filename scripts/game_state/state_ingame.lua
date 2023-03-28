@@ -279,11 +279,12 @@ StateIngame.on_enter = function (self)
 	local is_testify_session = script_data.testify
 	local engine_revision = script_data.build_identifier
 	local content_revision = is_testify_session and script_data.content_revision or script_data.settings.content_revision
+	local client_version = VersionSettings.version
 	local steam_branch = script_data.steam_branch
 	local svn_branch = script_data.svn_branch
 	local machine_name = script_data.machine_name
 
-	Managers.telemetry.events:header(engine_revision, content_revision, steam_branch, svn_branch, machine_name, is_testify_session)
+	Managers.telemetry.events:header(engine_revision, content_revision, client_version, steam_branch, svn_branch, machine_name, is_testify_session)
 
 	if is_server then
 		local session_id = Managers.state.network:session_id()
@@ -534,7 +535,7 @@ StateIngame.on_enter = function (self)
 	Managers.telemetry.events:game_started({
 		player_id = player_id,
 		peer_type = self:peer_type(),
-		country_code = self:country_code(),
+		country_code = Managers.account:region(),
 		quick_game = quick_game,
 		game_mode = game_mode,
 		level_key = level_key,
@@ -620,16 +621,6 @@ StateIngame.peer_type = function (self)
 		return "server"
 	else
 		return "client"
-	end
-end
-
-StateIngame.country_code = function (self)
-	if DEDICATED_SERVER then
-		return SteamGameServer.country_code()
-	elseif IS_WINDOWS and rawget(_G, "Steam") then
-		return Steam.user_country_code()
-	elseif IS_CONSOLE then
-		return Managers.account:region()
 	end
 end
 
@@ -1784,13 +1775,15 @@ StateIngame.on_exit = function (self, application_shutdown)
 	local units = unit_storage:units()
 
 	for id, unit_to_destroy in pairs(units) do
-		Managers.state.entity:unregister_unit(unit_to_destroy)
-		World.destroy_unit(world, unit_to_destroy)
+		if Unit.is_valid(unit_to_destroy) then
+			Managers.state.entity:unregister_unit(unit_to_destroy)
+			World.destroy_unit(world, unit_to_destroy)
+		end
 	end
 
 	self.entity_system:destroy()
 	self.entity_system_bag:destroy()
-	Level.trigger_level_shutdown(self.level)
+	ScriptWorld.trigger_level_shutdown(self.level)
 	Managers.player:exit_ingame()
 	self:_teardown_level()
 	Managers.weave:teardown()

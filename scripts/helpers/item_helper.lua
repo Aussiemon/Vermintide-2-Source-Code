@@ -87,7 +87,7 @@ ItemHelper.unmark_sign_in_reward_as_new = function (reward_id)
 
 	if reward_items then
 		for _, item_backend_id in ipairs(reward_items) do
-			ItemHelper.unmark_backend_id_as_new(item_backend_id)
+			ItemHelper.unmark_backend_id_as_new(item_backend_id, true)
 		end
 	end
 
@@ -138,7 +138,7 @@ ItemHelper.mark_backend_id_as_new = function (backend_id, item, skip_autosave)
 	Managers.save:auto_save(SaveFileName, SaveData, nil)
 end
 
-ItemHelper.unmark_backend_id_as_new = function (backend_id)
+ItemHelper.unmark_backend_id_as_new = function (backend_id, skip_autosave)
 	local new_item_ids = PlayerData.new_item_ids
 	local new_item_ids_by_career = PlayerData.new_item_ids_by_career
 
@@ -156,6 +156,10 @@ ItemHelper.unmark_backend_id_as_new = function (backend_id)
 				end
 			end
 		end
+	end
+
+	if not skip_autosave then
+		Managers.save:auto_save(SaveFileName, SaveData, nil)
 	end
 end
 
@@ -601,4 +605,15 @@ ItemHelper.has_unseen_shop_items = function ()
 	end
 
 	return false
+end
+
+local fake_item_types = {
+	frame = true,
+	weapon_skin = true,
+	hat = true,
+	skin = true
+}
+
+ItemHelper.is_fake_item = function (item_type)
+	return fake_item_types[item_type]
 end

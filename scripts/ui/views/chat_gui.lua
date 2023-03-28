@@ -11,6 +11,7 @@ ChatGui.init = function (self, ui_context)
 	self._render_settings = {
 		alpha_multiplier = 1
 	}
+	self._keystrokes = {}
 	self.chat_message = ""
 	self.chat_index = 1
 	self.chat_mode = "insert"
@@ -760,7 +761,11 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 					num_chars = num_chars + 1
 				end
 			elseif GameSettingsDevelopment.allow_chat_input then
-				local keystrokes = Keyboard.keystrokes()
+				local keystrokes = self._keystrokes
+
+				table.clear(keystrokes)
+
+				keystrokes = Keyboard.keystrokes(keystrokes)
 				local ctrl_button_index = Keyboard.button_index("left ctrl")
 				local ctrl_held = Keyboard.pressed(ctrl_button_index) or Keyboard.button(ctrl_button_index) > 0
 				local new_chat_message, new_chat_index, new_chat_mode = KeystrokeHelper.parse_strokes(self.chat_message, self.chat_index, self.chat_mode, keystrokes, ChatGui.MAX_CHARS)
