@@ -535,7 +535,7 @@ OutlineSystem.raycast_result = function (self, unit_center)
 	local camera_position = Unit.local_position(self.camera_unit, 0)
 	local distance = Vector3.distance(camera_position, unit_center)
 	local direction = Vector3.normalize(unit_center - camera_position)
-	local result, num_hits = PhysicsWorld.immediate_raycast(physics_world, camera_position, direction, distance, "all", "collision_filter", "filter_ai_line_of_sight_check", "use_global_table")
+	local result, num_hits = PhysicsWorld.immediate_raycast(physics_world, camera_position, direction, distance, "all", "collision_filter", "filter_ai_line_of_sight_check")
 
 	return result, num_hits
 end

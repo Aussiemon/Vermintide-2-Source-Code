@@ -375,8 +375,6 @@ NetworkedFlowStateManager.flow_cb_create_state = function (self, unit, state_nam
 		}
 	end
 
-	fassert(not unit_states[state_name], "[NetworkedFlowStateManager] State %s already exists in unit %s", state_name, Unit.debug_name(unit))
-
 	local state_network_id = #unit_states.lookup + 1
 	unit_states.lookup[state_name] = state_network_id
 	unit_states.lookup[state_network_id] = state_name

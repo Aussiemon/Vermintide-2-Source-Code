@@ -286,7 +286,7 @@ LocomotionTemplates.AILocomotionExtension = {
 						local rotation = Quaternion.look(Vector3(0, 0, 1))
 						local test_pos = final_position + Vector3(0, 0, -1)
 						local shape = half_height - radius > 0 and "capsule" or "sphere"
-						local hit_actors, num_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", test_pos, "rotation", rotation, "size", size, "collision_filter", "filter_environment_overlap", "use_global_table")
+						local hit_actors, num_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", test_pos, "rotation", rotation, "size", size, "collision_filter", "filter_environment_overlap")
 						extension._is_falling = num_hit_actors == 0
 
 						extension._last_fall_position:store(final_position)

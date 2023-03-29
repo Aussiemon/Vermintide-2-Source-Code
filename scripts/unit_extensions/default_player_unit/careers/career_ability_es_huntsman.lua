@@ -102,8 +102,7 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 			"markus_huntsman_activated_ability_decrease_walk_move_speed_duration",
 			"markus_huntsman_activated_ability_decrease_dodge_speed_duration",
 			"markus_huntsman_activated_ability_decrease_dodge_distance_duration",
-			"markus_huntsman_end_activated_on_ranged_hit_duration",
-			"markus_huntsman_end_activated_on_melee_hit_duration"
+			"markus_huntsman_end_activated_on_hit_duration"
 		}
 		server_buff_names = {
 			"markus_huntsman_activated_ability_duration",
@@ -118,8 +117,7 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 			"markus_huntsman_activated_ability_decrease_walk_move_speed",
 			"markus_huntsman_activated_ability_decrease_dodge_speed",
 			"markus_huntsman_activated_ability_decrease_dodge_distance",
-			"markus_huntsman_end_activated_on_ranged_hit",
-			"markus_huntsman_end_activated_on_melee_hit"
+			"markus_huntsman_end_activated_on_hit"
 		}
 		server_buff_names = {
 			"markus_huntsman_activated_ability",

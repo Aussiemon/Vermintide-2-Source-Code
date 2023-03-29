@@ -89,7 +89,7 @@ EnemyRecycler.setup_forbidden_zones = function (self, pos)
 		forbidden_zones[#forbidden_zones + 1] = checkpoint_data.no_spawn_volume
 	end
 
-	for layer_id = 20, 29 do
+	for layer_id = 20, 39 do
 		local layer_name = LAYER_ID_MAPPING[layer_id]
 
 		if layer_name then

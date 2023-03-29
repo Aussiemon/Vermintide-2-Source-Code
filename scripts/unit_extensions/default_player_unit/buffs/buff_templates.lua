@@ -262,7 +262,8 @@ end
 ProcEventParams = {
 	on_player_damage_dealt = make_proc_param_lookup("attacked_unit", "damage_amount", "hit_zone_name", "no_crit_headshot_damage", "is_critical_strike", "buff_attack_type", "target_index", "damage_source", "first_hit", "PROC_MODIFIABLE"),
 	on_damage_dealt = make_proc_param_lookup("attacked_unit", "attacker_unit", "damage_amount", "hit_zone_name", "no_crit_headshot_damage", "is_critical_strike", "buff_attack_type", "target_index", "damage_source", "damage_type", "first_hit", "PROC_MODIFIABLE"),
-	on_critical_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number", "buff_type")
+	on_critical_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number", "buff_type"),
+	on_ranged_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number", "buff_type", "is_critical", "unmodified")
 }
 local buff_params = {}
 
@@ -3552,8 +3553,8 @@ ProcFunctions = {
 			attacker_unit = owner_unit
 		})
 	end,
-	kerillian_waywatcher_consume_extra_shot_buff = function (owner_unit, buff, params)
-		local is_career_skill = params[1]
+	kerillian_waywatcher_consume_extra_shot_buff = function (owner_unit, buff, params, worlds, params_lookup)
+		local is_career_skill = params[params_lookup.buff_type] == "RANGED_ABILITY"
 		local should_consume_shot = not is_career_skill
 
 		return should_consume_shot

@@ -1046,9 +1046,9 @@ AISystem.update_debug_draw = function (self, t)
 	end
 
 	if script_data.debug_nav_tag_volume_layers then
-		Debug.text("Nav Tag Volume Layers Status (20-29):")
+		Debug.text("Nav Tag Volume Layers Status (20-39):")
 
-		for i = NavTagVolumeStartLayer, 29 do
+		for i = NavTagVolumeStartLayer, 39 do
 			local layer_name = LAYER_ID_MAPPING[i]
 			local allowed = NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] > 0
 

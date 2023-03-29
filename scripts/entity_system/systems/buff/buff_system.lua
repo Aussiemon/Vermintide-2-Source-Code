@@ -678,7 +678,7 @@ BuffSystem._pack_buff_params = function (self, buff_params, dest_param_ids, dest
 	for name, val in pairs(buff_params) do
 		if packed_param_flag_bits[name] then
 			packed_buff_param_flags = bit.bor(packed_buff_param_flags, packed_param_flag_bits[name])
-		else
+		elseif buff_params_list_lookup[name] then
 			num_params = num_params + 1
 			dest_param_ids[num_params] = buff_params_list_lookup[name]
 			dest_param_vals[num_params] = buff_param_packing_methods[name].pack(val, self)

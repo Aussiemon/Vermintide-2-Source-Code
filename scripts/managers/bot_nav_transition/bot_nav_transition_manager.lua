@@ -146,7 +146,7 @@ BotNavTransitionManager.create_transition = function (self, from, via, wanted_to
 
 	local world = self._world
 	local ph_world = self._physics_world
-	local hits = PhysicsWorld.immediate_overlap(ph_world, "position", from, "shape", "sphere", "size", 0.1, "collision_filter", "filter_bot_nav_transition_overlap", "use_global_table")
+	local hits = PhysicsWorld.immediate_overlap(ph_world, "position", from, "shape", "sphere", "size", 0.1, "collision_filter", "filter_bot_nav_transition_overlap")
 	local hit_existing_transition = hits and #hits > 0
 
 	if hit_existing_transition then

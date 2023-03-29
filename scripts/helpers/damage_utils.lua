@@ -1199,7 +1199,7 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 		local friendly_fire_enabled = forced_friendly_fire or friendly_fire_allowed and not friendly_fire_disabled
 		local force_disable_friendly_fire = explosion_data.force_disable_friendly_fire
 		local physics_world = World.physics_world(world)
-		local actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", impact_position, "size", radius, "collision_filter", collision_filter, "use_global_table")
+		local actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", impact_position, "size", radius, "collision_filter", collision_filter)
 		local aoe_target_units = AOE_TARGET_UNITS
 		local aoe_target_array = AOE_TARGET_ARRAY
 		local aoe_simple_damage_units = AOE_SIMPLE_DAMAGE_UNITS
@@ -3110,10 +3110,6 @@ DamageUtils._projectile_hit_character = function (current_action, owner_unit, ow
 		end
 
 		if deal_damage then
-			if owner_buff_extension then
-				owner_buff_extension:trigger_procs("on_ranged_hit", hit_unit)
-			end
-
 			local weapon_system = Managers.state.entity:system("weapon_system")
 
 			weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "attacker_is_level_unit", attacker_is_level_unit, "first_hit", num_penetrations == 0)
@@ -3170,10 +3166,6 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 	local max_targets_attack, max_targets_impact = ActionUtils.get_max_targets(damage_profile, cleave_power_level)
 
 	if owner_buff_extension then
-		if not override_damage_profile or not override_damage_profile.no_procs then
-			owner_buff_extension:trigger_procs("on_ranged_hit")
-		end
-
 		num_additional_penetrations = owner_buff_extension:apply_buffs_to_value(num_additional_penetrations, "ranged_additional_penetrations")
 	end
 

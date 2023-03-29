@@ -340,7 +340,7 @@ settings.proc_functions = {
 			table.clear(buff_params)
 
 			buff_params.power_level = power_level
-			buff_params.owner_unit = owner_unit
+			buff_params.attacker_unit = owner_unit
 
 			buff_system:add_buff_synced(hit_unit, bleed, BuffSyncType.LocalAndServer, buff_params)
 		end

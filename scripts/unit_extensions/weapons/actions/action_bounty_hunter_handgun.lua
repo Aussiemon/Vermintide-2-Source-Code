@@ -200,7 +200,7 @@ ActionBountyHunterHandgun._do_aoe = function (self)
 	local attack_pos = self_pos + unit_forward * 0.5
 	local radius = current_action.aoe_radius
 	local collision_filter = "filter_melee_sweep"
-	local actors, actors_n = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", attack_pos, "size", radius, "types", "dynamics", "collision_filter", collision_filter, "use_global_table")
+	local actors, actors_n = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", attack_pos, "size", radius, "types", "dynamics", "collision_filter", collision_filter)
 	local hit_units = self.hit_units
 
 	for i = 1, actors_n do

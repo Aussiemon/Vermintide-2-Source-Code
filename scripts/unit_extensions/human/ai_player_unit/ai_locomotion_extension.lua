@@ -330,7 +330,7 @@ AILocomotionExtension.set_movement_type = function (self, movement_type, overrid
 		local size = Vector3(radius, half_height, radius)
 		local rotation = Quaternion.look(Vector3(0, 0, 1))
 		local shape = half_height - radius > 0 and "capsule" or "sphere"
-		local hit_actors, num_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", mover_position, "rotation", rotation, "size", size, "collision_filter", "filter_environment_overlap", "use_global_table")
+		local hit_actors, num_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", mover_position, "rotation", rotation, "size", size, "collision_filter", "filter_environment_overlap")
 		self._is_falling = num_hit_actors == 0
 	end
 end

@@ -782,7 +782,7 @@ BTMeleeOverlapAttackAction.overlap_checks = function (self, unit, blackboard, ph
 
 	PhysicsWorld.prepare_actors_for_overlap(physics_world, oobb_pos, overlap_update_radius)
 
-	local hit_actors, num_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "position", oobb_pos, "rotation", box_rot, "size", box_size, "shape", "oobb", "types", "dynamics", "collision_filter", filter_name, "use_global_table")
+	local hit_actors, num_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "position", oobb_pos, "rotation", box_rot, "size", box_size, "shape", "oobb", "types", "dynamics", "collision_filter", filter_name)
 
 	if Development.parameter("debug_weapons") then
 		local drawer = Managers.state.debug:drawer(debug_drawer_info)

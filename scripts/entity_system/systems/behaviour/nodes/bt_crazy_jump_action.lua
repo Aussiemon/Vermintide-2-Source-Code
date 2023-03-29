@@ -404,7 +404,7 @@ local use_overlap = true
 BTCrazyJumpAction.check_colliding_players = function (self, unit, blackboard, pos)
 	if use_overlap then
 		local radius = 1
-		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(self.physics_world, "shape", "sphere", "position", pos, "size", radius, "types", "both", "collision_filter", "filter_player_and_husk_trigger", "use_global_table")
+		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(self.physics_world, "shape", "sphere", "position", pos, "size", radius, "types", "both", "collision_filter", "filter_player_and_husk_trigger")
 
 		if actor_count > 0 then
 			for i = 1, actor_count do

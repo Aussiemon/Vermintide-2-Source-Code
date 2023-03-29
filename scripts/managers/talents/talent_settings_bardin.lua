@@ -1256,7 +1256,10 @@ TalentBuffTemplates.dwarf_ranger = {
 				buff_area = true,
 				max_stacks = 1,
 				exit_area_func = "exit_buff_area",
-				unlimited = true
+				unlimited = true,
+				buffs_to_remove_on_remove = {
+					"bardin_ranger_activated_ability_buff"
+				}
 			}
 		}
 	},

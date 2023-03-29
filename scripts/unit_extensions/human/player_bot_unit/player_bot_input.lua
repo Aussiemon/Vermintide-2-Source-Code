@@ -405,9 +405,9 @@ PlayerBotInput._obstacle_check = function (self, position, current_speed_sq, goa
 	local lower_extents = Vector3(half_width, half_depth, half_height)
 	local upper_extents = Vector3(half_width, half_upper_depth, half_upper_height)
 	local rotation = Quaternion_look(goal_direction, up)
-	local _, num_low_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "oobb", "position", lower_check_pos, "rotation", rotation, "size", lower_extents, "types", "statics", "collision_filter", collision_filter, "use_global_table")
+	local _, num_low_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "oobb", "position", lower_check_pos, "rotation", rotation, "size", lower_extents, "types", "statics", "collision_filter", collision_filter)
 	local lower_hit = num_low_hit_actors > 0
-	local _, num_high_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "oobb", "position", upper_check_pos, "rotation", rotation, "size", upper_extents, "types", "statics", "collision_filter", collision_filter, "use_global_table")
+	local _, num_high_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "oobb", "position", upper_check_pos, "rotation", rotation, "size", upper_extents, "types", "statics", "collision_filter", collision_filter)
 	local upper_hit = num_high_hit_actors > 0
 
 	return lower_hit, upper_hit

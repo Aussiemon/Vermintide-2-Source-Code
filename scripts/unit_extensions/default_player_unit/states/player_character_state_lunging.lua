@@ -466,7 +466,7 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 	local mid_pos = (new_pos + old_pos) * 0.5 + Vector3(0, 0, half_height) + (damage_data.offset_forward or 0) * forward_direction_flat
 	local size = Vector3(half_width, half_length, half_height)
 	local collision_filter = damage_data.collision_filter
-	local actors, num_actors = PhysicsWorld.immediate_overlap(self.physics_world, "shape", "oobb", "position", mid_pos, "rotation", rot, "size", size, "collision_filter", collision_filter, "use_global_table")
+	local actors, num_actors = PhysicsWorld.immediate_overlap(self.physics_world, "shape", "oobb", "position", mid_pos, "rotation", rot, "size", size, "collision_filter", collision_filter)
 	local hit_units = self._hit_units
 	local buff_extension = self.buff_extension
 	local network_manager = Managers.state.network
@@ -582,7 +582,7 @@ PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_directi
 		local buff_extension = self.buff_extension
 		local radius = blast_damage_data.radius
 		local blast_pos = new_pos + forward_direction * radius
-		local actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", blast_pos, "size", radius, "collision_filter", collision_filter, "use_global_table")
+		local actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", blast_pos, "size", radius, "collision_filter", collision_filter)
 		local buff_hit_target_index = 0
 
 		table.clear(hit_units)

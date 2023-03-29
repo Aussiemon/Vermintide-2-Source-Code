@@ -667,7 +667,7 @@ CameraManager._smooth_camera_collision = function (self, camera_position, safe_p
 		drawer:reset()
 	end
 
-	local hit_actors, num_hits = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", cast_from, "size", smooth_radius, "types", "statics", "collision_filter", "filter_camera_sweep", "use_global_table")
+	local hit_actors, num_hits = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", cast_from, "size", smooth_radius, "types", "statics", "collision_filter", "filter_camera_sweep")
 
 	if num_hits > 0 then
 		if script_data.camera_debug then

@@ -145,7 +145,7 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 
 	PhysicsWorld.prepare_actors_for_overlap(physics_world, pos, math.max(action.radius, action.height))
 
-	local hit_actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", pos, "rotation", rotation, "size", size, "types", "both", "collision_filter", "filter_rat_ogre_melee_slam", "use_global_table")
+	local hit_actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", pos, "rotation", rotation, "size", size, "types", "both", "collision_filter", "filter_rat_ogre_melee_slam")
 	local t = Managers.time:time("game")
 	local hit_units = FrameTable.alloc_table()
 

@@ -400,7 +400,7 @@ PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt
 	local half_height = 0.6
 	local size = Vector3(radius, half_height, radius)
 	local shape = half_height - radius > 0 and "capsule" or "sphere"
-	local actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", position + Vector3(0, 0, 0.9), "size", size, "collision_filter", "filter_player_mover", "use_global_table")
+	local actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", position + Vector3(0, 0, 0.9), "size", size, "collision_filter", "filter_player_mover")
 
 	if num_actors == 0 then
 		self.last_valid_position:store(position)

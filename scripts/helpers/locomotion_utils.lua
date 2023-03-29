@@ -961,7 +961,7 @@ local INDEX_ACTOR = 4
 LocomotionUtils.clear_los = function (physics_world, p1, p2, ignore_unit1, ignore_unit2)
 	local to_vec = p2 - p1
 	local dist = Vector3.length(to_vec)
-	local result, num_hits = PhysicsWorld.immediate_raycast(physics_world, p1, to_vec, dist, "all", "collision_filter", "filter_ai_mover", "use_global_table")
+	local result, num_hits = PhysicsWorld.immediate_raycast(physics_world, p1, to_vec, dist, "all", "collision_filter", "filter_ai_mover")
 
 	if result then
 		for i = 1, num_hits do
@@ -991,7 +991,7 @@ LocomotionUtils.target_in_los = function (unit, blackboard)
 	local to_vec = target_pos - start_pos
 	local dist = Vector3.length(to_vec)
 	local physics_world = World.get_data(blackboard.world, "physics_world")
-	local result = PhysicsWorld.immediate_raycast(physics_world, start_pos, to_vec, dist, "all", "collision_filter", "filter_ray_projectile", "use_global_table")
+	local result = PhysicsWorld.immediate_raycast(physics_world, start_pos, to_vec, dist, "all", "collision_filter", "filter_ray_projectile")
 
 	if result then
 		local num_hits = #result

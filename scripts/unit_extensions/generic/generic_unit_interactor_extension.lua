@@ -246,7 +246,7 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 			end
 
 			local self_pos = POSITION_LOOKUP[self.unit]
-			local hits, num_hits = PhysicsWorld.immediate_overlap(self.physics_world, "position", self_pos, "shape", "sphere", "size", 0.3, "collision_filter", "filter_overlap_interaction", "use_global_table")
+			local hits, num_hits = PhysicsWorld.immediate_overlap(self.physics_world, "position", self_pos, "shape", "sphere", "size", 0.3, "collision_filter", "filter_overlap_interaction")
 			local best_unit = nil
 			local best_dist = math.huge
 

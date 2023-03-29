@@ -24,7 +24,7 @@ BTInGravityWellAction.enter = function (self, unit, blackboard, t)
 	local world = blackboard.world
 	local physics_world = World.get_data(world, "physics_world")
 	local shape = overlap_half_height - overlap_radius > 0 and "capsule" or "sphere"
-	local _, actor_count = PhysicsWorld.immediate_overlap(physics_world, "position", overlap_pos, "rotation", overlap_rotation, "size", overlap_size, "shape", shape, "types", "both", "collision_filter", "filter_environment_overlap", "use_global_table")
+	local _, actor_count = PhysicsWorld.immediate_overlap(physics_world, "position", overlap_pos, "rotation", overlap_rotation, "size", overlap_size, "shape", shape, "types", "both", "collision_filter", "filter_environment_overlap")
 
 	if actor_count == 0 then
 		local override_mover_move_distance = breed.override_mover_move_distance

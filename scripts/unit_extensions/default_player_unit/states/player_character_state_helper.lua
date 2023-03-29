@@ -435,7 +435,7 @@ CharacterStateHelper.is_colliding_with_gameplay_collision_box = function (world,
 	local radius = movement_settings_table[params and params.movement_settings_table_name or "gameplay_collision_box"].collision_check_player_radius
 	local size = Vector3(radius, player_half_height, radius)
 	local shape = player_half_height - radius > 0 and "capsule" or "sphere"
-	local actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", position, "rotation", rotation, "size", size, "collision_filter", collision_filter, "use_global_table")
+	local actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", position, "rotation", rotation, "size", size, "collision_filter", collision_filter)
 	local collided_actor = actors and actors[1]
 	local colliding, collided_unit = nil
 
@@ -1680,7 +1680,7 @@ CharacterStateHelper.is_raycasting_to_gameplay_collision_box = function (world, 
 	local offset = Vector3(0, 0, player_height_offset * 2)
 	position = position + offset
 	local colliding, collided_unit = nil
-	local hits, num_hits = PhysicsWorld.immediate_raycast(physics_world, position, Vector3.down(), player_half_height * 4, "all", "collision_filter", collision_filter, "use_global_table")
+	local hits, num_hits = PhysicsWorld.immediate_raycast(physics_world, position, Vector3.down(), player_half_height * 4, "all", "collision_filter", collision_filter)
 
 	for i = 1, num_hits do
 		local hit = hits[i]

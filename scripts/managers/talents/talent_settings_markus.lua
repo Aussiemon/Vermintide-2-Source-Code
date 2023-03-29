@@ -256,16 +256,7 @@ TalentBuffTemplates.empire_soldier = {
 			}
 		}
 	},
-	markus_huntsman_end_activated_on_ranged_hit = {
-		buffs = {
-			{
-				event = "on_ranged_hit",
-				buff_func = "end_huntsman_stealth",
-				duration = buff_tweak_data.markus_huntsman_activated_ability.duration
-			}
-		}
-	},
-	markus_huntsman_end_activated_on_melee_hit = {
+	markus_huntsman_end_activated_on_hit = {
 		buffs = {
 			{
 				event = "on_hit",
@@ -510,16 +501,7 @@ TalentBuffTemplates.empire_soldier = {
 			}
 		}
 	},
-	markus_huntsman_end_activated_on_ranged_hit_duration = {
-		buffs = {
-			{
-				event = "on_ranged_hit",
-				buff_func = "end_huntsman_stealth",
-				duration = buff_tweak_data.markus_huntsman_activated_ability_duration.duration
-			}
-		}
-	},
-	markus_huntsman_end_activated_on_melee_hit_duration = {
+	markus_huntsman_end_activated_on_hit_duration = {
 		buffs = {
 			{
 				event = "on_hit",

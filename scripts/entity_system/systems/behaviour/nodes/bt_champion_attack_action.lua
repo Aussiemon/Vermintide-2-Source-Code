@@ -442,7 +442,7 @@ BTChampionAttackAction._update_overlap = function (self, unit, blackboard, actio
 		local oobb_pos = from + forward * (action.offset_forward + half_range) + up * (action.offset_up + half_height)
 		local size = Vector3(width * 0.5, half_range, half_height)
 		local pw = World.get_data(blackboard.world, "physics_world")
-		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", oobb_pos, "rotation", rot, "size", size, "shape", "oobb", "types", "dynamics", "collision_filter", "filter_player_hit_box_check", "use_global_table")
+		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", oobb_pos, "rotation", rot, "size", size, "shape", "oobb", "types", "dynamics", "collision_filter", "filter_player_hit_box_check")
 
 		if Development.parameter("debug_ai_attack") then
 			local pose = Matrix4x4.from_quaternion_position(rot, oobb_pos)
@@ -548,7 +548,7 @@ BTChampionAttackAction._update_nav_mesh_wave = function (self, unit, blackboard,
 		local size = Vector3(action.width * 0.5, y, half_height)
 		local up = Quaternion.up(rot)
 		local oobb_pos = (to + from) * 0.5 + up * half_height
-		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", oobb_pos, "rotation", rot, "size", size, "shape", "oobb", "types", "dynamics", "collision_filter", "filter_player_hit_box_check", "use_global_table")
+		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", oobb_pos, "rotation", rot, "size", size, "shape", "oobb", "types", "dynamics", "collision_filter", "filter_player_hit_box_check")
 
 		table.append(HITS_TEMP, hit_actors)
 
@@ -590,7 +590,7 @@ BTChampionAttackAction.anim_cb_damage = function (self, unit, blackboard)
 
 	if action.collision_type == "oobb" or not action.collision_type then
 		local oobb_pos, self_rot, size = self:_calculate_oobb_collision(action, self_pos, self_rot)
-		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", oobb_pos, "rotation", self_rot, "size", size, "shape", "oobb", "types", "dynamics", "collision_filter", "filter_player_hit_box_check", "use_global_table")
+		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", oobb_pos, "rotation", self_rot, "size", size, "shape", "oobb", "types", "dynamics", "collision_filter", "filter_player_hit_box_check")
 
 		if Development.parameter("debug_ai_attack") then
 			local drawer = Managers.state.debug:drawer(debug_drawer_info)
@@ -609,7 +609,7 @@ BTChampionAttackAction.anim_cb_damage = function (self, unit, blackboard)
 
 		PhysicsWorld.prepare_actors_for_overlap(pw, cylinder_center, action.radius)
 
-		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", cylinder_center, "rotation", rotation, "size", size, "shape", shape, "types", "dynamics", "collision_filter", action.collision_filter or "filter_player_hit_box_check", "use_global_table")
+		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", cylinder_center, "rotation", rotation, "size", size, "shape", shape, "types", "dynamics", "collision_filter", action.collision_filter or "filter_player_hit_box_check")
 
 		if Development.parameter("debug_ai_attack") then
 			local drawer = Managers.state.debug:drawer(debug_drawer_info)
@@ -642,7 +642,7 @@ BTChampionAttackAction._update_radial_cylinder = function (self, unit, blackboar
 	local pw = World.get_data(blackboard.world, "physics_world")
 	local cylinder_center, size, rotation = self:_calculate_cylinder_collision(action, self_pos, self_rot)
 	local shape = size.y - size.x > 0 and "capsule" or "sphere"
-	local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", cylinder_center, "rotation", rotation, "size", size, "shape", shape, "types", "dynamics", "collision_filter", action.collision_filter, "use_global_table")
+	local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", cylinder_center, "rotation", rotation, "size", size, "shape", shape, "types", "dynamics", "collision_filter", action.collision_filter)
 
 	if Development.parameter("debug_ai_attack") then
 		local drawer = Managers.state.debug:drawer(debug_drawer_info)

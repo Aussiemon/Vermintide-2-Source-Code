@@ -1964,6 +1964,7 @@ end
 HeroViewStateStore.get_steam_item_price_text = function (self, steam_itemdefid, content, item)
 	local item_data = item and item.data
 	local discount = item_data and item_data.discount
+	local steam_data = item and item.steam_data
 	local backend_store = Managers.backend:get_interface("peddler")
 	local price, currency = backend_store:get_steam_item_price(steam_itemdefid)
 	local price_text, price_text_original = nil
@@ -1974,7 +1975,7 @@ HeroViewStateStore.get_steam_item_price_text = function (self, steam_itemdefid, 
 		price_text = tostring(currency) .. " " .. string.format("%.2f", price * 0.01)
 
 		if item_data and item_data.item_type == "bundle" then
-			local regular_price = item.steam_data.regular_prices[currency] or item_data.bundle_price
+			local regular_price = steam_data and steam_data.regular_prices[currency] or item_data.bundle_price
 			price_text_original = tostring(currency) .. " " .. string.format("%.2f", regular_price * 0.01)
 		else
 			price_text_original = discount and tostring(currency) .. " " .. string.format("%.2f", price * 100 / (100 - discount) * 0.01)

@@ -379,7 +379,7 @@ BTStormVerminAttackAction.anim_cb_damage = function (self, unit, blackboard)
 	local forward = Quaternion.rotate(rat_rot, Vector3.forward()) * (offset_forward + half_range)
 	local up = Vector3.up() * (half_height + offset_up)
 	local oobb_pos = rat_pos + forward + up
-	local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", oobb_pos, "rotation", rat_rot, "size", hit_size, "shape", "oobb", "types", "dynamics", "collision_filter", "filter_player_hit_box_check", "use_global_table")
+	local hit_actors, actor_count = PhysicsWorld.immediate_overlap(pw, "position", oobb_pos, "rotation", rat_rot, "size", hit_size, "shape", "oobb", "types", "dynamics", "collision_filter", "filter_player_hit_box_check")
 
 	if Development.parameter("debug_weapons") then
 		local drawer = Managers.state.debug:drawer(debug_drawer_info)

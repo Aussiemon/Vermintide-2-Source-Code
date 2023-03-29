@@ -471,14 +471,6 @@ PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impa
 				if breed then
 					if is_enemy then
 						self:hit_enemy(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, has_ranged_boost, ranged_boost_curve_multiplier)
-
-						local buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
-
-						if buff_extension then
-							local is_career_skill = self._current_action.career_skill
-
-							buff_extension:trigger_procs("on_ranged_hit", is_career_skill)
-						end
 					elseif breed.is_player then
 						self:hit_player(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, has_ranged_boost, ranged_boost_curve_multiplier)
 					end
