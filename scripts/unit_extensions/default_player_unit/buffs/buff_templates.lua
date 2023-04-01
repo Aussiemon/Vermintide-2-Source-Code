@@ -400,7 +400,7 @@ ProcFunctions = {
 	buff_defence_on_revived_target = function (owner_unit, buff, params)
 		local revived_unit = params[1]
 
-		if not ALIVE[owner_unit] or ALIVE[revived_unit] or not Managers.player.is_server then
+		if not ALIVE[owner_unit] or not ALIVE[revived_unit] or not Managers.player.is_server then
 			return
 		end
 

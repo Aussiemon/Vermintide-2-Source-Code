@@ -2926,7 +2926,7 @@ function flow_callback_override_stop_dialogue_system()
 end
 
 function flow_callback_override_start_delay()
-	DialogueSettings.dialogue_level_start_delay = 10
+	DialogueSettings.dialogue_level_start_delay = 0
 end
 
 function flow_callback_damage_unit(params)

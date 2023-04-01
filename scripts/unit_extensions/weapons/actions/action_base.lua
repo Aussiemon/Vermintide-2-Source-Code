@@ -64,6 +64,12 @@ ActionBase._do_critical_strike_procs = function (self, buff_extension, proc_type
 end
 
 ActionBase._update_extra_shots = function (self, buff_extension, shots_to_consume, override)
+	local current_action = self.current_action
+
+	if current_action and current_action.no_extra_shots then
+		return nil
+	end
+
 	if not self._extra_shots_procced or override then
 		local extra_shots = buff_extension:apply_buffs_to_value(0, "extra_shot")
 		self._extra_shots = math.floor(extra_shots)

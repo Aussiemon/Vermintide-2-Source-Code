@@ -26,6 +26,7 @@ InviteManager._poll_invite = function (self, dt, t)
 			self._pending_lobby_data.lobby_id = lobby_id
 			self._pending_lobby_data.params = params
 			self._pending_lobby_data.invitee = invitee
+			t = t or Managers.time:time("main")
 			self._refresh_timer = t + REFRESH_TIME
 
 			SteamLobby.request_lobby_data(lobby_id)

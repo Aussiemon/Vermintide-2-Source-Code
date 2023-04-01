@@ -1609,13 +1609,19 @@ end
 DamageUtils.create_hit_zone_lookup = function (unit, breed)
 	local hit_zones = breed.hit_zones
 	local hit_zones_lookup = {}
+	local breed_name = breed.name
+
+	if not breed_name then
+		table.dump(breed, "breed", 2)
+		error("breed.name was nil in DamageUtils.create_hit_zone_lookup")
+	end
 
 	for zone_name, zone in pairs(hit_zones) do
 		for k, actor_name in ipairs(zone.actors) do
 			local actor = unit_actor(unit, actor_name)
 
 			if not actor then
-				print("Actor ", actor_name .. " not found in ", breed.name)
+				printf("Actor %s not found in %s", actor_name, breed_name)
 			end
 
 			local node = actor_node(actor)
@@ -1624,12 +1630,11 @@ DamageUtils.create_hit_zone_lookup = function (unit, breed)
 				prio = zone.prio,
 				actor_name = actor_name
 			}
-			hit_zones_lookup[breed.name] = true
+			hit_zones_lookup[breed_name] = true
 		end
 	end
 
 	breed.hit_zones_lookup = hit_zones_lookup
-	local breed_name = breed.name
 	BreedHitZonesLookup[breed_name] = hit_zones_lookup
 end
 

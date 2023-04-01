@@ -45,6 +45,8 @@ ProjectileEtherealSkullLocomotionExtension.init = function (self, extension_init
 		self:set_target(bb.optional_spawn_data.target)
 	end
 
+	self._cached_direction = Vector3Box(Vector3.right())
+
 	Managers.state.event:register(self, "set_tower_skulls_target", "set_target")
 end
 
@@ -242,6 +244,8 @@ ProjectileEtherealSkullLocomotionExtension.set_rotation = function (self, unit, 
 
 	self._direction = Quaternion.forward(rotation)
 	self._target_direction = target_direction
+
+	self._cached_direction:store(target_direction)
 end
 
 ProjectileEtherealSkullLocomotionExtension.get_vertical_offset = function (self, t)
@@ -260,8 +264,9 @@ end
 
 ProjectileEtherealSkullLocomotionExtension.get_homing_target_direction = function (self, base_position)
 	local target_direction = nil
+	local has_target = self:has_target()
 
-	if not self:has_target() then
+	if not has_target then
 		target_direction = self._cached_direction:unbox()
 	else
 		local target_position = self:get_target_node_position(self._target_unit)

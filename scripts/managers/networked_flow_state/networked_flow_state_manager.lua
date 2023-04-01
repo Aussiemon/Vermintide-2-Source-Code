@@ -375,6 +375,10 @@ NetworkedFlowStateManager.flow_cb_create_state = function (self, unit, state_nam
 		}
 	end
 
+	if unit_states.states[state_name] then
+		return
+	end
+
 	local state_network_id = #unit_states.lookup + 1
 	unit_states.lookup[state_name] = state_network_id
 	unit_states.lookup[state_network_id] = state_name
