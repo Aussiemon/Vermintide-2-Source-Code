@@ -219,6 +219,8 @@ PlayerUnitLocomotionExtension.extensions_ready = function (self)
 	if first_person_unit then
 		self._move_speed_anim_var_1p = Unit.animation_find_variable(first_person_unit, "move_speed")
 	end
+
+	self.status_extension = ScriptUnit.extension(self.unit, "status_system")
 end
 
 PlayerUnitLocomotionExtension.last_position_on_navmesh = function (self)
@@ -994,6 +996,8 @@ PlayerUnitLocomotionExtension.teleport_to = function (self, pos, rot)
 	end
 
 	self:move_to_non_intersecting_position()
+	self.status_extension:set_ignore_next_fall_damage(true)
+	self.status_extension:set_falling_height()
 end
 
 PlayerUnitLocomotionExtension.enable_rotation_towards_velocity = function (self, enabled, target_rotation, duration)

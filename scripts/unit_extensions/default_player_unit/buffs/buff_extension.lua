@@ -1404,27 +1404,36 @@ local Managers = Managers
 BuffExtension._remove_buff_synced = function (self, id)
 	local id_to_server_sync = self._id_to_server_sync
 
-	if id_to_server_sync then
-		local server_sync_id = id_to_server_sync[id]
+	if not id_to_server_sync then
+		return
+	end
 
-		if server_sync_id then
-			local network_manager = Managers.state.network
-			local unit_id = network_manager:unit_game_object_id(self._unit)
-			local network_transmit = network_manager.network_transmit
+	local server_sync_id = id_to_server_sync[id]
 
-			if self.is_server then
-				local sync_type = self._buff_to_sync_type[id]
+	if not server_sync_id then
+		return
+	end
 
-				if sync_type == BuffSyncType.All then
-					network_transmit:send_rpc_clients("rpc_remove_buff_synced", unit_id, server_sync_id)
-				else
-					local owner_peer_id = self._synced_buff_owner[id]
+	local network_manager = Managers.state.network
+	local unit_id = network_manager:unit_game_object_id(self._unit)
 
-					network_transmit:send_rpc("rpc_remove_buff_synced", owner_peer_id, unit_id, server_sync_id)
-				end
-			else
-				network_transmit:send_rpc_server("rpc_remove_buff_synced", unit_id, server_sync_id)
-			end
+	if not unit_id then
+		return
+	end
+
+	local network_transmit = network_manager.network_transmit
+
+	if self.is_server then
+		local sync_type = self._buff_to_sync_type[id]
+
+		if sync_type == BuffSyncType.All then
+			network_transmit:send_rpc_clients("rpc_remove_buff_synced", unit_id, server_sync_id)
+		else
+			local owner_peer_id = self._synced_buff_owner[id]
+
+			network_transmit:send_rpc("rpc_remove_buff_synced", owner_peer_id, unit_id, server_sync_id)
 		end
+	else
+		network_transmit:send_rpc_server("rpc_remove_buff_synced", unit_id, server_sync_id)
 	end
 end

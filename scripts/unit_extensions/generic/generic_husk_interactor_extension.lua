@@ -153,7 +153,7 @@ GenericHuskInteractorExtension.hot_join_sync = function (self, peer_id)
 	local interactable_unit_id, is_level_unit = network_manager:game_object_or_level_id(context.interactable_unit)
 	local data = context.data
 	local start_time = data.start_time
-	local duration = data.duration
+	local duration = data.duration or 0
 	local unit_id = network_manager:unit_game_object_id(self.unit)
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 

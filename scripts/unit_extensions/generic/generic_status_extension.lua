@@ -433,6 +433,12 @@ end
 
 GenericStatusExtension.fall_distance = function (self)
 	if self.fall_height then
+		if self.ignore_next_fall_damage then
+			self.fall_height = POSITION_LOOKUP[self.unit].z
+
+			return 0
+		end
+
 		local current_fall_height = POSITION_LOOKUP[self.unit].z
 		local fall_distance = self.fall_height - current_fall_height
 
