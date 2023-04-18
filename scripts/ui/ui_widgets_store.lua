@@ -284,6 +284,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 	local pulse_frame_settings = UIFrameSettings[pulse_frame_name]
 	local pulse_frame_spacing = pulse_frame_settings.texture_sizes.horizontal[2]
 	local settings = product.settings or dummy_table
+	local dlc_settings = product.dlc_settings or dummy_table
 	local widget = {
 		element = {}
 	}
@@ -485,7 +486,10 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 		{
 			pass_type = "texture",
 			style_id = "type_tag_icon",
-			texture_id = "type_tag_icon"
+			texture_id = "type_tag_icon",
+			content_check_function = function (content, style)
+				return content.type_tag_icon
+			end
 		},
 		{
 			pass_type = "texture",
@@ -571,6 +575,29 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 					style.color[1] = 100 + 155 * new_marker_progress
 				end
 			end
+		},
+		{
+			style_id = "additional_content_added",
+			pass_type = "text",
+			text_id = "additional_content_added",
+			content_check_function = function (content)
+				return IS_CONSOLE and dlc_settings.additional_content_added and not content.owned
+			end,
+			content_change_function = function (content, style)
+				local time = Application.time_since_launch()
+				local progress = 0.5 + math.sin(time * 3) * 0.5
+				style.text_color[2] = math.lerp(style.base_text_color[2], 225, progress)
+				style.text_color[3] = math.lerp(style.base_text_color[3], 225, progress)
+				style.text_color[4] = math.lerp(style.base_text_color[4], 225, progress)
+			end
+		},
+		{
+			style_id = "additional_content_added_shadow",
+			pass_type = "text",
+			text_id = "additional_content_added",
+			content_check_function = function (content)
+				return IS_CONSOLE and dlc_settings.additional_content_added and not content.owned
+			end
 		}
 	}
 	local content = {
@@ -584,18 +611,17 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 		bundle_content_amount_text = "",
 		owned_icon = "store_owned_sigil",
 		optional_item_name = "",
-		price_icon = "store_icon_currency_ingame",
 		draw_price_icon = true,
+		price_icon = "store_icon_currency_ingame",
 		price_text = "-",
 		console_third_price_text = "",
-		show_secondary_stroke = false,
 		show_ps4_plus = false,
 		price_text_before = "-",
-		type_tag_icon = "store_tag_icon_dlc",
-		discount = false,
 		show_third_stroke = false,
+		discount = false,
 		loading_icon = "loot_loading",
 		new_marker = "list_item_tag_new",
+		show_secondary_stroke = false,
 		background_price = "store_thumbnail_pricetag_left",
 		price_gradient = "gradient",
 		real_currency = false,
@@ -618,7 +644,8 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 		size = size,
 		console_background_rect = masked and "rect_masked" or "simple_rect_texture",
 		console_secondary_price_stroke = masked and "rect_masked" or "simple_rect_texture",
-		console_third_price_stroke = masked and "rect_masked" or "simple_rect_texture"
+		console_third_price_stroke = masked and "rect_masked" or "simple_rect_texture",
+		additional_content_added = Localize("title_screen_store_new_additional_content")
 	}
 	local style = {
 		hotspot = {
@@ -1364,6 +1391,52 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 				10
 			},
 			size = size
+		},
+		additional_content_added = {
+			font_size = 24,
+			upper_case = true,
+			localize = false,
+			horizontal_alignment = "left",
+			vertical_alignment = "bottom",
+			dynamic_font_size = false,
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
+			text_color = {
+				255,
+				159,
+				144,
+				101
+			},
+			base_text_color = {
+				255,
+				159,
+				144,
+				101
+			},
+			offset = {
+				20,
+				-180,
+				12
+			}
+		},
+		additional_content_added_shadow = {
+			font_size = 24,
+			upper_case = true,
+			localize = false,
+			horizontal_alignment = "left",
+			vertical_alignment = "bottom",
+			dynamic_font_size = false,
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
+			text_color = {
+				255,
+				0,
+				0,
+				0
+			},
+			offset = {
+				22,
+				-182,
+				11
+			}
 		}
 	}
 	widget.element.passes = passes
@@ -1847,13 +1920,17 @@ UIWidgets.create_store_currency_summary_entry_definition = function (scenegraph_
 	return widget
 end
 
-UIWidgets.create_store_dlc_feature_vertical_definition = function (scenegraph_id, size, masked)
+UIWidgets.create_store_dlc_feature_vertical_definition = function (scenegraph_id, size, masked, product)
+	local frame_name = "menu_frame_16"
+	local frame_settings = UIFrameSettings[frame_name]
 	local image_size = {
 		size[1],
 		220
 	}
 	local default_height_offset = -size[2]
 	local edge_spacing = 5
+	local settings = product.settings or dummy_table
+	local add_frame = settings.add_frame
 	local widget = {
 		element = {}
 	}
@@ -1872,12 +1949,31 @@ UIWidgets.create_store_dlc_feature_vertical_definition = function (scenegraph_id
 			style_id = "text_shadow",
 			pass_type = "text",
 			text_id = "text"
+		},
+		{
+			pass_type = "texture",
+			style_id = "background",
+			texture_id = "background",
+			content_check_function = function (content)
+				return content.add_frame
+			end
+		},
+		{
+			pass_type = "texture_frame",
+			style_id = "frame",
+			texture_id = "frame",
+			content_check_function = function (content)
+				return content.add_frame
+			end
 		}
 	}
 	local content = {
 		text = "n/a",
+		background = "store_thumbnail_bg_promo",
 		image = masked and "rect_masked" or "simple_rect_texture",
-		size = size
+		size = size,
+		frame = frame_settings.texture,
+		add_frame = add_frame
 	}
 	local style = {
 		text = {
@@ -1935,6 +2031,46 @@ UIWidgets.create_store_dlc_feature_vertical_definition = function (scenegraph_id
 				0,
 				0,
 				8
+			}
+		},
+		background = {
+			vertical_alignment = "top",
+			horizontal_alignment = "left",
+			masked = masked,
+			texture_size = image_size,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				0,
+				1
+			}
+		},
+		frame = {
+			horizontal_alignment = "left",
+			vertical_alignment = "top",
+			masked = masked,
+			area_size = image_size,
+			texture_size = frame_settings.texture_size,
+			texture_sizes = frame_settings.texture_sizes,
+			frame_margins = {
+				0,
+				0
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				0,
+				9
 			}
 		}
 	}

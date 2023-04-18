@@ -742,12 +742,10 @@ UISettings.slot_icons = {
 	skins = "tabs_icon_character_skins"
 }
 UISettings.item_type_store_icons = {
-	default = "store_tag_icon_dlc",
 	weapon_skin = "store_tag_icon_weapon",
+	skin = "store_tag_icon_skin",
 	hat = "store_tag_icon_hat",
-	bundle = "store_tag_icon_bundle",
-	dlc = "store_tag_icon_dlc",
-	skin = "store_tag_icon_skin"
+	bundle = "store_tag_icon_bundle"
 }
 
 DLCUtils.merge("item_type_store_icons", UISettings.item_type_store_icons)

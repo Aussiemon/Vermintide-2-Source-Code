@@ -544,12 +544,7 @@ CharacterSelectionView.exit = function (self, return_to_game)
 
 	self.exiting = true
 
-	if IS_WINDOWS then
-		Managers.save:auto_save(SaveFileName, SaveData)
-	else
-		Managers.save:auto_save(SaveFileName, SaveData)
-	end
-
+	Managers.save:auto_save(SaveFileName, SaveData)
 	Managers.backend:commit()
 end
 

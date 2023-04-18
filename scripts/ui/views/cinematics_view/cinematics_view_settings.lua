@@ -14,6 +14,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_vermintide_description",
 			release_date = "2015/10/21",
+			time = "01:42",
 			header = "menu_cinematics_vermintide_title",
 			thumbnail = "vermintide_thumbnail",
 			video_data = {
@@ -26,6 +27,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_honduras_description",
 			release_date = "2018/03/08",
+			time = "04:55",
 			header = "menu_cinematics_honduras_title",
 			thumbnail = "honduras_thumbnail",
 			video_data = {
@@ -37,6 +39,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_prologue_description",
 			release_date = "2018/03/08",
+			time = "01:43",
 			header = "menu_cinematics_prologue_title",
 			thumbnail = "prologue_thumbnail",
 			video_data = {
@@ -50,6 +53,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_bogenhafen_description",
 			release_date = "2018/08/28",
+			time = "02:56",
 			header = "menu_cinematics_bogenhafen_title",
 			thumbnail = "bogenhafen_thumbnail",
 			video_data = {
@@ -62,6 +66,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_holly_description",
 			release_date = "2018/12/10",
+			time = "00:48",
 			header = "menu_cinematics_holly_title",
 			thumbnail = "holly_thumbnail",
 			video_data = {
@@ -73,6 +78,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_celebrate_description",
 			release_date = "2019/03/08",
+			time = "02:16",
 			header = "menu_cinematics_celebrate_title",
 			thumbnail = "celebrate_thumbnail",
 			video_data = {
@@ -84,6 +90,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_scorpion_description",
 			release_date = "2019/08/13",
+			time = "02:07",
 			header = "menu_cinematics_scorpion_title",
 			thumbnail = "scorpion_thumbnail",
 			video_data = {
@@ -96,6 +103,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_penny_description",
 			release_date = "2020/01/23",
+			time = "00:52",
 			header = "menu_cinematics_penny_title",
 			thumbnail = "penny_thumbnail",
 			video_data = {
@@ -108,6 +116,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_lake_description",
 			release_date = "2020/06/23",
+			time = "02:21",
 			header = "menu_cinematics_lake_title",
 			thumbnail = "lake_thumbnail",
 			video_data = {
@@ -119,6 +128,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_cog_description",
 			release_date = "2020/11/19",
+			time = "01:26",
 			header = "menu_cinematics_cog_title",
 			thumbnail = "cog_thumbnail",
 			video_data = {
@@ -131,6 +141,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_morris_description",
 			release_date = "2021/04/20",
+			time = "01:59",
 			header = "menu_cinematics_morris_title",
 			thumbnail = "morris_thumbnail",
 			video_data = {
@@ -143,6 +154,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_woods_description",
 			release_date = "2021/06/03",
+			time = "01:56",
 			header = "menu_cinematics_woods_title",
 			thumbnail = "woods_thumbnail",
 			video_data = {
@@ -155,6 +167,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_bless_description",
 			release_date = "2021/12/10",
+			time = "01:39",
 			header = "menu_cinematics_bless_title",
 			thumbnail = "bless_thumbnail",
 			video_data = {
@@ -167,6 +180,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_belakor_description",
 			release_date = "2022/06/14",
+			time = "01:09",
 			header = "menu_cinematics_belakor_title",
 			thumbnail = "belakor_thumbnail",
 			video_data = {
@@ -179,6 +193,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_trails_description",
 			release_date = "2022/06/14",
+			time = "01:11",
 			header = "menu_cinematics_trails_title",
 			thumbnail = "trails_thumbnail",
 			video_data = {
@@ -194,6 +209,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_bogenhafen_description",
 			release_date = "2018/08/28",
+			time = "02:56",
 			header = "menu_cinematics_bogenhafen_title",
 			thumbnail = "bogenhafen_thumbnail",
 			video_data = {
@@ -206,6 +222,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_holly_description",
 			release_date = "2018/12/10",
+			time = "00:48",
 			header = "menu_cinematics_holly_title",
 			thumbnail = "holly_thumbnail",
 			video_data = {
@@ -217,6 +234,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_scorpion_description",
 			release_date = "2019/08/13",
+			time = "02:07",
 			header = "menu_cinematics_scorpion_title",
 			thumbnail = "scorpion_thumbnail",
 			video_data = {
@@ -229,6 +247,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_morris_description",
 			release_date = "2021/04/20",
+			time = "01:59",
 			header = "menu_cinematics_morris_title",
 			thumbnail = "morris_thumbnail",
 			video_data = {
@@ -241,6 +260,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_penny_description",
 			release_date = "2020/01/23",
+			time = "00:52",
 			header = "menu_cinematics_penny_title",
 			thumbnail = "penny_thumbnail",
 			video_data = {
@@ -253,6 +273,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_belakor_description",
 			release_date = "2022/06/14",
+			time = "01:09",
 			header = "menu_cinematics_belakor_title",
 			thumbnail = "belakor_thumbnail",
 			video_data = {
@@ -268,6 +289,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_lake_description",
 			release_date = "2020/06/23",
+			time = "02:21",
 			header = "menu_cinematics_lake_title",
 			thumbnail = "lake_thumbnail",
 			video_data = {
@@ -279,6 +301,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_cog_description",
 			release_date = "2020/11/19",
+			time = "01:26",
 			header = "menu_cinematics_cog_title",
 			thumbnail = "cog_thumbnail",
 			video_data = {
@@ -291,6 +314,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_woods_description",
 			release_date = "2021/06/03",
+			time = "01:56",
 			header = "menu_cinematics_woods_title",
 			thumbnail = "woods_thumbnail",
 			video_data = {
@@ -303,6 +327,7 @@ CinematicsViewSettings = {
 		{
 			description = "menu_cinematics_bless_description",
 			release_date = "2021/12/10",
+			time = "01:39",
 			header = "menu_cinematics_bless_title",
 			thumbnail = "bless_thumbnail",
 			video_data = {
@@ -316,9 +341,10 @@ CinematicsViewSettings = {
 	},
 	{
 		{
-			description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+			description = "menu_cinematics_honduras_description",
 			release_date = "2018/03/08",
-			header = "release_trailer",
+			time = "04:55",
+			header = "menu_cinematics_honduras_title",
 			thumbnail = "honduras_thumbnail",
 			video_data = {
 				sound_stop = "Stop_all_cinematics",
@@ -327,9 +353,10 @@ CinematicsViewSettings = {
 			}
 		},
 		{
-			description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+			description = "menu_cinematics_celebrate_description",
 			release_date = "2019/03/08",
-			header = "figurine_trailer",
+			time = "02:16",
+			header = "menu_cinematics_celebrate_title",
 			thumbnail = "celebrate_thumbnail",
 			video_data = {
 				sound_stop = "Stop_all_cinematics",

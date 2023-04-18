@@ -305,7 +305,7 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 						local animation_length = jump_anim_threshold.fence_horizontal_length
 						local flat_distance_to_jump = Vector3.length(Vector3.flat(unit_position - exit_pos))
 						flat_distance_to_jump = flat_distance_to_jump - jump_anim_threshold.fence_land_length
-						local animation_translation_scale = flat_distance_to_jump / (animation_length * ai_size_variation)
+						local animation_translation_scale = math.clamp(flat_distance_to_jump / (animation_length * ai_size_variation), -10, 10)
 
 						LocomotionUtils.set_animation_translation_scale(unit, Vector3(animation_translation_scale, animation_translation_scale, 1))
 

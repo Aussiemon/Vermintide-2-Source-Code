@@ -110,7 +110,6 @@ Boot.setup = function (self)
 	_G.Crashify = require("foundation/scripts/util/crashify")
 
 	foundation_require("util", "testify")
-	Script.configure_garbage_collection(Script.ACCEPTABLE_GARBAGE, 0.1, Script.MAXIMUM_GARBAGE, 0.5, Script.FORCE_FULL_COLLECT_GARBAGE_LEVEL, 1, Script.MINIMUM_COLLECT_TIME_MS, 0.1, Script.MAXIMUM_COLLECT_TIME_MS, 0.2)
 
 	if not DEDICATED_SERVER and IS_WINDOWS then
 		Application.set_time_step_policy("throttle", 30)
@@ -854,9 +853,17 @@ Boot.game_update = function (self, real_world_dt)
 	FrameTable.swap_and_clear()
 
 	if self.quit_game then
-		Boot.is_controlled_exit = true
+		local function save_cb(info)
+			Boot.is_controlled_exit = true
 
-		Application.quit()
+			Application.quit()
+		end
+
+		if not self._saving then
+			Managers.save:auto_save(SaveFileName, SaveData, save_cb)
+
+			self._saving = true
+		end
 	end
 end
 

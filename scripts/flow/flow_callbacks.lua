@@ -5253,3 +5253,7 @@ function flow_callback_once_in_play_session(params)
 
 	return flow_return_table
 end
+
+function flow_callback_trigger_gameplay_start(params)
+	Managers.state.achievement:trigger_event("gameplay_start")
+end

@@ -98,19 +98,19 @@ local function create_skip_widget(parent, ui_renderer, input_service)
 					end
 				},
 				{
-					style_id = "kbm_input_text_2",
-					pass_type = "text",
-					text_id = "input_text_2",
-					content_check_function = function (content)
-						return not content.gamepad_active
-					end
-				},
-				{
 					pass_type = "texture",
 					style_id = "gamepad_input_icon",
 					texture_id = "gamepad_input_icon",
 					content_check_function = function (content)
 						return content.gamepad_input_icon and content.gamepad_active
+					end
+				},
+				{
+					style_id = "kbm_input_text_2",
+					pass_type = "text",
+					text_id = "input_text_2",
+					content_check_function = function (content)
+						return not content.gamepad_active
 					end
 				},
 				{
@@ -146,17 +146,6 @@ local function create_skip_widget(parent, ui_renderer, input_service)
 					end
 				},
 				{
-					style_id = "input_icon_bar",
-					texture_id = "input_icon_bar",
-					pass_type = "gradient_mask_texture",
-					content_check_function = function (content)
-						return content.gamepad_active and content.gamepad_input_icon
-					end,
-					content_change_function = function (content, style)
-						style.gradient_threshold = content.progress
-					end
-				},
-				{
 					style_id = "hold_bar",
 					pass_type = "rect",
 					content_check_function = function (content)
@@ -175,6 +164,17 @@ local function create_skip_widget(parent, ui_renderer, input_service)
 					content_change_function = function (content, style)
 						style.size[1] = content.progress * (kbm_text_width + kbm_texture_data[1].size[1] + kbm_texture_data[3].size[1]) + 4
 					end
+				},
+				{
+					style_id = "input_icon_bar",
+					texture_id = "input_icon_bar",
+					pass_type = "gradient_mask_texture",
+					content_check_function = function (content)
+						return content.gamepad_active and content.gamepad_input_icon
+					end,
+					content_change_function = function (content, style)
+						style.gradient_threshold = content.progress
+					end
 				}
 			}
 		},
@@ -184,8 +184,8 @@ local function create_skip_widget(parent, ui_renderer, input_service)
 			input_icon_bar = "controller_hold_bar",
 			input_text_1 = input_text_1,
 			input_text_2 = input_text_2,
-			kbm_input_text = kbm_input_text,
 			gamepad_input_icon = gamepad_texture_data.texture,
+			kbm_input_text = kbm_input_text,
 			kbm_input_icon_left = kbm_texture_data[1].texture,
 			kbm_input_icon_middle = kbm_texture_data[2].texture,
 			kbm_input_icon_right = kbm_texture_data[3].texture,
@@ -253,6 +253,22 @@ local function create_skip_widget(parent, ui_renderer, input_service)
 					0
 				}
 			},
+			input_text_1 = input_text_style,
+			gamepad_input_text_2 = {
+				word_wrap = input_text_style.word_wrap,
+				dynamic_font = input_text_style.dynamic_font,
+				pixel_perfect = input_text_style.pixel_perfect,
+				text_color = input_text_style.text_color,
+				font_type = input_text_style.font_type,
+				font_size = input_text_style.font_size,
+				horizontal_alignment = input_text_style.horizontal_alignment,
+				vertical_alignment = input_text_style.vertical_alignment,
+				offset = {
+					gamepad_input_text_2_offset,
+					0,
+					0
+				}
+			},
 			kbm_input_text = {
 				word_wrap = input_text_style.word_wrap,
 				dynamic_font = input_text_style.dynamic_font,
@@ -314,7 +330,6 @@ local function create_skip_widget(parent, ui_renderer, input_service)
 					1
 				}
 			},
-			input_text_1 = input_text_style,
 			kbm_input_text_2 = {
 				word_wrap = input_text_style.word_wrap,
 				dynamic_font = input_text_style.dynamic_font,
@@ -326,21 +341,6 @@ local function create_skip_widget(parent, ui_renderer, input_service)
 				vertical_alignment = input_text_style.vertical_alignment,
 				offset = {
 					kbm_input_text_2_offset,
-					0,
-					0
-				}
-			},
-			gamepad_input_text_2 = {
-				word_wrap = input_text_style.word_wrap,
-				dynamic_font = input_text_style.dynamic_font,
-				pixel_perfect = input_text_style.pixel_perfect,
-				text_color = input_text_style.text_color,
-				font_type = input_text_style.font_type,
-				font_size = input_text_style.font_size,
-				horizontal_alignment = input_text_style.horizontal_alignment,
-				vertical_alignment = input_text_style.vertical_alignment,
-				offset = {
-					gamepad_input_text_2_offset,
 					0,
 					0
 				}

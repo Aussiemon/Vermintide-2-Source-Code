@@ -189,19 +189,37 @@ achievements.tower_time_challenge = {
 		return string.format(Localize("achv_tower_time_challenge_desc"), TOWER_TIME_CHALLENGE_LIMIT_IN_MINUTES)
 	end,
 	events = {
+		"gameplay_start",
 		"register_completed_level"
 	},
 	completed = function (statistics_db, stats_id, template_data)
 		return statistics_db:get_persistent_stat(stats_id, "tower_time_challenge") >= 1
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
+		local t = Managers.time:time("game")
+
+		if event_name == "gameplay_start" then
+			template_data.start_t = t
+
+			return
+		end
+
+		local start_time = template_data.start_t
+
+		if not start_time then
+			print("[Challenge] Speedrun invalidated. Likely due to hot-join.")
+
+			return
+		end
+
 		local difficulty_name, level_id, career_name, local_player = unpack(event_data)
 
 		if level_id == "dlc_wizards_tower" then
 			local time_limit = TOWER_TIME_CHALLENGE_LIMIT_IN_MINUTES * 60
-			local game_time = Managers.time:time("game")
+			local game_time = t
+			local elapsed_time = game_time - start_time
 
-			if game_time < time_limit then
+			if time_limit > elapsed_time then
 				statistics_db:increment_stat(stats_id, "tower_time_challenge")
 			end
 		end

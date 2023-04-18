@@ -31,7 +31,7 @@ StoreDlcSettings = {
 		information_text = "description_maidenguard_bundle_0003",
 		dlc_name = "maidenguard_bundle_0003",
 		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_maidenguard_bundle_0003",
-		optional_dlc_subtitle = "ww_maidenguard",
+		optional_dlc_subtitle = "we_maidenguard",
 		slideshow_text = "description_maidenguard_bundle_0003",
 		is_bundle = true,
 		bundle_contains = {
@@ -1236,6 +1236,7 @@ StoreDlcSettings = {
 		name = "store_bless_title",
 		dlc_name = "bless",
 		show_in_slideshow = true,
+		additional_content_added = true,
 		store_texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless",
 		information_text = "store_bless_desc",
 		store_page_url = "https://store.steampowered.com/app/1782450",
@@ -1392,12 +1393,50 @@ StoreDlcSettings = {
 			{
 				type = "header_text",
 				settings = {
+					text = "title_screen_store_new_additional_content",
+					localize = true
+				}
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "display_name_skin_wh_priest_1001_2023_q1",
+					texture_path = "gui/1080p/single_textures/store_item_icons/store_item_icon_skin_wh_priest_1001/store_item_icon_skin_wh_priest_1001",
+					localize = true,
+					add_frame = true,
+					texture_package = "resource_packages/store/item_icons/store_item_icon_skin_wh_priest_1001"
+				}
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "display_name_priest_hat_1001_2023_q1",
+					texture_path = "gui/1080p/single_textures/store_item_icons/store_item_icon_priest_hat_1001/store_item_icon_priest_hat_1001",
+					localize = true,
+					add_frame = true,
+					texture_package = "resource_packages/store/item_icons/store_item_icon_priest_hat_1001"
+				}
+			},
+			{
+				type = "header_text",
+				settings = {
 					text = "menu_store_dlc_title_including",
 					localize = true
 				}
 			},
 			{
-				id = "dlc_feature_2",
+				id = "dlc_feature_4",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_bless_slate_01_description",
@@ -1407,7 +1446,7 @@ StoreDlcSettings = {
 				}
 			},
 			{
-				id = "dlc_feature_3",
+				id = "dlc_feature_5",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_bless_slate_02_description",
@@ -1417,7 +1456,7 @@ StoreDlcSettings = {
 				}
 			},
 			{
-				id = "dlc_feature_4",
+				id = "dlc_feature_6",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_bless_slate_03_description",
@@ -1430,7 +1469,7 @@ StoreDlcSettings = {
 				type = "spacing"
 			},
 			{
-				id = "dlc_feature_5",
+				id = "dlc_feature_7",
 				type = "dlc_feature_vertical_long",
 				settings = {
 					text = "dlc_bless_upgrade_slate_04_description",
@@ -1443,7 +1482,7 @@ StoreDlcSettings = {
 				type = "spacing"
 			},
 			{
-				id = "dlc_feature_6",
+				id = "dlc_feature_8",
 				type = "dlc_feature_vertical_long",
 				settings = {
 					text = "dlc_bless_upgrade_slate_05_description",
@@ -1456,7 +1495,7 @@ StoreDlcSettings = {
 				type = "spacing"
 			},
 			{
-				id = "dlc_feature_7",
+				id = "dlc_feature_9",
 				type = "dlc_feature_vertical_long",
 				settings = {
 					text = "dlc_bless_upgrade_slate_06_description",
@@ -1469,7 +1508,7 @@ StoreDlcSettings = {
 				type = "spacing"
 			},
 			{
-				id = "dlc_feature_8",
+				id = "dlc_feature_10",
 				type = "dlc_feature_vertical_long",
 				settings = {
 					text = "dlc_bless_upgrade_slate_01_description",
@@ -1491,7 +1530,7 @@ StoreDlcSettings = {
 				}
 			},
 			{
-				id = "dlc_feature_9",
+				id = "dlc_feature_11",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_bless_upgrade_slate_02_description",
@@ -1501,7 +1540,7 @@ StoreDlcSettings = {
 				}
 			},
 			{
-				id = "dlc_feature_10",
+				id = "dlc_feature_12",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_bless_upgrade_slate_03_description",
@@ -3031,6 +3070,7 @@ StoreDlcSettings = {
 		store_texture = "gui/1080p/single_textures/dlc_store/cog/dlc_store_banner_cog",
 		name = "store_cog_title",
 		dlc_name = "cog",
+		additional_content_added = true,
 		store_texture_package = "resource_packages/store/dlc_icons/cog/store_dlc_icons_cog",
 		information_text = "store_cog_desc",
 		store_page_url = "https://store.steampowered.com/app/1443780",
@@ -3181,12 +3221,50 @@ StoreDlcSettings = {
 			{
 				type = "header_text",
 				settings = {
+					text = "title_screen_store_new_additional_content",
+					localize = true
+				}
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "display_name_skin_dr_engineer_1001",
+					texture_path = "gui/1080p/single_textures/store_item_icons/store_item_icon_skin_dr_engineer_1001/store_item_icon_skin_dr_engineer_1001",
+					localize = true,
+					add_frame = true,
+					texture_package = "resource_packages/store/item_icons/store_item_icon_skin_dr_engineer_1001"
+				}
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "display_name_engineer_hat_1002",
+					texture_path = "gui/1080p/single_textures/store_item_icons/store_item_icon_engineer_hat_1002/store_item_icon_engineer_hat_1002",
+					localize = true,
+					add_frame = true,
+					texture_package = "resource_packages/store/item_icons/store_item_icon_engineer_hat_1002"
+				}
+			},
+			{
+				type = "header_text",
+				settings = {
 					text = "menu_store_dlc_title_including",
 					localize = true
 				}
 			},
 			{
-				id = "dlc_feature_1",
+				id = "dlc_feature_4",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_cog_slate_01_description",
@@ -3196,7 +3274,7 @@ StoreDlcSettings = {
 				}
 			},
 			{
-				id = "dlc_feature_2",
+				id = "dlc_feature_5",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_cog_slate_02_description",
@@ -3206,7 +3284,7 @@ StoreDlcSettings = {
 				}
 			},
 			{
-				id = "dlc_feature_3",
+				id = "dlc_feature_6",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_cog_slate_03_description",
@@ -3219,7 +3297,7 @@ StoreDlcSettings = {
 				type = "spacing"
 			},
 			{
-				id = "dlc_feature_5",
+				id = "dlc_feature_7",
 				type = "dlc_feature_vertical_long",
 				settings = {
 					text = "dlc_cog_upgrade_slate_04_description",
@@ -3232,7 +3310,7 @@ StoreDlcSettings = {
 				type = "spacing"
 			},
 			{
-				id = "dlc_feature_6",
+				id = "dlc_feature_8",
 				type = "dlc_feature_vertical_long",
 				settings = {
 					text = "dlc_cog_upgrade_slate_05_description",
@@ -3245,7 +3323,7 @@ StoreDlcSettings = {
 				type = "spacing"
 			},
 			{
-				id = "dlc_feature_7",
+				id = "dlc_feature_9",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_cog_upgrade_slate_01_description",
@@ -3255,7 +3333,7 @@ StoreDlcSettings = {
 				}
 			},
 			{
-				id = "dlc_feature_8",
+				id = "dlc_feature_10",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_cog_upgrade_slate_02_description",
@@ -3265,7 +3343,7 @@ StoreDlcSettings = {
 				}
 			},
 			{
-				id = "dlc_feature_9",
+				id = "dlc_feature_11",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_cog_upgrade_slate_03_description",
@@ -3405,6 +3483,7 @@ StoreDlcSettings = {
 		store_texture = "gui/1080p/single_textures/dlc_store/lake/dlc_store_banner_lake",
 		name = "store_lake_title",
 		dlc_name = "lake",
+		additional_content_added = true,
 		store_texture_package = "resource_packages/store/dlc_icons/lake/store_dlc_icons_lake",
 		information_text = "store_lake_desc",
 		store_page_url = "https://store.steampowered.com/app/1343500",
@@ -3540,7 +3619,7 @@ StoreDlcSettings = {
 				type = "spacing"
 			},
 			{
-				id = "dlc_feature_4",
+				id = "dlc_feature_1",
 				type = "dlc_feature_horizontal",
 				settings = {
 					text = "dlc_lake_slate_04_description",
@@ -3555,12 +3634,50 @@ StoreDlcSettings = {
 			{
 				type = "header_text",
 				settings = {
+					text = "title_screen_store_new_additional_content",
+					localize = true
+				}
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "display_name_skin_es_questing_knight_1001",
+					texture_path = "gui/1080p/single_textures/store_item_icons/store_item_icon_skin_es_questingknight_1001/store_item_icon_skin_es_questingknight_1001",
+					localize = true,
+					add_frame = true,
+					texture_package = "resource_packages/store/item_icons/store_item_icon_skin_es_questingknight_1001"
+				}
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "display_name_questing_knight_hat_1001",
+					texture_path = "gui/1080p/single_textures/store_item_icons/store_item_icon_questing_knight_hat_1001/store_item_icon_questing_knight_hat_1001",
+					localize = true,
+					add_frame = true,
+					texture_package = "resource_packages/store/item_icons/store_item_icon_questing_knight_hat_1001"
+				}
+			},
+			{
+				type = "header_text",
+				settings = {
 					text = "menu_store_dlc_title_including",
 					localize = true
 				}
 			},
 			{
-				id = "dlc_feature_1",
+				id = "dlc_feature_4",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_lake_slate_01_description",
@@ -3570,7 +3687,7 @@ StoreDlcSettings = {
 				}
 			},
 			{
-				id = "dlc_feature_2",
+				id = "dlc_feature_5",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_lake_slate_02_description",
@@ -3580,7 +3697,7 @@ StoreDlcSettings = {
 				}
 			},
 			{
-				id = "dlc_feature_3",
+				id = "dlc_feature_6",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_lake_slate_03_description",
@@ -3593,7 +3710,7 @@ StoreDlcSettings = {
 				type = "spacing"
 			},
 			{
-				id = "dlc_feature_5",
+				id = "dlc_feature_7",
 				type = "dlc_feature_vertical_long",
 				settings = {
 					text = "dlc_lake_upgrade_slate_04_description",
@@ -3606,7 +3723,7 @@ StoreDlcSettings = {
 				type = "spacing"
 			},
 			{
-				id = "dlc_feature_6",
+				id = "dlc_feature_8",
 				type = "dlc_feature_vertical_long",
 				settings = {
 					text = "dlc_lake_upgrade_slate_05_description",
@@ -3619,7 +3736,7 @@ StoreDlcSettings = {
 				type = "spacing"
 			},
 			{
-				id = "dlc_feature_7",
+				id = "dlc_feature_9",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_lake_upgrade_slate_01_description",
@@ -3629,7 +3746,7 @@ StoreDlcSettings = {
 				}
 			},
 			{
-				id = "dlc_feature_8",
+				id = "dlc_feature_10",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_lake_upgrade_slate_02_description",
@@ -3639,7 +3756,7 @@ StoreDlcSettings = {
 				}
 			},
 			{
-				id = "dlc_feature_9",
+				id = "dlc_feature_11",
 				type = "dlc_feature_vertical",
 				settings = {
 					text = "dlc_lake_upgrade_slate_03_description",
