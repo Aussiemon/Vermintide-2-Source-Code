@@ -1585,7 +1585,8 @@ NetworkLookup.sound_events = {
 	"Play_wpn_engineer_pistol_spinning_stop",
 	"Stop_wpn_engineer_pistol_spinning_loop",
 	"Play_mutator_enemy_split_large",
-	"enemy_grudge_cursed_enter"
+	"enemy_grudge_cursed_enter",
+	"Play_skulls_event_mutator_extra_hordes"
 }
 
 for _, dlc in pairs(DLCSettings) do

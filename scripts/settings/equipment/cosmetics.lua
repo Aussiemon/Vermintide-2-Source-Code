@@ -2979,6 +2979,9 @@ Cosmetics = {
 	},
 	frame_skulls_2022 = {
 		icon = "unit_frame_02"
+	},
+	frame_skulls_2023 = {
+		icon = "unit_frame_02"
 	}
 }
 

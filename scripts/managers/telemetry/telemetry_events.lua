@@ -764,6 +764,7 @@ TelemetryEvents.store_calendar_rewards_claimed = function (self, claim)
 	params.rewards = claim.rewards
 	params.steam_items = claim.new_steam_items
 	params.cosmetics = claim.new_cosmetics
+	params.currency = claim.currency_added
 	params.items = table.map(claim.items, function (item)
 		return {
 			name = item.data.name,

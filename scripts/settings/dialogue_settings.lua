@@ -151,7 +151,9 @@ DialogueSettings.level_specific_load_files = {
 	inn_level_halloween = {
 		"dialogues/generated/hub_conversations"
 	},
-	inn_level_skulls = {},
+	inn_level_skulls = {
+		"dialogues/generated/npc_dlc_event_skulls"
+	},
 	inn_level_sonnstill = {
 		"dialogues/generated/hub_conversations"
 	},

@@ -54,6 +54,8 @@ AchievementManager.init = function (self, world, statistics_db)
 	self._timed_events = {}
 	self._canceled_timed_events_n = 0
 	self._canceled_timed_events = {}
+	self._platform_achievements_to_verify = {}
+	self._verify_platform_achievements_data = {}
 	local backend_interface_loot = Managers.backend:get_interface("loot")
 	self._backend_interface_loot = backend_interface_loot
 
@@ -266,7 +268,7 @@ end
 AchievementManager.update = function (self, dt, t)
 	self:debug_draw()
 
-	if not self._enabled or not self:_check_version_number() or not self:_check_initialized_achievements() or script_data["eac-untrusted"] then
+	if not self._enabled or not self:_check_version_number() or not self:_check_initialized_achievements() or not self:_verify_platform_achievements() or script_data["eac-untrusted"] then
 		return
 	end
 
@@ -751,6 +753,14 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 		progress = achievement_data.progress(self._statistics_db, stats_id, achievement_data)
 	end
 
+	if completed or progress == 100 then
+		local platform_functions = self._platform_functions
+
+		if platform_functions.is_platform_achievement(achievement_data) and not platform_functions.is_unlocked(achievement_data) then
+			self:_add_achievement_to_platform_unlock_verification(achievement_id)
+		end
+	end
+
 	if type(achievement_data.requirements) == "table" then
 		requirements = achievement_data.requirements
 	elseif type(achievement_data.requirements) == "function" then
@@ -792,6 +802,47 @@ AchievementManager._setup_achievement_data = function (self, achievement_id)
 		claimed = claimed or false
 	}
 	self._achievement_data[achievement_id] = achievement_data
+end
+
+AchievementManager._add_achievement_to_platform_unlock_verification = function (self, achievement_id)
+	local achievement_template = AchievementTemplates.achievements[achievement_id]
+	self._platform_achievements_to_verify[#self._platform_achievements_to_verify + 1] = achievement_template
+end
+
+AchievementManager._verify_platform_achievements = function (self)
+	local platform_functions = self._platform_functions
+	local verify_data = self._verify_platform_achievements_data or {}
+
+	if verify_data.in_progress then
+		local done = platform_functions.unlock_result(verify_data.token, verify_data.template_id)
+
+		if done then
+			verify_data.in_progress = false
+		end
+
+		return
+	end
+
+	local platform_achievements_to_verify = self._platform_achievements_to_verify
+	local current_template = platform_achievements_to_verify[#platform_achievements_to_verify]
+
+	if not current_template then
+		return true
+	end
+
+	local verified, token = self._platform_functions.verify_platform_unlocked(current_template)
+
+	if not verified then
+		return
+	end
+
+	if token then
+		verify_data.token = token
+		verify_data.template_id = current_template.id
+		verify_data.in_progress = true
+	end
+
+	self._platform_achievements_to_verify[#self._platform_achievements_to_verify] = nil
 end
 
 local font_size = 16

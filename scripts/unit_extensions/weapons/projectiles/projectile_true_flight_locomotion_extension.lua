@@ -1,3 +1,5 @@
+require("scripts/unit_extensions/weapons/projectiles/true_flight_utility")
+
 ProjectileTrueFlightLocomotionExtension = class(ProjectileTrueFlightLocomotionExtension)
 
 ProjectileTrueFlightLocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -558,26 +560,25 @@ ProjectileTrueFlightLocomotionExtension.find_closest_highest_value_target = func
 		end
 	end
 
-	local closest_unit = nil
-	local closest_distance = math.huge
-
 	if ai_units_n > 0 then
-		for i = 1, ai_units_n do
+		local i = 1
+
+		while ai_units_n >= i do
 			local unit = ai_units[i]
 			local breed = Unit.get_data(unit, "breed")
 
-			if breed and not breed.no_autoaim and ScriptUnit.has_extension(unit, "health_system") and AiUtils.unit_alive(unit) and not self.hit_units[unit] and self:_legitimate_target_func(unit, position) then
-				local unit_pos = POSITION_LOOKUP[unit]
-				local distance = Vector3.length(unit_pos - position)
+			if not breed or breed.no_autoaim or not ScriptUnit.has_extension(unit, "health_system") or not AiUtils.unit_alive(unit) or self.hit_units[unit] or not self:_legitimate_target_func(unit, position) then
+				table.swap_delete(ai_units, i)
 
-				if distance < closest_distance then
-					closest_unit = unit
-					closest_distance = distance
-				end
+				ai_units_n = ai_units_n - 1
+			else
+				i = i + 1
 			end
 		end
 
-		return closest_unit
+		TrueFlightUtility.sort_prioritize_specials(ai_units)
+
+		return ai_units[1]
 	end
 
 	return nil

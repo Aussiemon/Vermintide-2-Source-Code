@@ -126,6 +126,78 @@ local platform_functions = {
 	is_unlocked = function (template)
 		return not template.ID_XB1
 	end,
+	is_platform_achievement = function (template)
+		return template.ID_XB1
+	end,
+	verify_platform_unlocked = function (template)
+		if not rawget(_G, "XB1Achievements") then
+			return
+		end
+
+		local account_manager = Managers.account
+
+		if account_manager:user_detached() then
+			return
+		end
+
+		if Achievements2017.is_refreshing(XB1Achievements) or Achievements2017.progress_task_status(XB1Achievements) == PROGRESS_TASK_STARTED then
+			return
+		end
+
+		local account_manager = Managers.account
+		local is_online = not account_manager:offline_mode()
+		local achievement_id = template.ID_XB1
+		local template_id = template.id
+		local name = template.name
+		local completed_progress = 100
+
+		printf("[Achievements2017] Verifying - Name: %q. Template: %q. ID: %q", Localize(name), template_id, achievement_id)
+
+		local progress = nil
+
+		if is_online then
+			progress = Achievements2017.progress(XB1Achievements, achievement_id)
+		else
+			progress = account_manager:offline_achievement_progress(template_id)
+		end
+
+		local verified = true
+		local token = false
+
+		if not progress or progress == -1 then
+			printf("   - #### Error: Couldn't get progress for achievement %q - Removing it from evaluation", template_id)
+			account_manager:set_achievement_unlocked(template_id)
+
+			return verified, token
+		end
+
+		if progress < completed_progress then
+			printf("[Achievements2017] [%s] - Unlocking Name: %q. Template: %q. ID: %q", is_online and "ONLINE" or "OFFLINE", Localize(name), template_id, achievement_id)
+
+			local error_msg = nil
+
+			if is_online then
+				error_msg = Achievements2017.set_progress(XB1Achievements, achievement_id, completed_progress)
+			else
+				error_msg = Achievements2017.set_progress_offline(XB1Achievements, achievement_id, progress)
+
+				if not error_msg then
+					account_manager:set_offline_achievement_progress(template_id, progress)
+				end
+			end
+
+			if error_msg then
+				printf("[Achievements2017] #### Error: %s", error_msg)
+				account_manager:set_achievement_unlocked(template_id)
+			else
+				token = true
+			end
+		else
+			print("[Achievements2017] - Already Unlocked")
+		end
+
+		return verified, token
+	end,
 	set_progress = function (template, progress, progress_max)
 		if progress > 0 then
 			local progress_raw = progress / progress_max * 100

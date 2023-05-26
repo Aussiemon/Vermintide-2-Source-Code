@@ -129,6 +129,46 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 		end
 	end
 
+	local level_key = Managers.level_transition_handler:get_current_level_key()
+	local level_settings = LevelSettings[level_key]
+
+	if not level_settings.tutorial_level then
+		local live_event_interface = Managers.backend:get_interface("live_events")
+		local special_events = live_event_interface and live_event_interface:get_special_events()
+
+		if special_events then
+			local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+			for event_idx = 1, #special_events do
+				local event_data = special_events[event_idx]
+				local event_name = event_data.name
+				local event_packages = LIVE_EVENT_PACKAGES[event_name]
+				local event_dialogues = event_packages and event_packages.dialogues
+				local additional_dialogues = event_dialogues and event_dialogues[mechanism_name]
+
+				if additional_dialogues then
+					for dialogue_idx = 1, #additional_dialogues do
+						local file_name = additional_dialogues[dialogue_idx]
+
+						if Application.can_get("lua", file_name) then
+							self.tagquery_loader:load_file(file_name)
+						end
+
+						if Application.can_get("lua", file_name .. "_markers") then
+							local markers = dofile(file_name .. "_markers")
+
+							for name, marker in pairs(markers) do
+								fassert(not self._markers[name], "[DialogueSystem] There is already a marker called %s registered", name)
+
+								self._markers[name] = marker
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
 	self.tagquery_database:finalize_rules()
 
 	local world = entity_system_creation_context.world

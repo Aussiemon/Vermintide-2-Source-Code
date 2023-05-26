@@ -624,7 +624,7 @@ StoreWindowItemPreview._handle_input = function (self, input_service, dt, t)
 
 			for i = 1, #self._required_dlcs do
 				local settings = StoreDlcSettingsByName[self._required_dlcs[i]]
-				local dlc_name = Localize(settings.name)
+				local dlc_name = settings and Localize(settings.name) or Localize("lb_unknown")
 				missing_dlcs_text = missing_dlcs_text .. dlc_name .. "\n"
 			end
 
@@ -1240,7 +1240,7 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 
 		if missing_required_dlc then
 			local settings = StoreDlcSettingsByName[item_data.required_dlc]
-			disclaimer_text = string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name))
+			disclaimer_text = settings and string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name)) or Localize("dlc_required")
 		end
 
 		self:_set_disclaimer_text(disclaimer_text)
@@ -1265,7 +1265,7 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 
 			if missing_required_dlc then
 				local settings = StoreDlcSettingsByName[item_data.required_dlc]
-				disclaimer_text = string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name))
+				disclaimer_text = settings and string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name)) or Localize("dlc_required")
 			else
 				disclaimer_text = Localize(item_type)
 			end
@@ -1276,7 +1276,7 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 
 			if missing_required_dlc then
 				local settings = StoreDlcSettingsByName[item_data.required_dlc]
-				disclaimer_text = string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name))
+				disclaimer_text = settings and string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name)) or Localize("dlc_required")
 			end
 		elseif slot_type == "skin" then
 			type_title_text = Localize(item_type)
@@ -1284,7 +1284,7 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 
 			if missing_required_dlc then
 				local settings = StoreDlcSettingsByName[item_data.required_dlc]
-				disclaimer_text = string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name))
+				disclaimer_text = settings and string.format(Localize("menu_store_disclaimer_missing_required_dlc"), Localize(settings.name)) or Localize("dlc_required")
 			else
 				disclaimer_text = Localize("menu_store_product_hero_skin_disclaimer_desc")
 			end

@@ -266,6 +266,15 @@ DLCSettings = DLCSettings or {
 			buff = "scripts/settings/dlcs/geheimnisnacht_2021/buff_settings_geheimnisnacht_2021"
 		}
 	},
+	skulls_2023 = {
+		localization = "localization/skulls_2023",
+		package_name = "resource_packages/dlcs/skulls_2023",
+		additional_settings = {
+			common = "scripts/settings/dlcs/skulls_2023/skulls_2023_common_settings",
+			quest = "scripts/settings/dlcs/skulls_2023/skulls_2023_quest_settings",
+			buff = "scripts/settings/dlcs/skulls_2023/buff_settings_skulls_2023"
+		}
+	},
 	fall_collection_2021 = {
 		package_name = "resource_packages/dlcs/fall_collection_2021",
 		additional_settings = {

@@ -2428,6 +2428,18 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_skulls_2023 = {
+		{
+			texture = "portrait_frame_skulls_2023",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	frame_deus_portrait_khorne = {
 		{
 			texture = "deus_portrait_khorne",

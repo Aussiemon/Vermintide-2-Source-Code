@@ -15,6 +15,15 @@ local platform_functions = {
 	is_unlocked = function (template)
 		return false
 	end,
+	is_platform_achievement = function (template)
+		return false
+	end,
+	verify_platform_unlocked = function (template)
+		local verified = true
+		local token = nil
+
+		return verified, token
+	end,
 	unlock = function (template)
 		local token = Application.time_since_launch() + 5 + math.random() * 2
 

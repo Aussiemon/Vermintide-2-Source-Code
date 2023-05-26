@@ -1,4 +1,5 @@
 require("scripts/unit_extensions/weapons/projectiles/true_flight_templates")
+require("scripts/unit_extensions/weapons/projectiles/true_flight_utility")
 
 ActionTrueFlightBowAim = class(ActionTrueFlightBowAim, ActionBase)
 local actor_unit = Actor.unit
@@ -279,29 +280,28 @@ end
 
 ActionTrueFlightBowAim._get_visible_targets = function (self, aimed_target, num_targets, is_bot)
 	local first_person_extension = self.first_person_extension
+	local range = 50
+	local max_angle = math.pi * 0.2
 	local own_position, look_rotation = first_person_extension:get_projectile_start_position_rotation()
 	local look_direction = Quaternion.forward(look_rotation)
-	local ai_system = Managers.state.entity:system("ai_system")
-	local ai_broadphase = ai_system.broadphase
+	local min_dot = math.cos(max_angle)
 	local targets = {}
-	local nearby_ai_units = {}
-	local nearby_ai_positions = {}
-	local nearby_ai_distances = {}
-	local num_nearby_ai_units = EngineOptimized.smart_targeting_query(ai_broadphase, own_position, look_direction, 0, 50, 0.1, 0.2, 0.8, num_targets, nearby_ai_units, nearby_ai_positions, nearby_ai_distances)
-	local aimed_target_nearby = false
+	local nearby_ai_units = FrameTable.alloc_table()
+	local ai_units_n = AiUtils.broadphase_query(own_position, range, nearby_ai_units, self.target_broadphase_categories)
 
-	if num_nearby_ai_units then
-		for i = 1, num_nearby_ai_units do
+	if ai_units_n > 0 then
+		for i = 1, ai_units_n do
 			local unit = nearby_ai_units[i]
 
 			if AiUtils.unit_alive(unit) then
 				local breed = unit_get_data(unit, "breed")
 
 				if breed and not breed.no_autoaim then
-					targets[#targets + 1] = unit
+					local enemy_dir = Vector3.normalize(POSITION_LOOKUP[unit] - own_position)
+					local dot_angle = Vector3.dot(look_direction, enemy_dir)
 
-					if unit == aimed_target then
-						aimed_target_nearby = true
+					if min_dot < dot_angle and unit ~= aimed_target then
+						targets[#targets + 1] = unit
 					end
 				end
 			end
@@ -310,8 +310,10 @@ ActionTrueFlightBowAim._get_visible_targets = function (self, aimed_target, num_
 		targets = self.targets
 	end
 
-	if aimed_target and not aimed_target_nearby then
-		targets[1] = aimed_target
+	TrueFlightUtility.sort_prioritize_specials(targets)
+
+	if aimed_target then
+		table.insert(targets, 1, aimed_target)
 	end
 
 	return targets

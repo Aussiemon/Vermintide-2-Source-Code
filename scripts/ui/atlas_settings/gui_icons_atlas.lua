@@ -48,14 +48,14 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.054688,
-			0.103516
+			0.064453
 		},
 		uv11 = {
 			0.057129,
-			0.110352
+			0.071289
 		}
 	},
-	item_applied_illusion_icon = {
+	equip_multiple_careers_stroke = {
 		size = {
 			20,
 			20
@@ -69,7 +69,7 @@ icons_atlas = {
 			0.99707
 		}
 	},
-	equip_multiple_careers_stroke = {
+	item_illusion_icon = {
 		size = {
 			20,
 			20
@@ -83,7 +83,7 @@ icons_atlas = {
 			0.99707
 		}
 	},
-	item_favorite_icon = {
+	item_applied_illusion_icon = {
 		size = {
 			20,
 			20
@@ -97,7 +97,7 @@ icons_atlas = {
 			0.99707
 		}
 	},
-	item_illusion_icon = {
+	tooltip_marker_02 = {
 		size = {
 			20,
 			20
@@ -111,7 +111,7 @@ icons_atlas = {
 			0.99707
 		}
 	},
-	tooltip_marker_02 = {
+	stats_icon_yes = {
 		size = {
 			20,
 			20
@@ -125,7 +125,7 @@ icons_atlas = {
 			0.785156
 		}
 	},
-	stats_icon_yes = {
+	item_favorite_icon = {
 		size = {
 			20,
 			20
@@ -237,32 +237,32 @@ icons_atlas = {
 			0.13623
 		}
 	},
-	journal_icon_01 = {
-		size = {
-			30,
-			30
-		},
-		uv00 = {
-			0.891357,
-			0.560059
-		},
-		uv11 = {
-			0.898682,
-			0.574707
-		}
-	},
 	journal_icon_02 = {
 		size = {
 			30,
 			30
 		},
 		uv00 = {
-			0.883057,
-			0.560059
+			0.777344,
+			0.65332
 		},
 		uv11 = {
-			0.890381,
-			0.574707
+			0.784668,
+			0.667969
+		}
+	},
+	journal_icon_01 = {
+		size = {
+			30,
+			30
+		},
+		uv00 = {
+			0.777344,
+			0.636719
+		},
+		uv11 = {
+			0.784668,
+			0.651367
 		}
 	},
 	icon_wind_azyr = {
@@ -293,200 +293,18 @@ icons_atlas = {
 			0.116211
 		}
 	},
-	emo_02 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.874268,
-			0.560059
-		},
-		uv11 = {
-			0.88208,
-			0.575684
-		}
-	},
-	emo_14 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.865479,
-			0.560059
-		},
-		uv11 = {
-			0.873291,
-			0.575684
-		}
-	},
-	emo_05 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.856689,
-			0.560059
-		},
-		uv11 = {
-			0.864502,
-			0.575684
-		}
-	},
-	emo_10 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.8479,
-			0.560059
-		},
-		uv11 = {
-			0.855713,
-			0.575684
-		}
-	},
-	emo_13 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.839111,
-			0.560059
-		},
-		uv11 = {
-			0.846924,
-			0.575684
-		}
-	},
 	emo_03 = {
 		size = {
 			32,
 			32
 		},
 		uv00 = {
-			0.830322,
-			0.560059
+			0.785645,
+			0.687988
 		},
 		uv11 = {
-			0.838135,
-			0.575684
-		}
-	},
-	emo_17 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.821533,
-			0.560059
-		},
-		uv11 = {
-			0.829346,
-			0.575684
-		}
-	},
-	friends_icon_profile = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.812744,
-			0.560059
-		},
-		uv11 = {
-			0.820557,
-			0.575684
-		}
-	},
-	emo_15 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.803955,
-			0.560059
-		},
-		uv11 = {
-			0.811768,
-			0.575684
-		}
-	},
-	icon_crafting_essence_small = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.795166,
-			0.560059
-		},
-		uv11 = {
-			0.802979,
-			0.575684
-		}
-	},
-	emo_07 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.786377,
-			0.560059
-		},
-		uv11 = {
-			0.794189,
-			0.575684
-		}
-	},
-	friends_icon_refresh = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.777344,
-			0.970215
-		},
-		uv11 = {
-			0.785156,
-			0.98584
-		}
-	},
-	emo_06 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.777344,
-			0.952637
-		},
-		uv11 = {
-			0.785156,
-			0.968262
-		}
-	},
-	emo_11 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.777344,
-			0.935059
-		},
-		uv11 = {
-			0.785156,
-			0.950684
+			0.793457,
+			0.703613
 		}
 	},
 	emo_16 = {
@@ -495,82 +313,12 @@ icons_atlas = {
 			32
 		},
 		uv00 = {
-			0.777344,
-			0.91748
+			0.785645,
+			0.67041
 		},
 		uv11 = {
-			0.785156,
-			0.933105
-		}
-	},
-	emo_12 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.777344,
-			0.899902
-		},
-		uv11 = {
-			0.785156,
-			0.915527
-		}
-	},
-	emo_08 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.777344,
-			0.882324
-		},
-		uv11 = {
-			0.785156,
-			0.897949
-		}
-	},
-	emo_01 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.777344,
-			0.864746
-		},
-		uv11 = {
-			0.785156,
-			0.880371
-		}
-	},
-	emo_04 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.777344,
-			0.847168
-		},
-		uv11 = {
-			0.785156,
-			0.862793
-		}
-	},
-	emo_09 = {
-		size = {
-			32,
-			32
-		},
-		uv00 = {
-			0.777344,
-			0.82959
-		},
-		uv11 = {
-			0.785156,
-			0.845215
+			0.793457,
+			0.686035
 		}
 	},
 	friends_icon_join = {
@@ -579,26 +327,166 @@ icons_atlas = {
 			32
 		},
 		uv00 = {
-			0.777344,
-			0.812012
+			0.785645,
+			0.652832
 		},
 		uv11 = {
-			0.785156,
-			0.827637
+			0.793457,
+			0.668457
 		}
 	},
-	friends_icon_close = {
+	emo_15 = {
 		size = {
 			32,
 			32
 		},
 		uv00 = {
-			0.777344,
-			0.794434
+			0.785645,
+			0.635254
 		},
 		uv11 = {
-			0.785156,
-			0.810059
+			0.793457,
+			0.650879
+		}
+	},
+	emo_14 = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.785645,
+			0.617676
+		},
+		uv11 = {
+			0.793457,
+			0.633301
+		}
+	},
+	emo_06 = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.785645,
+			0.600098
+		},
+		uv11 = {
+			0.793457,
+			0.615723
+		}
+	},
+	emo_17 = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.785645,
+			0.58252
+		},
+		uv11 = {
+			0.793457,
+			0.598145
+		}
+	},
+	emo_09 = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.989014,
+			0.564453
+		},
+		uv11 = {
+			0.996826,
+			0.580078
+		}
+	},
+	emo_01 = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.980225,
+			0.564453
+		},
+		uv11 = {
+			0.988037,
+			0.580078
+		}
+	},
+	icon_crafting_essence_small = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.971436,
+			0.564453
+		},
+		uv11 = {
+			0.979248,
+			0.580078
+		}
+	},
+	emo_12 = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.962646,
+			0.564453
+		},
+		uv11 = {
+			0.970459,
+			0.580078
+		}
+	},
+	friends_icon_refresh = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.953857,
+			0.564453
+		},
+		uv11 = {
+			0.96167,
+			0.580078
+		}
+	},
+	friends_icon_profile = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.945068,
+			0.564453
+		},
+		uv11 = {
+			0.952881,
+			0.580078
+		}
+	},
+	emo_13 = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.936279,
+			0.564453
+		},
+		uv11 = {
+			0.944092,
+			0.580078
 		}
 	},
 	friends_icon_invite = {
@@ -607,54 +495,124 @@ icons_atlas = {
 			32
 		},
 		uv00 = {
-			0.777344,
-			0.776855
+			0.92749,
+			0.564453
 		},
 		uv11 = {
-			0.785156,
-			0.79248
+			0.935303,
+			0.580078
 		}
 	},
-	ps4_button_icon_r3 = {
-		size = {
-			30,
-			33
-		},
-		uv00 = {
-			0.777344,
-			0.758789
-		},
-		uv11 = {
-			0.784668,
-			0.774902
-		}
-	},
-	ps4_button_icon_left_stick = {
+	emo_11 = {
 		size = {
 			32,
-			33
+			32
 		},
 		uv00 = {
-			0.777344,
-			0.740723
+			0.918701,
+			0.564453
 		},
 		uv11 = {
-			0.785156,
-			0.756836
+			0.926514,
+			0.580078
 		}
 	},
-	xbone_button_icon_d_pad_down = {
+	emo_10 = {
 		size = {
-			33,
-			33
+			32,
+			32
 		},
 		uv00 = {
-			0.777344,
-			0.722656
+			0.909912,
+			0.564453
 		},
 		uv11 = {
-			0.7854,
-			0.73877
+			0.917725,
+			0.580078
+		}
+	},
+	emo_04 = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.901123,
+			0.564453
+		},
+		uv11 = {
+			0.908936,
+			0.580078
+		}
+	},
+	emo_02 = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.892334,
+			0.564453
+		},
+		uv11 = {
+			0.900146,
+			0.580078
+		}
+	},
+	emo_08 = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.883545,
+			0.564453
+		},
+		uv11 = {
+			0.891357,
+			0.580078
+		}
+	},
+	emo_07 = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.874756,
+			0.564453
+		},
+		uv11 = {
+			0.882568,
+			0.580078
+		}
+	},
+	friends_icon_close = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.865967,
+			0.564453
+		},
+		uv11 = {
+			0.873779,
+			0.580078
+		}
+	},
+	emo_05 = {
+		size = {
+			32,
+			32
+		},
+		uv00 = {
+			0.857178,
+			0.564453
+		},
+		uv11 = {
+			0.86499,
+			0.580078
 		}
 	},
 	ps4_button_icon_d_pad = {
@@ -663,54 +621,54 @@ icons_atlas = {
 			33
 		},
 		uv00 = {
-			0.777344,
-			0.70459
+			0.848145,
+			0.564453
 		},
 		uv11 = {
-			0.7854,
-			0.720703
+			0.856201,
+			0.580566
 		}
 	},
-	ps4_button_icon_right_stick = {
-		size = {
-			32,
-			33
-		},
-		uv00 = {
-			0.777344,
-			0.686523
-		},
-		uv11 = {
-			0.785156,
-			0.702637
-		}
-	},
-	ps4_button_icon_l3 = {
-		size = {
-			30,
-			33
-		},
-		uv00 = {
-			0.777344,
-			0.668457
-		},
-		uv11 = {
-			0.784668,
-			0.68457
-		}
-	},
-	xbone_button_icon_d_pad_right = {
+	xbone_button_icon_d_pad_down = {
 		size = {
 			33,
 			33
 		},
 		uv00 = {
-			0.777344,
-			0.650391
+			0.839111,
+			0.564453
 		},
 		uv11 = {
-			0.7854,
-			0.666504
+			0.847168,
+			0.580566
+		}
+	},
+	xbone_button_icon_d_pad_vertical = {
+		size = {
+			33,
+			33
+		},
+		uv00 = {
+			0.830078,
+			0.564453
+		},
+		uv11 = {
+			0.838135,
+			0.580566
+		}
+	},
+	xbone_button_icon_d_pad = {
+		size = {
+			33,
+			33
+		},
+		uv00 = {
+			0.821045,
+			0.564453
+		},
+		uv11 = {
+			0.829102,
+			0.580566
 		}
 	},
 	xbone_button_icon_r3 = {
@@ -720,95 +678,11 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.777344,
-			0.632324
+			0.618652
 		},
 		uv11 = {
 			0.784668,
-			0.648438
-		}
-	},
-	ps4_button_icon_d_pad_vertical = {
-		size = {
-			33,
-			33
-		},
-		uv00 = {
-			0.777344,
-			0.614258
-		},
-		uv11 = {
-			0.7854,
-			0.630371
-		}
-	},
-	ps4_button_icon_d_pad_right = {
-		size = {
-			33,
-			33
-		},
-		uv00 = {
-			0.777344,
-			0.596191
-		},
-		uv11 = {
-			0.7854,
-			0.612305
-		}
-	},
-	xbone_button_icon_right_stick = {
-		size = {
-			32,
-			33
-		},
-		uv00 = {
-			0.777344,
-			0.578125
-		},
-		uv11 = {
-			0.785156,
-			0.594238
-		}
-	},
-	xbone_button_icon_d_pad = {
-		size = {
-			33,
-			33
-		},
-		uv00 = {
-			0.777344,
-			0.560059
-		},
-		uv11 = {
-			0.7854,
-			0.576172
-		}
-	},
-	ps4_button_icon_d_pad_horizontal = {
-		size = {
-			33,
-			33
-		},
-		uv00 = {
-			0.987549,
-			0.541504
-		},
-		uv11 = {
-			0.995605,
-			0.557617
-		}
-	},
-	ps4_button_icon_d_pad_up = {
-		size = {
-			33,
-			33
-		},
-		uv00 = {
-			0.978516,
-			0.541504
-		},
-		uv11 = {
-			0.986572,
-			0.557617
+			0.634766
 		}
 	},
 	icon_wind_shyish = {
@@ -825,32 +699,60 @@ icons_atlas = {
 			0.099121
 		}
 	},
+	ps4_button_icon_r3 = {
+		size = {
+			30,
+			33
+		},
+		uv00 = {
+			0.777344,
+			0.600586
+		},
+		uv11 = {
+			0.784668,
+			0.616699
+		}
+	},
+	xbone_button_icon_l3 = {
+		size = {
+			30,
+			33
+		},
+		uv00 = {
+			0.777344,
+			0.58252
+		},
+		uv11 = {
+			0.784668,
+			0.598633
+		}
+	},
 	ps4_button_icon_d_pad_down = {
 		size = {
 			33,
 			33
 		},
 		uv00 = {
-			0.969482,
-			0.541504
+			0.812012,
+			0.564453
 		},
 		uv11 = {
-			0.977539,
-			0.557617
+			0.820068,
+			0.580566
 		}
 	},
-	xbone_button_icon_left_stick = {
+	ps4_button_icon_right_stick = {
 		size = {
 			32,
 			33
 		},
 		uv00 = {
-			0.960693,
-			0.541504
+			0.803223,
+			0.564453
 		},
 		uv11 = {
-			0.968506,
-			0.557617
+			0.811035,
+			0.580566
 		}
 	},
 	icon_wind_shyish_glow = {
@@ -867,46 +769,60 @@ icons_atlas = {
 			0.340332
 		}
 	},
-	xbone_button_icon_d_pad_up = {
+	xbone_button_icon_left_stick = {
 		size = {
-			33,
+			32,
 			33
 		},
 		uv00 = {
-			0.95166,
-			0.541504
+			0.794434,
+			0.564453
 		},
 		uv11 = {
-			0.959717,
-			0.557617
+			0.802246,
+			0.580566
 		}
 	},
-	xbone_button_icon_l3 = {
+	ps4_button_icon_left_stick = {
+		size = {
+			32,
+			33
+		},
+		uv00 = {
+			0.785645,
+			0.564453
+		},
+		uv11 = {
+			0.793457,
+			0.580566
+		}
+	},
+	ps4_button_icon_l3 = {
 		size = {
 			30,
 			33
 		},
 		uv00 = {
-			0.943359,
-			0.541504
+			0.777344,
+			0.564453
 		},
 		uv11 = {
-			0.950684,
-			0.557617
+			0.784668,
+			0.580566
 		}
 	},
-	xbone_button_icon_d_pad_vertical = {
+	xbone_button_icon_right_stick = {
 		size = {
-			33,
+			32,
 			33
 		},
 		uv00 = {
-			0.934326,
-			0.541504
+			0.988525,
+			0.545898
 		},
 		uv11 = {
-			0.942383,
-			0.557617
+			0.996338,
+			0.562012
 		}
 	},
 	ps4_button_icon_d_pad_left = {
@@ -915,12 +831,40 @@ icons_atlas = {
 			33
 		},
 		uv00 = {
-			0.925293,
-			0.541504
+			0.979492,
+			0.545898
 		},
 		uv11 = {
-			0.93335,
-			0.557617
+			0.987549,
+			0.562012
+		}
+	},
+	xbone_button_icon_d_pad_up = {
+		size = {
+			33,
+			33
+		},
+		uv00 = {
+			0.970459,
+			0.545898
+		},
+		uv11 = {
+			0.978516,
+			0.562012
+		}
+	},
+	ps4_button_icon_d_pad_horizontal = {
+		size = {
+			33,
+			33
+		},
+		uv00 = {
+			0.961426,
+			0.545898
+		},
+		uv11 = {
+			0.969482,
+			0.562012
 		}
 	},
 	xbone_button_icon_d_pad_horizontal = {
@@ -929,12 +873,26 @@ icons_atlas = {
 			33
 		},
 		uv00 = {
-			0.91626,
-			0.541504
+			0.952393,
+			0.545898
 		},
 		uv11 = {
-			0.924316,
-			0.557617
+			0.960449,
+			0.562012
+		}
+	},
+	xbone_button_icon_d_pad_right = {
+		size = {
+			33,
+			33
+		},
+		uv00 = {
+			0.943359,
+			0.545898
+		},
+		uv11 = {
+			0.951416,
+			0.562012
 		}
 	},
 	xbone_button_icon_d_pad_left = {
@@ -943,12 +901,54 @@ icons_atlas = {
 			33
 		},
 		uv00 = {
+			0.934326,
+			0.545898
+		},
+		uv11 = {
+			0.942383,
+			0.562012
+		}
+	},
+	ps4_button_icon_d_pad_vertical = {
+		size = {
+			33,
+			33
+		},
+		uv00 = {
+			0.925293,
+			0.545898
+		},
+		uv11 = {
+			0.93335,
+			0.562012
+		}
+	},
+	ps4_button_icon_d_pad_up = {
+		size = {
+			33,
+			33
+		},
+		uv00 = {
+			0.91626,
+			0.545898
+		},
+		uv11 = {
+			0.924316,
+			0.562012
+		}
+	},
+	ps4_button_icon_d_pad_right = {
+		size = {
+			33,
+			33
+		},
+		uv00 = {
 			0.907227,
-			0.541504
+			0.545898
 		},
 		uv11 = {
 			0.915283,
-			0.557617
+			0.562012
 		}
 	},
 	mixer_icon_small = {
@@ -958,53 +958,53 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.897949,
-			0.541504
+			0.545898
 		},
 		uv11 = {
 			0.90625,
-			0.558105
+			0.5625
 		}
 	},
-	tabs_class_icon_dwarf_ranger_hover = {
+	tabs_inventory_icon_melee_hover = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.888672,
-			0.541504
+			0.545898
 		},
 		uv11 = {
 			0.896973,
-			0.558105
+			0.5625
 		}
 	},
-	tabs_class_icon_bright_wizard_selected = {
+	ps4_button_icon_circle = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.879395,
-			0.541504
+			0.545898
 		},
 		uv11 = {
 			0.887695,
-			0.558105
+			0.5625
 		}
 	},
-	tabs_inventory_icon_trinkets_hover = {
+	tabs_inventory_icon_melee_selected = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.870117,
-			0.541504
+			0.545898
 		},
 		uv11 = {
 			0.878418,
-			0.558105
+			0.5625
 		}
 	},
 	twitch_icon_small = {
@@ -1014,137 +1014,39 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.86084,
-			0.541504
+			0.545898
 		},
 		uv11 = {
 			0.869141,
-			0.558105
+			0.5625
 		}
 	},
-	ps4_button_icon_cross = {
+	tabs_inventory_icon_melee_normal = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.851563,
-			0.541504
+			0.545898
 		},
 		uv11 = {
 			0.859863,
-			0.558105
+			0.5625
 		}
 	},
-	tabs_class_icon_bright_wizard_hover = {
+	input_button_icon_overlay_01 = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.842285,
-			0.541504
+			0.545898
 		},
 		uv11 = {
 			0.850586,
-			0.558105
-		}
-	},
-	tabs_class_icon_bright_wizard_normal = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.833008,
-			0.541504
-		},
-		uv11 = {
-			0.841309,
-			0.558105
-		}
-	},
-	ps4_button_icon_triangle = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.82373,
-			0.541504
-		},
-		uv11 = {
-			0.832031,
-			0.558105
-		}
-	},
-	tabs_class_icon_way_watcher_selected = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.814453,
-			0.541504
-		},
-		uv11 = {
-			0.822754,
-			0.558105
-		}
-	},
-	xbone_button_icon_a = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.805176,
-			0.541504
-		},
-		uv11 = {
-			0.813477,
-			0.558105
-		}
-	},
-	tabs_icon_all_normal = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.795898,
-			0.541504
-		},
-		uv11 = {
-			0.804199,
-			0.558105
-		}
-	},
-	ps4_button_icon_circle = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.786621,
-			0.541504
-		},
-		uv11 = {
-			0.794922,
-			0.558105
-		}
-	},
-	tabs_inventory_icon_trinkets_hover = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.777344,
-			0.541504
-		},
-		uv11 = {
-			0.785645,
-			0.558105
+			0.5625
 		}
 	},
 	ps4_button_icon_square = {
@@ -1153,12 +1055,166 @@ icons_atlas = {
 			34
 		},
 		uv00 = {
+			0.833008,
+			0.545898
+		},
+		uv11 = {
+			0.841309,
+			0.5625
+		}
+	},
+	tabs_class_icon_bright_wizard_normal = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.82373,
+			0.545898
+		},
+		uv11 = {
+			0.832031,
+			0.5625
+		}
+	},
+	controller_hold_bar = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.814453,
+			0.545898
+		},
+		uv11 = {
+			0.822754,
+			0.5625
+		}
+	},
+	tabs_class_icon_way_watcher_hover = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.805176,
+			0.545898
+		},
+		uv11 = {
+			0.813477,
+			0.5625
+		}
+	},
+	controller_hold_bar_gradient = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.795898,
+			0.545898
+		},
+		uv11 = {
+			0.804199,
+			0.5625
+		}
+	},
+	tabs_class_icon_witch_hunter_hover = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.786621,
+			0.545898
+		},
+		uv11 = {
+			0.794922,
+			0.5625
+		}
+	},
+	tabs_class_icon_bright_wizard_hover = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.777344,
+			0.545898
+		},
+		uv11 = {
+			0.785645,
+			0.5625
+		}
+	},
+	tabs_inventory_icon_ranged_hover = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
 			0.768066,
-			0.968262
+			0.972656
 		},
 		uv11 = {
 			0.776367,
-			0.984863
+			0.989258
+		}
+	},
+	ps4_button_icon_triangle = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.768066,
+			0.954102
+		},
+		uv11 = {
+			0.776367,
+			0.970703
+		}
+	},
+	tabs_inventory_icon_ranged_selected = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.768066,
+			0.935547
+		},
+		uv11 = {
+			0.776367,
+			0.952148
+		}
+	},
+	tabs_class_icon_witch_hunter_selected = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.768066,
+			0.916992
+		},
+		uv11 = {
+			0.776367,
+			0.933594
+		}
+	},
+	tabs_inventory_icon_trinkets_selected = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.768066,
+			0.898438
+		},
+		uv11 = {
+			0.776367,
+			0.915039
 		}
 	},
 	tabs_inventory_icon_hats_hover = {
@@ -1168,67 +1224,81 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.768066,
-			0.949707
+			0.879883
 		},
 		uv11 = {
 			0.776367,
-			0.966309
+			0.896484
 		}
 	},
-	xbone_button_icon_b = {
+	ps4_button_icon_cross = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.768066,
-			0.931152
+			0.861328
 		},
 		uv11 = {
 			0.776367,
-			0.947754
+			0.87793
 		}
 	},
-	tabs_class_icon_empire_soldier_normal = {
+	tabs_inventory_icon_hats_normal = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.768066,
-			0.912598
+			0.842773
 		},
 		uv11 = {
 			0.776367,
-			0.929199
+			0.859375
 		}
 	},
-	tabs_inventory_icon_melee_selected = {
+	xbone_button_icon_a = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.768066,
-			0.894043
+			0.824219
 		},
 		uv11 = {
 			0.776367,
-			0.910645
+			0.84082
 		}
 	},
-	tabs_inventory_icon_trinkets_normal = {
+	tabs_class_icon_way_watcher_selected = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.768066,
-			0.875488
+			0.805664
 		},
 		uv11 = {
 			0.776367,
-			0.89209
+			0.822266
+		}
+	},
+	tabs_inventory_icon_melee_normal = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.768066,
+			0.787109
+		},
+		uv11 = {
+			0.776367,
+			0.803711
 		}
 	},
 	xbone_button_icon_x = {
@@ -1238,137 +1308,11 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.768066,
-			0.856934
+			0.768555
 		},
 		uv11 = {
 			0.776367,
-			0.873535
-		}
-	},
-	tabs_inventory_icon_hats_normal = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.768066,
-			0.838379
-		},
-		uv11 = {
-			0.776367,
-			0.85498
-		}
-	},
-	tabs_inventory_icon_ranged_normal = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.768066,
-			0.819824
-		},
-		uv11 = {
-			0.776367,
-			0.836426
-		}
-	},
-	tabs_class_icon_empire_soldier_selected = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.768066,
-			0.80127
-		},
-		uv11 = {
-			0.776367,
-			0.817871
-		}
-	},
-	tabs_inventory_icon_trinkets_normal = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.768066,
-			0.782715
-		},
-		uv11 = {
-			0.776367,
-			0.799316
-		}
-	},
-	tabs_class_icon_way_watcher_hover = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.768066,
-			0.76416
-		},
-		uv11 = {
-			0.776367,
-			0.780762
-		}
-	},
-	tabs_inventory_icon_hats_hover = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.768066,
-			0.745605
-		},
-		uv11 = {
-			0.776367,
-			0.762207
-		}
-	},
-	input_button_icon_overlay_01 = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.768066,
-			0.727051
-		},
-		uv11 = {
-			0.776367,
-			0.743652
-		}
-	},
-	tabs_inventory_icon_ranged_hover = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.768066,
-			0.708496
-		},
-		uv11 = {
-			0.776367,
-			0.725098
-		}
-	},
-	tabs_class_icon_dwarf_ranger_selected = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.768066,
-			0.689941
-		},
-		uv11 = {
-			0.776367,
-			0.706543
+			0.785156
 		}
 	},
 	tabs_class_icon_way_watcher_normal = {
@@ -1378,109 +1322,165 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.768066,
-			0.671387
+			0.75
 		},
 		uv11 = {
 			0.776367,
-			0.687988
+			0.766602
 		}
 	},
-	tabs_class_icon_dwarf_ranger_normal = {
+	tabs_class_icon_empire_soldier_normal = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.768066,
-			0.652832
+			0.731445
 		},
 		uv11 = {
 			0.776367,
-			0.669434
+			0.748047
 		}
 	},
-	tabs_inventory_icon_ranged_selected = {
+	tabs_class_icon_dwarf_ranger_selected = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.768066,
-			0.634277
+			0.712891
 		},
 		uv11 = {
 			0.776367,
-			0.650879
+			0.729492
 		}
 	},
-	xbone_button_icon_y = {
+	xbone_button_icon_b = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.768066,
-			0.615723
+			0.694336
 		},
 		uv11 = {
 			0.776367,
-			0.632324
+			0.710938
 		}
 	},
-	controller_hold_bar_gradient = {
+	tabs_class_icon_bright_wizard_hover = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.768066,
-			0.597168
+			0.675781
 		},
 		uv11 = {
 			0.776367,
-			0.61377
+			0.692383
 		}
 	},
-	tabs_inventory_icon_hats_selected = {
+	tabs_class_icon_way_watcher_hover = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.768066,
-			0.578613
+			0.657227
 		},
 		uv11 = {
 			0.776367,
-			0.595215
+			0.673828
 		}
 	},
-	tabs_class_icon_witch_hunter_hover = {
+	tabs_icon_all_normal = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.768066,
-			0.560059
+			0.638672
 		},
 		uv11 = {
 			0.776367,
-			0.57666
+			0.655273
 		}
 	},
-	controller_hold_bar = {
+	tabs_class_icon_dwarf_ranger_hover = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.768066,
-			0.541504
+			0.620117
 		},
 		uv11 = {
 			0.776367,
-			0.558105
+			0.636719
+		}
+	},
+	tabs_inventory_icon_trinkets_hover = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.768066,
+			0.601563
+		},
+		uv11 = {
+			0.776367,
+			0.618164
+		}
+	},
+	tabs_class_icon_empire_soldier_hover = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.768066,
+			0.583008
+		},
+		uv11 = {
+			0.776367,
+			0.599609
+		}
+	},
+	tabs_class_icon_witch_hunter_normal = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.768066,
+			0.564453
+		},
+		uv11 = {
+			0.776367,
+			0.581055
+		}
+	},
+	tabs_inventory_icon_ranged_normal = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.768066,
+			0.545898
+		},
+		uv11 = {
+			0.776367,
+			0.5625
 		}
 	},
 	tabs_class_icon_witch_hunter_selected = {
@@ -1490,263 +1490,25 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.990723,
-			0.522949
+			0.527344
 		},
 		uv11 = {
 			0.999023,
-			0.539551
+			0.543945
 		}
 	},
-	tabs_inventory_icon_ranged_selected = {
+	tabs_class_icon_empire_soldier_normal = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.981445,
-			0.522949
+			0.527344
 		},
 		uv11 = {
 			0.989746,
-			0.539551
-		}
-	},
-	tabs_class_icon_way_watcher_hover = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.972168,
-			0.522949
-		},
-		uv11 = {
-			0.980469,
-			0.539551
-		}
-	},
-	tabs_inventory_icon_hats_selected = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.962891,
-			0.522949
-		},
-		uv11 = {
-			0.971191,
-			0.539551
-		}
-	},
-	tabs_class_icon_bright_wizard_hover = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.953613,
-			0.522949
-		},
-		uv11 = {
-			0.961914,
-			0.539551
-		}
-	},
-	tabs_class_icon_witch_hunter_normal = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.944336,
-			0.522949
-		},
-		uv11 = {
-			0.952637,
-			0.539551
-		}
-	},
-	tabs_inventory_icon_melee_hover = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.935059,
-			0.522949
-		},
-		uv11 = {
-			0.943359,
-			0.539551
-		}
-	},
-	tabs_inventory_icon_hats_normal = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.925781,
-			0.522949
-		},
-		uv11 = {
-			0.934082,
-			0.539551
-		}
-	},
-	tabs_inventory_icon_trinkets_selected = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.916504,
-			0.522949
-		},
-		uv11 = {
-			0.924805,
-			0.539551
-		}
-	},
-	tabs_inventory_icon_melee_hover = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.907227,
-			0.522949
-		},
-		uv11 = {
-			0.915527,
-			0.539551
-		}
-	},
-	tabs_class_icon_way_watcher_selected = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.897949,
-			0.522949
-		},
-		uv11 = {
-			0.90625,
-			0.539551
-		}
-	},
-	tabs_inventory_icon_melee_normal = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.888672,
-			0.522949
-		},
-		uv11 = {
-			0.896973,
-			0.539551
-		}
-	},
-	tabs_class_icon_empire_soldier_hover = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.879395,
-			0.522949
-		},
-		uv11 = {
-			0.887695,
-			0.539551
-		}
-	},
-	tabs_icon_all_selected = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.870117,
-			0.522949
-		},
-		uv11 = {
-			0.878418,
-			0.539551
-		}
-	},
-	tabs_class_icon_witch_hunter_hover = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.86084,
-			0.522949
-		},
-		uv11 = {
-			0.869141,
-			0.539551
-		}
-	},
-	tabs_class_icon_empire_soldier_selected = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.851563,
-			0.522949
-		},
-		uv11 = {
-			0.859863,
-			0.539551
-		}
-	},
-	tabs_class_icon_witch_hunter_normal = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.842285,
-			0.522949
-		},
-		uv11 = {
-			0.850586,
-			0.539551
-		}
-	},
-	tabs_class_icon_way_watcher_normal = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.833008,
-			0.522949
-		},
-		uv11 = {
-			0.841309,
-			0.539551
-		}
-	},
-	tabs_class_icon_witch_hunter_selected = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.82373,
-			0.522949
-		},
-		uv11 = {
-			0.832031,
-			0.539551
+			0.543945
 		}
 	},
 	tabs_inventory_icon_melee_selected = {
@@ -1755,40 +1517,166 @@ icons_atlas = {
 			34
 		},
 		uv00 = {
-			0.814453,
-			0.522949
+			0.972168,
+			0.527344
 		},
 		uv11 = {
-			0.822754,
-			0.539551
+			0.980469,
+			0.543945
 		}
 	},
-	tabs_inventory_icon_melee_normal = {
+	tabs_inventory_icon_trinkets_normal = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
-			0.805176,
-			0.522949
+			0.962891,
+			0.527344
 		},
 		uv11 = {
-			0.813477,
-			0.539551
+			0.971191,
+			0.543945
 		}
 	},
-	tabs_class_icon_dwarf_ranger_hover = {
+	tabs_class_icon_empire_soldier_selected = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
-			0.795898,
-			0.522949
+			0.953613,
+			0.527344
 		},
 		uv11 = {
-			0.804199,
-			0.539551
+			0.961914,
+			0.543945
+		}
+	},
+	xbone_button_icon_y = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.944336,
+			0.527344
+		},
+		uv11 = {
+			0.952637,
+			0.543945
+		}
+	},
+	tabs_class_icon_witch_hunter_normal = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.935059,
+			0.527344
+		},
+		uv11 = {
+			0.943359,
+			0.543945
+		}
+	},
+	tabs_inventory_icon_melee_hover = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.925781,
+			0.527344
+		},
+		uv11 = {
+			0.934082,
+			0.543945
+		}
+	},
+	tabs_inventory_icon_hats_normal = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.916504,
+			0.527344
+		},
+		uv11 = {
+			0.924805,
+			0.543945
+		}
+	},
+	tabs_inventory_icon_hats_selected = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.907227,
+			0.527344
+		},
+		uv11 = {
+			0.915527,
+			0.543945
+		}
+	},
+	tabs_class_icon_bright_wizard_selected = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.897949,
+			0.527344
+		},
+		uv11 = {
+			0.90625,
+			0.543945
+		}
+	},
+	tabs_inventory_icon_hats_selected = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.888672,
+			0.527344
+		},
+		uv11 = {
+			0.896973,
+			0.543945
+		}
+	},
+	tabs_class_icon_way_watcher_normal = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.879395,
+			0.527344
+		},
+		uv11 = {
+			0.887695,
+			0.543945
+		}
+	},
+	tabs_class_icon_dwarf_ranger_selected = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.870117,
+			0.527344
+		},
+		uv11 = {
+			0.878418,
+			0.543945
 		}
 	},
 	tabs_class_icon_dwarf_ranger_normal = {
@@ -1797,12 +1685,124 @@ icons_atlas = {
 			34
 		},
 		uv00 = {
+			0.86084,
+			0.527344
+		},
+		uv11 = {
+			0.869141,
+			0.543945
+		}
+	},
+	tabs_class_icon_way_watcher_selected = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.851563,
+			0.527344
+		},
+		uv11 = {
+			0.859863,
+			0.543945
+		}
+	},
+	tabs_class_icon_empire_soldier_hover = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.842285,
+			0.527344
+		},
+		uv11 = {
+			0.850586,
+			0.543945
+		}
+	},
+	tabs_class_icon_witch_hunter_hover = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.833008,
+			0.527344
+		},
+		uv11 = {
+			0.841309,
+			0.543945
+		}
+	},
+	tabs_class_icon_empire_soldier_selected = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.82373,
+			0.527344
+		},
+		uv11 = {
+			0.832031,
+			0.543945
+		}
+	},
+	tabs_icon_all_selected = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.814453,
+			0.527344
+		},
+		uv11 = {
+			0.822754,
+			0.543945
+		}
+	},
+	tabs_inventory_icon_hats_hover = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.805176,
+			0.527344
+		},
+		uv11 = {
+			0.813477,
+			0.543945
+		}
+	},
+	tabs_class_icon_dwarf_ranger_normal = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.795898,
+			0.527344
+		},
+		uv11 = {
+			0.804199,
+			0.543945
+		}
+	},
+	tabs_inventory_icon_trinkets_selected = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
 			0.786621,
-			0.522949
+			0.527344
 		},
 		uv11 = {
 			0.794922,
-			0.539551
+			0.543945
 		}
 	},
 	tabs_inventory_icon_ranged_hover = {
@@ -1812,56 +1812,56 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.777344,
-			0.522949
+			0.527344
 		},
 		uv11 = {
 			0.785645,
-			0.539551
+			0.543945
 		}
 	},
-	tabs_class_icon_empire_soldier_hover = {
+	tabs_inventory_icon_ranged_selected = {
 		size = {
 			34,
 			34
 		},
 		uv00 = {
 			0.768066,
-			0.522949
+			0.527344
 		},
 		uv11 = {
 			0.776367,
-			0.539551
-		}
-	},
-	tabs_inventory_icon_trinkets_selected = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.757324,
-			0.966309
-		},
-		uv11 = {
-			0.765625,
-			0.98291
-		}
-	},
-	tabs_class_icon_dwarf_ranger_selected = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.757324,
-			0.947754
-		},
-		uv11 = {
-			0.765625,
-			0.964355
+			0.543945
 		}
 	},
 	tabs_inventory_icon_ranged_normal = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.757324,
+			0.97168
+		},
+		uv11 = {
+			0.765625,
+			0.988281
+		}
+	},
+	tabs_class_icon_dwarf_ranger_hover = {
+		size = {
+			34,
+			34
+		},
+		uv00 = {
+			0.757324,
+			0.953125
+		},
+		uv11 = {
+			0.765625,
+			0.969727
+		}
+	},
+	tabs_inventory_icon_trinkets_hover = {
 		size = {
 			34,
 			34
@@ -1875,7 +1875,7 @@ icons_atlas = {
 			0.920898
 		}
 	},
-	tabs_class_icon_empire_soldier_normal = {
+	tabs_inventory_icon_trinkets_normal = {
 		size = {
 			34,
 			34
@@ -1924,11 +1924,11 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.757324,
-			0.928711
+			0.934082
 		},
 		uv11 = {
 			0.765869,
-			0.945801
+			0.951172
 		}
 	},
 	reinforcement_arrow = {
@@ -1945,21 +1945,49 @@ icons_atlas = {
 			0.788086
 		}
 	},
-	icon_wind_hysh = {
+	icon_wind_hysh_glow = {
 		size = {
 			29,
 			35
 		},
 		uv00 = {
 			0.757324,
-			0.909668
+			0.915039
 		},
 		uv11 = {
 			0.764404,
-			0.926758
+			0.932129
 		}
 	},
-	icon_wind_ghur_glow = {
+	icon_wind_ghyran_glow = {
+		size = {
+			30,
+			35
+		},
+		uv00 = {
+			0.757324,
+			0.895996
+		},
+		uv11 = {
+			0.764648,
+			0.913086
+		}
+	},
+	icon_wind_ghyran = {
+		size = {
+			30,
+			35
+		},
+		uv00 = {
+			0.757324,
+			0.876953
+		},
+		uv11 = {
+			0.764648,
+			0.894043
+		}
+	},
+	icon_wind_ghur = {
 		size = {
 			25,
 			35
@@ -1973,7 +2001,35 @@ icons_atlas = {
 			0.078125
 		}
 	},
-	icon_wind_ghur = {
+	icon_mastery_small = {
+		size = {
+			35,
+			35
+		},
+		uv00 = {
+			0.757324,
+			0.85791
+		},
+		uv11 = {
+			0.765869,
+			0.875
+		}
+	},
+	icon_wind_chamon_glow = {
+		size = {
+			29,
+			35
+		},
+		uv00 = {
+			0.757324,
+			0.838867
+		},
+		uv11 = {
+			0.764404,
+			0.855957
+		}
+	},
+	icon_wind_ghur_glow = {
 		size = {
 			25,
 			35
@@ -1987,20 +2043,6 @@ icons_atlas = {
 			0.059082
 		}
 	},
-	icon_wind_ghyran_glow = {
-		size = {
-			30,
-			35
-		},
-		uv00 = {
-			0.757324,
-			0.890625
-		},
-		uv11 = {
-			0.764648,
-			0.907715
-		}
-	},
 	icon_wind_chamon = {
 		size = {
 			29,
@@ -2008,98 +2050,28 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.757324,
-			0.871582
+			0.819824
 		},
 		uv11 = {
 			0.764404,
-			0.888672
+			0.836914
 		}
 	},
-	icon_mastery_small = {
-		size = {
-			35,
-			35
-		},
-		uv00 = {
-			0.757324,
-			0.852539
-		},
-		uv11 = {
-			0.765869,
-			0.869629
-		}
-	},
-	icon_wind_chamon_glow = {
+	icon_wind_hysh = {
 		size = {
 			29,
 			35
 		},
 		uv00 = {
 			0.757324,
-			0.833496
+			0.800781
 		},
 		uv11 = {
 			0.764404,
-			0.850586
+			0.817871
 		}
 	},
-	icon_wind_hysh_glow = {
-		size = {
-			29,
-			35
-		},
-		uv00 = {
-			0.757324,
-			0.814453
-		},
-		uv11 = {
-			0.764404,
-			0.831543
-		}
-	},
-	icon_wind_ghyran = {
-		size = {
-			30,
-			35
-		},
-		uv00 = {
-			0.757324,
-			0.79541
-		},
-		uv11 = {
-			0.764648,
-			0.8125
-		}
-	},
-	icon_wind_aqshy = {
-		size = {
-			28,
-			36
-		},
-		uv00 = {
-			0.992676,
-			0.020508
-		},
-		uv11 = {
-			0.999512,
-			0.038086
-		}
-	},
-	icon_wind_aqshy_glow = {
-		size = {
-			28,
-			36
-		},
-		uv00 = {
-			0.992676,
-			0.000977
-		},
-		uv11 = {
-			0.999512,
-			0.018555
-		}
-	},
-	ps4_button_icon_l1 = {
+	ps4_button_icon_r1 = {
 		size = {
 			36,
 			26
@@ -2113,7 +2085,7 @@ icons_atlas = {
 			0.788086
 		}
 	},
-	ps4_button_icon_r1 = {
+	ps4_button_icon_l1 = {
 		size = {
 			36,
 			26
@@ -2127,9 +2099,9 @@ icons_atlas = {
 			0.723633
 		}
 	},
-	pc_button_icon_middle = {
+	pc_button_icon_right = {
 		size = {
-			8,
+			20,
 			36
 		},
 		uv00 = {
@@ -2137,22 +2109,22 @@ icons_atlas = {
 			0.103516
 		},
 		uv11 = {
-			0.053711,
+			0.056641,
 			0.121094
 		}
 	},
-	xbone_button_icon_rb = {
+	icon_wind_aqshy_glow = {
 		size = {
-			36,
-			26
+			28,
+			36
 		},
 		uv00 = {
-			0.032715,
-			0.710938
+			0.992676,
+			0.020508
 		},
 		uv11 = {
-			0.041504,
-			0.723633
+			0.999512,
+			0.038086
 		}
 	},
 	pc_button_icon_left = {
@@ -2169,21 +2141,21 @@ icons_atlas = {
 			0.101563
 		}
 	},
-	pc_button_icon_right = {
+	xbone_button_icon_lb = {
 		size = {
-			20,
-			36
+			36,
+			26
 		},
 		uv00 = {
-			0.051758,
-			0.064453
+			0.032715,
+			0.710938
 		},
 		uv11 = {
-			0.056641,
-			0.082031
+			0.041504,
+			0.723633
 		}
 	},
-	xbone_button_icon_lb = {
+	xbone_button_icon_rb = {
 		size = {
 			36,
 			26
@@ -2197,18 +2169,46 @@ icons_atlas = {
 			0.65918
 		}
 	},
-	locked_icon_01 = {
+	pc_button_icon_middle = {
 		size = {
-			30,
+			8,
+			36
+		},
+		uv00 = {
+			0.051758,
+			0.064453
+		},
+		uv11 = {
+			0.053711,
+			0.082031
+		}
+	},
+	icon_wind_aqshy = {
+		size = {
+			28,
+			36
+		},
+		uv00 = {
+			0.992676,
+			0.000977
+		},
+		uv11 = {
+			0.999512,
+			0.018555
+		}
+	},
+	talent_push_damage = {
+		size = {
+			38,
 			38
 		},
 		uv00 = {
 			0.757324,
-			0.774902
+			0.780273
 		},
 		uv11 = {
-			0.764648,
-			0.793457
+			0.766602,
+			0.798828
 		}
 	},
 	ps4_button_icon_l2 = {
@@ -2225,7 +2225,77 @@ icons_atlas = {
 			0.662598
 		}
 	},
-	ps4_button_icon_r2 = {
+	boon_icon_02_damage_increased = {
+		size = {
+			38,
+			38
+		},
+		uv00 = {
+			0.757324,
+			0.759766
+		},
+		uv11 = {
+			0.766602,
+			0.77832
+		}
+	},
+	boon_icon_03_extra_starting_gear = {
+		size = {
+			38,
+			38
+		},
+		uv00 = {
+			0.757324,
+			0.739258
+		},
+		uv11 = {
+			0.766602,
+			0.757813
+		}
+	},
+	boon_icon_04_reduced_slowing_effects = {
+		size = {
+			38,
+			38
+		},
+		uv00 = {
+			0.757324,
+			0.71875
+		},
+		uv11 = {
+			0.766602,
+			0.737305
+		}
+	},
+	boon_icon_05_stagger_more = {
+		size = {
+			38,
+			38
+		},
+		uv00 = {
+			0.757324,
+			0.698242
+		},
+		uv11 = {
+			0.766602,
+			0.716797
+		}
+	},
+	boon_icon_06_stamina = {
+		size = {
+			38,
+			38
+		},
+		uv00 = {
+			0.757324,
+			0.677734
+		},
+		uv11 = {
+			0.766602,
+			0.696289
+		}
+	},
+	xbone_button_icon_lt = {
 		size = {
 			38,
 			33
@@ -2239,63 +2309,7 @@ icons_atlas = {
 			0.598145
 		}
 	},
-	boon_icon_03_extra_starting_gear = {
-		size = {
-			38,
-			38
-		},
-		uv00 = {
-			0.757324,
-			0.754395
-		},
-		uv11 = {
-			0.766602,
-			0.772949
-		}
-	},
-	boon_icon_04_reduced_slowing_effects = {
-		size = {
-			38,
-			38
-		},
-		uv00 = {
-			0.757324,
-			0.733887
-		},
-		uv11 = {
-			0.766602,
-			0.752441
-		}
-	},
-	boon_icon_02_damage_increased = {
-		size = {
-			38,
-			38
-		},
-		uv00 = {
-			0.757324,
-			0.713379
-		},
-		uv11 = {
-			0.766602,
-			0.731934
-		}
-	},
-	boon_icon_06_stamina = {
-		size = {
-			38,
-			38
-		},
-		uv00 = {
-			0.757324,
-			0.692871
-		},
-		uv11 = {
-			0.766602,
-			0.711426
-		}
-	},
-	xbone_button_icon_lt = {
+	xbone_button_icon_rt = {
 		size = {
 			38,
 			33
@@ -2309,7 +2323,7 @@ icons_atlas = {
 			0.598145
 		}
 	},
-	xbone_button_icon_rt = {
+	ps4_button_icon_r2 = {
 		size = {
 			38,
 			33
@@ -2323,32 +2337,18 @@ icons_atlas = {
 			0.533691
 		}
 	},
-	boon_icon_05_stagger_more = {
+	locked_icon_01 = {
 		size = {
-			38,
+			30,
 			38
 		},
 		uv00 = {
-			0.757324,
-			0.672363
+			0.644043,
+			0.97998
 		},
 		uv11 = {
-			0.766602,
-			0.690918
-		}
-	},
-	talent_push_damage = {
-		size = {
-			38,
-			38
-		},
-		uv00 = {
-			0.757324,
-			0.651855
-		},
-		uv11 = {
-			0.766602,
-			0.67041
+			0.651367,
+			0.998535
 		}
 	},
 	hud_inventory_icon_deuspotion_KillerInTheShadows = {
@@ -2365,32 +2365,18 @@ icons_atlas = {
 			0.532715
 		}
 	},
-	mutator_icon_player_dot = {
+	reinforcement_kill = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
 			0.757324,
-			0.630371
+			0.65625
 		},
 		uv11 = {
 			0.76709,
-			0.649902
-		}
-	},
-	mutator_icon_ticking_bomb = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.757324,
-			0.608887
-		},
-		uv11 = {
-			0.76709,
-			0.628418
+			0.675781
 		}
 	},
 	tabs_icon_cosmetics_glow = {
@@ -2400,123 +2386,11 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.757324,
-			0.587402
+			0.634766
 		},
 		uv11 = {
 			0.76709,
-			0.606934
-		}
-	},
-	ranged_restore_stamina_headshot = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.757324,
-			0.565918
-		},
-		uv11 = {
-			0.76709,
-			0.585449
-		}
-	},
-	mutator_icon_beast_totems = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.757324,
-			0.544434
-		},
-		uv11 = {
-			0.76709,
-			0.563965
-		}
-	},
-	mutator_icon_skulking_sorcerer = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.757324,
-			0.522949
-		},
-		uv11 = {
-			0.76709,
-			0.54248
-		}
-	},
-	tabs_icon_talent_tree = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.98291,
-			0.501465
-		},
-		uv11 = {
-			0.992676,
-			0.520996
-		}
-	},
-	mutator_icon_no_ammo = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.972168,
-			0.501465
-		},
-		uv11 = {
-			0.981934,
-			0.520996
-		}
-	},
-	ranged_replenish_ammo_headshot = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.961426,
-			0.501465
-		},
-		uv11 = {
-			0.971191,
-			0.520996
-		}
-	},
-	mutator_icon_bloodlust = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.950684,
-			0.501465
-		},
-		uv11 = {
-			0.960449,
-			0.520996
-		}
-	},
-	morris_mutator_icon_increased_healing = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.939941,
-			0.501465
-		},
-		uv11 = {
-			0.949707,
-			0.520996
+			0.654297
 		}
 	},
 	morris_mutator_icon_increased_grenades = {
@@ -2525,40 +2399,180 @@ icons_atlas = {
 			40
 		},
 		uv00 = {
+			0.757324,
+			0.613281
+		},
+		uv11 = {
+			0.76709,
+			0.632813
+		}
+	},
+	mutator_icon_no_respawn = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.757324,
+			0.591797
+		},
+		uv11 = {
+			0.76709,
+			0.611328
+		}
+	},
+	tabs_icon_forge_glow = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.757324,
+			0.570313
+		},
+		uv11 = {
+			0.76709,
+			0.589844
+		}
+	},
+	mutator_icon_slayer_curse = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.757324,
+			0.548828
+		},
+		uv11 = {
+			0.76709,
+			0.568359
+		}
+	},
+	tabs_icon_character_skins = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.757324,
+			0.527344
+		},
+		uv11 = {
+			0.76709,
+			0.546875
+		}
+	},
+	tabs_icon_forge = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.98291,
+			0.505859
+		},
+		uv11 = {
+			0.992676,
+			0.525391
+		}
+	},
+	cogwheel_small = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.972168,
+			0.505859
+		},
+		uv11 = {
+			0.981934,
+			0.525391
+		}
+	},
+	trinket_grenade_friendly_fire = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.961426,
+			0.505859
+		},
+		uv11 = {
+			0.971191,
+			0.525391
+		}
+	},
+	killfeed_icon_jadecenser = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.950684,
+			0.505859
+		},
+		uv11 = {
+			0.960449,
+			0.525391
+		}
+	},
+	killfeed_icon_deuspotion = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.939941,
+			0.505859
+		},
+		uv11 = {
+			0.949707,
+			0.525391
+		}
+	},
+	mutator_icon_skulking_sorcerer = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
 			0.929199,
-			0.501465
+			0.505859
 		},
 		uv11 = {
 			0.938965,
-			0.520996
+			0.525391
 		}
 	},
-	killfeed_icon_isha = {
+	mutator_icon_realism = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
 			0.918457,
-			0.501465
+			0.505859
 		},
 		uv11 = {
 			0.928223,
-			0.520996
+			0.525391
 		}
 	},
-	tabs_icon_weapon_skins = {
+	tabs_icon_trinkets = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
 			0.907715,
-			0.501465
+			0.505859
 		},
 		uv11 = {
 			0.91748,
-			0.520996
+			0.525391
 		}
 	},
 	tabs_icon_crafting_material = {
@@ -2568,81 +2582,81 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.896973,
-			0.501465
+			0.505859
 		},
 		uv11 = {
 			0.906738,
-			0.520996
+			0.525391
 		}
 	},
-	tabs_icon_equipment_glow = {
+	mutator_icon_no_ammo = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
 			0.88623,
-			0.501465
+			0.505859
 		},
 		uv11 = {
 			0.895996,
-			0.520996
+			0.525391
 		}
 	},
-	killfeed_icon_03 = {
+	mutator_icon_light_beacons = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
 			0.875488,
-			0.501465
+			0.505859
 		},
 		uv11 = {
 			0.885254,
-			0.520996
+			0.525391
 		}
 	},
-	ranged_reduce_cooldown_on_crit = {
+	melee_shield_on_assist = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
 			0.864746,
-			0.501465
+			0.505859
 		},
 		uv11 = {
 			0.874512,
-			0.520996
+			0.525391
 		}
 	},
-	tabs_icon_character_skins = {
+	necklace_not_consume_healing = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
 			0.854004,
-			0.501465
+			0.505859
 		},
 		uv11 = {
 			0.86377,
-			0.520996
+			0.525391
 		}
 	},
-	tabs_icon_close = {
+	melee_increase_damage_on_block = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
 			0.843262,
-			0.501465
+			0.505859
 		},
 		uv11 = {
 			0.853027,
-			0.520996
+			0.525391
 		}
 	},
 	reinforcement_revive = {
@@ -2652,641 +2666,11 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.83252,
-			0.501465
+			0.505859
 		},
 		uv11 = {
 			0.842285,
-			0.520996
-		}
-	},
-	killfeed_icon_06 = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.821777,
-			0.501465
-		},
-		uv11 = {
-			0.831543,
-			0.520996
-		}
-	},
-	mutator_icon_barrels_of_death = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.811035,
-			0.501465
-		},
-		uv11 = {
-			0.820801,
-			0.520996
-		}
-	},
-	mutator_icon_splitting_enemies = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.800293,
-			0.501465
-		},
-		uv11 = {
-			0.810059,
-			0.520996
-		}
-	},
-	reinforcement_heal = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.789551,
-			0.501465
-		},
-		uv11 = {
-			0.799316,
-			0.520996
-		}
-	},
-	morris_mutator_icon_increased_deus_potions = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.778809,
-			0.501465
-		},
-		uv11 = {
-			0.788574,
-			0.520996
-		}
-	},
-	killfeed_icon_deuspotion = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.768066,
-			0.501465
-		},
-		uv11 = {
-			0.777832,
-			0.520996
-		}
-	},
-	mutator_icon_shadow_illusion = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.757324,
-			0.501465
-		},
-		uv11 = {
-			0.76709,
-			0.520996
-		}
-	},
-	reinforcement_saved = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.974121
-		},
-		uv11 = {
-			0.756348,
-			0.993652
-		}
-	},
-	mutator_icon_realism = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.952637
-		},
-		uv11 = {
-			0.756348,
-			0.972168
-		}
-	},
-	mutator_icon_powerful_elites = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.931152
-		},
-		uv11 = {
-			0.756348,
-			0.950684
-		}
-	},
-	mutator_icon_nurgle_storm = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.909668
-		},
-		uv11 = {
-			0.756348,
-			0.929199
-		}
-	},
-	tabs_icon_friends_glow = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.888184
-		},
-		uv11 = {
-			0.756348,
-			0.907715
-		}
-	},
-	tabs_icon_forge_glow = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.866699
-		},
-		uv11 = {
-			0.756348,
-			0.88623
-		}
-	},
-	tabs_icon_skins = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.845215
-		},
-		uv11 = {
-			0.756348,
-			0.864746
-		}
-	},
-	mutator_icon_metal_buff = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.82373
-		},
-		uv11 = {
-			0.756348,
-			0.843262
-		}
-	},
-	tabs_icon_trinkets = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.802246
-		},
-		uv11 = {
-			0.756348,
-			0.821777
-		}
-	},
-	tabs_icon_anvil = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.780762
-		},
-		uv11 = {
-			0.756348,
-			0.800293
-		}
-	},
-	tabs_icon_settings_glow = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.759277
-		},
-		uv11 = {
-			0.756348,
-			0.778809
-		}
-	},
-	cogwheel_small = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.737793
-		},
-		uv11 = {
-			0.756348,
-			0.757324
-		}
-	},
-	trinket_grenade_friendly_fire = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.716309
-		},
-		uv11 = {
-			0.756348,
-			0.73584
-		}
-	},
-	melee_shield_on_assist = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.694824
-		},
-		uv11 = {
-			0.756348,
-			0.714355
-		}
-	},
-	tabs_icon_talent_tree_glow = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.67334
-		},
-		uv11 = {
-			0.756348,
-			0.692871
-		}
-	},
-	melee_increase_damage_on_block = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.651855
-		},
-		uv11 = {
-			0.756348,
-			0.671387
-		}
-	},
-	tabs_icon_melee_ranged_glow = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.630371
-		},
-		uv11 = {
-			0.756348,
-			0.649902
-		}
-	},
-	necklace_heal_self_on_heal_other = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.608887
-		},
-		uv11 = {
-			0.756348,
-			0.628418
-		}
-	},
-	mutator_icon_whiterun = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.587402
-		},
-		uv11 = {
-			0.756348,
-			0.606934
-		}
-	},
-	tabs_icon_settings = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.565918
-		},
-		uv11 = {
-			0.756348,
-			0.585449
-		}
-	},
-	morris_mutator_icon_increased_loot = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.544434
-		},
-		uv11 = {
-			0.756348,
-			0.563965
-		}
-	},
-	morris_mutator_icon_increased_deus_soft_currency = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.522949
-		},
-		uv11 = {
-			0.756348,
-			0.54248
-		}
-	},
-	killfeed_icon_jadecenser = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.501465
-		},
-		uv11 = {
-			0.756348,
-			0.520996
-		}
-	},
-	mutator_icon_specials_frequency = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.98291,
-			0.47998
-		},
-		uv11 = {
-			0.992676,
-			0.499512
-		}
-	},
-	tabs_icon_ranged = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.972168,
-			0.47998
-		},
-		uv11 = {
-			0.981934,
-			0.499512
-		}
-	},
-	mutator_icon_slayer_curse = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.961426,
-			0.47998
-		},
-		uv11 = {
-			0.971191,
-			0.499512
-		}
-	},
-	killfeed_icon_holybomb = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.950684,
-			0.47998
-		},
-		uv11 = {
-			0.960449,
-			0.499512
-		}
-	},
-	tabs_icon_prestige_glow = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.939941,
-			0.47998
-		},
-		uv11 = {
-			0.949707,
-			0.499512
-		}
-	},
-	killfeed_icon_grimnir = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.929199,
-			0.47998
-		},
-		uv11 = {
-			0.938965,
-			0.499512
-		}
-	},
-	tabs_icon_consumables = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.918457,
-			0.47998
-		},
-		uv11 = {
-			0.928223,
-			0.499512
-		}
-	},
-	tabs_icon_cosmetics = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.907715,
-			0.47998
-		},
-		uv11 = {
-			0.91748,
-			0.499512
-		}
-	},
-	reinforcement_kill = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.896973,
-			0.47998
-		},
-		uv11 = {
-			0.906738,
-			0.499512
-		}
-	},
-	tabs_icon_close_glow = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.88623,
-			0.47998
-		},
-		uv11 = {
-			0.895996,
-			0.499512
-		}
-	},
-	tabs_icon_prestige = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.875488,
-			0.47998
-		},
-		uv11 = {
-			0.885254,
-			0.499512
-		}
-	},
-	tabs_icon_consumables_glow = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.864746,
-			0.47998
-		},
-		uv11 = {
-			0.874512,
-			0.499512
-		}
-	},
-	tabs_icon_power_glow = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.854004,
-			0.47998
-		},
-		uv11 = {
-			0.86377,
-			0.499512
-		}
-	},
-	tabs_icon_equipment = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.843262,
-			0.47998
-		},
-		uv11 = {
-			0.853027,
-			0.499512
-		}
-	},
-	tabs_icon_forge = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.83252,
-			0.47998
-		},
-		uv11 = {
-			0.842285,
-			0.499512
+			0.525391
 		}
 	},
 	killfeed_icon_04 = {
@@ -3296,291 +2680,67 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.821777,
-			0.47998
+			0.505859
 		},
 		uv11 = {
 			0.831543,
-			0.499512
+			0.525391
 		}
 	},
-	mutator_icon_no_respawn = {
+	morris_mutator_icon_increased_deus_soft_currency = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
 			0.811035,
-			0.47998
+			0.505859
 		},
 		uv11 = {
 			0.820801,
-			0.499512
+			0.525391
 		}
 	},
-	tabs_icon_power = {
+	morris_mutator_icon_increased_deus_potions = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
 			0.800293,
-			0.47998
+			0.505859
 		},
 		uv11 = {
 			0.810059,
-			0.499512
+			0.525391
 		}
 	},
-	mutator_icon_no_pickups = {
+	reinforcement_heal = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
 			0.789551,
-			0.47998
+			0.505859
 		},
 		uv11 = {
 			0.799316,
-			0.499512
+			0.525391
 		}
 	},
-	charm_potion_spread = {
+	mutator_icon_shadow_illusion = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
 			0.778809,
-			0.47998
+			0.505859
 		},
 		uv11 = {
 			0.788574,
-			0.499512
-		}
-	},
-	tabs_icon_portrait_frame = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.768066,
-			0.47998
-		},
-		uv11 = {
-			0.777832,
-			0.499512
-		}
-	},
-	tabs_icon_friends = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.757324,
-			0.47998
-		},
-		uv11 = {
-			0.76709,
-			0.499512
-		}
-	},
-	ranged_consecutive_hits_increase_power = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.746582,
-			0.47998
-		},
-		uv11 = {
-			0.756348,
-			0.499512
-		}
-	},
-	ranged_increase_power_level_vs_armour_crit = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.73584,
-			0.974121
-		},
-		uv11 = {
-			0.745605,
-			0.993652
-		}
-	},
-	reinforcement_assisted_respawn = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.73584,
-			0.952637
-		},
-		uv11 = {
-			0.745605,
-			0.972168
-		}
-	},
-	necklace_no_healing_health_regen = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.73584,
-			0.931152
-		},
-		uv11 = {
-			0.745605,
-			0.950684
-		}
-	},
-	mutator_icon_light_beacons = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.73584,
-			0.909668
-		},
-		uv11 = {
-			0.745605,
-			0.929199
-		}
-	},
-	ranged_reduced_overcharge = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.73584,
-			0.888184
-		},
-		uv11 = {
-			0.745605,
-			0.907715
-		}
-	},
-	trinket_reduce_radius_by_50_increase_power_by_50 = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.73584,
-			0.866699
-		},
-		uv11 = {
-			0.745605,
-			0.88623
-		}
-	},
-	tabs_icon_charm = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.73584,
-			0.845215
-		},
-		uv11 = {
-			0.745605,
-			0.864746
-		}
-	},
-	killfeed_icon_09 = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.73584,
-			0.82373
-		},
-		uv11 = {
-			0.745605,
-			0.843262
-		}
-	},
-	melee_attack_speed_on_crit = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.73584,
-			0.802246
-		},
-		uv11 = {
-			0.745605,
-			0.821777
-		}
-	},
-	mutator_icon_life_thorns = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.73584,
-			0.780762
-		},
-		uv11 = {
-			0.745605,
-			0.800293
-		}
-	},
-	mutator_icon_geheimnisnacht_2021_difficulty = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.73584,
-			0.759277
-		},
-		uv11 = {
-			0.745605,
-			0.778809
-		}
-	},
-	charm_potion_duration_increased = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.73584,
-			0.737793
-		},
-		uv11 = {
-			0.745605,
-			0.757324
-		}
-	},
-	trait_trinket_not_consume_grenade = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.73584,
-			0.716309
-		},
-		uv11 = {
-			0.745605,
-			0.73584
+			0.525391
 		}
 	},
 	charm_not_consume_potion_damage = {
@@ -3589,54 +2749,180 @@ icons_atlas = {
 			40
 		},
 		uv00 = {
-			0.73584,
-			0.694824
+			0.768066,
+			0.505859
 		},
 		uv11 = {
-			0.745605,
-			0.714355
+			0.777832,
+			0.525391
 		}
 	},
-	charm_all_potions = {
+	tabs_icon_close = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
-			0.73584,
-			0.67334
+			0.757324,
+			0.505859
 		},
 		uv11 = {
-			0.745605,
-			0.692871
+			0.76709,
+			0.525391
 		}
 	},
-	tabs_icon_necklace = {
+	reinforcement_saved = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
-			0.73584,
-			0.651855
+			0.746582,
+			0.978516
 		},
 		uv11 = {
-			0.745605,
-			0.671387
+			0.756348,
+			0.998047
 		}
 	},
-	melee_counter_push_power = {
+	tabs_icon_consumables = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
-			0.73584,
-			0.630371
+			0.746582,
+			0.957031
 		},
 		uv11 = {
-			0.745605,
-			0.649902
+			0.756348,
+			0.976563
+		}
+	},
+	tabs_icon_cosmetics = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.935547
+		},
+		uv11 = {
+			0.756348,
+			0.955078
+		}
+	},
+	tabs_icon_equipment = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.914063
+		},
+		uv11 = {
+			0.756348,
+			0.933594
+		}
+	},
+	ranged_restore_stamina_headshot = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.892578
+		},
+		uv11 = {
+			0.756348,
+			0.912109
+		}
+	},
+	mutator_icon_metal_buff = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.871094
+		},
+		uv11 = {
+			0.756348,
+			0.890625
+		}
+	},
+	ranged_reduce_cooldown_on_crit = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.849609
+		},
+		uv11 = {
+			0.756348,
+			0.869141
+		}
+	},
+	mutator_icon_life_thorns = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.828125
+		},
+		uv11 = {
+			0.756348,
+			0.847656
+		}
+	},
+	tabs_icon_talent_tree_glow = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.806641
+		},
+		uv11 = {
+			0.756348,
+			0.826172
+		}
+	},
+	tabs_icon_anvil = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.785156
+		},
+		uv11 = {
+			0.756348,
+			0.804688
+		}
+	},
+	reinforcement_assisted_respawn = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.763672
+		},
+		uv11 = {
+			0.756348,
+			0.783203
 		}
 	},
 	charm_not_consume_potion = {
@@ -3645,12 +2931,502 @@ icons_atlas = {
 			40
 		},
 		uv00 = {
+			0.746582,
+			0.742188
+		},
+		uv11 = {
+			0.756348,
+			0.761719
+		}
+	},
+	mutator_icon_ticking_bomb = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.720703
+		},
+		uv11 = {
+			0.756348,
+			0.740234
+		}
+	},
+	mutator_icon_barrels_of_death = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.699219
+		},
+		uv11 = {
+			0.756348,
+			0.71875
+		}
+	},
+	tabs_icon_weapon_skins = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.677734
+		},
+		uv11 = {
+			0.756348,
+			0.697266
+		}
+	},
+	tabs_icon_melee_ranged = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.65625
+		},
+		uv11 = {
+			0.756348,
+			0.675781
+		}
+	},
+	necklace_heal_self_on_heal_other = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.634766
+		},
+		uv11 = {
+			0.756348,
+			0.654297
+		}
+	},
+	mutator_icon_specials_frequency = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.613281
+		},
+		uv11 = {
+			0.756348,
+			0.632813
+		}
+	},
+	morris_mutator_icon_increased_loot = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.591797
+		},
+		uv11 = {
+			0.756348,
+			0.611328
+		}
+	},
+	tabs_icon_ranged = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.570313
+		},
+		uv11 = {
+			0.756348,
+			0.589844
+		}
+	},
+	mutator_icon_skulls_2023 = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.548828
+		},
+		uv11 = {
+			0.756348,
+			0.568359
+		}
+	},
+	killfeed_icon_holybomb = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.527344
+		},
+		uv11 = {
+			0.756348,
+			0.546875
+		}
+	},
+	tabs_icon_close_glow = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.505859
+		},
+		uv11 = {
+			0.756348,
+			0.525391
+		}
+	},
+	killfeed_icon_isha = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.98291,
+			0.484375
+		},
+		uv11 = {
+			0.992676,
+			0.503906
+		}
+	},
+	tabs_icon_prestige_glow = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.972168,
+			0.484375
+		},
+		uv11 = {
+			0.981934,
+			0.503906
+		}
+	},
+	killfeed_icon_grimnir = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.961426,
+			0.484375
+		},
+		uv11 = {
+			0.971191,
+			0.503906
+		}
+	},
+	tabs_icon_charm = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.950684,
+			0.484375
+		},
+		uv11 = {
+			0.960449,
+			0.503906
+		}
+	},
+	tabs_icon_prestige = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.939941,
+			0.484375
+		},
+		uv11 = {
+			0.949707,
+			0.503906
+		}
+	},
+	mutator_icon_powerful_elites = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.929199,
+			0.484375
+		},
+		uv11 = {
+			0.938965,
+			0.503906
+		}
+	},
+	tabs_icon_consumables_glow = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.918457,
+			0.484375
+		},
+		uv11 = {
+			0.928223,
+			0.503906
+		}
+	},
+	tabs_icon_talent_tree = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.907715,
+			0.484375
+		},
+		uv11 = {
+			0.91748,
+			0.503906
+		}
+	},
+	ranged_increase_power_level_vs_armour_crit = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.896973,
+			0.484375
+		},
+		uv11 = {
+			0.906738,
+			0.503906
+		}
+	},
+	mutator_icon_player_dot = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.88623,
+			0.484375
+		},
+		uv11 = {
+			0.895996,
+			0.503906
+		}
+	},
+	tabs_icon_power_glow = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.875488,
+			0.484375
+		},
+		uv11 = {
+			0.885254,
+			0.503906
+		}
+	},
+	mutator_icon_nurgle_storm = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.864746,
+			0.484375
+		},
+		uv11 = {
+			0.874512,
+			0.503906
+		}
+	},
+	tabs_icon_power = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.854004,
+			0.484375
+		},
+		uv11 = {
+			0.86377,
+			0.503906
+		}
+	},
+	mutator_icon_no_pickups = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.843262,
+			0.484375
+		},
+		uv11 = {
+			0.853027,
+			0.503906
+		}
+	},
+	charm_potion_spread = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.83252,
+			0.484375
+		},
+		uv11 = {
+			0.842285,
+			0.503906
+		}
+	},
+	tabs_icon_skins = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.821777,
+			0.484375
+		},
+		uv11 = {
+			0.831543,
+			0.503906
+		}
+	},
+	charm_potion_duration_increased = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.811035,
+			0.484375
+		},
+		uv11 = {
+			0.820801,
+			0.503906
+		}
+	},
+	tabs_icon_portrait_frame = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.800293,
+			0.484375
+		},
+		uv11 = {
+			0.810059,
+			0.503906
+		}
+	},
+	tabs_icon_equipment_glow = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.789551,
+			0.484375
+		},
+		uv11 = {
+			0.799316,
+			0.503906
+		}
+	},
+	ranged_consecutive_hits_increase_power = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.778809,
+			0.484375
+		},
+		uv11 = {
+			0.788574,
+			0.503906
+		}
+	},
+	tabs_icon_necklace = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.768066,
+			0.484375
+		},
+		uv11 = {
+			0.777832,
+			0.503906
+		}
+	},
+	necklace_no_healing_health_regen = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.757324,
+			0.484375
+		},
+		uv11 = {
+			0.76709,
+			0.503906
+		}
+	},
+	ranged_reduced_overcharge = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.746582,
+			0.484375
+		},
+		uv11 = {
+			0.756348,
+			0.503906
+		}
+	},
+	tabs_icon_settings_glow = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
 			0.73584,
-			0.608887
+			0.978516
 		},
 		uv11 = {
 			0.745605,
-			0.628418
+			0.998047
 		}
 	},
 	host_icon = {
@@ -3660,25 +3436,11 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.73584,
-			0.587402
+			0.957031
 		},
 		uv11 = {
 			0.745605,
-			0.606934
-		}
-	},
-	killfeed_icon_05 = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.73584,
-			0.565918
-		},
-		uv11 = {
-			0.745605,
-			0.585449
+			0.976563
 		}
 	},
 	mutator_icon_leash = {
@@ -3688,39 +3450,137 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.73584,
-			0.544434
+			0.935547
 		},
 		uv11 = {
 			0.745605,
-			0.563965
+			0.955078
 		}
 	},
-	mutator_icon_fire_burn = {
+	charm_all_potions = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
 			0.73584,
-			0.522949
+			0.914063
 		},
 		uv11 = {
 			0.745605,
-			0.54248
+			0.933594
 		}
 	},
-	ranged_replenish_ammo_on_crit = {
+	ranged_replenish_ammo_headshot = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
 			0.73584,
-			0.501465
+			0.892578
 		},
 		uv11 = {
 			0.745605,
-			0.520996
+			0.912109
+		}
+	},
+	morris_mutator_icon_increased_healing = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.73584,
+			0.871094
+		},
+		uv11 = {
+			0.745605,
+			0.890625
+		}
+	},
+	mutator_icon_whiterun = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.73584,
+			0.849609
+		},
+		uv11 = {
+			0.745605,
+			0.869141
+		}
+	},
+	tabs_icon_settings = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.73584,
+			0.828125
+		},
+		uv11 = {
+			0.745605,
+			0.847656
+		}
+	},
+	ranged_movespeed_on_damage_taken = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.73584,
+			0.806641
+		},
+		uv11 = {
+			0.745605,
+			0.826172
+		}
+	},
+	mutator_icon_instant_death = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.73584,
+			0.785156
+		},
+		uv11 = {
+			0.745605,
+			0.804688
+		}
+	},
+	tabs_icon_friends = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.73584,
+			0.763672
+		},
+		uv11 = {
+			0.745605,
+			0.783203
+		}
+	},
+	mutator_icon_escort = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.73584,
+			0.742188
+		},
+		uv11 = {
+			0.745605,
+			0.761719
 		}
 	},
 	mutator_icon_explosive_loot_rats = {
@@ -3730,67 +3590,109 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.73584,
-			0.47998
+			0.720703
 		},
 		uv11 = {
 			0.745605,
-			0.499512
+			0.740234
 		}
 	},
-	necklace_damage_taken_reduction_on_heal = {
+	trinket_reduce_radius_by_50_increase_power_by_50 = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
-			0.989746,
-			0.455566
+			0.73584,
+			0.699219
 		},
 		uv11 = {
-			0.999512,
-			0.475098
+			0.745605,
+			0.71875
 		}
 	},
-	mutator_icon_instant_death = {
+	melee_attack_speed_on_crit = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
-			0.989014,
-			0.395508
+			0.73584,
+			0.677734
 		},
 		uv11 = {
-			0.998779,
-			0.415039
+			0.745605,
+			0.697266
 		}
 	},
-	ranged_movespeed_on_damage_taken = {
+	mutator_icon_elite_run = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
-			0.69043,
-			0.978516
+			0.73584,
+			0.65625
 		},
 		uv11 = {
-			0.700195,
-			0.998047
+			0.745605,
+			0.675781
 		}
 	},
-	trinket_increase_grenade_radius = {
+	mutator_icon_heavens_lightning = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
-			0.989258,
-			0.362305
+			0.73584,
+			0.634766
 		},
 		uv11 = {
-			0.999023,
-			0.381836
+			0.745605,
+			0.654297
+		}
+	},
+	killfeed_icon_13 = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.73584,
+			0.613281
+		},
+		uv11 = {
+			0.745605,
+			0.632813
+		}
+	},
+	killfeed_icon_10 = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.73584,
+			0.591797
+		},
+		uv11 = {
+			0.745605,
+			0.611328
+		}
+	},
+	trait_trinket_not_consume_grenade = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.73584,
+			0.570313
+		},
+		uv11 = {
+			0.745605,
+			0.589844
 		}
 	},
 	ranged_remove_overcharge_on_crit = {
@@ -3799,15 +3701,127 @@ icons_atlas = {
 			40
 		},
 		uv00 = {
-			0.989258,
-			0.329102
+			0.73584,
+			0.548828
 		},
 		uv11 = {
-			0.999023,
-			0.348633
+			0.745605,
+			0.568359
 		}
 	},
-	killfeed_icon_13 = {
+	melee_counter_push_power = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.73584,
+			0.527344
+		},
+		uv11 = {
+			0.745605,
+			0.546875
+		}
+	},
+	necklace_damage_taken_reduction_on_heal = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.73584,
+			0.505859
+		},
+		uv11 = {
+			0.745605,
+			0.525391
+		}
+	},
+	killfeed_icon_09 = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.73584,
+			0.484375
+		},
+		uv11 = {
+			0.745605,
+			0.503906
+		}
+	},
+	trinket_increase_grenade_radius = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.983887,
+			0.459961
+		},
+		uv11 = {
+			0.993652,
+			0.479492
+		}
+	},
+	ranged_replenish_ammo_on_crit = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.973145,
+			0.459961
+		},
+		uv11 = {
+			0.98291,
+			0.479492
+		}
+	},
+	mutator_icon_hordes_galore = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.962402,
+			0.459961
+		},
+		uv11 = {
+			0.972168,
+			0.479492
+		}
+	},
+	killfeed_icon_12 = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.95166,
+			0.459961
+		},
+		uv11 = {
+			0.961426,
+			0.479492
+		}
+	},
+	killfeed_icon_03 = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.940918,
+			0.459961
+		},
+		uv11 = {
+			0.950684,
+			0.479492
+		}
+	},
+	melee_heal_on_crit = {
 		size = {
 			40,
 			40
@@ -3821,7 +3835,7 @@ icons_atlas = {
 			0.996094
 		}
 	},
-	melee_heal_on_crit = {
+	mutator_icon_death_spirits = {
 		size = {
 			40,
 			40
@@ -3835,7 +3849,7 @@ icons_atlas = {
 			0.974609
 		}
 	},
-	mutator_icon_darkness = {
+	melee_timed_block_cost = {
 		size = {
 			40,
 			40
@@ -3849,7 +3863,7 @@ icons_atlas = {
 			0.950195
 		}
 	},
-	mutator_icon_death_spirits = {
+	killfeed_icon_05 = {
 		size = {
 			40,
 			40
@@ -3863,7 +3877,7 @@ icons_atlas = {
 			0.928711
 		}
 	},
-	mutator_icon_escort = {
+	killfeed_icon_06 = {
 		size = {
 			40,
 			40
@@ -3877,7 +3891,7 @@ icons_atlas = {
 			0.904297
 		}
 	},
-	necklace_increased_healing_received = {
+	mutator_icon_bloodlust = {
 		size = {
 			40,
 			40
@@ -3905,7 +3919,7 @@ icons_atlas = {
 			0.858398
 		}
 	},
-	killfeed_icon_10 = {
+	mutator_icon_beast_totems = {
 		size = {
 			40,
 			40
@@ -3919,7 +3933,7 @@ icons_atlas = {
 			0.836914
 		}
 	},
-	mutator_icon_elite_run = {
+	mutator_icon_darkness = {
 		size = {
 			40,
 			40
@@ -3933,7 +3947,7 @@ icons_atlas = {
 			0.8125
 		}
 	},
-	killfeed_icon_12 = {
+	necklace_increased_healing_received = {
 		size = {
 			40,
 			40
@@ -3947,7 +3961,7 @@ icons_atlas = {
 			0.791016
 		}
 	},
-	melee_timed_block_cost = {
+	mutator_icon_geheimnisnacht_2021_difficulty = {
 		size = {
 			40,
 			40
@@ -3961,7 +3975,7 @@ icons_atlas = {
 			0.766602
 		}
 	},
-	mutator_icon_hordes_galore = {
+	mutator_icon_fire_burn = {
 		size = {
 			40,
 			40
@@ -3975,7 +3989,7 @@ icons_atlas = {
 			0.745117
 		}
 	},
-	mutator_icon_heavens_lightning = {
+	tabs_icon_inventory = {
 		size = {
 			40,
 			40
@@ -3989,7 +4003,7 @@ icons_atlas = {
 			0.720703
 		}
 	},
-	tabs_icon_inventory = {
+	tabs_icon_friends_glow = {
 		size = {
 			40,
 			40
@@ -4003,7 +4017,7 @@ icons_atlas = {
 			0.699219
 		}
 	},
-	tabs_icon_melee_ranged = {
+	tabs_icon_melee_ranged_glow = {
 		size = {
 			40,
 			40
@@ -4017,7 +4031,7 @@ icons_atlas = {
 			0.676758
 		}
 	},
-	necklace_not_consume_healing = {
+	mutator_icon_splitting_enemies = {
 		size = {
 			40,
 			40
@@ -4107,12 +4121,12 @@ icons_atlas = {
 			45
 		},
 		uv00 = {
-			0.977783,
-			0.455566
+			0.928955,
+			0.459961
 		},
 		uv11 = {
-			0.98877,
-			0.477539
+			0.939941,
+			0.481934
 		}
 	},
 	hud_inventory_icon_deuspotion_HoldMyBeer = {
@@ -4121,12 +4135,12 @@ icons_atlas = {
 			45
 		},
 		uv00 = {
-			0.96582,
-			0.455566
+			0.916992,
+			0.459961
 		},
 		uv11 = {
-			0.976807,
-			0.477539
+			0.927979,
+			0.481934
 		}
 	},
 	hud_inventory_icon_deuspotion_VampiricDraught = {
@@ -4135,12 +4149,12 @@ icons_atlas = {
 			45
 		},
 		uv00 = {
-			0.953857,
-			0.455566
+			0.905029,
+			0.459961
 		},
 		uv11 = {
-			0.964844,
-			0.477539
+			0.916016,
+			0.481934
 		}
 	},
 	hud_inventory_icon_deuspotion_PoisonProof = {
@@ -4149,12 +4163,12 @@ icons_atlas = {
 			45
 		},
 		uv00 = {
-			0.941895,
-			0.455566
+			0.893066,
+			0.459961
 		},
 		uv11 = {
-			0.952881,
-			0.477539
+			0.904053,
+			0.481934
 		}
 	},
 	hud_inventory_icon_deuspotion_PocketsFullOfBombs = {
@@ -4163,12 +4177,12 @@ icons_atlas = {
 			45
 		},
 		uv00 = {
-			0.929932,
-			0.455566
+			0.881104,
+			0.459961
 		},
 		uv11 = {
-			0.940918,
-			0.477539
+			0.89209,
+			0.481934
 		}
 	},
 	hud_inventory_icon_deuspotion_MootMilk = {
@@ -4177,12 +4191,12 @@ icons_atlas = {
 			45
 		},
 		uv00 = {
-			0.917969,
-			0.455566
+			0.869141,
+			0.459961
 		},
 		uv11 = {
-			0.928955,
-			0.477539
+			0.880127,
+			0.481934
 		}
 	},
 	hud_inventory_icon_holybomb = {
@@ -4191,12 +4205,12 @@ icons_atlas = {
 			45
 		},
 		uv00 = {
-			0.906006,
-			0.455566
+			0.857178,
+			0.459961
 		},
 		uv11 = {
-			0.916992,
-			0.477539
+			0.868164,
+			0.481934
 		}
 	},
 	hud_inventory_icon_deuspotion = {
@@ -4205,12 +4219,12 @@ icons_atlas = {
 			45
 		},
 		uv00 = {
-			0.894043,
-			0.455566
+			0.845215,
+			0.459961
 		},
 		uv11 = {
-			0.905029,
-			0.477539
+			0.856201,
+			0.481934
 		}
 	},
 	hud_inventory_icon_jadecenser = {
@@ -4219,12 +4233,12 @@ icons_atlas = {
 			45
 		},
 		uv00 = {
-			0.88208,
-			0.455566
+			0.833252,
+			0.459961
 		},
 		uv11 = {
-			0.893066,
-			0.477539
+			0.844238,
+			0.481934
 		}
 	},
 	hero_icon_medium_dwarf_ranger_yellow = {
@@ -4233,12 +4247,12 @@ icons_atlas = {
 			46
 		},
 		uv00 = {
-			0.869873,
-			0.455566
+			0.821045,
+			0.459961
 		},
 		uv11 = {
-			0.881104,
-			0.478027
+			0.832275,
+			0.482422
 		}
 	},
 	hud_inventory_icon_deuspotion_LiquidBravado = {
@@ -4247,12 +4261,12 @@ icons_atlas = {
 			46
 		},
 		uv00 = {
-			0.85791,
-			0.455566
+			0.809082,
+			0.459961
 		},
 		uv11 = {
-			0.868896,
-			0.478027
+			0.820068,
+			0.482422
 		}
 	},
 	hero_icon_medium_witch_hunter_yellow = {
@@ -4261,12 +4275,12 @@ icons_atlas = {
 			46
 		},
 		uv00 = {
-			0.845703,
-			0.455566
+			0.796875,
+			0.459961
 		},
 		uv11 = {
-			0.856934,
-			0.478027
+			0.808105,
+			0.482422
 		}
 	},
 	hero_icon_medium_empire_soldier_white = {
@@ -4275,12 +4289,12 @@ icons_atlas = {
 			46
 		},
 		uv00 = {
-			0.833496,
-			0.455566
+			0.784668,
+			0.459961
 		},
 		uv11 = {
-			0.844727,
-			0.478027
+			0.795898,
+			0.482422
 		}
 	},
 	hero_icon_medium_witch_hunter_white = {
@@ -4289,12 +4303,12 @@ icons_atlas = {
 			46
 		},
 		uv00 = {
-			0.821289,
-			0.455566
+			0.772461,
+			0.459961
 		},
 		uv11 = {
-			0.83252,
-			0.478027
+			0.783691,
+			0.482422
 		}
 	},
 	hero_icon_medium_empire_soldier_yellow = {
@@ -4303,12 +4317,12 @@ icons_atlas = {
 			46
 		},
 		uv00 = {
-			0.809082,
-			0.455566
+			0.760254,
+			0.459961
 		},
 		uv11 = {
-			0.820313,
-			0.478027
+			0.771484,
+			0.482422
 		}
 	},
 	hero_icon_medium_bright_wizard_yellow = {
@@ -4317,12 +4331,12 @@ icons_atlas = {
 			46
 		},
 		uv00 = {
-			0.796875,
-			0.455566
+			0.748047,
+			0.459961
 		},
 		uv11 = {
-			0.808105,
-			0.478027
+			0.759277,
+			0.482422
 		}
 	},
 	hero_icon_medium_way_watcher_white = {
@@ -4331,12 +4345,12 @@ icons_atlas = {
 			46
 		},
 		uv00 = {
-			0.784668,
-			0.455566
+			0.73584,
+			0.459961
 		},
 		uv11 = {
-			0.795898,
-			0.478027
+			0.74707,
+			0.482422
 		}
 	},
 	hero_icon_medium_dwarf_ranger_white = {
@@ -4345,12 +4359,12 @@ icons_atlas = {
 			46
 		},
 		uv00 = {
-			0.772461,
-			0.455566
+			0.720215,
+			0.96875
 		},
 		uv11 = {
-			0.783691,
-			0.478027
+			0.731445,
+			0.991211
 		}
 	},
 	hero_icon_medium_way_watcher_yellow = {
@@ -4359,12 +4373,12 @@ icons_atlas = {
 			46
 		},
 		uv00 = {
-			0.760254,
-			0.455566
+			0.720215,
+			0.944336
 		},
 		uv11 = {
-			0.771484,
-			0.478027
+			0.731445,
+			0.966797
 		}
 	},
 	hero_icon_medium_bright_wizard_white = {
@@ -4373,12 +4387,82 @@ icons_atlas = {
 			46
 		},
 		uv00 = {
-			0.748047,
-			0.455566
+			0.720215,
+			0.919922
 		},
 		uv11 = {
-			0.759277,
-			0.478027
+			0.731445,
+			0.942383
+		}
+	},
+	hero_icon_medium_dwarf_ranger_yellow = {
+		size = {
+			46,
+			46
+		},
+		uv00 = {
+			0.720215,
+			0.895508
+		},
+		uv11 = {
+			0.731445,
+			0.917969
+		}
+	},
+	hero_icon_medium_dwarf_ranger_white = {
+		size = {
+			46,
+			46
+		},
+		uv00 = {
+			0.720215,
+			0.871094
+		},
+		uv11 = {
+			0.731445,
+			0.893555
+		}
+	},
+	hero_icon_medium_empire_soldier_white = {
+		size = {
+			46,
+			46
+		},
+		uv00 = {
+			0.720215,
+			0.84668
+		},
+		uv11 = {
+			0.731445,
+			0.869141
+		}
+	},
+	hero_icon_medium_witch_hunter_white = {
+		size = {
+			46,
+			46
+		},
+		uv00 = {
+			0.720215,
+			0.822266
+		},
+		uv11 = {
+			0.731445,
+			0.844727
+		}
+	},
+	hero_icon_medium_bright_wizard_yellow = {
+		size = {
+			46,
+			46
+		},
+		uv00 = {
+			0.720215,
+			0.797852
+		},
+		uv11 = {
+			0.731445,
+			0.820313
 		}
 	},
 	lobby_icon_lock = {
@@ -4395,46 +4479,18 @@ icons_atlas = {
 			0.991211
 		}
 	},
-	hero_icon_medium_bright_wizard_yellow = {
+	hero_icon_medium_way_watcher_white = {
 		size = {
 			46,
 			46
 		},
 		uv00 = {
-			0.73584,
-			0.455566
+			0.720215,
+			0.773438
 		},
 		uv11 = {
-			0.74707,
-			0.478027
-		}
-	},
-	hero_icon_medium_dwarf_ranger_white = {
-		size = {
-			46,
-			46
-		},
-		uv00 = {
-			0.722656,
-			0.969238
-		},
-		uv11 = {
-			0.733887,
-			0.991699
-		}
-	},
-	hero_icon_medium_way_watcher_yellow = {
-		size = {
-			46,
-			46
-		},
-		uv00 = {
-			0.722656,
-			0.944824
-		},
-		uv11 = {
-			0.733887,
-			0.967285
+			0.731445,
+			0.795898
 		}
 	},
 	hero_icon_medium_bright_wizard_white = {
@@ -4443,54 +4499,26 @@ icons_atlas = {
 			46
 		},
 		uv00 = {
-			0.722656,
-			0.92041
+			0.720215,
+			0.749023
 		},
 		uv11 = {
-			0.733887,
-			0.942871
+			0.731445,
+			0.771484
 		}
 	},
-	hero_icon_medium_way_watcher_white = {
+	hero_icon_medium_way_watcher_yellow = {
 		size = {
 			46,
 			46
 		},
 		uv00 = {
-			0.722656,
-			0.895996
+			0.720215,
+			0.724609
 		},
 		uv11 = {
-			0.733887,
-			0.918457
-		}
-	},
-	hero_icon_medium_empire_soldier_white = {
-		size = {
-			46,
-			46
-		},
-		uv00 = {
-			0.722656,
-			0.871582
-		},
-		uv11 = {
-			0.733887,
-			0.894043
-		}
-	},
-	hero_icon_medium_witch_hunter_white = {
-		size = {
-			46,
-			46
-		},
-		uv00 = {
-			0.722656,
-			0.847168
-		},
-		uv11 = {
-			0.733887,
-			0.869629
+			0.731445,
+			0.74707
 		}
 	},
 	hero_icon_medium_empire_soldier_yellow = {
@@ -4499,26 +4527,12 @@ icons_atlas = {
 			46
 		},
 		uv00 = {
-			0.722656,
-			0.822754
+			0.720215,
+			0.700195
 		},
 		uv11 = {
-			0.733887,
-			0.845215
-		}
-	},
-	hero_icon_medium_dwarf_ranger_yellow = {
-		size = {
-			46,
-			46
-		},
-		uv00 = {
-			0.722656,
-			0.79834
-		},
-		uv11 = {
-			0.733887,
-			0.820801
+			0.731445,
+			0.722656
 		}
 	},
 	hero_icon_medium_witch_hunter_yellow = {
@@ -4527,54 +4541,12 @@ icons_atlas = {
 			46
 		},
 		uv00 = {
-			0.988037,
-			0.427734
+			0.720215,
+			0.675781
 		},
 		uv11 = {
-			0.999268,
-			0.450195
-		}
-	},
-	icon_property_attack_speed = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.722656,
-			0.771973
-		},
-		uv11 = {
-			0.734863,
-			0.796387
-		}
-	},
-	icon_property_crit_chance = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.722656,
-			0.745605
-		},
-		uv11 = {
-			0.734863,
-			0.77002
-		}
-	},
-	icon_property_activated_cdr = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.722656,
-			0.719238
-		},
-		uv11 = {
-			0.734863,
-			0.743652
+			0.731445,
+			0.698242
 		}
 	},
 	icon_property_block_arc = {
@@ -4583,278 +4555,26 @@ icons_atlas = {
 			50
 		},
 		uv00 = {
-			0.722656,
-			0.692871
+			0.720215,
+			0.649414
 		},
 		uv11 = {
-			0.734863,
-			0.717285
+			0.732422,
+			0.673828
 		}
 	},
-	icon_property_dmg_reduction_aoe = {
+	icon_property_attack_speed = {
 		size = {
 			50,
 			50
 		},
 		uv00 = {
-			0.722656,
-			0.666504
+			0.720215,
+			0.623047
 		},
 		uv11 = {
-			0.734863,
-			0.690918
-		}
-	},
-	icon_property_dmg_reduction_chaos = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.722656,
-			0.640137
-		},
-		uv11 = {
-			0.734863,
-			0.664551
-		}
-	},
-	teammate_consumable_icon_strength = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.722656,
-			0.61377
-		},
-		uv11 = {
-			0.734863,
-			0.638184
-		}
-	},
-	teammate_consumable_icon_speed = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.722656,
-			0.587402
-		},
-		uv11 = {
-			0.734863,
-			0.611816
-		}
-	},
-	teammate_consumable_icon_smoke = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.722656,
-			0.561035
-		},
-		uv11 = {
-			0.734863,
-			0.585449
-		}
-	},
-	teammate_consumable_icon_potion_empty = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.722656,
-			0.534668
-		},
-		uv11 = {
-			0.734863,
-			0.559082
-		}
-	},
-	teammate_consumable_icon_potion = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.722656,
-			0.508301
-		},
-		uv11 = {
-			0.734863,
-			0.532715
-		}
-	},
-	teammate_consumable_icon_grenade_empty = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.722656,
-			0.481934
-		},
-		uv11 = {
-			0.734863,
-			0.506348
-		}
-	},
-	teammate_consumable_icon_grenade = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.722656,
-			0.455566
-		},
-		uv11 = {
-			0.734863,
-			0.47998
-		}
-	},
-	teammate_consumable_icon_frag = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.974854,
-			0.427734
-		},
-		uv11 = {
-			0.987061,
-			0.452148
-		}
-	},
-	icon_property_grimoire_resistance = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.96167,
-			0.427734
-		},
-		uv11 = {
-			0.973877,
-			0.452148
-		}
-	},
-	icon_property_speed_respawn = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.948486,
-			0.427734
-		},
-		uv11 = {
-			0.960693,
-			0.452148
-		}
-	},
-	icon_property_speed_revive = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.935303,
-			0.427734
-		},
-		uv11 = {
-			0.94751,
-			0.452148
-		}
-	},
-	icon_property_movement_speed = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.922119,
-			0.427734
-		},
-		uv11 = {
-			0.934326,
-			0.452148
-		}
-	},
-	icon_property_crit_boost = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.908936,
-			0.427734
-		},
-		uv11 = {
-			0.921143,
-			0.452148
-		}
-	},
-	icon_property_speed_stamina_regen = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.895752,
-			0.427734
-		},
-		uv11 = {
-			0.907959,
-			0.452148
-		}
-	},
-	tabs_icon_home = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.882568,
-			0.427734
-		},
-		uv11 = {
-			0.894775,
-			0.452148
-		}
-	},
-	reinforcement_aid = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.869385,
-			0.427734
-		},
-		uv11 = {
-			0.881592,
-			0.452148
-		}
-	},
-	icon_property_power_skaven = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.856201,
-			0.427734
-		},
-		uv11 = {
-			0.868408,
-			0.452148
+			0.732422,
+			0.647461
 		}
 	},
 	icon_property_dmg_reduction_skaven = {
@@ -4863,96 +4583,12 @@ icons_atlas = {
 			50
 		},
 		uv00 = {
-			0.843018,
-			0.427734
+			0.720215,
+			0.59668
 		},
 		uv11 = {
-			0.855225,
-			0.452148
-		}
-	},
-	teammate_consumable_icon_defence = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.829834,
-			0.427734
-		},
-		uv11 = {
-			0.842041,
-			0.452148
-		}
-	},
-	icon_property_power_armoured = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.81665,
-			0.427734
-		},
-		uv11 = {
-			0.828857,
-			0.452148
-		}
-	},
-	icon_property_power_large = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.803467,
-			0.427734
-		},
-		uv11 = {
-			0.815674,
-			0.452148
-		}
-	},
-	teammate_consumable_icon_fire = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.790283,
-			0.427734
-		},
-		uv11 = {
-			0.80249,
-			0.452148
-		}
-	},
-	reinforcement_hero_sienna = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.7771,
-			0.427734
-		},
-		uv11 = {
-			0.789307,
-			0.452148
-		}
-	},
-	reinforcement_enemy_storm_vermin = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.644043,
-			0.961426
-		},
-		uv11 = {
-			0.65625,
-			0.98584
+			0.732422,
+			0.621094
 		}
 	},
 	icon_property_block_cost_reduction = {
@@ -4961,26 +4597,250 @@ icons_atlas = {
 			50
 		},
 		uv00 = {
-			0.644043,
-			0.935059
+			0.720215,
+			0.570313
 		},
 		uv11 = {
-			0.65625,
-			0.959473
+			0.732422,
+			0.594727
 		}
 	},
-	icon_property_health_increase = {
+	icon_property_activated_cdr = {
 		size = {
 			50,
 			50
 		},
 		uv00 = {
-			0.644043,
-			0.908691
+			0.720215,
+			0.543945
 		},
 		uv11 = {
-			0.65625,
-			0.933105
+			0.732422,
+			0.568359
+		}
+	},
+	icon_property_crit_boost = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.720215,
+			0.517578
+		},
+		uv11 = {
+			0.732422,
+			0.541992
+		}
+	},
+	teammate_consumable_icon_potion = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.720215,
+			0.491211
+		},
+		uv11 = {
+			0.732422,
+			0.515625
+		}
+	},
+	teammate_consumable_icon_grenade_empty = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.986328,
+			0.362305
+		},
+		uv11 = {
+			0.998535,
+			0.386719
+		}
+	},
+	teammate_consumable_icon_grenade = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.974121
+		},
+		uv11 = {
+			0.669434,
+			0.998535
+		}
+	},
+	icon_property_speed_stamina_regen = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.947754
+		},
+		uv11 = {
+			0.669434,
+			0.972168
+		}
+	},
+	teammate_consumable_icon_strength = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.921387
+		},
+		uv11 = {
+			0.669434,
+			0.945801
+		}
+	},
+	teammate_consumable_icon_speed = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.89502
+		},
+		uv11 = {
+			0.669434,
+			0.919434
+		}
+	},
+	icon_property_crit_chance = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.868652
+		},
+		uv11 = {
+			0.669434,
+			0.893066
+		}
+	},
+	icon_property_dmg_reduction_aoe = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.842285
+		},
+		uv11 = {
+			0.669434,
+			0.866699
+		}
+	},
+	icon_property_power_skaven = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.815918
+		},
+		uv11 = {
+			0.669434,
+			0.840332
+		}
+	},
+	teammate_consumable_icon_frag = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.789551
+		},
+		uv11 = {
+			0.669434,
+			0.813965
+		}
+	},
+	icon_property_power_large = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.763184
+		},
+		uv11 = {
+			0.669434,
+			0.787598
+		}
+	},
+	icon_property_stamina = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.736816
+		},
+		uv11 = {
+			0.669434,
+			0.76123
+		}
+	},
+	icon_property_dmg_reduction_chaos = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.710449
+		},
+		uv11 = {
+			0.669434,
+			0.734863
+		}
+	},
+	icon_property_movement_speed = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.684082
+		},
+		uv11 = {
+			0.669434,
+			0.708496
+		}
+	},
+	teammate_consumable_icon_potion_empty = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.657715
+		},
+		uv11 = {
+			0.669434,
+			0.682129
 		}
 	},
 	icon_property_power_unarmoured = {
@@ -4989,26 +4849,68 @@ icons_atlas = {
 			50
 		},
 		uv00 = {
-			0.644043,
-			0.882324
+			0.657227,
+			0.631348
 		},
 		uv11 = {
-			0.65625,
-			0.906738
+			0.669434,
+			0.655762
 		}
 	},
-	reinforcement_hero_saltzpyre = {
+	icon_property_speed_revive = {
 		size = {
 			50,
 			50
 		},
 		uv00 = {
-			0.644043,
-			0.855957
+			0.657227,
+			0.60498
 		},
 		uv11 = {
-			0.65625,
-			0.880371
+			0.669434,
+			0.629395
+		}
+	},
+	icon_property_power_armoured = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.578613
+		},
+		uv11 = {
+			0.669434,
+			0.603027
+		}
+	},
+	teammate_consumable_icon_smoke = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.552246
+		},
+		uv11 = {
+			0.669434,
+			0.57666
+		}
+	},
+	teammate_consumable_icon_fire = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.657227,
+			0.525879
+		},
+		uv11 = {
+			0.669434,
+			0.550293
 		}
 	},
 	icon_property_power_chaos = {
@@ -5017,68 +4919,26 @@ icons_atlas = {
 			50
 		},
 		uv00 = {
-			0.644043,
-			0.82959
+			0.657227,
+			0.499512
 		},
 		uv11 = {
-			0.65625,
-			0.854004
+			0.669434,
+			0.523926
 		}
 	},
-	reinforcement_picked_up = {
+	reinforcement_enemy_ratling_gunner = {
 		size = {
 			50,
 			50
 		},
 		uv00 = {
-			0.644043,
-			0.803223
+			0.657227,
+			0.473145
 		},
 		uv11 = {
-			0.65625,
-			0.827637
-		}
-	},
-	reinforcement_enemy_globadier = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.644043,
-			0.776855
-		},
-		uv11 = {
-			0.65625,
-			0.80127
-		}
-	},
-	reinforcement_hero_kruber = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.644043,
-			0.750488
-		},
-		uv11 = {
-			0.65625,
-			0.774902
-		}
-	},
-	reinforcement_hero_bardin = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.644043,
-			0.724121
-		},
-		uv11 = {
-			0.65625,
-			0.748535
+			0.669434,
+			0.497559
 		}
 	},
 	icon_property_power_frenzy = {
@@ -5088,109 +4948,81 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.644043,
-			0.697754
+			0.953613
 		},
 		uv11 = {
 			0.65625,
-			0.722168
+			0.978027
 		}
 	},
-	reinforcement_discarded = {
+	icon_property_health_increase = {
 		size = {
 			50,
 			50
 		},
 		uv00 = {
 			0.644043,
-			0.671387
+			0.927246
 		},
 		uv11 = {
 			0.65625,
-			0.695801
+			0.95166
 		}
 	},
-	icon_property_stamina = {
+	icon_property_grimoire_resistance = {
 		size = {
 			50,
 			50
 		},
 		uv00 = {
 			0.644043,
-			0.64502
+			0.900879
 		},
 		uv11 = {
 			0.65625,
-			0.669434
+			0.925293
 		}
 	},
-	reinforcement_hero_kerillian = {
+	icon_property_speed_respawn = {
 		size = {
 			50,
 			50
 		},
 		uv00 = {
 			0.644043,
-			0.618652
+			0.874512
 		},
 		uv11 = {
 			0.65625,
-			0.643066
+			0.898926
 		}
 	},
-	reinforcement_give_item = {
+	teammate_consumable_icon_defence = {
 		size = {
 			50,
 			50
 		},
 		uv00 = {
 			0.644043,
-			0.592285
+			0.848145
 		},
 		uv11 = {
 			0.65625,
-			0.616699
+			0.872559
 		}
 	},
-	reinforcement_enemy_gutter_runner = {
+	reinforcement_aid = {
 		size = {
 			50,
 			50
 		},
 		uv00 = {
 			0.644043,
-			0.565918
+			0.821777
 		},
 		uv11 = {
 			0.65625,
-			0.590332
-		}
-	},
-	reinforcement_enemy_ratling_gunner = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.644043,
-			0.539551
-		},
-		uv11 = {
-			0.65625,
-			0.563965
-		}
-	},
-	reinforcement_enemy_pack_master = {
-		size = {
-			50,
-			50
-		},
-		uv00 = {
-			0.644043,
-			0.513184
-		},
-		uv11 = {
-			0.65625,
-			0.537598
+			0.846191
 		}
 	},
 	reinforcement_enemy_rat_ogre = {
@@ -5200,11 +5032,81 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.644043,
-			0.486816
+			0.79541
 		},
 		uv11 = {
 			0.65625,
-			0.51123
+			0.819824
+		}
+	},
+	reinforcement_hero_kerillian = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.644043,
+			0.769043
+		},
+		uv11 = {
+			0.65625,
+			0.793457
+		}
+	},
+	reinforcement_picked_up = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.644043,
+			0.742676
+		},
+		uv11 = {
+			0.65625,
+			0.76709
+		}
+	},
+	reinforcement_discarded = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.644043,
+			0.716309
+		},
+		uv11 = {
+			0.65625,
+			0.740723
+		}
+	},
+	reinforcement_enemy_pack_master = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.644043,
+			0.689941
+		},
+		uv11 = {
+			0.65625,
+			0.714355
+		}
+	},
+	reinforcement_enemy_gutter_runner = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.644043,
+			0.663574
+		},
+		uv11 = {
+			0.65625,
+			0.687988
 		}
 	},
 	reinforcement_enemy_sack_rat = {
@@ -5214,11 +5116,123 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.644043,
-			0.460449
+			0.637207
 		},
 		uv11 = {
 			0.65625,
-			0.484863
+			0.661621
+		}
+	},
+	reinforcement_enemy_globadier = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.644043,
+			0.61084
+		},
+		uv11 = {
+			0.65625,
+			0.635254
+		}
+	},
+	reinforcement_give_item = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.644043,
+			0.584473
+		},
+		uv11 = {
+			0.65625,
+			0.608887
+		}
+	},
+	reinforcement_hero_kruber = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.644043,
+			0.558105
+		},
+		uv11 = {
+			0.65625,
+			0.58252
+		}
+	},
+	reinforcement_enemy_storm_vermin = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.644043,
+			0.531738
+		},
+		uv11 = {
+			0.65625,
+			0.556152
+		}
+	},
+	reinforcement_hero_saltzpyre = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.644043,
+			0.505371
+		},
+		uv11 = {
+			0.65625,
+			0.529785
+		}
+	},
+	tabs_icon_home = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.644043,
+			0.479004
+		},
+		uv11 = {
+			0.65625,
+			0.503418
+		}
+	},
+	reinforcement_hero_bardin = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.644043,
+			0.452637
+		},
+		uv11 = {
+			0.65625,
+			0.477051
+		}
+	},
+	reinforcement_hero_sienna = {
+		size = {
+			50,
+			50
+		},
+		uv00 = {
+			0.644043,
+			0.42627
+		},
+		uv11 = {
+			0.65625,
+			0.450684
 		}
 	},
 	talent_icon_slayer = {
@@ -5227,12 +5241,12 @@ icons_atlas = {
 			52
 		},
 		uv00 = {
-			0.763428,
-			0.427734
+			0.657227,
+			0.445801
 		},
 		uv11 = {
-			0.776123,
-			0.453125
+			0.669922,
+			0.471191
 		}
 	},
 	talent_icon_ironbreaker = {
@@ -5241,12 +5255,12 @@ icons_atlas = {
 			52
 		},
 		uv00 = {
-			0.749756,
-			0.427734
+			0.657227,
+			0.418457
 		},
 		uv11 = {
-			0.762451,
-			0.453125
+			0.669922,
+			0.443848
 		}
 	},
 	talent_icon_shade = {
@@ -5255,12 +5269,12 @@ icons_atlas = {
 			52
 		},
 		uv00 = {
-			0.736084,
-			0.427734
+			0.657227,
+			0.391113
 		},
 		uv11 = {
-			0.748779,
-			0.453125
+			0.669922,
+			0.416504
 		}
 	},
 	winds_icon_background_glow = {
@@ -5269,12 +5283,12 @@ icons_atlas = {
 			53
 		},
 		uv00 = {
-			0.722656,
-			0.427734
+			0.657227,
+			0.363281
 		},
 		uv11 = {
-			0.735107,
-			0.453613
+			0.669678,
+			0.38916
 		}
 	},
 	console_consumable_icon_arrow_02 = {
@@ -5291,6 +5305,20 @@ icons_atlas = {
 			0.0625
 		}
 	},
+	hud_icon_d_pad = {
+		size = {
+			54,
+			54
+		},
+		uv00 = {
+			0.986328,
+			0.329102
+		},
+		uv11 = {
+			0.999512,
+			0.355469
+		}
+	},
 	console_consumable_icon_arrow_01 = {
 		size = {
 			54,
@@ -5305,18 +5333,18 @@ icons_atlas = {
 			0.395508
 		}
 	},
-	hud_icon_d_pad = {
+	icon_mastery_big = {
 		size = {
-			54,
-			54
+			55,
+			55
 		},
 		uv00 = {
-			0.707031,
-			0.956543
+			0.985596,
+			0.428711
 		},
 		uv11 = {
-			0.720215,
-			0.98291
+			0.999023,
+			0.455566
 		}
 	},
 	icon_lore_page = {
@@ -5326,235 +5354,11 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.644043,
-			0.431641
+			0.397461
 		},
 		uv11 = {
 			0.655762,
-			0.458496
-		}
-	},
-	icon_mastery_big = {
-		size = {
-			55,
-			55
-		},
-		uv00 = {
-			0.707031,
-			0.927734
-		},
-		uv11 = {
-			0.720459,
-			0.95459
-		}
-	},
-	options_button_icon_talents = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.896484
-		},
-		uv11 = {
-			0.72168,
-			0.925781
-		}
-	},
-	options_button_icon_twitch = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.865234
-		},
-		uv11 = {
-			0.72168,
-			0.894531
-		}
-	},
-	options_button_icon_talents_glow = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.833984
-		},
-		uv11 = {
-			0.72168,
-			0.863281
-		}
-	},
-	options_button_icon_quickplay_glow = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.802734
-		},
-		uv11 = {
-			0.72168,
-			0.832031
-		}
-	},
-	options_button_icon_custom_glow = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.771484
-		},
-		uv11 = {
-			0.72168,
-			0.800781
-		}
-	},
-	options_button_icon_quickplay = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.740234
-		},
-		uv11 = {
-			0.72168,
-			0.769531
-		}
-	},
-	options_button_icon_mixer_glow = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.708984
-		},
-		uv11 = {
-			0.72168,
-			0.738281
-		}
-	},
-	talent_icon_knight = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.677734
-		},
-		uv11 = {
-			0.72168,
-			0.707031
-		}
-	},
-	options_button_icon_equipment_glow = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.646484
-		},
-		uv11 = {
-			0.72168,
-			0.675781
-		}
-	},
-	options_button_icon_twitch_glow = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.615234
-		},
-		uv11 = {
-			0.72168,
-			0.644531
-		}
-	},
-	options_button_icon_cosmetics_glow = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.583984
-		},
-		uv11 = {
-			0.72168,
-			0.613281
-		}
-	},
-	options_button_icon_crafting_glow = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.552734
-		},
-		uv11 = {
-			0.72168,
-			0.582031
-		}
-	},
-	talent_icon_test = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.521484
-		},
-		uv11 = {
-			0.72168,
-			0.550781
-		}
-	},
-	icons_placeholder = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.490234
-		},
-		uv11 = {
-			0.72168,
-			0.519531
-		}
-	},
-	options_button_icon_equipment = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.707031,
-			0.458984
-		},
-		uv11 = {
-			0.72168,
-			0.488281
+			0.424316
 		}
 	},
 	options_button_icon_deed_glow = {
@@ -5563,26 +5367,12 @@ icons_atlas = {
 			60
 		},
 		uv00 = {
-			0.707031,
-			0.427734
+			0.720215,
+			0.459961
 		},
 		uv11 = {
-			0.72168,
-			0.457031
-		}
-	},
-	options_button_icon_deed = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.973389,
-			0.395508
-		},
-		uv11 = {
-			0.988037,
-			0.424805
+			0.734863,
+			0.489258
 		}
 	},
 	options_button_icon_custom = {
@@ -5591,110 +5381,12 @@ icons_atlas = {
 			60
 		},
 		uv00 = {
-			0.957764,
-			0.395508
+			0.969971,
+			0.428711
 		},
 		uv11 = {
-			0.972412,
-			0.424805
-		}
-	},
-	options_button_icon_mixer = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.942139,
-			0.395508
-		},
-		uv11 = {
-			0.956787,
-			0.424805
-		}
-	},
-	friends_icon_01 = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.926514,
-			0.395508
-		},
-		uv11 = {
-			0.941162,
-			0.424805
-		}
-	},
-	icon_crafting_dust_03_small = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.910889,
-			0.395508
-		},
-		uv11 = {
-			0.925537,
-			0.424805
-		}
-	},
-	options_button_icon_crafting = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.895264,
-			0.395508
-		},
-		uv11 = {
-			0.909912,
-			0.424805
-		}
-	},
-	tab_menu_level_bg = {
-		size = {
-			59,
-			60
-		},
-		uv00 = {
-			0.879883,
-			0.395508
-		},
-		uv11 = {
-			0.894287,
-			0.424805
-		}
-	},
-	options_button_icon_event_glow = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.864258,
-			0.395508
-		},
-		uv11 = {
-			0.878906,
-			0.424805
-		}
-	},
-	icon_crafting_dust_01_small = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.848633,
-			0.395508
-		},
-		uv11 = {
-			0.863281,
-			0.424805
+			0.984619,
+			0.458008
 		}
 	},
 	options_button_icon_cosmetics = {
@@ -5703,40 +5395,236 @@ icons_atlas = {
 			60
 		},
 		uv00 = {
-			0.833008,
-			0.395508
+			0.954346,
+			0.428711
 		},
 		uv11 = {
-			0.847656,
-			0.424805
+			0.968994,
+			0.458008
 		}
 	},
-	options_button_icon_event = {
+	options_button_icon_custom_glow = {
 		size = {
 			60,
 			60
 		},
 		uv00 = {
-			0.817383,
-			0.395508
+			0.938721,
+			0.428711
 		},
 		uv11 = {
-			0.832031,
-			0.424805
+			0.953369,
+			0.458008
 		}
 	},
-	icon_crafting_dust_04_small = {
+	options_button_icon_quickplay = {
 		size = {
 			60,
 			60
 		},
 		uv00 = {
-			0.801758,
-			0.395508
+			0.923096,
+			0.428711
 		},
 		uv11 = {
-			0.816406,
-			0.424805
+			0.937744,
+			0.458008
+		}
+	},
+	options_button_icon_crafting_glow = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.907471,
+			0.428711
+		},
+		uv11 = {
+			0.922119,
+			0.458008
+		}
+	},
+	options_button_icon_cosmetics_glow = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.891846,
+			0.428711
+		},
+		uv11 = {
+			0.906494,
+			0.458008
+		}
+	},
+	options_button_icon_crafting = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.876221,
+			0.428711
+		},
+		uv11 = {
+			0.890869,
+			0.458008
+		}
+	},
+	options_button_icon_quickplay_glow = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.860596,
+			0.428711
+		},
+		uv11 = {
+			0.875244,
+			0.458008
+		}
+	},
+	options_button_icon_talents_glow = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.844971,
+			0.428711
+		},
+		uv11 = {
+			0.859619,
+			0.458008
+		}
+	},
+	options_button_icon_mixer_glow = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.829346,
+			0.428711
+		},
+		uv11 = {
+			0.843994,
+			0.458008
+		}
+	},
+	options_button_icon_equipment = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.813721,
+			0.428711
+		},
+		uv11 = {
+			0.828369,
+			0.458008
+		}
+	},
+	options_button_icon_twitch = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.798096,
+			0.428711
+		},
+		uv11 = {
+			0.812744,
+			0.458008
+		}
+	},
+	options_button_icon_deed = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.782471,
+			0.428711
+		},
+		uv11 = {
+			0.797119,
+			0.458008
+		}
+	},
+	options_button_icon_mixer = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.766846,
+			0.428711
+		},
+		uv11 = {
+			0.781494,
+			0.458008
+		}
+	},
+	options_button_icon_talents = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.751221,
+			0.428711
+		},
+		uv11 = {
+			0.765869,
+			0.458008
+		}
+	},
+	talent_icon_knight = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.735596,
+			0.428711
+		},
+		uv11 = {
+			0.750244,
+			0.458008
+		}
+	},
+	tab_menu_level_bg = {
+		size = {
+			59,
+			60
+		},
+		uv00 = {
+			0.720215,
+			0.428711
+		},
+		uv11 = {
+			0.734619,
+			0.458008
+		}
+	},
+	options_button_icon_twitch_glow = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.704102,
+			0.963867
+		},
+		uv11 = {
+			0.71875,
+			0.993164
 		}
 	},
 	icon_crafting_dust_02_small = {
@@ -5745,12 +5633,138 @@ icons_atlas = {
 			60
 		},
 		uv00 = {
-			0.786133,
-			0.395508
+			0.704102,
+			0.932617
 		},
 		uv11 = {
-			0.800781,
-			0.424805
+			0.71875,
+			0.961914
+		}
+	},
+	icons_placeholder = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.704102,
+			0.901367
+		},
+		uv11 = {
+			0.71875,
+			0.930664
+		}
+	},
+	talent_icon_test = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.704102,
+			0.870117
+		},
+		uv11 = {
+			0.71875,
+			0.899414
+		}
+	},
+	options_button_icon_equipment_glow = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.704102,
+			0.838867
+		},
+		uv11 = {
+			0.71875,
+			0.868164
+		}
+	},
+	options_button_icon_event_glow = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.704102,
+			0.807617
+		},
+		uv11 = {
+			0.71875,
+			0.836914
+		}
+	},
+	icon_crafting_dust_01_small = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.704102,
+			0.776367
+		},
+		uv11 = {
+			0.71875,
+			0.805664
+		}
+	},
+	friends_icon_01 = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.704102,
+			0.745117
+		},
+		uv11 = {
+			0.71875,
+			0.774414
+		}
+	},
+	options_button_icon_event = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.704102,
+			0.713867
+		},
+		uv11 = {
+			0.71875,
+			0.743164
+		}
+	},
+	icon_crafting_dust_03_small = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.704102,
+			0.682617
+		},
+		uv11 = {
+			0.71875,
+			0.711914
+		}
+	},
+	icon_crafting_dust_04_small = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.704102,
+			0.651367
+		},
+		uv11 = {
+			0.71875,
+			0.680664
 		}
 	},
 	icon_crafting_scrap_small = {
@@ -5759,12 +5773,12 @@ icons_atlas = {
 			60
 		},
 		uv00 = {
-			0.770508,
-			0.395508
+			0.704102,
+			0.620117
 		},
 		uv11 = {
-			0.785156,
-			0.424805
+			0.71875,
+			0.649414
 		}
 	},
 	icon_crafting_jewellery_part_small = {
@@ -5773,12 +5787,12 @@ icons_atlas = {
 			60
 		},
 		uv00 = {
-			0.754883,
-			0.395508
+			0.704102,
+			0.588867
 		},
 		uv11 = {
-			0.769531,
-			0.424805
+			0.71875,
+			0.618164
 		}
 	},
 	icon_crafting_weapon_part_small = {
@@ -5787,12 +5801,26 @@ icons_atlas = {
 			60
 		},
 		uv00 = {
-			0.739258,
-			0.395508
+			0.704102,
+			0.557617
 		},
 		uv11 = {
-			0.753906,
-			0.424805
+			0.71875,
+			0.586914
+		}
+	},
+	hud_tutorial_survival_icon_attack_direction = {
+		size = {
+			62,
+			62
+		},
+		uv00 = {
+			0.704102,
+			0.525391
+		},
+		uv11 = {
+			0.719238,
+			0.555664
 		}
 	},
 	hud_tutorial_survival_icon_reward_drop = {
@@ -5801,11 +5829,95 @@ icons_atlas = {
 			62
 		},
 		uv00 = {
-			0.723145,
+			0.704102,
+			0.493164
+		},
+		uv11 = {
+			0.719238,
+			0.523438
+		}
+	},
+	grenade_icon = {
+		size = {
+			62,
+			62
+		},
+		uv00 = {
+			0.704102,
+			0.460938
+		},
+		uv11 = {
+			0.719238,
+			0.491211
+		}
+	},
+	hud_tutorial_icon_sidemission = {
+		size = {
+			62,
+			62
+		},
+		uv00 = {
+			0.704102,
+			0.428711
+		},
+		uv11 = {
+			0.719238,
+			0.458984
+		}
+	},
+	hud_tutorial_icon_attention = {
+		size = {
+			62,
+			62
+		},
+		uv00 = {
+			0.980469,
 			0.395508
 		},
 		uv11 = {
-			0.738281,
+			0.995605,
+			0.425781
+		}
+	},
+	hud_tutorial_icon_rescue = {
+		size = {
+			62,
+			62
+		},
+		uv00 = {
+			0.964355,
+			0.395508
+		},
+		uv11 = {
+			0.979492,
+			0.425781
+		}
+	},
+	hud_tutorial_survival_icon_resupply = {
+		size = {
+			62,
+			62
+		},
+		uv00 = {
+			0.948242,
+			0.395508
+		},
+		uv11 = {
+			0.963379,
+			0.425781
+		}
+	},
+	teammate_consumable_icon_potion_02 = {
+		size = {
+			62,
+			62
+		},
+		uv00 = {
+			0.932129,
+			0.395508
+		},
+		uv11 = {
+			0.947266,
 			0.425781
 		}
 	},
@@ -5815,11 +5927,95 @@ icons_atlas = {
 			62
 		},
 		uv00 = {
-			0.707031,
+			0.916016,
 			0.395508
 		},
 		uv11 = {
-			0.722168,
+			0.931152,
+			0.425781
+		}
+	},
+	icon_infoslate_02 = {
+		size = {
+			62,
+			62
+		},
+		uv00 = {
+			0.899902,
+			0.395508
+		},
+		uv11 = {
+			0.915039,
+			0.425781
+		}
+	},
+	teammate_consumable_icon_medpack = {
+		size = {
+			62,
+			62
+		},
+		uv00 = {
+			0.883789,
+			0.395508
+		},
+		uv11 = {
+			0.898926,
+			0.425781
+		}
+	},
+	teammate_consumable_icon_book = {
+		size = {
+			62,
+			62
+		},
+		uv00 = {
+			0.867676,
+			0.395508
+		},
+		uv11 = {
+			0.882813,
+			0.425781
+		}
+	},
+	teammate_consumable_icon_grimoire = {
+		size = {
+			62,
+			62
+		},
+		uv00 = {
+			0.851563,
+			0.395508
+		},
+		uv11 = {
+			0.866699,
+			0.425781
+		}
+	},
+	teammate_consumable_icon_medkit = {
+		size = {
+			62,
+			62
+		},
+		uv00 = {
+			0.835449,
+			0.395508
+		},
+		uv11 = {
+			0.850586,
+			0.425781
+		}
+	},
+	hud_tutorial_icon_info = {
+		size = {
+			62,
+			62
+		},
+		uv00 = {
+			0.819336,
+			0.395508
+		},
+		uv11 = {
+			0.834473,
 			0.425781
 		}
 	},
@@ -5829,40 +6025,12 @@ icons_atlas = {
 			62
 		},
 		uv00 = {
-			0.69043,
-			0.946289
+			0.803223,
+			0.395508
 		},
 		uv11 = {
-			0.705566,
-			0.976563
-		}
-	},
-	hud_tutorial_survival_icon_resupply = {
-		size = {
-			62,
-			62
-		},
-		uv00 = {
-			0.69043,
-			0.914063
-		},
-		uv11 = {
-			0.705566,
-			0.944336
-		}
-	},
-	hud_tutorial_icon_info = {
-		size = {
-			62,
-			62
-		},
-		uv00 = {
-			0.69043,
-			0.881836
-		},
-		uv11 = {
-			0.705566,
-			0.912109
+			0.818359,
+			0.425781
 		}
 	},
 	teammate_consumable_icon_potion_01 = {
@@ -5871,169 +6039,15 @@ icons_atlas = {
 			62
 		},
 		uv00 = {
-			0.69043,
-			0.849609
+			0.787109,
+			0.395508
 		},
 		uv11 = {
-			0.705566,
-			0.879883
-		}
-	},
-	hud_tutorial_icon_attention = {
-		size = {
-			62,
-			62
-		},
-		uv00 = {
-			0.69043,
-			0.817383
-		},
-		uv11 = {
-			0.705566,
-			0.847656
-		}
-	},
-	grenade_icon = {
-		size = {
-			62,
-			62
-		},
-		uv00 = {
-			0.69043,
-			0.785156
-		},
-		uv11 = {
-			0.705566,
-			0.81543
-		}
-	},
-	icon_infoslate_02 = {
-		size = {
-			62,
-			62
-		},
-		uv00 = {
-			0.69043,
-			0.75293
-		},
-		uv11 = {
-			0.705566,
-			0.783203
-		}
-	},
-	teammate_consumable_icon_book = {
-		size = {
-			62,
-			62
-		},
-		uv00 = {
-			0.69043,
-			0.720703
-		},
-		uv11 = {
-			0.705566,
-			0.750977
-		}
-	},
-	teammate_consumable_icon_grimoire = {
-		size = {
-			62,
-			62
-		},
-		uv00 = {
-			0.69043,
-			0.688477
-		},
-		uv11 = {
-			0.705566,
-			0.71875
-		}
-	},
-	teammate_consumable_icon_medkit = {
-		size = {
-			62,
-			62
-		},
-		uv00 = {
-			0.69043,
-			0.65625
-		},
-		uv11 = {
-			0.705566,
-			0.686523
-		}
-	},
-	hud_tutorial_icon_rescue = {
-		size = {
-			62,
-			62
-		},
-		uv00 = {
-			0.69043,
-			0.624023
-		},
-		uv11 = {
-			0.705566,
-			0.654297
-		}
-	},
-	hud_tutorial_survival_icon_attack_direction = {
-		size = {
-			62,
-			62
-		},
-		uv00 = {
-			0.69043,
-			0.591797
-		},
-		uv11 = {
-			0.705566,
-			0.62207
-		}
-	},
-	teammate_consumable_icon_potion_02 = {
-		size = {
-			62,
-			62
-		},
-		uv00 = {
-			0.69043,
-			0.55957
-		},
-		uv11 = {
-			0.705566,
-			0.589844
-		}
-	},
-	hud_tutorial_icon_sidemission = {
-		size = {
-			62,
-			62
-		},
-		uv00 = {
-			0.69043,
-			0.527344
-		},
-		uv11 = {
-			0.705566,
-			0.557617
+			0.802246,
+			0.425781
 		}
 	},
 	teammate_consumable_icon_medpack_empty = {
-		size = {
-			62,
-			62
-		},
-		uv00 = {
-			0.69043,
-			0.495117
-		},
-		uv11 = {
-			0.705566,
-			0.525391
-		}
-	},
-	teammate_consumable_icon_medpack = {
 		size = {
 			62,
 			62
@@ -6047,74 +6061,74 @@ icons_atlas = {
 			0.999023
 		}
 	},
-	xbone_button_icon_show_large = {
+	hud_inventory_icon_deuspotion_LiquidBravado_02_glow = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.69043,
-			0.461914
-		},
-		uv11 = {
-			0.706055,
-			0.493164
-		}
-	},
-	consumables_frame_lit = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.69043,
-			0.428711
-		},
-		uv11 = {
-			0.706055,
-			0.459961
-		}
-	},
-	consumables_heal_ally_lit = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.69043,
+			0.770508,
 			0.395508
 		},
 		uv11 = {
-			0.706055,
+			0.786133,
 			0.426758
 		}
 	},
-	consumables_grimoire_lit = {
+	consumables_fire = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.972656,
-			0.362305
+			0.753906,
+			0.395508
 		},
 		uv11 = {
-			0.988281,
-			0.393555
+			0.769531,
+			0.426758
 		}
 	},
-	numeric_icon_orange_medium_6 = {
+	consumables_empty_potion = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.956055,
-			0.362305
+			0.737305,
+			0.395508
 		},
 		uv11 = {
-			0.97168,
-			0.393555
+			0.75293,
+			0.426758
+		}
+	},
+	consumables_defence_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.720703,
+			0.395508
+		},
+		uv11 = {
+			0.736328,
+			0.426758
+		}
+	},
+	numeric_icon_orange_medium_8 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.704102,
+			0.395508
+		},
+		uv11 = {
+			0.719727,
+			0.426758
 		}
 	},
 	consumables_frag = {
@@ -6123,40 +6137,82 @@ icons_atlas = {
 			64
 		},
 		uv00 = {
-			0.939453,
-			0.362305
+			0.6875,
+			0.959961
 		},
 		uv11 = {
-			0.955078,
-			0.393555
+			0.703125,
+			0.991211
 		}
 	},
-	consumables_strength = {
+	default_heal_icon_lit = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.922852,
-			0.362305
+			0.6875,
+			0.926758
 		},
 		uv11 = {
-			0.938477,
-			0.393555
+			0.703125,
+			0.958008
 		}
 	},
-	consumables_potion_01_lit = {
+	profile_002 = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.90625,
-			0.362305
+			0.6875,
+			0.893555
 		},
 		uv11 = {
-			0.921875,
-			0.393555
+			0.703125,
+			0.924805
+		}
+	},
+	default_heal_ally_icon_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.6875,
+			0.860352
+		},
+		uv11 = {
+			0.703125,
+			0.891602
+		}
+	},
+	consumables_medpack = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.6875,
+			0.827148
+		},
+		uv11 = {
+			0.703125,
+			0.858398
+		}
+	},
+	default_potion_icon_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.6875,
+			0.793945
+		},
+		uv11 = {
+			0.703125,
+			0.825195
 		}
 	},
 	consumables_smoke = {
@@ -6165,39 +6221,179 @@ icons_atlas = {
 			64
 		},
 		uv00 = {
-			0.889648,
-			0.362305
+			0.6875,
+			0.760742
 		},
 		uv11 = {
-			0.905273,
-			0.393555
+			0.703125,
+			0.791992
 		}
 	},
-	hud_inventory_icon_jadecenser_02 = {
+	hud_inventory_icon_deuspotion_KillerInTheShadows_02_glow = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.873047,
-			0.362305
+			0.6875,
+			0.727539
 		},
 		uv11 = {
-			0.888672,
-			0.393555
+			0.703125,
+			0.758789
 		}
 	},
-	consumables_potion_02_lit = {
+	hud_inventory_icon_deuspotion_PoisonProof_02_glow = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.856445,
+			0.6875,
+			0.694336
+		},
+		uv11 = {
+			0.703125,
+			0.725586
+		}
+	},
+	consumables_frame_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.6875,
+			0.661133
+		},
+		uv11 = {
+			0.703125,
+			0.692383
+		}
+	},
+	consumables_heal_ally_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.6875,
+			0.62793
+		},
+		uv11 = {
+			0.703125,
+			0.65918
+		}
+	},
+	consumables_book_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.6875,
+			0.594727
+		},
+		uv11 = {
+			0.703125,
+			0.625977
+		}
+	},
+	profile_003 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.6875,
+			0.561523
+		},
+		uv11 = {
+			0.703125,
+			0.592773
+		}
+	},
+	consumables_grimoire_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.6875,
+			0.52832
+		},
+		uv11 = {
+			0.703125,
+			0.55957
+		}
+	},
+	default_grenade_icon_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.6875,
+			0.495117
+		},
+		uv11 = {
+			0.703125,
+			0.526367
+		}
+	},
+	default_grenade_icon = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.6875,
+			0.461914
+		},
+		uv11 = {
+			0.703125,
+			0.493164
+		}
+	},
+	default_potion_icon = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.6875,
+			0.428711
+		},
+		uv11 = {
+			0.703125,
+			0.459961
+		}
+	},
+	hud_inventory_icon_deuspotion_HoldMyBeer_02_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.6875,
+			0.395508
+		},
+		uv11 = {
+			0.703125,
+			0.426758
+		}
+	},
+	hud_inventory_icon_deuspotion_MootMilk_02_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.969727,
 			0.362305
 		},
 		uv11 = {
-			0.87207,
+			0.985352,
 			0.393555
 		}
 	},
@@ -6207,95 +6403,39 @@ icons_atlas = {
 			64
 		},
 		uv00 = {
-			0.839844,
+			0.953125,
 			0.362305
 		},
 		uv11 = {
-			0.855469,
+			0.96875,
 			0.393555
 		}
 	},
-	hud_inventory_icon_deuspotion_KillerInTheShadows_02_glow = {
+	default_heal_icon = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.823242,
+			0.936523,
 			0.362305
 		},
 		uv11 = {
-			0.838867,
+			0.952148,
 			0.393555
 		}
 	},
-	consumables_grimoire = {
+	consumables_strength = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.806641,
+			0.919922,
 			0.362305
 		},
 		uv11 = {
-			0.822266,
-			0.393555
-		}
-	},
-	consumables_fire_lit = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.790039,
-			0.362305
-		},
-		uv11 = {
-			0.805664,
-			0.393555
-		}
-	},
-	consumables_defence = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.773438,
-			0.362305
-		},
-		uv11 = {
-			0.789063,
-			0.393555
-		}
-	},
-	consumables_fire = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.756836,
-			0.362305
-		},
-		uv11 = {
-			0.772461,
-			0.393555
-		}
-	},
-	consumables_speed_lit = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.740234,
-			0.362305
-		},
-		uv11 = {
-			0.755859,
+			0.935547,
 			0.393555
 		}
 	},
@@ -6305,222 +6445,12 @@ icons_atlas = {
 			64
 		},
 		uv00 = {
-			0.723633,
+			0.90332,
 			0.362305
 		},
 		uv11 = {
-			0.739258,
+			0.918945,
 			0.393555
-		}
-	},
-	consumables_potion_01 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.707031,
-			0.362305
-		},
-		uv11 = {
-			0.722656,
-			0.393555
-		}
-	},
-	default_grenade_icon = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.69043,
-			0.362305
-		},
-		uv11 = {
-			0.706055,
-			0.393555
-		}
-	},
-	hud_inventory_icon_deuspotion_MootMilk_02_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.959961
-		},
-		uv11 = {
-			0.689453,
-			0.991211
-		}
-	},
-	hud_inventory_icon_deuspotion_LiquidBravado_02_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.926758
-		},
-		uv11 = {
-			0.689453,
-			0.958008
-		}
-	},
-	consumables_heal_ally = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.893555
-		},
-		uv11 = {
-			0.689453,
-			0.924805
-		}
-	},
-	default_potion_icon = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.860352
-		},
-		uv11 = {
-			0.689453,
-			0.891602
-		}
-	},
-	consumables_speed = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.827148
-		},
-		uv11 = {
-			0.689453,
-			0.858398
-		}
-	},
-	xbone_button_icon_menu_large = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.793945
-		},
-		uv11 = {
-			0.689453,
-			0.825195
-		}
-	},
-	consumables_frame_bg_lit = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.760742
-		},
-		uv11 = {
-			0.689453,
-			0.791992
-		}
-	},
-	default_heal_icon = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.727539
-		},
-		uv11 = {
-			0.689453,
-			0.758789
-		}
-	},
-	profile_001 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.694336
-		},
-		uv11 = {
-			0.689453,
-			0.725586
-		}
-	},
-	consumables_medpack_lit = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.661133
-		},
-		uv11 = {
-			0.689453,
-			0.692383
-		}
-	},
-	hud_inventory_icon_deuspotion_LiquidBravado_02 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.62793
-		},
-		uv11 = {
-			0.689453,
-			0.65918
-		}
-	},
-	profile_003 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.594727
-		},
-		uv11 = {
-			0.689453,
-			0.625977
-		}
-	},
-	hud_inventory_icon_deuspotion_FriendlyMurderer_02 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.561523
-		},
-		uv11 = {
-			0.689453,
-			0.592773
 		}
 	},
 	consumables_smoke_lit = {
@@ -6529,12 +6459,96 @@ icons_atlas = {
 			64
 		},
 		uv00 = {
-			0.673828,
-			0.52832
+			0.886719,
+			0.362305
 		},
 		uv11 = {
-			0.689453,
-			0.55957
+			0.902344,
+			0.393555
+		}
+	},
+	default_heal_ally_icon = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.870117,
+			0.362305
+		},
+		uv11 = {
+			0.885742,
+			0.393555
+		}
+	},
+	consumables_potion_02 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.853516,
+			0.362305
+		},
+		uv11 = {
+			0.869141,
+			0.393555
+		}
+	},
+	hud_inventory_icon_deuspotion_MootMilk_02 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.836914,
+			0.362305
+		},
+		uv11 = {
+			0.852539,
+			0.393555
+		}
+	},
+	consumables_speed = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.820313,
+			0.362305
+		},
+		uv11 = {
+			0.835938,
+			0.393555
+		}
+	},
+	hud_inventory_icon_deuspotion_FriendlyMurderer_02 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.803711,
+			0.362305
+		},
+		uv11 = {
+			0.819336,
+			0.393555
+		}
+	},
+	xbone_button_icon_show_large = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.787109,
+			0.362305
+		},
+		uv11 = {
+			0.802734,
+			0.393555
 		}
 	},
 	hud_inventory_icon_deuspotion_02_glow = {
@@ -6543,11 +6557,291 @@ icons_atlas = {
 			64
 		},
 		uv00 = {
-			0.673828,
+			0.770508,
+			0.362305
+		},
+		uv11 = {
+			0.786133,
+			0.393555
+		}
+	},
+	xbone_button_icon_menu_large = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.753906,
+			0.362305
+		},
+		uv11 = {
+			0.769531,
+			0.393555
+		}
+	},
+	numeric_icon_orange_medium_7 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.737305,
+			0.362305
+		},
+		uv11 = {
+			0.75293,
+			0.393555
+		}
+	},
+	consumables_grimoire = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.720703,
+			0.362305
+		},
+		uv11 = {
+			0.736328,
+			0.393555
+		}
+	},
+	numeric_icon_orange_medium_3 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.704102,
+			0.362305
+		},
+		uv11 = {
+			0.719727,
+			0.393555
+		}
+	},
+	hud_inventory_icon_deuspotion_HoldMyBeer_02 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.6875,
+			0.362305
+		},
+		uv11 = {
+			0.703125,
+			0.393555
+		}
+	},
+	numeric_icon_orange_medium_6 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.959961
+		},
+		uv11 = {
+			0.686523,
+			0.991211
+		}
+	},
+	consumables_fire_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.926758
+		},
+		uv11 = {
+			0.686523,
+			0.958008
+		}
+	},
+	numeric_icon_orange_medium_1 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.893555
+		},
+		uv11 = {
+			0.686523,
+			0.924805
+		}
+	},
+	hud_inventory_icon_deuspotion_LiquidBravado_02 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.860352
+		},
+		uv11 = {
+			0.686523,
+			0.891602
+		}
+	},
+	hud_inventory_icon_deuspotion_02 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.827148
+		},
+		uv11 = {
+			0.686523,
+			0.858398
+		}
+	},
+	consumables_potion_01 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.793945
+		},
+		uv11 = {
+			0.686523,
+			0.825195
+		}
+	},
+	hud_store_icon_highlight = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.760742
+		},
+		uv11 = {
+			0.686523,
+			0.791992
+		}
+	},
+	hud_weaves_icon_mission = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.727539
+		},
+		uv11 = {
+			0.686523,
+			0.758789
+		}
+	},
+	hud_inventory_icon_deuspotion_FriendlyMurderer_02_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.694336
+		},
+		uv11 = {
+			0.686523,
+			0.725586
+		}
+	},
+	consumables_potion_01_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.661133
+		},
+		uv11 = {
+			0.686523,
+			0.692383
+		}
+	},
+	numeric_icon_orange_medium_0 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.62793
+		},
+		uv11 = {
+			0.686523,
+			0.65918
+		}
+	},
+	consumables_medpack_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.594727
+		},
+		uv11 = {
+			0.686523,
+			0.625977
+		}
+	},
+	hud_store_icon = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.561523
+		},
+		uv11 = {
+			0.686523,
+			0.592773
+		}
+	},
+	profile_001 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.52832
+		},
+		uv11 = {
+			0.686523,
+			0.55957
+		}
+	},
+	hud_inventory_icon_deuspotion_VampiricDraught_02_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
 			0.495117
 		},
 		uv11 = {
-			0.689453,
+			0.686523,
 			0.526367
 		}
 	},
@@ -6557,96 +6851,12 @@ icons_atlas = {
 			64
 		},
 		uv00 = {
-			0.673828,
+			0.670898,
 			0.461914
 		},
 		uv11 = {
-			0.689453,
+			0.686523,
 			0.493164
-		}
-	},
-	numeric_icon_orange_medium_3 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.428711
-		},
-		uv11 = {
-			0.689453,
-			0.459961
-		}
-	},
-	consumables_book = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.395508
-		},
-		uv11 = {
-			0.689453,
-			0.426758
-		}
-	},
-	numeric_icon_orange_medium_9 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.673828,
-			0.362305
-		},
-		uv11 = {
-			0.689453,
-			0.393555
-		}
-	},
-	hud_inventory_icon_deuspotion_HoldMyBeer_02_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.972656,
-			0.329102
-		},
-		uv11 = {
-			0.988281,
-			0.360352
-		}
-	},
-	numeric_icon_orange_medium_1 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.956055,
-			0.329102
-		},
-		uv11 = {
-			0.97168,
-			0.360352
-		}
-	},
-	consumables_medpack = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.939453,
-			0.329102
-		},
-		uv11 = {
-			0.955078,
-			0.360352
 		}
 	},
 	numeric_icon_orange_medium_5 = {
@@ -6655,12 +6865,40 @@ icons_atlas = {
 			64
 		},
 		uv00 = {
-			0.922852,
-			0.329102
+			0.670898,
+			0.428711
 		},
 		uv11 = {
-			0.938477,
-			0.360352
+			0.686523,
+			0.459961
+		}
+	},
+	consumables_heal_ally = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.395508
+		},
+		uv11 = {
+			0.686523,
+			0.426758
+		}
+	},
+	numeric_icon_orange_medium_2 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.670898,
+			0.362305
+		},
+		uv11 = {
+			0.686523,
+			0.393555
 		}
 	},
 	hud_inventory_icon_deuspotion_KillerInTheShadows_02 = {
@@ -6669,151 +6907,11 @@ icons_atlas = {
 			64
 		},
 		uv00 = {
-			0.90625,
+			0.969727,
 			0.329102
 		},
 		uv11 = {
-			0.921875,
-			0.360352
-		}
-	},
-	hud_inventory_icon_deuspotion_02 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.889648,
-			0.329102
-		},
-		uv11 = {
-			0.905273,
-			0.360352
-		}
-	},
-	profile_002 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.873047,
-			0.329102
-		},
-		uv11 = {
-			0.888672,
-			0.360352
-		}
-	},
-	hud_store_icon_highlight = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.856445,
-			0.329102
-		},
-		uv11 = {
-			0.87207,
-			0.360352
-		}
-	},
-	hud_inventory_icon_deuspotion_PoisonProof_02_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.839844,
-			0.329102
-		},
-		uv11 = {
-			0.855469,
-			0.360352
-		}
-	},
-	hud_inventory_icon_deuspotion_FriendlyMurderer_02_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.823242,
-			0.329102
-		},
-		uv11 = {
-			0.838867,
-			0.360352
-		}
-	},
-	default_heal_ally_icon = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.806641,
-			0.329102
-		},
-		uv11 = {
-			0.822266,
-			0.360352
-		}
-	},
-	numeric_icon_orange_medium_8 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.790039,
-			0.329102
-		},
-		uv11 = {
-			0.805664,
-			0.360352
-		}
-	},
-	default_grenade_icon_lit = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.773438,
-			0.329102
-		},
-		uv11 = {
-			0.789063,
-			0.360352
-		}
-	},
-	hud_store_icon = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.756836,
-			0.329102
-		},
-		uv11 = {
-			0.772461,
-			0.360352
-		}
-	},
-	default_potion_icon_lit = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.740234,
-			0.329102
-		},
-		uv11 = {
-			0.755859,
+			0.985352,
 			0.360352
 		}
 	},
@@ -6823,11 +6921,39 @@ icons_atlas = {
 			64
 		},
 		uv00 = {
-			0.723633,
+			0.953125,
 			0.329102
 		},
 		uv11 = {
-			0.739258,
+			0.96875,
+			0.360352
+		}
+	},
+	consumables_speed_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.936523,
+			0.329102
+		},
+		uv11 = {
+			0.952148,
+			0.360352
+		}
+	},
+	hud_inventory_icon_holybomb_02_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.919922,
+			0.329102
+		},
+		uv11 = {
+			0.935547,
 			0.360352
 		}
 	},
@@ -6837,25 +6963,193 @@ icons_atlas = {
 			64
 		},
 		uv00 = {
-			0.707031,
+			0.90332,
 			0.329102
 		},
 		uv11 = {
-			0.722656,
+			0.918945,
 			0.360352
 		}
 	},
-	numeric_icon_orange_medium_2 = {
+	numeric_icon_orange_medium_9 = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.69043,
+			0.886719,
 			0.329102
 		},
 		uv11 = {
-			0.706055,
+			0.902344,
+			0.360352
+		}
+	},
+	consumables_frame_bg_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.870117,
+			0.329102
+		},
+		uv11 = {
+			0.885742,
+			0.360352
+		}
+	},
+	numeric_icon_orange_medium_4 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.853516,
+			0.329102
+		},
+		uv11 = {
+			0.869141,
+			0.360352
+		}
+	},
+	hud_tutorial_icon_mission = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.836914,
+			0.329102
+		},
+		uv11 = {
+			0.852539,
+			0.360352
+		}
+	},
+	hud_inventory_icon_jadecenser_02 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.820313,
+			0.329102
+		},
+		uv11 = {
+			0.835938,
+			0.360352
+		}
+	},
+	consumables_potion_02_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.803711,
+			0.329102
+		},
+		uv11 = {
+			0.819336,
+			0.360352
+		}
+	},
+	hud_inventory_icon_jadecenser_02_glow = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.787109,
+			0.329102
+		},
+		uv11 = {
+			0.802734,
+			0.360352
+		}
+	},
+	hud_inventory_icon_deuspotion_PocketsFullOfBombs_02 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.770508,
+			0.329102
+		},
+		uv11 = {
+			0.786133,
+			0.360352
+		}
+	},
+	weave_item_icon_border = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.753906,
+			0.329102
+		},
+		uv11 = {
+			0.769531,
+			0.360352
+		}
+	},
+	consumables_defence = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.737305,
+			0.329102
+		},
+		uv11 = {
+			0.75293,
+			0.360352
+		}
+	},
+	consumables_book = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.720703,
+			0.329102
+		},
+		uv11 = {
+			0.736328,
+			0.360352
+		}
+	},
+	weave_item_icon_border_center = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.704102,
+			0.329102
+		},
+		uv11 = {
+			0.719727,
+			0.360352
+		}
+	},
+	consumables_frag_lit = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.6875,
+			0.329102
+		},
+		uv11 = {
+			0.703125,
 			0.360352
 		}
 	},
@@ -6865,309 +7159,15 @@ icons_atlas = {
 			64
 		},
 		uv00 = {
-			0.673828,
+			0.670898,
 			0.329102
 		},
 		uv11 = {
-			0.689453,
+			0.686523,
 			0.360352
 		}
 	},
-	numeric_icon_orange_medium_7 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.959961
-		},
-		uv11 = {
-			0.672852,
-			0.991211
-		}
-	},
-	hud_tutorial_icon_mission = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.926758
-		},
-		uv11 = {
-			0.672852,
-			0.958008
-		}
-	},
-	hud_inventory_icon_holybomb_02_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.893555
-		},
-		uv11 = {
-			0.672852,
-			0.924805
-		}
-	},
-	default_heal_icon_lit = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.860352
-		},
-		uv11 = {
-			0.672852,
-			0.891602
-		}
-	},
-	hud_inventory_icon_deuspotion_VampiricDraught_02_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.827148
-		},
-		uv11 = {
-			0.672852,
-			0.858398
-		}
-	},
-	hud_inventory_icon_deuspotion_PocketsFullOfBombs_02 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.793945
-		},
-		uv11 = {
-			0.672852,
-			0.825195
-		}
-	},
-	numeric_icon_orange_medium_4 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.760742
-		},
-		uv11 = {
-			0.672852,
-			0.791992
-		}
-	},
-	consumables_empty_potion = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.727539
-		},
-		uv11 = {
-			0.672852,
-			0.758789
-		}
-	},
-	consumables_potion_02 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.694336
-		},
-		uv11 = {
-			0.672852,
-			0.725586
-		}
-	},
-	hud_inventory_icon_deuspotion_HoldMyBeer_02 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.661133
-		},
-		uv11 = {
-			0.672852,
-			0.692383
-		}
-	},
-	hud_inventory_icon_jadecenser_02_glow = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.62793
-		},
-		uv11 = {
-			0.672852,
-			0.65918
-		}
-	},
-	default_heal_ally_icon_lit = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.594727
-		},
-		uv11 = {
-			0.672852,
-			0.625977
-		}
-	},
-	numeric_icon_orange_medium_0 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.561523
-		},
-		uv11 = {
-			0.672852,
-			0.592773
-		}
-	},
-	hud_inventory_icon_deuspotion_MootMilk_02 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.52832
-		},
-		uv11 = {
-			0.672852,
-			0.55957
-		}
-	},
-	consumables_defence_lit = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.495117
-		},
-		uv11 = {
-			0.672852,
-			0.526367
-		}
-	},
-	weave_item_icon_border = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.461914
-		},
-		uv11 = {
-			0.672852,
-			0.493164
-		}
-	},
-	weave_item_icon_border_center = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.428711
-		},
-		uv11 = {
-			0.672852,
-			0.459961
-		}
-	},
-	consumables_book_lit = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.395508
-		},
-		uv11 = {
-			0.672852,
-			0.426758
-		}
-	},
-	hud_weaves_icon_mission = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.362305
-		},
-		uv11 = {
-			0.672852,
-			0.393555
-		}
-	},
-	consumables_frag_lit = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.657227,
-			0.329102
-		},
-		uv11 = {
-			0.672852,
-			0.360352
-		}
-	},
-	mouse_input_right = {
-		size = {
-			50,
-			66
-		},
-		uv00 = {
-			0.644043,
-			0.397461
-		},
-		uv11 = {
-			0.65625,
-			0.429688
-		}
-	},
-	mouse_input = {
+	mouse_input_left = {
 		size = {
 			50,
 			66
@@ -7181,7 +7181,21 @@ icons_atlas = {
 			0.395508
 		}
 	},
-	mouse_input_left = {
+	mouse_input_middle = {
+		size = {
+			52,
+			66
+		},
+		uv00 = {
+			0.657227,
+			0.329102
+		},
+		uv11 = {
+			0.669922,
+			0.361328
+		}
+	},
+	mouse_input = {
 		size = {
 			50,
 			66
@@ -7195,31 +7209,17 @@ icons_atlas = {
 			0.361328
 		}
 	},
-	mouse_input_middle = {
-		size = {
-			52,
-			66
-		},
-		uv00 = {
-			0.982422,
-			0.288086
-		},
-		uv11 = {
-			0.995117,
-			0.320313
-		}
-	},
 	buff_frame_bad = {
 		size = {
 			66,
 			66
 		},
 		uv00 = {
-			0.965332,
+			0.978516,
 			0.288086
 		},
 		uv11 = {
-			0.981445,
+			0.994629,
 			0.320313
 		}
 	},
@@ -7229,11 +7229,25 @@ icons_atlas = {
 			66
 		},
 		uv00 = {
+			0.961426,
+			0.288086
+		},
+		uv11 = {
+			0.977539,
+			0.320313
+		}
+	},
+	mouse_input_right = {
+		size = {
+			50,
+			66
+		},
+		uv00 = {
 			0.948242,
 			0.288086
 		},
 		uv11 = {
-			0.964355,
+			0.960449,
 			0.320313
 		}
 	},
@@ -7279,6 +7293,20 @@ icons_atlas = {
 			0.998047
 		}
 	},
+	xbone_button_icon_lt_rt = {
+		size = {
+			73,
+			33
+		},
+		uv00 = {
+			0.032715,
+			0.259766
+		},
+		uv11 = {
+			0.050537,
+			0.275879
+		}
+	},
 	weave_item_selected_glow = {
 		size = {
 			73,
@@ -7291,20 +7319,6 @@ icons_atlas = {
 		uv11 = {
 			0.947266,
 			0.32373
-		}
-	},
-	ps4_button_icon_l2_r2 = {
-		size = {
-			73,
-			33
-		},
-		uv00 = {
-			0.032715,
-			0.259766
-		},
-		uv11 = {
-			0.050537,
-			0.275879
 		}
 	},
 	weave_item_icon_border_selected = {
@@ -7321,7 +7335,7 @@ icons_atlas = {
 			0.32373
 		}
 	},
-	xbone_button_icon_lt_rt = {
+	ps4_button_icon_l2_r2 = {
 		size = {
 			73,
 			33
@@ -7335,7 +7349,7 @@ icons_atlas = {
 			0.195801
 		}
 	},
-	victor_witchhunter_bloodlust = {
+	victor_witchhunter_conqueror = {
 		size = {
 			80,
 			80
@@ -7349,7 +7363,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_witchhunter_activated_ability_cooldown = {
+	victor_witchhunter_activated_ability_duration = {
 		size = {
 			80,
 			80
@@ -7363,7 +7377,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_priest_5_3 = {
+	victor_priest_6_1 = {
 		size = {
 			80,
 			80
@@ -7377,7 +7391,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_witchhunter_dodge_range = {
+	victor_witchhunter_headshot_damage_increase = {
 		size = {
 			80,
 			80
@@ -7391,7 +7405,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_priest_4_2 = {
+	victor_priest_4_3 = {
 		size = {
 			80,
 			80
@@ -7405,7 +7419,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_witchhunter_max_ammo = {
+	victor_witchhunter_max_stamina = {
 		size = {
 			80,
 			80
@@ -7419,7 +7433,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_priest_activated_ability = {
+	victor_priest_passive = {
 		size = {
 			80,
 			80
@@ -7433,7 +7447,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_witchhunter_critical_hit_chance_on_ping_target_killed = {
+	victor_witchhunter_damage_reduction_on_disabled = {
 		size = {
 			80,
 			80
@@ -7447,7 +7461,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill = {
+	victor_bounty_hunter_ninja_unbalance = {
 		size = {
 			80,
 			80
@@ -7461,7 +7475,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_priest_3_3 = {
+	victor_priest_4_1 = {
 		size = {
 			80,
 			80
@@ -7475,7 +7489,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_bounty_hunter_power_level_unbalance = {
+	victor_bounty_hunter_smiter_unbalance = {
 		size = {
 			80,
 			80
@@ -7489,7 +7503,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_witchhunter_heal_party_on_ping_target_killed = {
+	victor_witchhunter_increased_damage_on_grimoire_picked_up = {
 		size = {
 			80,
 			80
@@ -7503,7 +7517,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_priest_1_1 = {
+	victor_priest_1_2 = {
 		size = {
 			80,
 			80
@@ -7517,7 +7531,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_priest_6_2 = {
+	victor_priest_6_3 = {
 		size = {
 			80,
 			80
@@ -7531,7 +7545,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	victor_priest_1_3 = {
+	victor_priest_2_1 = {
 		size = {
 			80,
 			80
@@ -7545,7 +7559,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	victor_bountyhunter_power_level_on_clip_size = {
+	victor_bountyhunter_restore_ammo_on_elite_kill = {
 		size = {
 			80,
 			80
@@ -7559,7 +7573,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	victor_priest_2_2 = {
+	victor_priest_2_3 = {
 		size = {
 			80,
 			80
@@ -7573,7 +7587,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	victor_priest_3_1 = {
+	victor_priest_3_2 = {
 		size = {
 			80,
 			80
@@ -7587,7 +7601,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	sienna_scholar_passive_reduced_block_cost_from_overcharge = {
+	sienna_scholar_passive_reduced_overcharge_from_overcharge = {
 		size = {
 			80,
 			80
@@ -7601,7 +7615,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	sienna_scholar_conqueror = {
+	sienna_scholar_increased_attack_speed = {
 		size = {
 			80,
 			80
@@ -7615,7 +7629,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	sienna_scholar_ranged_power_ascending_descending = {
+	sienna_scholar_smiter_unbalance = {
 		size = {
 			80,
 			80
@@ -7629,7 +7643,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	sienna_scholar_damage_taken_on_elite_or_special_kill = {
+	sienna_scholar_linesman_unbalance = {
 		size = {
 			80,
 			80
@@ -7643,7 +7657,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	kerillian_waywatcher_attack_speed_on_ranged_headshot = {
+	kerillian_waywatcher_activated_ability_additional_projectile = {
 		size = {
 			80,
 			80
@@ -7657,7 +7671,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	kerillian_waywatcher_regrowth = {
+	kerillian_waywatcher_increased_crit_hit_damage_on_high_health = {
 		size = {
 			80,
 			80
@@ -7671,7 +7685,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	victor_witchhunter_damage_reduction_on_disabled = {
+	victor_witchhunter_dodge_range = {
 		size = {
 			80,
 			80
@@ -7685,7 +7699,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	kerillian_thornsister_passive = {
+	kerillian_thornsister_healing_wall = {
 		size = {
 			80,
 			80
@@ -7699,7 +7713,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	victor_priest_4_1 = {
+	victor_priest_4_2 = {
 		size = {
 			80,
 			80
@@ -7713,7 +7727,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	markus_huntsman_activated_ability_damage = {
+	kerillian_waywatcher_projectile_ricochet = {
 		size = {
 			80,
 			80
@@ -7727,7 +7741,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	victor_witchhunter_increased_damage_on_grimoire_picked_up = {
+	victor_witchhunter_max_ammo = {
 		size = {
 			80,
 			80
@@ -7741,7 +7755,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	kerillian_thornsister_bloodlust = {
+	markus_mercenary_activated_ability_revive = {
 		size = {
 			80,
 			80
@@ -7755,7 +7769,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_priest_6_3 = {
+	victor_priest_activated_ability = {
 		size = {
 			80,
 			80
@@ -7769,7 +7783,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	kerillian_waywatcher_activated_ability = {
+	kerillian_thornsister_regrowth = {
 		size = {
 			80,
 			80
@@ -7783,7 +7797,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	victor_bountyhunter_restore_ammo_on_elite_kill = {
+	victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill = {
 		size = {
 			80,
 			80
@@ -7797,7 +7811,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	sienna_adept_power_level_unbalance = {
+	sienna_adept_smiter_unbalance = {
 		size = {
 			80,
 			80
@@ -7811,7 +7825,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	victor_priest_3_2 = {
+	victor_priest_3_3 = {
 		size = {
 			80,
 			80
@@ -7825,7 +7839,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	kerillian_thornsister_free_throw = {
+	kerillian_thornsister_debuff_wall = {
 		size = {
 			80,
 			80
@@ -7839,7 +7853,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	victor_bounty_hunter_ninja_unbalance = {
+	victor_bounty_hunter_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -7867,7 +7881,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	victor_priest_4_3 = {
+	victor_priest_5_1 = {
 		size = {
 			80,
 			80
@@ -7881,7 +7895,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	kerillian_shade_perk_blur = {
+	kerillian_shade_ninja_unbalance = {
 		size = {
 			80,
 			80
@@ -7895,7 +7909,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	victor_bounty_hunter_smiter_unbalance = {
+	victor_priest_1_1 = {
 		size = {
 			80,
 			80
@@ -7909,7 +7923,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	markus_mercenary_healing_received = {
+	markus_mercenary_conqueror = {
 		size = {
 			80,
 			80
@@ -7923,7 +7937,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	victor_priest_6_1 = {
+	victor_priest_6_2 = {
 		size = {
 			80,
 			80
@@ -7951,7 +7965,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	victor_priest_1_2 = {
+	victor_priest_1_3 = {
 		size = {
 			80,
 			80
@@ -7965,7 +7979,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	kerillian_waywatcher_crit_chance = {
+	kerillian_waywatcher_bloodlust = {
 		size = {
 			80,
 			80
@@ -7979,7 +7993,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	victor_priest_passive = {
+	victor_priest_perk_1 = {
 		size = {
 			80,
 			80
@@ -7993,7 +8007,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	kerillian_maidenguard_power_level_on_unharmed = {
+	kerillian_maidenguard_passive_noclip_dodge = {
 		size = {
 			80,
 			80
@@ -8007,7 +8021,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	victor_priest_2_1 = {
+	victor_priest_2_2 = {
 		size = {
 			80,
 			80
@@ -8021,7 +8035,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	sienna_adept_passive_cooldown = {
+	sienna_adept_power_level_on_full_charge = {
 		size = {
 			80,
 			80
@@ -8035,7 +8049,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	victor_witchhunter_activated_ability_duration = {
+	victor_witchhunter_activated_ability_radius = {
 		size = {
 			80,
 			80
@@ -8049,7 +8063,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	player_skin_icon_adept = {
+	portrait_frame_icon = {
 		size = {
 			80,
 			80
@@ -8063,7 +8077,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	victor_priest_2_3 = {
+	victor_priest_3_1 = {
 		size = {
 			80,
 			80
@@ -8077,7 +8091,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	sienna_adept_max_stamina = {
+	sienna_adept_passive_decreased_block_cost = {
 		size = {
 			80,
 			80
@@ -8091,7 +8105,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	victor_witchhunter_conqueror = {
+	victor_witchhunter_critical_hit_chance_on_ping_target_killed = {
 		size = {
 			80,
 			80
@@ -8105,7 +8119,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	sienna_unchained_remove_wounded_on_boss_death = {
+	sienna_unchained_activated_ability_power_on_enemies_hit = {
 		size = {
 			80,
 			80
@@ -8119,7 +8133,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	sienna_scholar_old_01 = {
+	sienna_scholar_overcharge_regen_on_grimoire_pickup = {
 		size = {
 			80,
 			80
@@ -8133,7 +8147,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	kerillian_shade_regrowth = {
+	sienna_unchained_reduced_damage_taken_after_venting = {
 		size = {
 			80,
 			80
@@ -8147,7 +8161,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	victor_witchhunter_headshot_damage_increase = {
+	victor_witchhunter_heal_party_on_ping_target_killed = {
 		size = {
 			80,
 			80
@@ -8161,7 +8175,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	sienna_adept_tank_unbalance = {
+	kerillian_thornsister_linesman_unbalance = {
 		size = {
 			80,
 			80
@@ -8175,7 +8189,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	sienna_scholar_passive_increased_power_level_on_high_overcharge = {
+	sienna_scholar_passive_overcharge_pause_on_special_kill = {
 		size = {
 			80,
 			80
@@ -8189,7 +8203,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	markus_mercenary_increased_damage_on_enemy_proximity = {
+	sienna_unchained_remove_wounded_on_boss_death = {
 		size = {
 			80,
 			80
@@ -8203,7 +8217,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	victor_witchhunter_max_stamina = {
+	victor_witchhunter_passive = {
 		size = {
 			80,
 			80
@@ -8217,7 +8231,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	markus_huntsman_activated_ability = {
+	kerillian_waystalker_ninja_unbalance = {
 		size = {
 			80,
 			80
@@ -8231,7 +8245,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	kerillian_waystalker_power_level_unbalance = {
+	kerillian_waywatcher_stamina_regen = {
 		size = {
 			80,
 			80
@@ -8245,7 +8259,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	kerillian_waywatcher_passive = {
+	kerillian_waywatcher_activated_ability_restore_ammo = {
 		size = {
 			80,
 			80
@@ -8259,7 +8273,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	sienna_unchained_activated_ability = {
+	sienna_unchained_activated_ability_cooldown = {
 		size = {
 			80,
 			80
@@ -8273,7 +8287,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	sienna_adept_damage_reduction_on_ignited_enemy = {
+	sienna_unchained_regen_stamina_on_charged_attacks = {
 		size = {
 			80,
 			80
@@ -8287,7 +8301,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	victor_bountyhunter_revive_speed = {
+	victor_bountyhunter_activated_ability_reset_cooldown_on_stacks = {
 		size = {
 			80,
 			80
@@ -8301,7 +8315,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	player_skin_icon_ironbreaker = {
+	sienna_unchained_tank_unbalance = {
 		size = {
 			80,
 			80
@@ -8315,7 +8329,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	sienna_unchained_regrowth = {
+	victor_bountyhunter_heal_on_critical_hit = {
 		size = {
 			80,
 			80
@@ -8343,7 +8357,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	kerillian_shade_bloodlust = {
+	kerillian_maidenguard_smiter_unbalance = {
 		size = {
 			80,
 			80
@@ -8357,7 +8371,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	sienna_adept_conqueror = {
+	hero_icon_large_empire_soldier = {
 		size = {
 			80,
 			80
@@ -8371,7 +8385,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	sienna_scholar_passive = {
+	sienna_scholar_passive_increased_attack_speed_from_overcharge = {
 		size = {
 			80,
 			80
@@ -8385,7 +8399,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	kerillian_thornsister_double_passive = {
+	kerillian_thornsister_crit_big_bleed = {
 		size = {
 			80,
 			80
@@ -8399,7 +8413,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	victor_bountyhunter_debuff_defence_on_crit = {
+	victor_bountyhunter_movespeed_on_ranged_crit = {
 		size = {
 			80,
 			80
@@ -8413,7 +8427,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	hero_icon_large_empire_soldier = {
+	sienna_unchained_vent_overheat_on_low_health = {
 		size = {
 			80,
 			80
@@ -8427,7 +8441,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	victor_bountyhunter_passive = {
+	victor_bountyhunter_passive_infinite_ammo = {
 		size = {
 			80,
 			80
@@ -8441,7 +8455,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	kerillian_waywatcher_attack_speed = {
+	kerillian_waywatcher_activated_ability_cooldown = {
 		size = {
 			80,
 			80
@@ -8469,7 +8483,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	sienna_scholar_reduced_overcharge = {
+	sienna_scholar_increased_ranged_charge_speed_on_low_health = {
 		size = {
 			80,
 			80
@@ -8483,7 +8497,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	kerillian_waywatcher_activated_ability_piercing_shot = {
+	victor_bountyhunter_activated_ability = {
 		size = {
 			80,
 			80
@@ -8497,7 +8511,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	kerillian_thornsister_heal_share = {
+	kerillian_thornsister_explosive_wall = {
 		size = {
 			80,
 			80
@@ -8511,7 +8525,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	victor_bountyhunter_activated_ability = {
+	kerillian_waywatcher_headshot_multiplier = {
 		size = {
 			80,
 			80
@@ -8525,7 +8539,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	sienna_unchained_activated_ability_power_on_enemies_hit = {
+	sienna_unchained_activated_ability_temp_health = {
 		size = {
 			80,
 			80
@@ -8539,7 +8553,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	kerillian_shade_increased_damage_on_poisoned_or_bleeding_enemy = {
+	victor_bountyhunter_critical_hit_damage_increase = {
 		size = {
 			80,
 			80
@@ -8553,7 +8567,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	sienna_adept_activated_ability_cooldown = {
+	sienna_adept_charge_speed_increase = {
 		size = {
 			80,
 			80
@@ -8567,7 +8581,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	victor_bountyhunter_critical_hit_damage_increase = {
+	kerillian_shade_regrowth = {
 		size = {
 			80,
 			80
@@ -8581,7 +8595,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	sienna_unchained_burning_enemies_reduced_damage = {
+	sienna_unchained_burn_push = {
 		size = {
 			80,
 			80
@@ -8595,7 +8609,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	kerillian_waywatcher_conquerer = {
+	victor_bountyhunter_activated_ability_cooldown = {
 		size = {
 			80,
 			80
@@ -8609,7 +8623,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	kerillian_thornsister_big_push = {
+	kerillian_thornsister_attack_speed_on_full = {
 		size = {
 			80,
 			80
@@ -8623,7 +8637,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	victor_bountyhunter_activated_ability_cooldown = {
+	kerillian_thornsister_power_on_health_gain = {
 		size = {
 			80,
 			80
@@ -8637,7 +8651,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	sienna_adept_stun_resistance = {
+	player_skin_icon_huntsman = {
 		size = {
 			80,
 			80
@@ -8651,7 +8665,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	victor_bountyhunter_heal_on_critical_hit = {
+	victor_bountyhunter_increased_attack_speed = {
 		size = {
 			80,
 			80
@@ -8665,7 +8679,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	kerillian_waywatcher_passive_cooldown_restore = {
+	kerillian_waywatcher_critical_bleed = {
 		size = {
 			80,
 			80
@@ -8679,7 +8693,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	kerillian_maidenguard_activated_ability_buff_on_enemy_hit = {
+	kerillian_maidenguard_slower_heavy_hits = {
 		size = {
 			80,
 			80
@@ -8693,7 +8707,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	sienna_unchained_burn_push = {
+	sienna_unchained_exploding_burning_enemies = {
 		size = {
 			80,
 			80
@@ -8707,7 +8721,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	sienna_scholar_move_speed_on_critical_hit = {
+	victor_bountyhunter_activated_ability_railgun = {
 		size = {
 			80,
 			80
@@ -8735,7 +8749,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	victor_bountyhunter_activated_ability_railgun = {
+	sienna_scholar_reduced_spread = {
 		size = {
 			80,
 			80
@@ -8749,7 +8763,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	sienna_unchained_activated_ability_temp_health = {
+	sienna_unchained_attack_speed_on_high_overcharge = {
 		size = {
 			80,
 			80
@@ -8763,7 +8777,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	victor_bountyhunter_melee_damage_on_no_ammo = {
+	victor_bountyhunter_passive = {
 		size = {
 			80,
 			80
@@ -8777,7 +8791,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	kerillian_waywatcher_improved_regen = {
+	kerillian_waywatcher_gain_ammo_on_boss_death = {
 		size = {
 			80,
 			80
@@ -8805,7 +8819,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	sienna_unchained_exploding_burning_enemies = {
+	sienna_unchained_linesman_unbalance = {
 		size = {
 			80,
 			80
@@ -8819,7 +8833,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	sienna_scholar_increased_defence_on_disabled = {
+	victor_bountyhunter_activated_ability_shotgun = {
 		size = {
 			80,
 			80
@@ -8847,7 +8861,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	victor_bountyhunter_activated_ability_shotgun = {
+	sienna_scholar_activated_ability = {
 		size = {
 			80,
 			80
@@ -8861,7 +8875,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	kerillian_thornsister_smiter_unbalance = {
+	sienna_scholar_overcharge_no_slow = {
 		size = {
 			80,
 			80
@@ -8875,7 +8889,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	victor_bountyhunter_passive_infinite_ammo = {
+	victor_bountyhunter_passive_reduced_cooldown = {
 		size = {
 			80,
 			80
@@ -8889,7 +8903,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	kerillian_thornsister_reduce_passive_on_elite = {
+	kerillian_thornsister_passive = {
 		size = {
 			80,
 			80
@@ -8903,7 +8917,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	kerillian_waywatcher_extra_arrow_melee_kill = {
+	kerillian_waywatcher_activated_ability_restore_ammo_on_career_skill_special_kill = {
 		size = {
 			80,
 			80
@@ -8917,7 +8931,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	sienna_unchained_linesman_unbalance = {
+	sienna_unchained_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -8931,7 +8945,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	sienna_unchained_reduced_overcharge = {
+	victor_bountyhunter_bloodlust = {
 		size = {
 			80,
 			80
@@ -8945,7 +8959,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	sienna_adept_passive_improved = {
+	sienna_adept_activated_ability_distance = {
 		size = {
 			80,
 			80
@@ -8959,7 +8973,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	victor_bountyhunter_bloodlust = {
+	markus_mercenary_crit_chance = {
 		size = {
 			80,
 			80
@@ -8973,7 +8987,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	sienna_unchained_attack_speed_on_high_overcharge = {
+	sienna_unchained_burning_enemies_reduced_damage = {
 		size = {
 			80,
 			80
@@ -8987,7 +9001,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	victor_bountyhunter_reduced_spread = {
+	victor_bountyhunter_regrowth = {
 		size = {
 			80,
 			80
@@ -9001,7 +9015,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	sienna_scholar_regrowth = {
+	sienna_scholar_activated_ability_additional_projectiles = {
 		size = {
 			80,
 			80
@@ -9015,7 +9029,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	kerillian_waywatcher_group_regen = {
+	kerillian_waywatcher_conqueror = {
 		size = {
 			80,
 			80
@@ -9029,7 +9043,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	sienna_unchained_power_level_unbalance = {
+	kerillian_thornsister_blackvenom = {
 		size = {
 			80,
 			80
@@ -9043,7 +9057,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	kerillian_thornsister_crit_on_any_ability = {
+	victor_bountyhunter_conqueror = {
 		size = {
 			80,
 			80
@@ -9057,7 +9071,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	player_skin_icon_ranger = {
+	player_skin_icon_mercenary = {
 		size = {
 			80,
 			80
@@ -9071,7 +9085,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	victor_bountyhunter_conqueror = {
+	kerillian_shade_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -9085,7 +9099,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	kerillian_shade_stacking_headshot_damage_on_headshot = {
+	kerillian_shade_bloodlust = {
 		size = {
 			80,
 			80
@@ -9099,7 +9113,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	victor_bountyhunter_reload_speed = {
+	victor_bountyhunter_revive_speed = {
 		size = {
 			80,
 			80
@@ -9113,7 +9127,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	sienna_scholar_activated_ability_cooldown = {
+	sienna_scholar_activated_ability_dump_overcharge = {
 		size = {
 			80,
 			80
@@ -9127,7 +9141,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	sienna_unchained_regen_stamina_on_charged_attacks = {
+	sienna_unchained_regrowth = {
 		size = {
 			80,
 			80
@@ -9141,7 +9155,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	sienna_unchained_reduced_damage_taken_after_venting = {
+	kerillian_maidenguard_cooldown_on_nearby_allies = {
 		size = {
 			80,
 			80
@@ -9155,7 +9169,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	victor_witchhunter_activated_ability_radius = {
+	victor_witchhunter_attack_speed_on_ping_target_killed = {
 		size = {
 			80,
 			80
@@ -9169,7 +9183,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	victor_bountyhunter_regrowth = {
+	victor_bountyhunter_reload_speed = {
 		size = {
 			80,
 			80
@@ -9183,7 +9197,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	victor_witchhunter_attack_speed_on_ping_target_killed = {
+	victor_witchhunter_bloodlust = {
 		size = {
 			80,
 			80
@@ -9197,7 +9211,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	kerillian_waywatcher_activated_ability_heal = {
+	kerillian_thornsister_veinburst_strike = {
 		size = {
 			80,
 			80
@@ -9211,7 +9225,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	sienna_scholar_activated_ability_crit_refresh_cooldown = {
+	sienna_scholar_crit_chance_above_health_threshold = {
 		size = {
 			80,
 			80
@@ -9225,7 +9239,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	markus_mercenary_passive = {
+	markus_mercenary_increased_damage_on_enemy_proximity = {
 		size = {
 			80,
 			80
@@ -9239,7 +9253,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	victor_bountyhunter_activated_ability_reset_cooldown_on_stacks = {
+	victor_bountyhunter_debuff_defence_on_crit = {
 		size = {
 			80,
 			80
@@ -9253,7 +9267,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	sienna_unchained_tank_unbalance = {
+	sienna_adept_increased_defence_on_last_standing = {
 		size = {
 			80,
 			80
@@ -9267,7 +9281,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	victor_priest_perk_1 = {
+	victor_witchhunter_activated_ability = {
 		size = {
 			80,
 			80
@@ -9281,7 +9295,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	victor_bountyhunter_passive_reduced_cooldown = {
+	victor_bountyhunter_reduced_spread = {
 		size = {
 			80,
 			80
@@ -9295,7 +9309,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	victor_witchhunter_activated_ability = {
+	victor_witchhunter_activated_ability_cooldown = {
 		size = {
 			80,
 			80
@@ -9309,7 +9323,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	kerillian_waystalker_linesman_unbalance = {
+	kerillian_waywatcher_regenerate_ammunition = {
 		size = {
 			80,
 			80
@@ -9323,7 +9337,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	sienna_scholar_activated_ability_heal = {
+	sienna_scholar_bloodlust = {
 		size = {
 			80,
 			80
@@ -9337,7 +9351,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	kerillian_thornsister_attack_speed_on_full = {
+	kerillian_shade_stacking_headshot_damage_on_headshot = {
 		size = {
 			80,
 			80
@@ -9351,7 +9365,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	victor_bountyhunter_movespeed_on_ranged_crit = {
+	victor_bountyhunter_power_level_on_clip_size = {
 		size = {
 			80,
 			80
@@ -9365,7 +9379,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	sienna_unchained_vent_overheat_on_low_health = {
+	kerillian_waywatcher_movement_speed_on_special_kill = {
 		size = {
 			80,
 			80
@@ -9379,7 +9393,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	victor_priest_5_1 = {
+	victor_priest_5_2 = {
 		size = {
 			80,
 			80
@@ -9393,7 +9407,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	victor_bountyhunter_increased_attack_speed = {
+	victor_bountyhunter_melee_damage_on_no_ammo = {
 		size = {
 			80,
 			80
@@ -9407,7 +9421,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	victor_priest_5_2 = {
+	victor_priest_5_3 = {
 		size = {
 			80,
 			80
@@ -9421,7 +9435,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	player_skin_icon_unchained = {
+	player_skin_icon_slayer = {
 		size = {
 			80,
 			80
@@ -9435,7 +9449,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_shade_power_level_unbalance = {
+	kerillian_shade_perk_blur = {
 		size = {
 			80,
 			80
@@ -9449,7 +9463,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	victor_witchhunter_passive = {
+	victor_witchhunter_regrowth = {
 		size = {
 			80,
 			80
@@ -9463,7 +9477,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	blessing_holygrenade_01 = {
+	blessing_holygrenade_02 = {
 		size = {
 			80,
 			80
@@ -9477,7 +9491,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	sienna_adept_regrowth = {
+	sienna_adept_stun_resistance = {
 		size = {
 			80,
 			80
@@ -9491,7 +9505,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	markus_questing_knight_ability_tank_attack = {
+	markus_questing_knight_ability_double_activation = {
 		size = {
 			80,
 			80
@@ -9519,7 +9533,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	blessing_jadecenser_02 = {
+	blessing_power_01 = {
 		size = {
 			80,
 			80
@@ -9533,7 +9547,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	sienna_adept_activated_ability_dump_overcharge = {
+	sienna_adept_bloodlust = {
 		size = {
 			80,
 			80
@@ -9547,7 +9561,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_waywatcher_stamina_regen = {
+	victor_zealot_activated_ability_power_on_hit = {
 		size = {
 			80,
 			80
@@ -9575,7 +9589,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_activated_ability = {
+	bardin_slayer_smiter_unbalance = {
 		size = {
 			80,
 			80
@@ -9589,7 +9603,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_shade_activated_ability_no_break_on_ranged = {
+	markus_knight_ability_attack_speed_enemy_hit = {
 		size = {
 			80,
 			80
@@ -9603,7 +9617,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	hero_icon_large_wood_elf_glow = {
+	victor_zealot_increased_stamina_from_passive = {
 		size = {
 			80,
 			80
@@ -9617,7 +9631,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	player_skin_icon_mercenary = {
+	player_skin_icon_ranger = {
 		size = {
 			80,
 			80
@@ -9631,7 +9645,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	markus_questing_knight_buff_powerlevel = {
+	sienna_unchained_activated_ability_radius = {
 		size = {
 			80,
 			80
@@ -9645,7 +9659,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	markus_knight_power_level_on_stagger_elite = {
+	markus_knight_movement_speed_on_incapacitated_allies = {
 		size = {
 			80,
 			80
@@ -9659,7 +9673,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	kerillian_thornsister_power_level_unbalance = {
+	sienna_unchained_passive = {
 		size = {
 			80,
 			80
@@ -9673,7 +9687,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	deus_curse_slaanesh_01 = {
+	deus_curse_tzeentch_01 = {
 		size = {
 			80,
 			80
@@ -9687,7 +9701,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	kerillian_maidenguard_regrowth = {
+	markus_questing_knight_passive_improved_reward = {
 		size = {
 			80,
 			80
@@ -9701,7 +9715,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	markus_mercenary_stamina_regen = {
+	markus_questing_knight_crit_can_insta_kill = {
 		size = {
 			80,
 			80
@@ -9715,7 +9729,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	kerillian_waywatcher_activated_ability_cooldown = {
+	victor_zealot_passive_move_speed = {
 		size = {
 			80,
 			80
@@ -9729,7 +9743,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	markus_mercenary_activated_ability = {
+	kerillian_shade_dodge_range = {
 		size = {
 			80,
 			80
@@ -9743,7 +9757,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	markus_knight_linesman_unbalance = {
+	kerillian_shade_activated_ability_cooldown = {
 		size = {
 			80,
 			80
@@ -9757,7 +9771,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	kerillian_maidenguard_power_level_unbalance = {
+	kerillian_maidenguard_passive_attack_speed_on_dodge = {
 		size = {
 			80,
 			80
@@ -9771,7 +9785,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	markus_knight_push_arc = {
+	sienna_scholar_damage_taken_on_elite_or_special_kill = {
 		size = {
 			80,
 			80
@@ -9785,7 +9799,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	portrait_frame_icon = {
+	player_skin_icon_adept = {
 		size = {
 			80,
 			80
@@ -9797,132 +9811,6 @@ icons_atlas = {
 		uv11 = {
 			0.561035,
 			0.573242
-		}
-	},
-	deus_icons_map_tzeentch = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.541504,
-			0.493164
-		},
-		uv11 = {
-			0.561035,
-			0.532227
-		}
-	},
-	sienna_adept_passive = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.541504,
-			0.452148
-		},
-		uv11 = {
-			0.561035,
-			0.491211
-		}
-	},
-	kerillian_waywatcher_critical_bleed = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.541504,
-			0.411133
-		},
-		uv11 = {
-			0.561035,
-			0.450195
-		}
-	},
-	markus_mercenary_conqueror = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.541504,
-			0.370117
-		},
-		uv11 = {
-			0.561035,
-			0.40918
-		}
-	},
-	markus_huntsman_headshots_restore_health = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.541504,
-			0.329102
-		},
-		uv11 = {
-			0.561035,
-			0.368164
-		}
-	},
-	markus_knight_attack_speed_on_push = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.541504,
-			0.288086
-		},
-		uv11 = {
-			0.561035,
-			0.327148
-		}
-	},
-	blessing_grimnir_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.541504,
-			0.24707
-		},
-		uv11 = {
-			0.561035,
-			0.286133
-		}
-	},
-	blessing_ranald_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.541504,
-			0.206055
-		},
-		uv11 = {
-			0.561035,
-			0.245117
-		}
-	},
-	markus_mercenary_power_level_cleave = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.541504,
-			0.165039
-		},
-		uv11 = {
-			0.561035,
-			0.204102
 		}
 	},
 	deus_icons_runmod_khorne = {
@@ -9932,6 +9820,132 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.541504,
+			0.493164
+		},
+		uv11 = {
+			0.561035,
+			0.532227
+		}
+	},
+	sienna_adept_passive_charge_speed_increased = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.541504,
+			0.452148
+		},
+		uv11 = {
+			0.561035,
+			0.491211
+		}
+	},
+	victor_zealot_stamina_regen = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.541504,
+			0.411133
+		},
+		uv11 = {
+			0.561035,
+			0.450195
+		}
+	},
+	markus_mercenary_activated_ability_cooldown = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.541504,
+			0.370117
+		},
+		uv11 = {
+			0.561035,
+			0.40918
+		}
+	},
+	markus_huntsman_conqueror = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.541504,
+			0.329102
+		},
+		uv11 = {
+			0.561035,
+			0.368164
+		}
+	},
+	markus_knight_uninterruptible_on_block_broken = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.541504,
+			0.288086
+		},
+		uv11 = {
+			0.561035,
+			0.327148
+		}
+	},
+	blessing_grimnir_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.541504,
+			0.24707
+		},
+		uv11 = {
+			0.561035,
+			0.286133
+		}
+	},
+	blessing_ranald_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.541504,
+			0.206055
+		},
+		uv11 = {
+			0.561035,
+			0.245117
+		}
+	},
+	deus_curse_slaanesh_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.541504,
+			0.165039
+		},
+		uv11 = {
+			0.561035,
+			0.204102
+		}
+	},
+	deus_icons_runmod_nurgle = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.541504,
 			0.124023
 		},
 		uv11 = {
@@ -9939,7 +9953,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_waywatcher_gain_ammo_on_boss_death = {
+	victor_zealot_max_stamina_on_damage_taken = {
 		size = {
 			80,
 			80
@@ -9950,20 +9964,6 @@ icons_atlas = {
 		},
 		uv11 = {
 			0.991699,
-			0.12207
-		}
-	},
-	markus_questing_knight_health_refund_over_time = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.95166,
-			0.083008
-		},
-		uv11 = {
-			0.971191,
 			0.12207
 		}
 	},
@@ -9973,6 +9973,20 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
+			0.95166,
+			0.083008
+		},
+		uv11 = {
+			0.971191,
+			0.12207
+		}
+	},
+	markus_mercenary_reduced_stun_duration = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
 			0.931152,
 			0.083008
 		},
@@ -9981,7 +9995,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	kerillian_maidenguard_damage_reduction_on_last_standing = {
+	bardin_engineer_linesman_unbalance = {
 		size = {
 			80,
 			80
@@ -9995,7 +10009,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	kerillian_shade_movement_speed_on_critical_hit = {
+	markus_huntsman_headshots_increase_reload_speed = {
 		size = {
 			80,
 			80
@@ -10009,7 +10023,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	twitch_icon_the_bloodkine_wakes = {
+	twitch_icon_ticking_bomb = {
 		size = {
 			80,
 			80
@@ -10023,7 +10037,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	hero_icon_large_dwarf_ranger_glow = {
+	victor_zealot_increased_critical_hit_damage_from_passive = {
 		size = {
 			80,
 			80
@@ -10034,174 +10048,6 @@ icons_atlas = {
 		},
 		uv11 = {
 			0.868652,
-			0.12207
-		}
-	},
-	kerillian_shade_debuff_defence_on_disabler = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.828613,
-			0.083008
-		},
-		uv11 = {
-			0.848145,
-			0.12207
-		}
-	},
-	hero_icon_large_empire_soldier_glow = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.808105,
-			0.083008
-		},
-		uv11 = {
-			0.827637,
-			0.12207
-		}
-	},
-	markus_knight_ability_invulnerability = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.787598,
-			0.083008
-		},
-		uv11 = {
-			0.807129,
-			0.12207
-		}
-	},
-	blessing_abundance_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.76709,
-			0.083008
-		},
-		uv11 = {
-			0.786621,
-			0.12207
-		}
-	},
-	victor_witchhunter_attack_speed_on_enemy_pinged = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.746582,
-			0.083008
-		},
-		uv11 = {
-			0.766113,
-			0.12207
-		}
-	},
-	kerillian_maidenguard_crit_chance = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.726074,
-			0.083008
-		},
-		uv11 = {
-			0.745605,
-			0.12207
-		}
-	},
-	blessing_ranald_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.705566,
-			0.083008
-		},
-		uv11 = {
-			0.725098,
-			0.12207
-		}
-	},
-	deus_curse_belakor_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.685059,
-			0.083008
-		},
-		uv11 = {
-			0.70459,
-			0.12207
-		}
-	},
-	kerillian_shade_attack_speed = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.664551,
-			0.083008
-		},
-		uv11 = {
-			0.684082,
-			0.12207
-		}
-	},
-	kerillian_waywatcher_projectile_ricochet = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.644043,
-			0.083008
-		},
-		uv11 = {
-			0.663574,
-			0.12207
-		}
-	},
-	deus_icons_runmod_tzeentch = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.623535,
-			0.083008
-		},
-		uv11 = {
-			0.643066,
-			0.12207
-		}
-	},
-	sienna_unchained_conqueror = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.603027,
-			0.083008
-		},
-		uv11 = {
-			0.622559,
 			0.12207
 		}
 	},
@@ -10211,6 +10057,174 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
+			0.828613,
+			0.083008
+		},
+		uv11 = {
+			0.848145,
+			0.12207
+		}
+	},
+	victor_zealot_increased_damage_on_enemy_proximity = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.808105,
+			0.083008
+		},
+		uv11 = {
+			0.827637,
+			0.12207
+		}
+	},
+	sienna_unchained_reduced_vent_damage = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.787598,
+			0.083008
+		},
+		uv11 = {
+			0.807129,
+			0.12207
+		}
+	},
+	blessing_grimnir_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.76709,
+			0.083008
+		},
+		uv11 = {
+			0.786621,
+			0.12207
+		}
+	},
+	kerillian_shade_attack_speed = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.746582,
+			0.083008
+		},
+		uv11 = {
+			0.766113,
+			0.12207
+		}
+	},
+	kerillian_maidenguard_activated_ability_buff_on_enemy_hit = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.726074,
+			0.083008
+		},
+		uv11 = {
+			0.745605,
+			0.12207
+		}
+	},
+	blessing_shallya_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.705566,
+			0.083008
+		},
+		uv11 = {
+			0.725098,
+			0.12207
+		}
+	},
+	deus_curse_khorne_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.685059,
+			0.083008
+		},
+		uv11 = {
+			0.70459,
+			0.12207
+		}
+	},
+	victor_witchhunter_guaranteed_crit_on_timed_block = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.664551,
+			0.083008
+		},
+		uv11 = {
+			0.684082,
+			0.12207
+		}
+	},
+	victor_zealot_passive_invulnerability = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.644043,
+			0.083008
+		},
+		uv11 = {
+			0.663574,
+			0.12207
+		}
+	},
+	markus_questing_knight_push_arc_stamina_reg = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.623535,
+			0.083008
+		},
+		uv11 = {
+			0.643066,
+			0.12207
+		}
+	},
+	sienna_unchained_increased_vent_speed = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.603027,
+			0.083008
+		},
+		uv11 = {
+			0.622559,
+			0.12207
+		}
+	},
+	kerillian_shade_activated_ability = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
 			0.58252,
 			0.083008
 		},
@@ -10219,7 +10233,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	markus_knight_buff_defense_on_revived_target = {
+	sienna_scholar_conqueror = {
 		size = {
 			80,
 			80
@@ -10233,7 +10247,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	markus_mercenary_passive_power_level_on_proc = {
+	sienna_adept_activated_ability = {
 		size = {
 			80,
 			80
@@ -10245,48 +10259,6 @@ icons_atlas = {
 		uv11 = {
 			0.561035,
 			0.12207
-		}
-	},
-	markus_huntsman_passive_improved = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.520996,
-			0.944336
-		},
-		uv11 = {
-			0.540527,
-			0.983398
-		}
-	},
-	kerillian_shade_activated_ability_cooldown = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.520996,
-			0.90332
-		},
-		uv11 = {
-			0.540527,
-			0.942383
-		}
-	},
-	kerillian_waywatcher_activated_ability_additional_projectile = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.520996,
-			0.862305
-		},
-		uv11 = {
-			0.540527,
-			0.901367
 		}
 	},
 	markus_huntsman_gain_ammo_on_boss_death = {
@@ -10296,137 +10268,11 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.520996,
-			0.821289
+			0.944336
 		},
 		uv11 = {
 			0.540527,
-			0.860352
-		}
-	},
-	kerillian_maidenguard_improved_dodge = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.520996,
-			0.780273
-		},
-		uv11 = {
-			0.540527,
-			0.819336
-		}
-	},
-	victor_witchhunter_guaranteed_crit_on_timed_block = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.520996,
-			0.739258
-		},
-		uv11 = {
-			0.540527,
-			0.77832
-		}
-	},
-	markus_questing_knight_activated_ability = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.520996,
-			0.698242
-		},
-		uv11 = {
-			0.540527,
-			0.737305
-		}
-	},
-	markus_huntsman_crit_aura = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.520996,
-			0.657227
-		},
-		uv11 = {
-			0.540527,
-			0.696289
-		}
-	},
-	markus_mercenary_smiter_unbalance = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.520996,
-			0.616211
-		},
-		uv11 = {
-			0.540527,
-			0.655273
-		}
-	},
-	sienna_adept_activated_ability_distance = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.520996,
-			0.575195
-		},
-		uv11 = {
-			0.540527,
-			0.614258
-		}
-	},
-	kerillian_waywatcher_increased_crit_hit_damage_on_high_health = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.520996,
-			0.53418
-		},
-		uv11 = {
-			0.540527,
-			0.573242
-		}
-	},
-	deus_icons_coin = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.520996,
-			0.493164
-		},
-		uv11 = {
-			0.540527,
-			0.532227
-		}
-	},
-	markus_mercenary_passive_improved = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.520996,
-			0.452148
-		},
-		uv11 = {
-			0.540527,
-			0.491211
+			0.983398
 		}
 	},
 	victor_witchhunter_improved_damage_taken_ping = {
@@ -10436,109 +10282,109 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.520996,
-			0.411133
+			0.90332
 		},
 		uv11 = {
 			0.540527,
-			0.450195
+			0.942383
 		}
 	},
-	kerillian_thornsister_crit_big_bleed = {
+	victor_zealot_activated_ability_cooldown_stack_on_hit = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.520996,
-			0.370117
+			0.862305
 		},
 		uv11 = {
 			0.540527,
-			0.40918
+			0.901367
 		}
 	},
-	markus_questing_knight_parry_increased_power = {
+	markus_huntsman_activated_ability_regen = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.520996,
-			0.329102
+			0.821289
 		},
 		uv11 = {
 			0.540527,
-			0.368164
+			0.860352
 		}
 	},
-	markus_mercenary_crit_count = {
+	markus_questing_knight_buff_attackspeed = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.520996,
-			0.288086
+			0.780273
 		},
 		uv11 = {
 			0.540527,
-			0.327148
+			0.819336
 		}
 	},
-	kerillian_maidenguard_passive_attack_speed_on_dodge = {
+	kerillian_maidenguard_power_level_on_unharmed = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.520996,
-			0.24707
+			0.739258
 		},
 		uv11 = {
 			0.540527,
-			0.286133
+			0.77832
 		}
 	},
-	kerillian_waywatcher_bloodlust = {
+	markus_questing_knight_ability_tank_attack = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.520996,
-			0.206055
+			0.698242
 		},
 		uv11 = {
 			0.540527,
-			0.245117
+			0.737305
 		}
 	},
-	markus_questing_knight_buff_damage_taken = {
+	markus_questing_knight_ability_buff_on_kill = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.520996,
-			0.165039
+			0.657227
 		},
 		uv11 = {
 			0.540527,
-			0.204102
+			0.696289
 		}
 	},
-	kerillian_maidenguard_passive_noclip_dodge = {
+	markus_mercenary_power_level_unbalance = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.520996,
-			0.124023
+			0.616211
 		},
 		uv11 = {
 			0.540527,
-			0.163086
+			0.655273
 		}
 	},
 	victor_witchhunter_linesman_unbalance = {
@@ -10548,6 +10394,174 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.520996,
+			0.575195
+		},
+		uv11 = {
+			0.540527,
+			0.614258
+		}
+	},
+	victor_zealot_crit_count = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.520996,
+			0.53418
+		},
+		uv11 = {
+			0.540527,
+			0.573242
+		}
+	},
+	deus_icons_map_khorne = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.520996,
+			0.493164
+		},
+		uv11 = {
+			0.540527,
+			0.532227
+		}
+	},
+	markus_mercenary_linesman_unbalance = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.520996,
+			0.452148
+		},
+		uv11 = {
+			0.540527,
+			0.491211
+		}
+	},
+	kerillian_maidenguard_linesman_unbalance = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.520996,
+			0.411133
+		},
+		uv11 = {
+			0.540527,
+			0.450195
+		}
+	},
+	markus_huntsman_reduced_spread = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.520996,
+			0.370117
+		},
+		uv11 = {
+			0.540527,
+			0.40918
+		}
+	},
+	markus_mercenary_activated_ability_damage_reduction = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.520996,
+			0.329102
+		},
+		uv11 = {
+			0.540527,
+			0.368164
+		}
+	},
+	markus_questing_knight_kills_buff_power_stacking = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.520996,
+			0.288086
+		},
+		uv11 = {
+			0.540527,
+			0.327148
+		}
+	},
+	victor_witchhunter_ninja_unbalance = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.520996,
+			0.24707
+		},
+		uv11 = {
+			0.540527,
+			0.286133
+		}
+	},
+	victor_zealot_passive_damage_taken = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.520996,
+			0.206055
+		},
+		uv11 = {
+			0.540527,
+			0.245117
+		}
+	},
+	kerillian_maidenguard_conqueror = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.520996,
+			0.165039
+		},
+		uv11 = {
+			0.540527,
+			0.204102
+		}
+	},
+	kerillian_maidenguard_bloodlust = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.520996,
+			0.124023
+		},
+		uv11 = {
+			0.540527,
+			0.163086
+		}
+	},
+	kerillian_maidenguard_block_cost = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.520996,
 			0.083008
 		},
 		uv11 = {
@@ -10555,7 +10569,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	kerillian_maidenguard_bloodlust = {
+	bardin_slayer_push_on_dodge = {
 		size = {
 			80,
 			80
@@ -10569,7 +10583,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	kerillian_maidenguard_activated_ability_damage = {
+	bardin_engineer_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -10583,7 +10597,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	twitch_icon_ticking_bomb = {
+	twitch_icon_splitting_enemies = {
 		size = {
 			80,
 			80
@@ -10594,160 +10608,6 @@ icons_atlas = {
 		},
 		uv11 = {
 			0.950684,
-			0.081055
-		}
-	},
-	kerillian_maidenguard_cooldown_on_nearby_allies = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.910645,
-			0.041992
-		},
-		uv11 = {
-			0.930176,
-			0.081055
-		}
-	},
-	victor_zealot_power = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.890137,
-			0.041992
-		},
-		uv11 = {
-			0.909668,
-			0.081055
-		}
-	},
-	kerillian_shade_dodge_range = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.869629,
-			0.041992
-		},
-		uv11 = {
-			0.88916,
-			0.081055
-		}
-	},
-	victor_witchhunter_ninja_unbalance = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.849121,
-			0.041992
-		},
-		uv11 = {
-			0.868652,
-			0.081055
-		}
-	},
-	sienna_scholar_smiter_unbalance = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.828613,
-			0.041992
-		},
-		uv11 = {
-			0.848145,
-			0.081055
-		}
-	},
-	victor_zealot_reduced_damage_taken = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.808105,
-			0.041992
-		},
-		uv11 = {
-			0.827637,
-			0.081055
-		}
-	},
-	sienna_adept_activated_ability_explosion = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.787598,
-			0.041992
-		},
-		uv11 = {
-			0.807129,
-			0.081055
-		}
-	},
-	sienna_adept_passive_charge_speed_increased = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.76709,
-			0.041992
-		},
-		uv11 = {
-			0.786621,
-			0.081055
-		}
-	},
-	markus_knight_ability_attack_speed_enemy_hit = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.746582,
-			0.041992
-		},
-		uv11 = {
-			0.766113,
-			0.081055
-		}
-	},
-	hero_icon_large_witch_hunter_glow = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.726074,
-			0.041992
-		},
-		uv11 = {
-			0.745605,
-			0.081055
-		}
-	},
-	markus_knight_uninterruptible_on_block_broken = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.705566,
-			0.041992
-		},
-		uv11 = {
-			0.725098,
 			0.081055
 		}
 	},
@@ -10757,6 +10617,160 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
+			0.910645,
+			0.041992
+		},
+		uv11 = {
+			0.930176,
+			0.081055
+		}
+	},
+	sienna_unchained_activated_ability_damage = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.890137,
+			0.041992
+		},
+		uv11 = {
+			0.909668,
+			0.081055
+		}
+	},
+	markus_knight_linesman_unbalance = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.869629,
+			0.041992
+		},
+		uv11 = {
+			0.88916,
+			0.081055
+		}
+	},
+	sienna_adept_regrowth = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.849121,
+			0.041992
+		},
+		uv11 = {
+			0.868652,
+			0.081055
+		}
+	},
+	victor_zealot_smiter_unbalance = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.828613,
+			0.041992
+		},
+		uv11 = {
+			0.848145,
+			0.081055
+		}
+	},
+	sienna_scholar_ranged_power_ascending_descending = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.808105,
+			0.041992
+		},
+		uv11 = {
+			0.827637,
+			0.081055
+		}
+	},
+	markus_knight_regrowth = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.787598,
+			0.041992
+		},
+		uv11 = {
+			0.807129,
+			0.081055
+		}
+	},
+	victor_witchhunter_stamina_regen_on_push = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.76709,
+			0.041992
+		},
+		uv11 = {
+			0.786621,
+			0.081055
+		}
+	},
+	blessing_abundance_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.746582,
+			0.041992
+		},
+		uv11 = {
+			0.766113,
+			0.081055
+		}
+	},
+	victor_zealot_increased_defence_low_health = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.726074,
+			0.041992
+		},
+		uv11 = {
+			0.745605,
+			0.081055
+		}
+	},
+	kerillian_maidenguard_crit_chance = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.705566,
+			0.041992
+		},
+		uv11 = {
+			0.725098,
+			0.081055
+		}
+	},
+	kerillian_maidenguard_regrowth = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
 			0.685059,
 			0.041992
 		},
@@ -10765,7 +10779,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	blessing_holygrenade_02 = {
+	blessing_isha_01 = {
 		size = {
 			80,
 			80
@@ -10779,7 +10793,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	blessing_isha_02 = {
+	blessing_jadecenser_01 = {
 		size = {
 			80,
 			80
@@ -10793,7 +10807,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	sienna_adept_passive_decreased_block_cost = {
+	sienna_adept_passive_improved = {
 		size = {
 			80,
 			80
@@ -10807,7 +10821,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	hat_icon = {
+	victor_zealot_activated_ability = {
 		size = {
 			80,
 			80
@@ -10821,7 +10835,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	blessing_shallya_02 = {
+	deus_boon = {
 		size = {
 			80,
 			80
@@ -10835,7 +10849,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	markus_huntsman_activated_ability_cooldown = {
+	victor_zealot_passive = {
 		size = {
 			80,
 			80
@@ -10849,7 +10863,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	player_skin_icon_bountyhunter = {
+	player_skin_icon_captain = {
 		size = {
 			80,
 			80
@@ -10863,7 +10877,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	victor_witchhunter_stamina_regen_on_push = {
+	player_skin_icon_bountyhunter = {
 		size = {
 			80,
 			80
@@ -10877,7 +10891,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	sienna_scholar_passive_reduced_overcharge_from_overcharge = {
+	markus_knight_activated_ability_damage_buff = {
 		size = {
 			80,
 			80
@@ -10891,7 +10905,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	markus_knight_old_1 = {
+	sienna_scholar_passive_reduced_block_cost_from_overcharge = {
 		size = {
 			80,
 			80
@@ -10905,7 +10919,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	player_skin_icon_scholar = {
+	markus_questing_knight_buff_health_regen = {
 		size = {
 			80,
 			80
@@ -10919,7 +10933,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	player_skin_icon_captain = {
+	victor_zealot_activated_ability_cooldown = {
 		size = {
 			80,
 			80
@@ -10933,7 +10947,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	markus_questing_knight_power_level_unbalance = {
+	sienna_unchained_max_health = {
 		size = {
 			80,
 			80
@@ -10947,7 +10961,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	kerillian_waywatcher_movement_speed_on_special_kill = {
+	victor_zealot_regrowth = {
 		size = {
 			80,
 			80
@@ -10961,7 +10975,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	sienna_adept_increased_defence_on_last_standing = {
+	sienna_adept_max_stamina = {
 		size = {
 			80,
 			80
@@ -10975,7 +10989,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	victor_zealot_activated_ability = {
+	player_skin_icon_knight = {
 		size = {
 			80,
 			80
@@ -10989,7 +11003,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	sienna_adept_healing_received = {
+	sienna_adept_increased_damage_on_enemy_proximity = {
 		size = {
 			80,
 			80
@@ -11003,7 +11017,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	sienna_adept_charge_speed_increase = {
+	sienna_adept_conqueror = {
 		size = {
 			80,
 			80
@@ -11017,7 +11031,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	sienna_unchained_push_arc = {
+	markus_mercenary_passive_defence_on_proc = {
 		size = {
 			80,
 			80
@@ -11031,7 +11045,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	player_skin_icon_maiden_guard = {
+	victor_zealot_activated_ability_duration = {
 		size = {
 			80,
 			80
@@ -11045,7 +11059,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	sienna_adept_ability_trail_increased_duration = {
+	markus_questing_knight_vanguard = {
 		size = {
 			80,
 			80
@@ -11059,7 +11073,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	kerillian_waywatcher_activated_ability_restore_ammo_on_career_skill_special_kill = {
+	victor_zealot_stun_reduction = {
 		size = {
 			80,
 			80
@@ -11073,7 +11087,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	markus_mercenary_activated_ability_revive = {
+	markus_knight_tank_unbalance = {
 		size = {
 			80,
 			80
@@ -11087,7 +11101,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	victor_zealot_activated_ability_cooldown = {
+	player_skin_icon_scholar = {
 		size = {
 			80,
 			80
@@ -11101,7 +11115,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	sienna_adept_smiter_unbalance = {
+	markus_huntsman_damage_reduction_on_monster_kill = {
 		size = {
 			80,
 			80
@@ -11115,7 +11129,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	markus_knight_activated_ability_damage_buff = {
+	sienna_adept_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -11129,7 +11143,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	markus_knight_passive_power_increase = {
+	markus_knight_free_pushes_on_block = {
 		size = {
 			80,
 			80
@@ -11143,7 +11157,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	player_skin_icon_shade = {
+	victor_zealot_activated_ability_heal = {
 		size = {
 			80,
 			80
@@ -11157,7 +11171,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	markus_huntsman_debuff_defence_on_disabler = {
+	markus_huntsman_activated_ability_damage = {
 		size = {
 			80,
 			80
@@ -11171,7 +11185,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_waystalker_ninja_unbalance = {
+	victor_zealot_activated_ability_ignore_death = {
 		size = {
 			80,
 			80
@@ -11185,7 +11199,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	markus_knight_ability_hit_target_damage_taken = {
+	markus_knight_regen_stamina_on_charged_attacks = {
 		size = {
 			80,
 			80
@@ -11199,7 +11213,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	victor_zealot_activated_ability_duration = {
+	player_skin_icon_waywatcher = {
 		size = {
 			80,
 			80
@@ -11213,7 +11227,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	sienna_unchained_reduced_vent_damage = {
+	sienna_adept_cooldown_reduction_on_burning_enemy_killed = {
 		size = {
 			80,
 			80
@@ -11227,7 +11241,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	kerillian_thornsister_power_on_health_gain = {
+	kerillian_thornsister_heal_share = {
 		size = {
 			80,
 			80
@@ -11241,7 +11255,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	blessing_isha_01 = {
+	blessing_isha_02 = {
 		size = {
 			80,
 			80
@@ -11255,7 +11269,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	player_skin_icon_zealot = {
+	victor_zealot_bloodlust = {
 		size = {
 			80,
 			80
@@ -11269,7 +11283,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	markus_questing_knight_ability_buff_on_kill = {
+	markus_mercenary_smiter_unbalance = {
 		size = {
 			80,
 			80
@@ -11283,7 +11297,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	kerillian_waywatcher_regenerate_ammunition = {
+	victor_zealot_attack_speed_on_health_percent = {
 		size = {
 			80,
 			80
@@ -11297,7 +11311,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	blessing_shallya_01 = {
+	blessing_shallya_02 = {
 		size = {
 			80,
 			80
@@ -11311,7 +11325,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	victor_zealot_activated_ability_heal = {
+	sienna_adept_passive = {
 		size = {
 			80,
 			80
@@ -11325,7 +11339,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	markus_huntsman_tank_unbalance = {
+	kerillian_thornsister_double_passive = {
 		size = {
 			80,
 			80
@@ -11339,7 +11353,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	kerillian_thornsister_healing_wall = {
+	markus_questing_knight_buff_damage_taken = {
 		size = {
 			80,
 			80
@@ -11353,7 +11367,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	deus_icons_boon = {
+	deus_icons_coin = {
 		size = {
 			80,
 			80
@@ -11367,7 +11381,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	sienna_adept_increased_damage_on_enemy_proximity = {
+	victor_zealot_conqueror = {
 		size = {
 			80,
 			80
@@ -11381,7 +11395,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	deus_icons_map_nurgle = {
+	markus_mercenary_max_ammo = {
 		size = {
 			80,
 			80
@@ -11395,7 +11409,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	kerillian_waywatcher_headshot_multiplier = {
+	victor_zealot_linesman_unbalance = {
 		size = {
 			80,
 			80
@@ -11409,7 +11423,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	deus_icons_runmod_slaanesh = {
+	deus_icons_runmod_tzeentch = {
 		size = {
 			80,
 			80
@@ -11423,7 +11437,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	victor_zealot_bloodlust = {
+	sienna_adept_healing_received = {
 		size = {
 			80,
 			80
@@ -11437,7 +11451,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	kerillian_maidenguard_remove_wounded_on_boss_death = {
+	markus_questing_knight_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -11451,7 +11465,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	markus_questing_knight_passive_improved_reward = {
+	kerillian_maidenguard_passive = {
 		size = {
 			80,
 			80
@@ -11465,7 +11479,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	kerillian_maidenguard_push_arc = {
+	kerillian_maidenguard_movement_speed = {
 		size = {
 			80,
 			80
@@ -11479,7 +11493,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	sienna_adept_bloodlust = {
+	victor_zealot_crit_chance = {
 		size = {
 			80,
 			80
@@ -11493,7 +11507,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	markus_questing_knight_heal_share = {
+	kerillian_maidenguard_max_stamina = {
 		size = {
 			80,
 			80
@@ -11507,7 +11521,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	kerillian_waywatcher_conqueror = {
+	victor_zealot_move_speed_on_damage_taken = {
 		size = {
 			80,
 			80
@@ -11521,7 +11535,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	markus_mercenary_activated_ability_damage_reduction = {
+	markus_questing_knight_heal_share = {
 		size = {
 			80,
 			80
@@ -11535,7 +11549,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	victor_zealot_conqueror = {
+	sienna_unchained_reduced_overcharge = {
 		size = {
 			80,
 			80
@@ -11549,7 +11563,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	markus_huntsman_activated_ability_improved_stealth = {
+	kerillian_shade_perk_dagger_in_the_dark = {
 		size = {
 			80,
 			80
@@ -11561,132 +11575,6 @@ icons_atlas = {
 		uv11 = {
 			0.499512,
 			0.942383
-		}
-	},
-	kerillian_shade_smiter_unbalance = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.47998,
-			0.862305
-		},
-		uv11 = {
-			0.499512,
-			0.901367
-		}
-	},
-	markus_questing_knight_buff_health_regen = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.47998,
-			0.821289
-		},
-		uv11 = {
-			0.499512,
-			0.860352
-		}
-	},
-	markus_huntsman_activated_ability_regen = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.47998,
-			0.780273
-		},
-		uv11 = {
-			0.499512,
-			0.819336
-		}
-	},
-	markus_mercenary_reduced_stun_duration = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.47998,
-			0.739258
-		},
-		uv11 = {
-			0.499512,
-			0.77832
-		}
-	},
-	kerillian_waywatcher_activated_ability_restore_ammo = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.47998,
-			0.698242
-		},
-		uv11 = {
-			0.499512,
-			0.737305
-		}
-	},
-	bardin_engineer_no_overheat_explosion = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.47998,
-			0.657227
-		},
-		uv11 = {
-			0.499512,
-			0.696289
-		}
-	},
-	victor_zealot_crit_chance = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.47998,
-			0.616211
-		},
-		uv11 = {
-			0.499512,
-			0.655273
-		}
-	},
-	kerillian_maidenguard_conqueror = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.47998,
-			0.575195
-		},
-		uv11 = {
-			0.499512,
-			0.614258
-		}
-	},
-	bardin_engineer_linesman_unbalance = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.47998,
-			0.53418
-		},
-		uv11 = {
-			0.499512,
-			0.573242
 		}
 	},
 	bardin_engineer_passive_ranged_power_aura_buff_icon = {
@@ -11696,6 +11584,132 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.47998,
+			0.862305
+		},
+		uv11 = {
+			0.499512,
+			0.901367
+		}
+	},
+	markus_mercenary_passive_power_level_on_proc = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.47998,
+			0.821289
+		},
+		uv11 = {
+			0.499512,
+			0.860352
+		}
+	},
+	victor_zealot_damage_taken_capped = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.47998,
+			0.780273
+		},
+		uv11 = {
+			0.499512,
+			0.819336
+		}
+	},
+	markus_mercenary_passive_group_proc = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.47998,
+			0.739258
+		},
+		uv11 = {
+			0.499512,
+			0.77832
+		}
+	},
+	victor_zealot_passive_healing_received = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.47998,
+			0.698242
+		},
+		uv11 = {
+			0.499512,
+			0.737305
+		}
+	},
+	kerillian_maidenguard_activated_ability_invis_duration = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.47998,
+			0.657227
+		},
+		uv11 = {
+			0.499512,
+			0.696289
+		}
+	},
+	hero_icon_large_bright_wizard_glow = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.47998,
+			0.616211
+		},
+		uv11 = {
+			0.499512,
+			0.655273
+		}
+	},
+	bardin_engineer_ranged_pierce = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.47998,
+			0.575195
+		},
+		uv11 = {
+			0.499512,
+			0.614258
+		}
+	},
+	kerillian_maidenguard_activated_ability_damage = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.47998,
+			0.53418
+		},
+		uv11 = {
+			0.499512,
+			0.573242
+		}
+	},
+	kerillian_maidenguard_activated_ability = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.47998,
 			0.493164
 		},
 		uv11 = {
@@ -11703,7 +11717,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	hero_icon_large_bright_wizard_glow = {
+	victor_zealot_increased_block_arc_from_passive = {
 		size = {
 			80,
 			80
@@ -11717,7 +11731,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	bardin_engineer_passive_ability_charge = {
+	bardin_engineer_no_overheat_explosion = {
 		size = {
 			80,
 			80
@@ -11731,7 +11745,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	kerillian_thornsister_veinburst_strike = {
+	victor_zealot_power = {
 		size = {
 			80,
 			80
@@ -11745,7 +11759,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	twitch_icon_soul_drinkers = {
+	grudge_mark_frenzy_debuff = {
 		size = {
 			80,
 			80
@@ -11759,7 +11773,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	victor_zealot_damage_taken_capped = {
+	hero_icon_large_dwarf_ranger_glow = {
 		size = {
 			80,
 			80
@@ -11773,7 +11787,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	kerillian_shade_stamina_regen = {
+	markus_knight_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -11787,7 +11801,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	kerillian_shade_passive_improved = {
+	markus_knight_power_level_impact = {
 		size = {
 			80,
 			80
@@ -11801,7 +11815,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	sienna_unchained_activated_ability_cooldown = {
+	victor_zealot_reduced_damage_taken = {
 		size = {
 			80,
 			80
@@ -11815,7 +11829,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	markus_knight_power_level_unbalance = {
+	kerillian_shade_conqueror = {
 		size = {
 			80,
 			80
@@ -11829,7 +11843,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	victor_zealot_power_level_unbalance = {
+	sienna_unchained_activated_ability = {
 		size = {
 			80,
 			80
@@ -11843,7 +11857,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	victor_zealot_increased_block_arc_from_passive = {
+	hero_icon_large_empire_soldier_glow = {
 		size = {
 			80,
 			80
@@ -11857,7 +11871,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	markus_knight_power_level_impact = {
+	kerillian_shade_backstabs_replenishes_ammunition = {
 		size = {
 			80,
 			80
@@ -11871,7 +11885,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	kerillian_shade_conqueror = {
+	markus_knight_damage_taken_ally_proximity = {
 		size = {
 			80,
 			80
@@ -11885,7 +11899,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	markus_knight_passive_block_cost_aura = {
+	kerillian_shade_activated_ability_no_break_on_ranged = {
 		size = {
 			80,
 			80
@@ -11899,7 +11913,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	kerillian_shade_backstabs_replenishes_ammunition = {
+	markus_knight_ability_invulnerability = {
 		size = {
 			80,
 			80
@@ -11913,7 +11927,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	sienna_scholar_power_level_unbalance = {
+	markus_knight_max_health = {
 		size = {
 			80,
 			80
@@ -11927,7 +11941,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	markus_knight_damage_taken_ally_proximity = {
+	sienna_adept_attack_speed_on_enemies_hit = {
 		size = {
 			80,
 			80
@@ -11941,7 +11955,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	victor_zealot_smiter_unbalance = {
+	sienna_scholar_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -11955,7 +11969,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	victor_zealot_increased_critical_hit_damage_from_passive = {
+	hero_icon_large_witch_hunter_glow = {
 		size = {
 			80,
 			80
@@ -11969,7 +11983,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	kerillian_shade_activated_ability = {
+	kerillian_maidenguard_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -11983,7 +11997,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	sienna_scholar_passive_overcharge_pause_on_special_kill = {
+	markus_knight_improved_passive_defence_aura = {
 		size = {
 			80,
 			80
@@ -11997,7 +12011,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	kerillian_maidenguard_smiter_unbalance = {
+	markus_knight_old_1 = {
 		size = {
 			80,
 			80
@@ -12011,7 +12025,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	markus_knight_regrowth = {
+	sienna_scholar_passive_increased_power_level_on_high_overcharge = {
 		size = {
 			80,
 			80
@@ -12025,7 +12039,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	sienna_scholar_overcharge_no_slow = {
+	markus_knight_conqueror = {
 		size = {
 			80,
 			80
@@ -12039,7 +12053,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	blessing_grimnir_02 = {
+	blessing_holygrenade_01 = {
 		size = {
 			80,
 			80
@@ -12053,7 +12067,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	markus_knight_regen_stamina_on_charged_attacks = {
+	sienna_scholar_move_speed_on_critical_hit = {
 		size = {
 			80,
 			80
@@ -12067,7 +12081,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	victor_zealot_increased_damage_on_enemy_proximity = {
+	hero_icon_large_wood_elf_glow = {
 		size = {
 			80,
 			80
@@ -12081,7 +12095,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	victor_captain_activated_ability_stagger_ping_debuff = {
+	kerillian_shade_wider_backstab_angle = {
 		size = {
 			80,
 			80
@@ -12095,7 +12109,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	sienna_adept_attack_speed_on_enemies_hit = {
+	victor_captain_activated_ability_stagger_ping_debuff = {
 		size = {
 			80,
 			80
@@ -12109,7 +12123,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	kerillian_maidenguard_linesman_unbalance = {
+	sienna_adept_activated_ability_explosion = {
 		size = {
 			80,
 			80
@@ -12123,7 +12137,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	sienna_scholar_linesman_unbalance = {
+	markus_knight_buff_defense_on_revived_target = {
 		size = {
 			80,
 			80
@@ -12137,7 +12151,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	sienna_scholar_crit_chance_above_health_threshold = {
+	markus_knight_bloodlust = {
 		size = {
 			80,
 			80
@@ -12151,7 +12165,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	blessing_power_02 = {
+	blessing_ranald_01 = {
 		size = {
 			80,
 			80
@@ -12165,7 +12179,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	markus_knight_passive_stamina_aura = {
+	sienna_scholar_activated_ability_crit_refresh_cooldown = {
 		size = {
 			80,
 			80
@@ -12179,7 +12193,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	victor_zealot_increased_defence_low_health = {
+	kerillian_waywatcher_passive_cooldown_restore = {
 		size = {
 			80,
 			80
@@ -12193,7 +12207,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	kerillian_maidenguard_block_cost = {
+	kerillian_maidenguard_remove_wounded_on_boss_death = {
 		size = {
 			80,
 			80
@@ -12207,7 +12221,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	sienna_scholar_activated_ability_additional_projectiles = {
+	markus_knight_attack_speed = {
 		size = {
 			80,
 			80
@@ -12221,7 +12235,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	kerillian_maidenguard_slower_heavy_hits = {
+	hat_icon = {
 		size = {
 			80,
 			80
@@ -12235,7 +12249,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	markus_knight_passive_movement_speed_aura = {
+	sienna_scholar_regrowth = {
 		size = {
 			80,
 			80
@@ -12249,7 +12263,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	sienna_scholar_reduced_spread = {
+	markus_knight_activated_ability_infinite_block = {
 		size = {
 			80,
 			80
@@ -12263,7 +12277,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	deus_curse_nurgle_01 = {
+	markus_questing_knight_tank_unbalance = {
 		size = {
 			80,
 			80
@@ -12277,7 +12291,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	markus_knight_passive = {
+	sienna_scholar_reduced_overcharge = {
 		size = {
 			80,
 			80
@@ -12291,7 +12305,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	victor_zealot_increased_stamina_from_passive = {
+	kerillian_waywatcher_extra_arrow_melee_kill = {
 		size = {
 			80,
 			80
@@ -12319,7 +12333,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	player_skin_icon_huntsman = {
+	player_skin_icon_ironbreaker = {
 		size = {
 			80,
 			80
@@ -12333,7 +12347,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	markus_questing_knight_push_arc_stamina_reg = {
+	deus_icons_map_slaanesh = {
 		size = {
 			80,
 			80
@@ -12347,7 +12361,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	player_skin_icon_knight = {
+	player_skin_icon_maiden_guard = {
 		size = {
 			80,
 			80
@@ -12361,7 +12375,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	sienna_scholar_passive_increased_attack_speed_from_overcharge = {
+	markus_knight_activated_ability_cooldown = {
 		size = {
 			80,
 			80
@@ -12375,7 +12389,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	deus_icons_runmod_nurgle = {
+	deus_icons_runmod_slaanesh = {
 		size = {
 			80,
 			80
@@ -12389,7 +12403,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	markus_knight_max_health = {
+	sienna_scholar_passive = {
 		size = {
 			80,
 			80
@@ -12403,7 +12417,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	victor_zealot_passive = {
+	kerillian_waywatcher_attack_speed_on_ranged_headshot = {
 		size = {
 			80,
 			80
@@ -12417,7 +12431,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	player_skin_icon_slayer = {
+	player_skin_icon_unchained = {
 		size = {
 			80,
 			80
@@ -12431,7 +12445,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	sienna_scholar_overcharge_regen_on_grimoire_pickup = {
+	markus_knight_activated_ability = {
 		size = {
 			80,
 			80
@@ -12445,7 +12459,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	player_skin_icon_waywatcher = {
+	player_skin_icon_zealot = {
 		size = {
 			80,
 			80
@@ -12459,7 +12473,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	markus_knight_improved_passive_defence_aura = {
+	sienna_scholar_old_01 = {
 		size = {
 			80,
 			80
@@ -12473,7 +12487,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	sienna_scholar_increased_ranged_charge_speed_on_low_health = {
+	markus_huntsman_tank_unbalance = {
 		size = {
 			80,
 			80
@@ -12487,7 +12501,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	sienna_unchained_buff_defense_on_revived_target = {
+	sienna_unchained_conqueror = {
 		size = {
 			80,
 			80
@@ -12501,7 +12515,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	markus_knight_conqueror = {
+	sienna_scholar_increased_defence_on_disabled = {
 		size = {
 			80,
 			80
@@ -12515,7 +12529,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	victor_zealot_passive_invulnerability = {
+	kerillian_waywatcher_activated_ability_piercing_shot = {
 		size = {
 			80,
 			80
@@ -12529,7 +12543,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	kerillian_shade_wider_backstab_angle = {
+	victor_witchhunter_activated_ability_refund_cooldown_on_enemies_hit = {
 		size = {
 			80,
 			80
@@ -12543,7 +12557,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	sienna_unchained_bloodlust = {
+	sienna_unchained_buff_defense_on_revived_target = {
 		size = {
 			80,
 			80
@@ -12557,7 +12571,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	sienna_scholar_increased_attack_speed = {
+	markus_huntsman_smiter_unbalance = {
 		size = {
 			80,
 			80
@@ -12571,7 +12585,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	sienna_unchained_activated_ability_radius = {
+	sienna_unchained_bloodlust = {
 		size = {
 			80,
 			80
@@ -12585,7 +12599,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	sienna_scholar_bloodlust = {
+	markus_huntsman_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -12599,7 +12613,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	sienna_unchained_activated_ability_damage = {
+	markus_questing_knight_charged_attacks_increased_power = {
 		size = {
 			80,
 			80
@@ -12613,7 +12627,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	markus_knight_bloodlust = {
+	sienna_scholar_activated_ability_heal = {
 		size = {
 			80,
 			80
@@ -12627,7 +12641,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	victor_zealot_regrowth = {
+	kerillian_waystalker_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -12641,7 +12655,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	markus_questing_knight_tank_unbalance = {
+	sienna_adept_ability_trail_increased_duration = {
 		size = {
 			80,
 			80
@@ -12655,7 +12669,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	sienna_scholar_activated_ability_dump_overcharge = {
+	markus_huntsman_increased_damage_to_wounded_enemies = {
 		size = {
 			80,
 			80
@@ -12669,7 +12683,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	markus_questing_knight_vanguard = {
+	markus_mercenary_activated_ability_improved_healing = {
 		size = {
 			80,
 			80
@@ -12683,7 +12697,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	markus_knight_attack_speed = {
+	sienna_scholar_activated_ability_cooldown = {
 		size = {
 			80,
 			80
@@ -12697,7 +12711,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	sienna_scholar_activated_ability = {
+	markus_huntsman_headshot_damage = {
 		size = {
 			80,
 			80
@@ -12711,7 +12725,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	markus_huntsman_passive_crit_buff_on_headshot = {
+	markus_huntsman_debuff_defence_on_disabler = {
 		size = {
 			80,
 			80
@@ -12725,7 +12739,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	markus_knight_activated_ability_infinite_block = {
+	sienna_adept_tank_unbalance = {
 		size = {
 			80,
 			80
@@ -12739,7 +12753,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	victor_zealot_stamina_regen = {
+	kerillian_waystalker_linesman_unbalance = {
 		size = {
 			80,
 			80
@@ -12753,7 +12767,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	markus_huntsman_passive = {
+	markus_huntsman_debuff_defence_on_crit = {
 		size = {
 			80,
 			80
@@ -12767,7 +12781,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	markus_mercenary_activated_ability_cooldown = {
+	markus_knight_power_level_on_stagger_elite = {
 		size = {
 			80,
 			80
@@ -12781,7 +12795,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	markus_huntsman_max_stamina = {
+	markus_huntsman_crit_aura = {
 		size = {
 			80,
 			80
@@ -12795,7 +12809,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	markus_knight_tank_unbalance = {
+	markus_knight_passive_power_increase = {
 		size = {
 			80,
 			80
@@ -12809,7 +12823,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	sienna_adept_power_level_on_full_charge = {
+	markus_huntsman_ammo_on_special_kill = {
 		size = {
 			80,
 			80
@@ -12823,7 +12837,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	markus_huntsman_headshots_increase_reload_speed = {
+	markus_huntsman_bloodlust = {
 		size = {
 			80,
 			80
@@ -12837,7 +12851,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	markus_knight_activated_ability_cooldown = {
+	sienna_adept_passive_cooldown = {
 		size = {
 			80,
 			80
@@ -12851,7 +12865,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	victor_zealot_stun_reduction = {
+	kerillian_waywatcher_regrowth = {
 		size = {
 			80,
 			80
@@ -12865,7 +12879,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	markus_knight_movement_speed_on_incapacitated_allies = {
+	markus_knight_attack_speed_on_push = {
 		size = {
 			80,
 			80
@@ -12893,7 +12907,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	markus_knight_free_pushes_on_block = {
+	markus_knight_ability_hit_target_damage_taken = {
 		size = {
 			80,
 			80
@@ -12907,7 +12921,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	markus_knight_activated_ability = {
+	sienna_adept_damage_reduction_on_ignited_enemy = {
 		size = {
 			80,
 			80
@@ -12921,7 +12935,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	sienna_adept_cooldown_reduction_on_burning_enemy_killed = {
+	markus_mercenary_passive = {
 		size = {
 			80,
 			80
@@ -12935,7 +12949,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	markus_questing_knight_buff_attackspeed = {
+	markus_questing_knight_bloodlust_2 = {
 		size = {
 			80,
 			80
@@ -12949,7 +12963,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	markus_mercenary_passive_group_proc = {
+	sienna_unchained_push_arc = {
 		size = {
 			80,
 			80
@@ -12963,7 +12977,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	victor_zealot_activated_ability_cooldown_stack_on_hit = {
+	kerillian_waywatcher_passive = {
 		size = {
 			80,
 			80
@@ -12977,7 +12991,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	victor_witchhunter_activated_ability_guaranteed_crit_self_buff = {
+	kerillian_shade_passive = {
 		size = {
 			80,
 			80
@@ -12991,7 +13005,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	victor_witchhunter_regrowth = {
+	kerillian_shade_damage_reduction_on_critical_hit = {
 		size = {
 			80,
 			80
@@ -13005,7 +13019,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	markus_questing_knight_bloodlust_2 = {
+	markus_questing_knight_activated_ability = {
 		size = {
 			80,
 			80
@@ -13019,7 +13033,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	blessing_abundance_01 = {
+	blessing_abundance_02 = {
 		size = {
 			80,
 			80
@@ -13033,7 +13047,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	sienna_unchained_passive = {
+	kerillian_thornsister_free_throw = {
 		size = {
 			80,
 			80
@@ -13047,7 +13061,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	markus_questing_knight_ability_double_activation = {
+	markus_huntsman_activated_ability_cooldown = {
 		size = {
 			80,
 			80
@@ -13061,7 +13075,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	kerillian_thornsister_linesman_unbalance = {
+	sienna_unchained_max_overcharge = {
 		size = {
 			80,
 			80
@@ -13075,7 +13089,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	victor_zealot_activated_ability_ignore_death = {
+	kerillian_waywatcher_improved_regen = {
 		size = {
 			80,
 			80
@@ -13089,7 +13103,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	blessing_jadecenser_01 = {
+	blessing_jadecenser_02 = {
 		size = {
 			80,
 			80
@@ -13103,7 +13117,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	sienna_unchained_max_overcharge = {
+	markus_mercenary_increased_defence_on_low_health = {
 		size = {
 			80,
 			80
@@ -13117,7 +13131,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	blessing_power_01 = {
+	blessing_power_02 = {
 		size = {
 			80,
 			80
@@ -13131,7 +13145,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	markus_mercenary_passive_defence_on_proc = {
+	markus_huntsman_activated_ability_improved_stealth = {
 		size = {
 			80,
 			80
@@ -13145,7 +13159,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	sienna_unchained_max_health = {
+	markus_mercenary_healing_received = {
 		size = {
 			80,
 			80
@@ -13159,7 +13173,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	markus_mercenary_power_level_unbalance = {
+	markus_mercenary_power_level_cleave = {
 		size = {
 			80,
 			80
@@ -13173,7 +13187,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	markus_mercenary_increased_defence_on_low_health = {
+	markus_huntsman_activated_ability_duration = {
 		size = {
 			80,
 			80
@@ -13187,7 +13201,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	victor_zealot_activated_ability_power_on_hit = {
+	kerillian_waywatcher_group_regen = {
 		size = {
 			80,
 			80
@@ -13201,7 +13215,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	markus_huntsman_conqueror = {
+	markus_huntsman_activated_ability = {
 		size = {
 			80,
 			80
@@ -13215,7 +13229,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	deus_boon = {
+	deus_curse_belakor_02 = {
 		size = {
 			80,
 			80
@@ -13229,7 +13243,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	markus_huntsman_bloodlust = {
+	markus_mercenary_passive_improved = {
 		size = {
 			80,
 			80
@@ -13243,7 +13257,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	deus_curse_khorne_01 = {
+	deus_curse_nurgle_01 = {
 		size = {
 			80,
 			80
@@ -13257,7 +13271,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	markus_huntsman_smiter_unbalance = {
+	markus_mercenary_bloodlust = {
 		size = {
 			80,
 			80
@@ -13271,7 +13285,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	deus_curse_tzeentch_01 = {
+	deus_icons_boon = {
 		size = {
 			80,
 			80
@@ -13285,7 +13299,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	markus_mercenary_crit_chance = {
+	markus_huntsman_activated_ability_cooldown = {
 		size = {
 			80,
 			80
@@ -13299,7 +13313,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	victor_zealot_attack_speed_on_health_percent = {
+	kerillian_waywatcher_crit_chance = {
 		size = {
 			80,
 			80
@@ -13313,7 +13327,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	deus_icons_map_khorne = {
+	deus_icons_map_nurgle = {
 		size = {
 			80,
 			80
@@ -13327,7 +13341,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	markus_questing_knight_buff_cdr = {
+	kerillian_thornsister_crit_on_any_ability = {
 		size = {
 			80,
 			80
@@ -13341,7 +13355,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	deus_icons_map_slaanesh = {
+	deus_icons_map_tzeentch = {
 		size = {
 			80,
 			80
@@ -13355,7 +13369,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	kerillian_thornsister_explosive_wall = {
+	markus_huntsman_reload_speed = {
 		size = {
 			80,
 			80
@@ -13369,7 +13383,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	markus_huntsman_power_level_unbalance = {
+	kerillian_thornsister_bloodlust = {
 		size = {
 			80,
 			80
@@ -13383,7 +13397,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	markus_mercenary_max_ammo = {
+	markus_mercenary_crit_count = {
 		size = {
 			80,
 			80
@@ -13397,7 +13411,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	kerillian_thornsister_debuff_wall = {
+	markus_huntsman_regrowth = {
 		size = {
 			80,
 			80
@@ -13411,7 +13425,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	victor_zealot_crit_count = {
+	kerillian_waywatcher_conquerer = {
 		size = {
 			80,
 			80
@@ -13425,7 +13439,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	kerillian_shade_passive = {
+	victor_witchhunter_attack_speed_on_enemy_pinged = {
 		size = {
 			80,
 			80
@@ -13439,7 +13453,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	markus_mercenary_linesman_unbalance = {
+	kerillian_maidenguard_push_arc = {
 		size = {
 			80,
 			80
@@ -13453,7 +13467,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	markus_huntsman_increased_damage_to_wounded_enemies = {
+	kerillian_thornsister_big_push = {
 		size = {
 			80,
 			80
@@ -13481,7 +13495,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	markus_huntsman_headshot_damage = {
+	kerillian_thornsister_avatar = {
 		size = {
 			80,
 			80
@@ -13509,7 +13523,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_thornsister_blackvenom = {
+	markus_huntsman_passive_improved = {
 		size = {
 			80,
 			80
@@ -13523,7 +13537,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	victor_zealot_linesman_unbalance = {
+	kerillian_waywatcher_attack_speed = {
 		size = {
 			80,
 			80
@@ -13537,7 +13551,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	markus_questing_knight_kills_buff_power_stacking = {
+	markus_questing_knight_parry_increased_power = {
 		size = {
 			80,
 			80
@@ -13549,76 +13563,6 @@ icons_atlas = {
 		uv11 = {
 			0.396973,
 			0.040039
-		}
-	},
-	markus_huntsman_damage_reduction_on_monster_kill = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.356934,
-			0.944336
-		},
-		uv11 = {
-			0.376465,
-			0.983398
-		}
-	},
-	kerillian_maidenguard_passive = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.356934,
-			0.90332
-		},
-		uv11 = {
-			0.376465,
-			0.942383
-		}
-	},
-	kerillian_thornsister_avatar = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.356934,
-			0.862305
-		},
-		uv11 = {
-			0.376465,
-			0.901367
-		}
-	},
-	markus_huntsman_ammo_on_special_kill = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.356934,
-			0.821289
-		},
-		uv11 = {
-			0.376465,
-			0.860352
-		}
-	},
-	kerillian_maidenguard_movement_speed = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.356934,
-			0.780273
-		},
-		uv11 = {
-			0.376465,
-			0.819336
 		}
 	},
 	kerillian_thornsister_activated_ability = {
@@ -13628,53 +13572,11 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.356934,
-			0.739258
+			0.944336
 		},
 		uv11 = {
 			0.376465,
-			0.77832
-		}
-	},
-	victor_zealot_max_stamina_on_damage_taken = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.356934,
-			0.698242
-		},
-		uv11 = {
-			0.376465,
-			0.737305
-		}
-	},
-	markus_questing_knight_crit_can_insta_kill = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.356934,
-			0.657227
-		},
-		uv11 = {
-			0.376465,
-			0.696289
-		}
-	},
-	kerillian_maidenguard_max_stamina = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.356934,
-			0.616211
-		},
-		uv11 = {
-			0.376465,
-			0.655273
+			0.983398
 		}
 	},
 	markus_mercenary_activated_ability_cooldown_no_heal = {
@@ -13684,39 +13586,81 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.356934,
-			0.575195
+			0.90332
 		},
 		uv11 = {
 			0.376465,
-			0.614258
+			0.942383
 		}
 	},
-	markus_questing_knight_charged_attacks_increased_power = {
+	markus_huntsman_passive_crit_buff_on_headshot = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.356934,
-			0.53418
+			0.862305
 		},
 		uv11 = {
 			0.376465,
-			0.573242
+			0.901367
 		}
 	},
-	markus_huntsman_activated_ability_duration = {
+	kerillian_shade_smiter_unbalance = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.356934,
-			0.493164
+			0.821289
 		},
 		uv11 = {
 			0.376465,
-			0.532227
+			0.860352
+		}
+	},
+	markus_mercenary_stamina_regen = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.356934,
+			0.780273
+		},
+		uv11 = {
+			0.376465,
+			0.819336
+		}
+	},
+	markus_questing_knight_buff_cdr = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.356934,
+			0.739258
+		},
+		uv11 = {
+			0.376465,
+			0.77832
+		}
+	},
+	kerillian_waywatcher_activated_ability_heal = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.356934,
+			0.698242
+		},
+		uv11 = {
+			0.376465,
+			0.737305
 		}
 	},
 	kerillian_maidenguard_improved_stamina_regen = {
@@ -13726,39 +13670,11 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.356934,
-			0.452148
+			0.657227
 		},
 		uv11 = {
 			0.376465,
-			0.491211
-		}
-	},
-	kerillian_shade_perk_dagger_in_the_dark = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.356934,
-			0.411133
-		},
-		uv11 = {
-			0.376465,
-			0.450195
-		}
-	},
-	victor_zealot_move_speed_on_damage_taken = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.356934,
-			0.370117
-		},
-		uv11 = {
-			0.376465,
-			0.40918
+			0.696289
 		}
 	},
 	markus_mercenary_regrowth = {
@@ -13768,39 +13684,39 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.356934,
-			0.329102
+			0.616211
 		},
 		uv11 = {
 			0.376465,
-			0.368164
+			0.655273
 		}
 	},
-	markus_huntsman_activated_ability_cooldown = {
+	markus_questing_knight_health_refund_over_time = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.356934,
-			0.288086
+			0.575195
 		},
 		uv11 = {
 			0.376465,
-			0.327148
+			0.614258
 		}
 	},
-	markus_huntsman_debuff_defence_on_crit = {
+	kerillian_maidenguard_improved_dodge = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.356934,
-			0.24707
+			0.53418
 		},
 		uv11 = {
 			0.376465,
-			0.286133
+			0.573242
 		}
 	},
 	kerillian_shade_passive_stealth_on_backstab_kill = {
@@ -13810,6 +13726,104 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.356934,
+			0.493164
+		},
+		uv11 = {
+			0.376465,
+			0.532227
+		}
+	},
+	kerillian_maidenguard_damage_reduction_on_last_standing = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.356934,
+			0.452148
+		},
+		uv11 = {
+			0.376465,
+			0.491211
+		}
+	},
+	markus_huntsman_passive = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.356934,
+			0.411133
+		},
+		uv11 = {
+			0.376465,
+			0.450195
+		}
+	},
+	kerillian_waywatcher_activated_ability = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.356934,
+			0.370117
+		},
+		uv11 = {
+			0.376465,
+			0.40918
+		}
+	},
+	markus_questing_knight_buff_powerlevel = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.356934,
+			0.329102
+		},
+		uv11 = {
+			0.376465,
+			0.368164
+		}
+	},
+	kerillian_shade_movement_speed_on_critical_hit = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.356934,
+			0.288086
+		},
+		uv11 = {
+			0.376465,
+			0.327148
+		}
+	},
+	player_skin_icon_shade = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.356934,
+			0.24707
+		},
+		uv11 = {
+			0.376465,
+			0.286133
+		}
+	},
+	markus_huntsman_max_stamina = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.356934,
 			0.206055
 		},
 		uv11 = {
@@ -13817,7 +13831,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	markus_huntsman_reload_speed = {
+	kerillian_shade_increased_damage_on_poisoned_or_bleeding_enemy = {
 		size = {
 			80,
 			80
@@ -13831,7 +13845,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	bardin_engineer_party_ability_charge = {
+	bardin_engineer_increased_ability_bar = {
 		size = {
 			80,
 			80
@@ -13845,7 +13859,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_shade_ninja_unbalance = {
+	markus_huntsman_headshots_restore_health = {
 		size = {
 			80,
 			80
@@ -13859,7 +13873,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	victor_zealot_passive_damage_taken = {
+	kerillian_thornsister_smiter_unbalance = {
 		size = {
 			80,
 			80
@@ -13873,7 +13887,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	victor_witchhunter_activated_ability_refund_cooldown_on_enemies_hit = {
+	kerillian_shade_debuff_defence_on_disabler = {
 		size = {
 			80,
 			80
@@ -13887,7 +13901,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	kerillian_shade_damage_reduction_on_critical_hit = {
+	victor_witchhunter_activated_ability_guaranteed_crit_self_buff = {
 		size = {
 			80,
 			80
@@ -13901,7 +13915,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	bardin_engineer_melee_power_free_shot = {
+	bardin_engineer_ranged_crit_count = {
 		size = {
 			80,
 			80
@@ -13913,48 +13927,6 @@ icons_atlas = {
 		uv11 = {
 			0.355957,
 			0.942383
-		}
-	},
-	markus_huntsman_regrowth = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.336426,
-			0.862305
-		},
-		uv11 = {
-			0.355957,
-			0.901367
-		}
-	},
-	markus_huntsman_reduced_spread = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.336426,
-			0.821289
-		},
-		uv11 = {
-			0.355957,
-			0.860352
-		}
-	},
-	kerillian_maidenguard_activated_ability_invis_duration = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.336426,
-			0.780273
-		},
-		uv11 = {
-			0.355957,
-			0.819336
 		}
 	},
 	kerillian_shade_increased_critical_strike_damage = {
@@ -13964,67 +13936,11 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.336426,
-			0.739258
+			0.862305
 		},
 		uv11 = {
 			0.355957,
-			0.77832
-		}
-	},
-	victor_zealot_passive_healing_received = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.336426,
-			0.698242
-		},
-		uv11 = {
-			0.355957,
-			0.737305
-		}
-	},
-	bardin_engineer_reaper = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.336426,
-			0.657227
-		},
-		uv11 = {
-			0.355957,
-			0.696289
-		}
-	},
-	sienna_adept_activated_ability = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.336426,
-			0.616211
-		},
-		uv11 = {
-			0.355957,
-			0.655273
-		}
-	},
-	bardin_engineer_power_level_unbalance = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.336426,
-			0.575195
-		},
-		uv11 = {
-			0.355957,
-			0.614258
+			0.901367
 		}
 	},
 	kerillian_shade_activated_ability_restealth = {
@@ -14034,39 +13950,67 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.336426,
-			0.53418
+			0.821289
 		},
 		uv11 = {
 			0.355957,
-			0.573242
+			0.860352
 		}
 	},
-	sienna_unchained_increased_vent_speed = {
+	bardin_engineer_pump_max_exhaustion_buff_icon = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.336426,
-			0.493164
+			0.780273
 		},
 		uv11 = {
 			0.355957,
-			0.532227
+			0.819336
 		}
 	},
-	twitch_icon_splitting_enemies = {
+	sienna_adept_activated_ability_dump_overcharge = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.336426,
-			0.452148
+			0.739258
 		},
 		uv11 = {
 			0.355957,
-			0.491211
+			0.77832
+		}
+	},
+	kerillian_thornsister_reduce_passive_on_elite = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.336426,
+			0.698242
+		},
+		uv11 = {
+			0.355957,
+			0.737305
+		}
+	},
+	bardin_engineer_party_ability_charge = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.336426,
+			0.657227
+		},
+		uv11 = {
+			0.355957,
+			0.696289
 		}
 	},
 	kerillian_shade_activated_ability_dash = {
@@ -14076,6 +14020,76 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.336426,
+			0.616211
+		},
+		uv11 = {
+			0.355957,
+			0.655273
+		}
+	},
+	twitch_icon_the_bloodkine_wakes = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.336426,
+			0.575195
+		},
+		uv11 = {
+			0.355957,
+			0.614258
+		}
+	},
+	sienna_adept_activated_ability_cooldown = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.336426,
+			0.53418
+		},
+		uv11 = {
+			0.355957,
+			0.573242
+		}
+	},
+	kerillian_shade_stamina_regen = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.336426,
+			0.493164
+		},
+		uv11 = {
+			0.355957,
+			0.532227
+		}
+	},
+	twitch_icon_sneaking_stabbing = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.336426,
+			0.452148
+		},
+		uv11 = {
+			0.355957,
+			0.491211
+		}
+	},
+	markus_mercenary_activated_ability = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.336426,
 			0.411133
 		},
 		uv11 = {
@@ -14083,7 +14097,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	victor_zealot_passive_move_speed = {
+	kerillian_thornsister_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -14097,7 +14111,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	twitch_icon_sneaking_stabbing = {
+	twitch_icon_soul_drinkers = {
 		size = {
 			80,
 			80
@@ -14111,7 +14125,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	markus_mercenary_bloodlust = {
+	kerillian_shade_passive_improved = {
 		size = {
 			80,
 			80
@@ -14125,7 +14139,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	kerillian_thornsister_regrowth = {
+	victor_zealot_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -14139,7 +14153,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	markus_mercenary_activated_ability_improved_healing = {
+	kerillian_shade_movement_speed = {
 		size = {
 			80,
 			80
@@ -14153,7 +14167,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	kerillian_shade_movement_speed = {
+	markus_knight_passive_block_cost_aura = {
 		size = {
 			80,
 			80
@@ -14167,7 +14181,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	mutator_death_attack_speed_player_buff = {
+	bardin_slayer_power_on_double_two_handed_weapons = {
 		size = {
 			80,
 			80
@@ -14181,7 +14195,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	bardin_slayer_smiter_unbalance = {
+	twitch_icon_gorge = {
 		size = {
 			80,
 			80
@@ -14195,7 +14209,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	bardin_ranger_increased_defence_on_disabled = {
+	bardin_ranger_bloodlust = {
 		size = {
 			80,
 			80
@@ -14209,7 +14223,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	grudge_mark_cursed_debuff = {
+	markus_knight_passive = {
 		size = {
 			80,
 			80
@@ -14223,7 +14237,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	bardin_ironbreaker_gromril_armour_heal = {
+	bardin_ironbreaker_buff_defense_on_revived_target = {
 		size = {
 			80,
 			80
@@ -14237,7 +14251,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	bardin_engineer_activated_ability = {
+	markus_knight_increased_targets = {
 		size = {
 			80,
 			80
@@ -14251,7 +14265,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	bardin_ironbreaker_activated_ability_power_buff_allies = {
+	bardin_ironbreaker_regen_stamina_on_charged_attacks = {
 		size = {
 			80,
 			80
@@ -14265,7 +14279,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	bardin_ranger_passive_improved_ammo = {
+	bardin_ranger_not_used_3 = {
 		size = {
 			80,
 			80
@@ -14279,7 +14293,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	bardin_slayer_damage_reduction_on_melee_charge_action = {
+	bardin_ranger_cooldown_on_reload = {
 		size = {
 			80,
 			80
@@ -14293,7 +14307,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	bardin_ranger_activated_ability = {
+	bardin_engineer_melee_power_free_shot = {
 		size = {
 			80,
 			80
@@ -14307,7 +14321,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	twitch_icon_invincibility = {
+	markus_knight_passive_stamina_aura = {
 		size = {
 			80,
 			80
@@ -14321,7 +14335,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	deus_offense = {
+	deus_utils = {
 		size = {
 			80,
 			80
@@ -14335,7 +14349,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	twitch_icon_volcano = {
+	potion_vampiric_draught = {
 		size = {
 			80,
 			80
@@ -14349,7 +14363,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	bardin_ranger_regrowth = {
+	bardin_ranger_passive_spawn_healing_draught = {
 		size = {
 			80,
 			80
@@ -14363,7 +14377,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	bardin_ironbreaker_power_on_nearby_allies2 = {
+	bardin_ironbreaker_increased_overcharge_increased_range_power = {
 		size = {
 			80,
 			80
@@ -14377,7 +14391,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	bardin_ranger_not_used_2 = {
+	bardin_ranger_increased_melee_damage_on_no_ammo = {
 		size = {
 			80,
 			80
@@ -14391,7 +14405,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	debuff_icon_mutator_icon_drunk = {
+	bardin_slayer_activated_ability_impact_damage = {
 		size = {
 			80,
 			80
@@ -14405,7 +14419,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	bardin_ranger_attack_speed = {
+	bardin_ranger_activated_ability_cooldown = {
 		size = {
 			80,
 			80
@@ -14419,7 +14433,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	bardin_engineer_ranged_crit_count = {
+	bardin_engineer_passive_ability_charge = {
 		size = {
 			80,
 			80
@@ -14433,7 +14447,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_ranged_crit_explosion = {
+	deus_second_wind = {
 		size = {
 			80,
 			80
@@ -14447,7 +14461,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	bardin_slayer_regrowth = {
+	bardin_ranger_ability_free_grenade = {
 		size = {
 			80,
 			80
@@ -14461,7 +14475,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina = {
+	bardin_ironbreaker_stamina_regen_during_gromril = {
 		size = {
 			80,
 			80
@@ -14475,7 +14489,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	bardin_ironbreaker_activated_ability_taunt_range = {
+	bardin_ironbreaker_activated_ability = {
 		size = {
 			80,
 			80
@@ -14489,7 +14503,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	bardin_slayer_power_on_double_two_handed_weapons = {
+	twitch_icon_crag = {
 		size = {
 			80,
 			80
@@ -14503,7 +14517,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	bardin_ranger_tank_unbalance = {
+	bardin_slayer_dodge_range = {
 		size = {
 			80,
 			80
@@ -14517,7 +14531,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	bardin_ironbreaker_max_gromril_delay = {
+	bardin_ironbreaker_conqueror = {
 		size = {
 			80,
 			80
@@ -14531,7 +14545,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	bardin_ironbreaker_activated_ability_duration = {
+	bardin_engineer_upgraded_grenades = {
 		size = {
 			80,
 			80
@@ -14545,7 +14559,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	twitch_icon_crag = {
+	bardin_slayer_passive_increased_max_stacks = {
 		size = {
 			80,
 			80
@@ -14559,7 +14573,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	buff_icon_carrying_barrel = {
+	bardin_ranger_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -14573,7 +14587,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	bardin_ironbreaker_gromril_stagger = {
+	bardin_ironbreaker_activated_ability_power_buff_allies = {
 		size = {
 			80,
 			80
@@ -14587,7 +14601,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	bardin_ironbreaker_stamina_regen_during_gromril = {
+	bardin_ironbreaker_reduced_overcharge = {
 		size = {
 			80,
 			80
@@ -14601,7 +14615,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	bardin_slayer_power_level_unbalance = {
+	twitch_icon_mordrek = {
 		size = {
 			80,
 			80
@@ -14615,7 +14629,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	bardin_ranger_increased_melee_damage_on_no_ammo = {
+	bardin_ranger_conqueror = {
 		size = {
 			80,
 			80
@@ -14629,7 +14643,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	bardin_ironbreaker_bloodlust = {
+	bardin_ironbreaker_activated_ability_duration = {
 		size = {
 			80,
 			80
@@ -14643,7 +14657,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	bardin_ironbreaker_activated_ability = {
+	bardin_engineer_tank_unbalance = {
 		size = {
 			80,
 			80
@@ -14657,7 +14671,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	twitch_icon_mordrek = {
+	bardin_slayer_linesman_unbalance = {
 		size = {
 			80,
 			80
@@ -14671,7 +14685,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	bardin_slayer_activated_ability_leap_range = {
+	bardin_ranger_reload_speed_on_multi_hit = {
 		size = {
 			80,
 			80
@@ -14685,7 +14699,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	quest_icon_grimoire = {
+	quest_icon_map = {
 		size = {
 			80,
 			80
@@ -14699,7 +14713,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	quest_icon_rat_ogre = {
+	quest_icon_grimoire = {
 		size = {
 			80,
 			80
@@ -14713,7 +14727,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	bardin_slayer_passive_movement_speed = {
+	twitch_icon_temple = {
 		size = {
 			80,
 			80
@@ -14741,7 +14755,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	bardin_ironbreaker_gromril_armour = {
+	bardin_ironbreaker_bloodlust = {
 		size = {
 			80,
 			80
@@ -14755,7 +14769,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	twitch_icon_temple = {
+	potion_friendly_murderer = {
 		size = {
 			80,
 			80
@@ -14769,7 +14783,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	bardin_ironbreaker_max_stamina = {
+	bardin_ironbreaker_gromril_armour_heal = {
 		size = {
 			80,
 			80
@@ -14783,7 +14797,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	twitch_icon_tower = {
+	potion_poison_proof = {
 		size = {
 			80,
 			80
@@ -14797,7 +14811,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	deus_utils = {
+	grudge_mark_chains_debuff = {
 		size = {
 			80,
 			80
@@ -14811,7 +14825,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	potion_friendly_murderer = {
+	twitch_icon_bay = {
 		size = {
 			80,
 			80
@@ -14825,7 +14839,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	grudge_mark_chains_debuff = {
+	grudge_mark_crippling_debuff = {
 		size = {
 			80,
 			80
@@ -14839,7 +14853,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	grudge_mark_crippling_debuff = {
+	grudge_mark_cursed_debuff = {
 		size = {
 			80,
 			80
@@ -14853,7 +14867,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	grudge_mark_frenzy_debuff = {
+	markus_knight_passive_movement_speed_aura = {
 		size = {
 			80,
 			80
@@ -14867,7 +14881,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	twitch_icon_bay = {
+	potion_hold_my_beer = {
 		size = {
 			80,
 			80
@@ -14881,7 +14895,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	bardin_ironbreaker_buff_defense_on_revived_target = {
+	bardin_ironbreaker_activated_ability_taunt_bosses = {
 		size = {
 			80,
 			80
@@ -14895,7 +14909,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	twitch_icon_slayer_curse = {
+	bardin_slayer_damage_reduction_on_melee_charge_action = {
 		size = {
 			80,
 			80
@@ -14909,7 +14923,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	bardin_ranger_reduced_spread = {
+	bardin_ranger_passive_improved_ammo = {
 		size = {
 			80,
 			80
@@ -14923,7 +14937,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	potion_hold_my_beer = {
+	twitch_icon_forest = {
 		size = {
 			80,
 			80
@@ -14937,7 +14951,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	bardin_slayer_debuff_defence_on_crit = {
+	bardin_ranger_regrowth = {
 		size = {
 			80,
 			80
@@ -14951,7 +14965,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	bardin_engineer_pump_max_exhaustion_buff_icon = {
+	bardin_slayer_conqueror = {
 		size = {
 			80,
 			80
@@ -14965,7 +14979,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	bardin_ranger_passive = {
+	bardin_ranger_not_used_2 = {
 		size = {
 			80,
 			80
@@ -14979,7 +14993,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	twitch_icon_forest = {
+	potion_killer_in_the_shadows = {
 		size = {
 			80,
 			80
@@ -14993,7 +15007,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	bardin_ironbreaker_activated_ability_taunt_range_and_duration = {
+	bardin_ironbreaker_regrowth = {
 		size = {
 			80,
 			80
@@ -15007,7 +15021,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	bardin_slayer_linesman_unbalance = {
+	deus_defense = {
 		size = {
 			80,
 			80
@@ -15021,7 +15035,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	bardin_ranger_not_used_1 = {
+	bardin_ranger_increased_defence_on_disabled = {
 		size = {
 			80,
 			80
@@ -15035,7 +15049,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	potion_killer_in_the_shadows = {
+	twitch_icon_mines = {
 		size = {
 			80,
 			80
@@ -15049,7 +15063,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	bardin_ironbreaker_push_arc = {
+	bardin_ironbreaker_max_gromril_delay = {
 		size = {
 			80,
 			80
@@ -15063,7 +15077,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	bardin_ironbreaker_max_health = {
+	bardin_ironbreaker_gromril_armour = {
 		size = {
 			80,
 			80
@@ -15077,7 +15091,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	bardin_ranger_healing_received = {
+	bardin_ranger_attack_speed = {
 		size = {
 			80,
 			80
@@ -15091,7 +15105,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	twitch_icon_mines = {
+	potion_liquid_bravado = {
 		size = {
 			80,
 			80
@@ -15105,7 +15119,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	bardin_ironbreaker_activated_ability_taunt_bosses = {
+	bardin_engineer_vanguard = {
 		size = {
 			80,
 			80
@@ -15119,7 +15133,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	bardin_slayer_attack_speed_on_double_one_handed_weapons = {
+	buff_icon_mutator_ticking_bomb = {
 		size = {
 			80,
 			80
@@ -15133,7 +15147,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	bardin_ranger_activated_ability_heal = {
+	bardin_ranger_activated_ability = {
 		size = {
 			80,
 			80
@@ -15147,7 +15161,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	potion_liquid_bravado = {
+	twitch_icon_mountain = {
 		size = {
 			80,
 			80
@@ -15175,7 +15189,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	twitch_icon_root_player = {
+	twitch_icon_realism = {
 		size = {
 			80,
 			80
@@ -15189,7 +15203,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	twitch_icon_medical_supplies = {
+	bardin_engineer_passive = {
 		size = {
 			80,
 			80
@@ -15203,7 +15217,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	twitch_icon_mountain = {
+	potion_moot_milk = {
 		size = {
 			80,
 			80
@@ -15231,7 +15245,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	bardin_slayer_activated_ability_leap_damage = {
+	bardin_ranger_passive_ammo_on_ally_pickup = {
 		size = {
 			80,
 			80
@@ -15245,7 +15259,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	deus_powerup_attack_speed = {
+	bardin_engineer_heal_share = {
 		size = {
 			80,
 			80
@@ -15259,7 +15273,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	potion_moot_milk = {
+	twitch_icon_snare = {
 		size = {
 			80,
 			80
@@ -15273,7 +15287,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	bardin_engineer_increased_ability_bar = {
+	bardin_engineer_activated_ability = {
 		size = {
 			80,
 			80
@@ -15287,7 +15301,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	bardin_engineer_heal_share = {
+	deus_push_charge = {
 		size = {
 			80,
 			80
@@ -15301,7 +15315,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	talent_movement_speed = {
+	kruber_06a = {
 		size = {
 			80,
 			80
@@ -15315,7 +15329,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	twitch_icon_snare = {
+	potion_pockets_full_of_bombs = {
 		size = {
 			80,
 			80
@@ -15329,7 +15343,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	twitch_icon_shield = {
+	bardin_ironbreaker_power_on_nearby_allies2 = {
 		size = {
 			80,
 			80
@@ -15343,7 +15357,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	potion_pockets_full_of_bombs = {
+	twitch_icon_tower = {
 		size = {
 			80,
 			80
@@ -15371,7 +15385,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	bardin_slayer_passive_stacking_damage_buff_grants_defence = {
+	debuff_icon_geheimnisnacht_2021 = {
 		size = {
 			80,
 			80
@@ -15385,7 +15399,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	deus_healing = {
+	deus_offense = {
 		size = {
 			80,
 			80
@@ -15397,132 +15411,6 @@ icons_atlas = {
 		uv11 = {
 			0.273926,
 			0.532227
-		}
-	},
-	debuff_icon_geheimnisnacht_2021 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.254395,
-			0.452148
-		},
-		uv11 = {
-			0.273926,
-			0.491211
-		}
-	},
-	bardin_slayer_passive_cooldown_reduction_on_max_stacks = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.254395,
-			0.411133
-		},
-		uv11 = {
-			0.273926,
-			0.450195
-		}
-	},
-	bardin_engineer_reduced_ability_fire_slowdown = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.254395,
-			0.370117
-		},
-		uv11 = {
-			0.273926,
-			0.40918
-		}
-	},
-	bardin_slayer_activated_ability_impact_damage = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.254395,
-			0.329102
-		},
-		uv11 = {
-			0.273926,
-			0.368164
-		}
-	},
-	potion_poison_proof = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.254395,
-			0.288086
-		},
-		uv11 = {
-			0.273926,
-			0.327148
-		}
-	},
-	twitch_icon_town = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.254395,
-			0.24707
-		},
-		uv11 = {
-			0.273926,
-			0.286133
-		}
-	},
-	bardin_ironbreaker_regen_stamina_on_block_broken = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.254395,
-			0.206055
-		},
-		uv11 = {
-			0.273926,
-			0.245117
-		}
-	},
-	bardin_slayer_passive = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.254395,
-			0.165039
-		},
-		uv11 = {
-			0.273926,
-			0.204102
-		}
-	},
-	bardin_ironbreaker_increased_overcharge_increased_range_power = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.254395,
-			0.124023
-		},
-		uv11 = {
-			0.273926,
-			0.163086
 		}
 	},
 	bardin_slayer_movement_speed = {
@@ -15532,6 +15420,132 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.254395,
+			0.452148
+		},
+		uv11 = {
+			0.273926,
+			0.491211
+		}
+	},
+	bardin_ranger_tank_unbalance = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.254395,
+			0.411133
+		},
+		uv11 = {
+			0.273926,
+			0.450195
+		}
+	},
+	bardin_ironbreaker_smiter_unbalance = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.254395,
+			0.370117
+		},
+		uv11 = {
+			0.273926,
+			0.40918
+		}
+	},
+	bardin_slayer_max_health = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.254395,
+			0.329102
+		},
+		uv11 = {
+			0.273926,
+			0.368164
+		}
+	},
+	twitch_icon_volcano = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.254395,
+			0.288086
+		},
+		uv11 = {
+			0.273926,
+			0.327148
+		}
+	},
+	bardin_slayer_power_level_unbalance = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.254395,
+			0.24707
+		},
+		uv11 = {
+			0.273926,
+			0.286133
+		}
+	},
+	bardin_ironbreaker_power_level_unbalance = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.254395,
+			0.206055
+		},
+		uv11 = {
+			0.273926,
+			0.245117
+		}
+	},
+	bardin_ranger_reduced_damage_taken_headshot = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.254395,
+			0.165039
+		},
+		uv11 = {
+			0.273926,
+			0.204102
+		}
+	},
+	bardin_ironbreaker_activated_ability_taunt_range_and_duration = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.254395,
+			0.124023
+		},
+		uv11 = {
+			0.273926,
+			0.163086
+		}
+	},
+	bardin_ranger_passive_spawn_potions_or_bombs = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.254395,
 			0.083008
 		},
 		uv11 = {
@@ -15539,7 +15553,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	bardin_ironbreaker_reduced_overcharge = {
+	bardin_ironbreaker_max_health = {
 		size = {
 			80,
 			80
@@ -15553,7 +15567,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	bardin_ranger_reduced_damage_taken_headshot = {
+	bardin_slayer_debuff_defence_on_crit = {
 		size = {
 			80,
 			80
@@ -15567,7 +15581,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	potion_vampiric_draught = {
+	twitch_icon_shield = {
 		size = {
 			80,
 			80
@@ -15581,7 +15595,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	bardin_ranger_activated_ability_stealth_outside_of_smoke = {
+	bardin_ranger_reduced_spread = {
 		size = {
 			80,
 			80
@@ -15595,7 +15609,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	bardin_slayer_max_health = {
+	bardin_ranger_linesman_unbalance = {
 		size = {
 			80,
 			80
@@ -15609,7 +15623,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	bardin_ranger_ability_free_grenade = {
+	bardin_ranger_passive_spawn_potions = {
 		size = {
 			80,
 			80
@@ -15623,7 +15637,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	bardin_ranger_passive_spawn_potions_or_bombs = {
+	bardin_slayer_damage_taken_capped = {
 		size = {
 			80,
 			80
@@ -15637,7 +15651,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	bardin_slayer_dodge_range = {
+	bardin_ranger_activated_ability_stealth_outside_of_smoke = {
 		size = {
 			80,
 			80
@@ -15651,7 +15665,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	bardin_engineer_tank_unbalance = {
+	bardin_engineer_reaper = {
 		size = {
 			80,
 			80
@@ -15665,7 +15679,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	bardin_ranger_linesman_unbalance = {
+	bardin_slayer_crit_chance = {
 		size = {
 			80,
 			80
@@ -15679,7 +15693,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	bardin_slayer_passive_increased_max_stacks = {
+	buff_icon_carrying_barrel = {
 		size = {
 			80,
 			80
@@ -15693,7 +15707,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	bardin_engineer_ranged_pierce = {
+	bardin_ironbreaker_regen_stamina_on_block_broken = {
 		size = {
 			80,
 			80
@@ -15707,7 +15721,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	bardin_ranger_passive_spawn_potions = {
+	bardin_ranger_passive = {
 		size = {
 			80,
 			80
@@ -15721,7 +15735,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	bardin_ironbreaker_smiter_unbalance = {
+	bardin_ironbreaker_power_on_blocked_attacks = {
 		size = {
 			80,
 			80
@@ -15735,7 +15749,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	bardin_ranger_passive_spawn_healing_draught = {
+	bardin_ranger_not_used_4 = {
 		size = {
 			80,
 			80
@@ -15749,7 +15763,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	bardin_slayer_damage_taken_capped = {
+	buff_icon_grimoire_health_debuff = {
 		size = {
 			80,
 			80
@@ -15763,7 +15777,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	bardin_ironbreaker_power_level_unbalance = {
+	bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina = {
 		size = {
 			80,
 			80
@@ -15777,7 +15791,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	buff_icon_grimoire_health_debuff = {
+	bardin_slayer_bloodlust = {
 		size = {
 			80,
 			80
@@ -15791,7 +15805,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	bardin_ranger_reload_speed_on_multi_hit = {
+	bardin_slayer_attack_speed_on_double_one_handed_weapons = {
 		size = {
 			80,
 			80
@@ -15805,7 +15819,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	bardin_ranger_not_used_4 = {
+	bardin_ranger_not_used_1 = {
 		size = {
 			80,
 			80
@@ -15819,7 +15833,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	bardin_slayer_crit_chance = {
+	buff_icon_mutator_icon_slayer_curse = {
 		size = {
 			80,
 			80
@@ -15833,7 +15847,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	bardin_ranger_not_used_3 = {
+	bardin_ranger_movement_speed = {
 		size = {
 			80,
 			80
@@ -15847,7 +15861,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	buff_icon_mutator_icon_slayer_curse = {
+	bardin_slayer_activated_ability_uninterruptible = {
 		size = {
 			80,
 			80
@@ -15861,7 +15875,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	bardin_slayer_conqueror = {
+	buff_wall_slow_icon = {
 		size = {
 			80,
 			80
@@ -15875,7 +15889,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	bardin_ironbreaker_regen_stamina_on_charged_attacks = {
+	bardin_ironbreaker_max_stamina = {
 		size = {
 			80,
 			80
@@ -15889,7 +15903,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	buff_wall_slow_icon = {
+	bardin_slayer_activated_ability_movement = {
 		size = {
 			80,
 			80
@@ -15903,7 +15917,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	deus_defense = {
+	bardin_slayer_activated_ability_leap_range = {
 		size = {
 			80,
 			80
@@ -15917,7 +15931,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	bardin_slayer_push_on_dodge = {
+	twitch_icon_shrine = {
 		size = {
 			80,
 			80
@@ -15931,7 +15945,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	twitch_icon_gorge = {
+	twitch_icon_town = {
 		size = {
 			80,
 			80
@@ -15945,7 +15959,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	bardin_ranger_movement_speed = {
+	bardin_ranger_healing_received = {
 		size = {
 			80,
 			80
@@ -15959,7 +15973,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	bardin_slayer_bloodlust = {
+	debuff_icon_mutator_icon_drunk = {
 		size = {
 			80,
 			80
@@ -15973,7 +15987,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	bardin_slayer_activated_ability_uninterruptible = {
+	deus_healing = {
 		size = {
 			80,
 			80
@@ -15987,7 +16001,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	bardin_ironbreaker_conqueror = {
+	bardin_ironbreaker_activated_ability_taunt_range = {
 		size = {
 			80,
 			80
@@ -16001,7 +16015,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	bardin_slayer_activated_ability_movement = {
+	bardin_slayer_activated_ability = {
 		size = {
 			80,
 			80
@@ -16015,7 +16029,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	bardin_ranger_passive_ammo_on_ally_pickup = {
+	bardin_slayer_activated_ability_leap_damage = {
 		size = {
 			80,
 			80
@@ -16029,7 +16043,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	bardin_ranger_conqueror = {
+	bardin_ranger_activated_ability_heal = {
 		size = {
 			80,
 			80
@@ -16043,7 +16057,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	bardin_engineer_armor_piercing_ability = {
+	markus_knight_push_arc = {
 		size = {
 			80,
 			80
@@ -16057,7 +16071,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	bardin_ranger_bloodlust = {
+	bardin_ranger_activated_ability_duration = {
 		size = {
 			80,
 			80
@@ -16071,7 +16085,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	talent_damage_dwarf = {
+	talent_ability_cooldown = {
 		size = {
 			80,
 			80
@@ -16085,7 +16099,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	talent_ability_cooldown = {
+	talent_damage_dwarf = {
 		size = {
 			80,
 			80
@@ -16099,7 +16113,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	bardin_engineer_upgraded_grenades = {
+	bardin_engineer_reduced_ability_fire_slowdown = {
 		size = {
 			80,
 			80
@@ -16127,7 +16141,7 @@ icons_atlas = {
 			0.177734
 		}
 	},
-	buff_icon_mutator_ticking_bomb = {
+	bardin_slayer_regrowth = {
 		size = {
 			80,
 			80
@@ -16141,7 +16155,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	bardin_engineer_stacking_damage_reduction = {
+	twitch_icon_ticking_bomb_mayhem = {
 		size = {
 			80,
 			80
@@ -16155,7 +16169,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	bardin_ranger_activated_ability_duration = {
+	bardin_ironbreaker_tank_unbalance = {
 		size = {
 			80,
 			80
@@ -16169,7 +16183,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	twitch_icon_ticking_bomb_mayhem = {
+	twitch_icon_medical_supplies = {
 		size = {
 			80,
 			80
@@ -16183,7 +16197,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	bardin_ranger_activated_ability_cooldown = {
+	deus_revive_regen = {
 		size = {
 			80,
 			80
@@ -16211,7 +16225,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	bardin_ironbreaker_tank_unbalance = {
+	quest_icon_rat_ogre = {
 		size = {
 			80,
 			80
@@ -16239,7 +16253,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	bardin_slayer_activated_ability = {
+	bardin_slayer_passive_stacking_damage_buff_increased_duration = {
 		size = {
 			80,
 			80
@@ -16253,7 +16267,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	bardin_engineer_passive = {
+	twitch_icon_root_player = {
 		size = {
 			80,
 			80
@@ -16267,7 +16281,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	twitch_icon_realism = {
+	twitch_icon_potion_of_concentration = {
 		size = {
 			80,
 			80
@@ -16281,7 +16295,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	quest_icon_map = {
+	twitch_icon_slayer_curse = {
 		size = {
 			80,
 			80
@@ -16323,7 +16337,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	deus_push_charge = {
+	deus_push_cost_reduction = {
 		size = {
 			80,
 			80
@@ -16337,7 +16351,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	bardin_engineer_vanguard = {
+	bardin_engineer_stacking_damage_reduction = {
 		size = {
 			80,
 			80
@@ -16351,7 +16365,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	bardin_ranger_power_level_unbalance = {
+	bardin_slayer_passive_stacking_damage_buff_grants_defence = {
 		size = {
 			80,
 			80
@@ -16365,7 +16379,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	twitch_icon_shrine = {
+	bardin_slayer_passive_movement_speed = {
 		size = {
 			80,
 			80
@@ -16379,7 +16393,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	twitch_icon_kill_it_with_fire = {
+	bardin_engineer_armor_piercing_ability = {
 		size = {
 			80,
 			80
@@ -16393,7 +16407,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	bardin_ironbreaker_regrowth = {
+	bardin_ironbreaker_push_arc = {
 		size = {
 			80,
 			80
@@ -16421,7 +16435,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	bardin_ironbreaker_power_on_blocked_attacks = {
+	bardin_ironbreaker_gromril_stagger = {
 		size = {
 			80,
 			80
@@ -16435,7 +16449,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	talent_max_health_dwarf = {
+	explosive_kills_on_elite_kills = {
 		size = {
 			80,
 			80
@@ -16463,7 +16477,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	bardin_ranger_cooldown_on_reload = {
+	bardin_slayer_passive_cooldown_reduction_on_max_stacks = {
 		size = {
 			80,
 			80
@@ -16491,7 +16505,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	bardin_slayer_passive_stacking_damage_buff_increased_duration = {
+	buff_icon_mutator_icon_drunk = {
 		size = {
 			80,
 			80
@@ -16519,7 +16533,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	buff_icon_mutator_icon_drunk = {
+	bardin_slayer_passive = {
 		size = {
 			80,
 			80
@@ -16533,7 +16547,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	kruber_06a = {
+	activated_ability_kerillian_shade = {
 		size = {
 			80,
 			80
@@ -16547,7 +16561,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	talent_ranged_damage_dwarf = {
+	kruber_06 = {
 		size = {
 			80,
 			80
@@ -16561,7 +16575,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	twitch_icon_all_the_rage = {
+	deus_icon_health_regeneration = {
 		size = {
 			80,
 			80
@@ -16575,7 +16589,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	deus_icon_extra_shot = {
+	markus_knight_reduced_damage_on_low_health = {
 		size = {
 			80,
 			80
@@ -16589,7 +16603,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	deus_increased_healing_taken = {
+	deus_icon_attack_speed_per_cooldown = {
 		size = {
 			80,
 			80
@@ -16603,7 +16617,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	triple_melee_headshot_power = {
+	twitch_icon_infinite_bomb = {
 		size = {
 			80,
 			80
@@ -16617,7 +16631,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	boon_icon_01_damage_reduced = {
+	passive_bonus_kerillian_shade = {
 		size = {
 			80,
 			80
@@ -16631,7 +16645,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	deus_icon_guard_aura_check = {
+	deus_max_health = {
 		size = {
 			80,
 			80
@@ -16645,7 +16659,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	deus_parry_damage_immune = {
+	talent_ranged_damage_dwarf = {
 		size = {
 			80,
 			80
@@ -16659,7 +16673,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	deus_icon_cooldown_reg_not_hit = {
+	deus_icon_extra_stamina = {
 		size = {
 			80,
 			80
@@ -16673,7 +16687,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	explosive_kills_on_elite_kills = {
+	drop_item_on_ability_use = {
 		size = {
 			80,
 			80
@@ -16687,7 +16701,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	talent_max_stamina = {
+	twitch_icon_writhing_horror = {
 		size = {
 			80,
 			80
@@ -16701,7 +16715,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	talent_heal_on_kill = {
+	talent_stamina_regen = {
 		size = {
 			80,
 			80
@@ -16715,7 +16729,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	mutator_skulls_movement_speed = {
+	deus_powerup_attack_speed = {
 		size = {
 			80,
 			80
@@ -16729,7 +16743,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	deus_icon_free_potion_use_on_ability = {
+	deus_icon_ammo_pickup_range_pen = {
 		size = {
 			80,
 			80
@@ -16743,7 +16757,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	kruber_06 = {
+	twitch_icon_vanishing_act = {
 		size = {
 			80,
 			80
@@ -16755,118 +16769,6 @@ icons_atlas = {
 		uv11 = {
 			0.191895,
 			0.532227
-		}
-	},
-	deus_revive_regen = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.172363,
-			0.452148
-		},
-		uv11 = {
-			0.191895,
-			0.491211
-		}
-	},
-	deus_icon_ammo_pickup_reload_speed = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.172363,
-			0.411133
-		},
-		uv11 = {
-			0.191895,
-			0.450195
-		}
-	},
-	deus_icon_ammo_pickup_heal = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.172363,
-			0.370117
-		},
-		uv11 = {
-			0.191895,
-			0.40918
-		}
-	},
-	talent_defence_dwarf = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.172363,
-			0.329102
-		},
-		uv11 = {
-			0.191895,
-			0.368164
-		}
-	},
-	markus_knight_increased_hit_stagger = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.172363,
-			0.288086
-		},
-		uv11 = {
-			0.191895,
-			0.327148
-		}
-	},
-	deus_standing_still_damage_reduction = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.172363,
-			0.24707
-		},
-		uv11 = {
-			0.191895,
-			0.286133
-		}
-	},
-	kerillian03a = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.172363,
-			0.206055
-		},
-		uv11 = {
-			0.191895,
-			0.245117
-		}
-	},
-	potion_buff_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.172363,
-			0.165039
-		},
-		uv11 = {
-			0.191895,
-			0.204102
 		}
 	},
 	activated_ability_markus_knight = {
@@ -16876,6 +16778,118 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.172363,
+			0.452148
+		},
+		uv11 = {
+			0.191895,
+			0.491211
+		}
+	},
+	deus_icon_cooldown_regen = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.172363,
+			0.411133
+		},
+		uv11 = {
+			0.191895,
+			0.450195
+		}
+	},
+	deus_icon_block_procs_parry = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.172363,
+			0.370117
+		},
+		uv11 = {
+			0.191895,
+			0.40918
+		}
+	},
+	kerillian03a = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.172363,
+			0.329102
+		},
+		uv11 = {
+			0.191895,
+			0.368164
+		}
+	},
+	potion_buff_03 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.172363,
+			0.288086
+		},
+		uv11 = {
+			0.191895,
+			0.327148
+		}
+	},
+	deus_skill_on_special_kill = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.172363,
+			0.24707
+		},
+		uv11 = {
+			0.191895,
+			0.286133
+		}
+	},
+	melee_killing_spree_speed = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.172363,
+			0.206055
+		},
+		uv11 = {
+			0.191895,
+			0.245117
+		}
+	},
+	talent_max_stamina = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.172363,
+			0.165039
+		},
+		uv11 = {
+			0.191895,
+			0.204102
+		}
+	},
+	markus_knight_max_stamina = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.172363,
 			0.124023
 		},
 		uv11 = {
@@ -16883,7 +16897,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	deus_push_cost_reduction = {
+	mutator_skulls_cooldown_reduction = {
 		size = {
 			80,
 			80
@@ -16897,7 +16911,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	talent_push_dwarf = {
+	kerillian03 = {
 		size = {
 			80,
 			80
@@ -16911,7 +16925,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	twitch_icon_all_aboard_the_wild_ride = {
+	deus_more_head_less_body_damage = {
 		size = {
 			80,
 			80
@@ -16925,7 +16939,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	talent_damage_human = {
+	talent_shield_dwarf = {
 		size = {
 			80,
 			80
@@ -16939,7 +16953,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	deus_icon_health_regeneration = {
+	deus_knockdown_damage_immunity_aura = {
 		size = {
 			80,
 			80
@@ -16953,7 +16967,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	kerillian03 = {
+	deus_standing_still_damage_reduction = {
 		size = {
 			80,
 			80
@@ -16967,7 +16981,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	deus_icon_grenade_multi_throw = {
+	deus_infinite_dodges = {
 		size = {
 			80,
 			80
@@ -16981,7 +16995,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	deus_icon_extra_stamina = {
+	deus_increased_healing_taken = {
 		size = {
 			80,
 			80
@@ -16995,7 +17009,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	deus_icon_always_blocking_01 = {
+	deus_icon_guard_aura_check = {
 		size = {
 			80,
 			80
@@ -17007,62 +17021,6 @@ icons_atlas = {
 		uv11 = {
 			0.171387,
 			0.77832
-		}
-	},
-	talent_melee_dwarf = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.151855,
-			0.698242
-		},
-		uv11 = {
-			0.171387,
-			0.737305
-		}
-	},
-	deus_icon_barrel_power = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.151855,
-			0.657227
-		},
-		uv11 = {
-			0.171387,
-			0.696289
-		}
-	},
-	deus_skill_on_special_kill = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.151855,
-			0.616211
-		},
-		uv11 = {
-			0.171387,
-			0.655273
-		}
-	},
-	deus_icon_cooldown_regen = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.151855,
-			0.575195
-		},
-		uv11 = {
-			0.171387,
-			0.614258
 		}
 	},
 	troll_vomit_debuff = {
@@ -17072,25 +17030,67 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.151855,
-			0.53418
+			0.698242
 		},
 		uv11 = {
 			0.171387,
-			0.573242
+			0.737305
 		}
 	},
-	markus_knight_increased_targets = {
+	deus_icon_consumable_extra_shot = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.151855,
-			0.493164
+			0.657227
 		},
 		uv11 = {
 			0.171387,
-			0.532227
+			0.696289
+		}
+	},
+	talent_push_dwarf = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.151855,
+			0.616211
+		},
+		uv11 = {
+			0.171387,
+			0.655273
+		}
+	},
+	deus_icon_extra_shot = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.151855,
+			0.575195
+		},
+		uv11 = {
+			0.171387,
+			0.614258
+		}
+	},
+	markus_knight_push_increase = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.151855,
+			0.53418
+		},
+		uv11 = {
+			0.171387,
+			0.573242
 		}
 	},
 	talent_ability_bw = {
@@ -17100,6 +17100,20 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.151855,
+			0.493164
+		},
+		uv11 = {
+			0.171387,
+			0.532227
+		}
+	},
+	talent_movement_speed = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.151855,
 			0.452148
 		},
 		uv11 = {
@@ -17107,7 +17121,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	deus_uninterruptable_attacks = {
+	deus_target_full_health_damage_mult = {
 		size = {
 			80,
 			80
@@ -17121,7 +17135,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	convocation_debuff = {
+	potion_buff_01 = {
 		size = {
 			80,
 			80
@@ -17135,7 +17149,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	drop_item_on_ability_use = {
+	deus_push_increased_cleave = {
 		size = {
 			80,
 			80
@@ -17149,7 +17163,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	talent_wound_enemy = {
+	human_shield = {
 		size = {
 			80,
 			80
@@ -17163,7 +17177,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	twitch_icon_vanishing_act = {
+	passive_bonus_victor_zealot = {
 		size = {
 			80,
 			80
@@ -17177,7 +17191,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	deus_second_wind = {
+	twitch_icon_invincibility = {
 		size = {
 			80,
 			80
@@ -17191,7 +17205,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	twitch_icon_treasure_hunt = {
+	passive_bonus_markus_knight = {
 		size = {
 			80,
 			80
@@ -17205,7 +17219,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	deus_reckless_swings = {
+	deus_ranged_crit_explosion = {
 		size = {
 			80,
 			80
@@ -17219,7 +17233,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	potion_buff_01 = {
+	talent_max_health_human = {
 		size = {
 			80,
 			80
@@ -17233,7 +17247,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	deus_push_increased_cleave = {
+	deus_parry_damage_immune = {
 		size = {
 			80,
 			80
@@ -17247,7 +17261,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	movement_speed_on_active_ability_use = {
+	markus_knight_increased_hit_stagger = {
 		size = {
 			80,
 			80
@@ -17261,7 +17275,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	talent_stamina_regen = {
+	boon_icon_01_damage_reduced = {
 		size = {
 			80,
 			80
@@ -17275,7 +17289,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	twitch_icon_leash = {
+	mutator_death_attack_speed_player_buff = {
 		size = {
 			80,
 			80
@@ -17289,7 +17303,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	passive_bonus_victor_zealot = {
+	talent_max_health_dwarf = {
 		size = {
 			80,
 			80
@@ -17303,7 +17317,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	deus_more_head_less_body_damage = {
+	deus_icon_cooldown_on_friendly_ability = {
 		size = {
 			80,
 			80
@@ -17317,7 +17331,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	friendly_cooldown_on_ability = {
+	convocation_debuff = {
 		size = {
 			80,
 			80
@@ -17331,7 +17345,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	passive_bonus_markus_knight = {
+	talent_heal_on_kill = {
 		size = {
 			80,
 			80
@@ -17345,7 +17359,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	deus_max_health = {
+	deus_icon_big_swing_stagger = {
 		size = {
 			80,
 			80
@@ -17359,7 +17373,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	deus_target_full_health_damage_mult = {
+	twitch_icon_treasure_hunt = {
 		size = {
 			80,
 			80
@@ -17373,7 +17387,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	talent_shield_dwarf = {
+	transfer_temp_health_at_full = {
 		size = {
 			80,
 			80
@@ -17387,7 +17401,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	twitch_icon_writhing_horror = {
+	deus_reckless_swings = {
 		size = {
 			80,
 			80
@@ -17401,7 +17415,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	deus_knockdown_damage_immunity_aura = {
+	mutator_skulls_movement_speed = {
 		size = {
 			80,
 			80
@@ -17415,7 +17429,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	passive_bonus_kerillian_shade = {
+	talent_defence_dwarf = {
 		size = {
 			80,
 			80
@@ -17429,7 +17443,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	deus_infinite_dodges = {
+	deus_icon_collateral_damage_on_melee_killing_blow = {
 		size = {
 			80,
 			80
@@ -17443,7 +17457,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	markus_knight_reduced_damage_on_low_health = {
+	talent_damage_human = {
 		size = {
 			80,
 			80
@@ -17457,7 +17471,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	deus_icon_damage_reduction_on_incapacitated = {
+	deus_icon_ammo_pickup_give_allies_ammo = {
 		size = {
 			80,
 			80
@@ -17471,7 +17485,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	activated_ability_kerillian_shade = {
+	triple_melee_headshot_power = {
 		size = {
 			80,
 			80
@@ -17485,7 +17499,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	twitch_icon_potion_of_concentration = {
+	heal_on_dot_damage_dealt = {
 		size = {
 			80,
 			80
@@ -17499,7 +17513,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	deus_icon_crit_on_damage_taken = {
+	deus_icon_grenade_multi_throw = {
 		size = {
 			80,
 			80
@@ -17513,7 +17527,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	markus_knight_push_increase = {
+	twitch_icon_kill_it_with_fire = {
 		size = {
 			80,
 			80
@@ -17527,7 +17541,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	deus_icon_crit_chain_lightning = {
+	deus_icon_free_potion_use_on_ability = {
 		size = {
 			80,
 			80
@@ -17541,7 +17555,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	transfer_temp_health_at_full = {
+	movement_speed_on_active_ability_use = {
 		size = {
 			80,
 			80
@@ -17555,7 +17569,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	markus_knight_max_stamina = {
+	twitch_icon_leash = {
 		size = {
 			80,
 			80
@@ -17569,7 +17583,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	deus_icon_big_swing_stagger = {
+	deus_icon_barrel_power = {
 		size = {
 			80,
 			80
@@ -17583,7 +17597,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	melee_killing_spree_speed = {
+	last_player_standing_power_reg = {
 		size = {
 			80,
 			80
@@ -17597,7 +17611,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	last_player_standing_power_reg = {
+	deus_uninterruptable_attacks = {
 		size = {
 			80,
 			80
@@ -17611,7 +17625,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	deus_icon_attack_speed_per_cooldown = {
+	deus_icon_ammo_pickup_reload_speed = {
 		size = {
 			80,
 			80
@@ -17625,7 +17639,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	deus_icon_cooldown_on_friendly_ability = {
+	deus_icon_damage_reduction_on_incapacitated = {
 		size = {
 			80,
 			80
@@ -17639,7 +17653,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	deus_icon_ammo_pickup_range_pen = {
+	deus_icon_ammo_pickup_heal = {
 		size = {
 			80,
 			80
@@ -17653,7 +17667,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	heal_on_dot_damage_dealt = {
+	friendly_cooldown_on_ability = {
 		size = {
 			80,
 			80
@@ -17667,7 +17681,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	talent_max_health_human = {
+	talent_wound_enemy = {
 		size = {
 			80,
 			80
@@ -17681,7 +17695,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	human_shield = {
+	potion_buff_02 = {
 		size = {
 			80,
 			80
@@ -17695,7 +17709,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	potion_buff_03 = {
+	talent_melee_dwarf = {
 		size = {
 			80,
 			80
@@ -17709,7 +17723,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	deus_icon_consumable_extra_shot = {
+	deus_icon_crit_on_damage_taken = {
 		size = {
 			80,
 			80
@@ -17723,7 +17737,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	deus_icon_ammo_pickup_give_allies_ammo = {
+	deus_icon_always_blocking_01 = {
 		size = {
 			80,
 			80
@@ -17737,7 +17751,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	twitch_icon_eavymetal = {
+	twitch_icon_berzerker = {
 		size = {
 			80,
 			80
@@ -17765,7 +17779,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	twitch_icon_berzerker = {
+	twitch_icon_boon_of_strength = {
 		size = {
 			80,
 			80
@@ -17779,7 +17793,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	twitch_icon_bomb = {
+	twitch_icon_blessing_of_regeneration = {
 		size = {
 			80,
 			80
@@ -17793,7 +17807,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	deus_icon_collateral_damage_on_melee_killing_blow = {
+	deus_icon_crit_chain_lightning = {
 		size = {
 			80,
 			80
@@ -17807,7 +17821,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	twitch_icon_curse_of_the_rat = {
+	twitch_icon_hold_your_breath = {
 		size = {
 			80,
 			80
@@ -17821,7 +17835,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	mutator_skulls_cooldown_reduction = {
+	twitch_icon_darkness = {
 		size = {
 			80,
 			80
@@ -17835,7 +17849,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	twitch_icon_blood_loss = {
+	twitch_icon_bomb = {
 		size = {
 			80,
 			80
@@ -17849,7 +17863,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	twitch_icon_cruel_hooks = {
+	twitch_icon_boon_of_speed = {
 		size = {
 			80,
 			80
@@ -17863,7 +17877,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	twitch_icon_bad_indigestion = {
+	twitch_icon_boon_of_concentration = {
 		size = {
 			80,
 			80
@@ -17877,7 +17891,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	twitch_icon_bloodlust = {
+	twitch_icon_all_aboard_the_wild_ride = {
 		size = {
 			80,
 			80
@@ -17891,7 +17905,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	twitch_icon_boon_of_concentration = {
+	twitch_icon_bloodlust = {
 		size = {
 			80,
 			80
@@ -17905,7 +17919,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	twitch_icon_blackfurs_on_parade = {
+	twitch_icon_cruel_hooks = {
 		size = {
 			80,
 			80
@@ -17919,7 +17933,7 @@ icons_atlas = {
 			0.081055
 		}
 	},
-	twitch_icon_boon_of_speed = {
+	twitch_icon_blood_loss = {
 		size = {
 			80,
 			80
@@ -17933,7 +17947,7 @@ icons_atlas = {
 			0.040039
 		}
 	},
-	twitch_icon_blessing_of_regeneration = {
+	twitch_icon_bad_indigestion = {
 		size = {
 			80,
 			80
@@ -17947,7 +17961,7 @@ icons_atlas = {
 			0.961914
 		}
 	},
-	twitch_icon_darkness = {
+	twitch_icon_curse_of_the_rat = {
 		size = {
 			80,
 			80
@@ -17961,7 +17975,7 @@ icons_atlas = {
 			0.920898
 		}
 	},
-	deus_icon_block_procs_parry = {
+	deus_icon_cooldown_reg_not_hit = {
 		size = {
 			80,
 			80
@@ -17975,7 +17989,7 @@ icons_atlas = {
 			0.879883
 		}
 	},
-	twitch_icon_boon_of_strength = {
+	twitch_icon_blackfurs_on_parade = {
 		size = {
 			80,
 			80
@@ -17989,7 +18003,7 @@ icons_atlas = {
 			0.838867
 		}
 	},
-	twitch_icon_death_spirits = {
+	twitch_icon_all_the_rage = {
 		size = {
 			80,
 			80
@@ -18003,7 +18017,7 @@ icons_atlas = {
 			0.797852
 		}
 	},
-	twitch_icon_fire_and_fury = {
+	twitch_icon_incediary_bomb = {
 		size = {
 			80,
 			80
@@ -18017,7 +18031,7 @@ icons_atlas = {
 			0.756836
 		}
 	},
-	twitch_icon_gunline = {
+	twitch_icon_death_spirits = {
 		size = {
 			80,
 			80
@@ -18045,7 +18059,7 @@ icons_atlas = {
 			0.674805
 		}
 	},
-	twitch_icon_incediary_bomb = {
+	twitch_icon_first_aid_kit = {
 		size = {
 			80,
 			80
@@ -18059,7 +18073,7 @@ icons_atlas = {
 			0.633789
 		}
 	},
-	twitch_icon_frag_grenade = {
+	twitch_icon_fire_burn = {
 		size = {
 			80,
 			80
@@ -18073,7 +18087,7 @@ icons_atlas = {
 			0.592773
 		}
 	},
-	twitch_icon_first_aid_kit = {
+	twitch_icon_explosive_loot_rats = {
 		size = {
 			80,
 			80
@@ -18087,7 +18101,7 @@ icons_atlas = {
 			0.551758
 		}
 	},
-	twitch_icon_explosive_loot_rats = {
+	twitch_icon_fire_and_fury = {
 		size = {
 			80,
 			80
@@ -18101,7 +18115,7 @@ icons_atlas = {
 			0.510742
 		}
 	},
-	twitch_icon_fire_grenade = {
+	twitch_icon_frag_grenade = {
 		size = {
 			80,
 			80
@@ -18115,7 +18129,7 @@ icons_atlas = {
 			0.469727
 		}
 	},
-	twitch_icon_infinite_bomb = {
+	twitch_icon_eavymetal = {
 		size = {
 			80,
 			80
@@ -18129,7 +18143,7 @@ icons_atlas = {
 			0.428711
 		}
 	},
-	twitch_icon_fire_burn = {
+	twitch_icon_fire_grenade = {
 		size = {
 			80,
 			80
@@ -18143,7 +18157,7 @@ icons_atlas = {
 			0.387695
 		}
 	},
-	twitch_icon_heavens_lightning = {
+	twitch_icon_gunline = {
 		size = {
 			80,
 			80
@@ -18171,7 +18185,7 @@ icons_atlas = {
 			0.305664
 		}
 	},
-	twitch_icon_hemmohage = {
+	twitch_icon_heavens_lightning = {
 		size = {
 			80,
 			80
@@ -18185,7 +18199,7 @@ icons_atlas = {
 			0.264648
 		}
 	},
-	twitch_icon_hold_your_breath = {
+	twitch_icon_hemmohage = {
 		size = {
 			80,
 			80
@@ -18213,7 +18227,7 @@ icons_atlas = {
 			0.182617
 		}
 	},
-	loot_objective_icon_02 = {
+	loot_objective_icon_06_glow = {
 		size = {
 			80,
 			90
@@ -18227,7 +18241,7 @@ icons_atlas = {
 			0.136719
 		}
 	},
-	loot_objective_icon_02_glow = {
+	loot_mutator_icon_03 = {
 		size = {
 			80,
 			90
@@ -18241,7 +18255,7 @@ icons_atlas = {
 			0.09082
 		}
 	},
-	morris_loot_objective_icon_03_glow = {
+	loot_objective_icon_02 = {
 		size = {
 			80,
 			90
@@ -18255,7 +18269,7 @@ icons_atlas = {
 			0.044922
 		}
 	},
-	loot_objective_icon_06_glow = {
+	loot_objective_icon_02_bg = {
 		size = {
 			80,
 			90
@@ -18269,7 +18283,7 @@ icons_atlas = {
 			0.999023
 		}
 	},
-	loot_objective_icon_06 = {
+	loot_mutator_icon_03_glow = {
 		size = {
 			80,
 			90
@@ -18283,7 +18297,7 @@ icons_atlas = {
 			0.953125
 		}
 	},
-	loot_mutator_icon_03 = {
+	loot_objective_icon_02_glow = {
 		size = {
 			80,
 			90
@@ -18297,7 +18311,7 @@ icons_atlas = {
 			0.907227
 		}
 	},
-	loot_mutator_icon_04_glow = {
+	loot_mutator_icon_04 = {
 		size = {
 			80,
 			90
@@ -18311,7 +18325,7 @@ icons_atlas = {
 			0.861328
 		}
 	},
-	loot_mutator_icon_03_glow = {
+	loot_mutator_icon_04_glow = {
 		size = {
 			80,
 			90
@@ -18325,7 +18339,7 @@ icons_atlas = {
 			0.81543
 		}
 	},
-	morris_loot_objective_icon_03_bg = {
+	morris_loot_objective_icon_03_glow = {
 		size = {
 			80,
 			90
@@ -18339,7 +18353,7 @@ icons_atlas = {
 			0.769531
 		}
 	},
-	loot_mutator_icon_06_glow = {
+	loot_objective_icon_01_bg = {
 		size = {
 			80,
 			90
@@ -18353,7 +18367,7 @@ icons_atlas = {
 			0.723633
 		}
 	},
-	loot_mutator_icon_04 = {
+	loot_mutator_icon_05 = {
 		size = {
 			80,
 			90
@@ -18367,7 +18381,7 @@ icons_atlas = {
 			0.677734
 		}
 	},
-	loot_objective_icon_01_bg = {
+	loot_objective_icon_01 = {
 		size = {
 			80,
 			90
@@ -18381,7 +18395,7 @@ icons_atlas = {
 			0.631836
 		}
 	},
-	loot_mutator_icon_06 = {
+	loot_mutator_icon_05_glow = {
 		size = {
 			80,
 			90
@@ -18395,7 +18409,7 @@ icons_atlas = {
 			0.966797
 		}
 	},
-	loot_objective_icon_01 = {
+	morris_loot_objective_icon_03 = {
 		size = {
 			80,
 			90
@@ -18409,7 +18423,7 @@ icons_atlas = {
 			0.902344
 		}
 	},
-	loot_mutator_icon_05 = {
+	loot_mutator_icon_06 = {
 		size = {
 			80,
 			90
@@ -18423,7 +18437,7 @@ icons_atlas = {
 			0.837891
 		}
 	},
-	loot_mutator_icon_05_glow = {
+	loot_mutator_icon_06_glow = {
 		size = {
 			80,
 			90
@@ -18437,7 +18451,7 @@ icons_atlas = {
 			0.773438
 		}
 	},
-	morris_loot_objective_icon_03 = {
+	morris_loot_objective_icon_03_bg = {
 		size = {
 			80,
 			90
@@ -18451,7 +18465,7 @@ icons_atlas = {
 			0.708984
 		}
 	},
-	morris_loot_objective_icon_02_glow = {
+	morris_loot_objective_icon_02 = {
 		size = {
 			80,
 			90
@@ -18465,7 +18479,7 @@ icons_atlas = {
 			0.644531
 		}
 	},
-	morris_loot_objective_icon_02_bg = {
+	morris_loot_objective_icon_02_glow = {
 		size = {
 			80,
 			90
@@ -18479,7 +18493,7 @@ icons_atlas = {
 			0.580078
 		}
 	},
-	morris_loot_objective_icon_02 = {
+	morris_loot_objective_icon_02_bg = {
 		size = {
 			80,
 			90
@@ -18493,7 +18507,7 @@ icons_atlas = {
 			0.515625
 		}
 	},
-	morris_loot_objective_icon_01_glow = {
+	morris_loot_objective_icon_01 = {
 		size = {
 			80,
 			90
@@ -18507,7 +18521,7 @@ icons_atlas = {
 			0.451172
 		}
 	},
-	morris_loot_objective_icon_01_bg = {
+	morris_loot_objective_icon_01_glow = {
 		size = {
 			80,
 			90
@@ -18521,7 +18535,7 @@ icons_atlas = {
 			0.386719
 		}
 	},
-	morris_loot_objective_icon_01 = {
+	morris_loot_objective_icon_01_bg = {
 		size = {
 			80,
 			90
@@ -18535,7 +18549,7 @@ icons_atlas = {
 			0.322266
 		}
 	},
-	loot_objective_icon_02_bg = {
+	loot_objective_icon_06 = {
 		size = {
 			80,
 			90

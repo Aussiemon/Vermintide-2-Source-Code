@@ -591,17 +591,6 @@ local view_settings = {
 			materials[#materials + 1] = video.resource
 		end
 
-		for i = 1, #CinematicsViewSettings do
-			local category_cinematics_view_settings = CinematicsViewSettings[i]
-
-			for j = 1, #category_cinematics_view_settings do
-				local cinematics_settings = category_cinematics_view_settings[j]
-				local video_data = cinematics_settings.video_data
-				materials[#materials + 1] = "material"
-				materials[#materials + 1] = video_data.resource
-			end
-		end
-
 		if IS_WINDOWS then
 			materials[#materials + 1] = "material"
 			materials[#materials + 1] = "video/ui_option"
@@ -675,17 +664,6 @@ local view_settings = {
 			local video = settings.video
 			materials[#materials + 1] = "material"
 			materials[#materials + 1] = video.resource
-		end
-
-		for i = 1, #CinematicsViewSettings do
-			local category_cinematics_view_settings = CinematicsViewSettings[i]
-
-			for j = 1, #category_cinematics_view_settings do
-				local cinematics_settings = category_cinematics_view_settings[j]
-				local video_data = cinematics_settings.video_data
-				materials[#materials + 1] = "material"
-				materials[#materials + 1] = video_data.resource
-			end
 		end
 
 		if IS_WINDOWS then

@@ -22,6 +22,29 @@ platform_functions.is_unlocked = function (template)
 	return unlocked, error_msg
 end
 
+platform_functions.is_platform_achievement = function (template)
+	return template.ID_STEAM
+end
+
+platform_functions.verify_platform_unlocked = function (template)
+	assert(template.ID_STEAM, "[AchievementManager] There is no Achievement ID specified for achievement: " .. template.id)
+
+	local verified = true
+	local name = template.name
+	local template_id = template.id
+	local achievement_id = template.ID_STEAM
+
+	printf("[AchievementManager] Verifying - Name: %q. Template: %q. ID: %q", Localize(name), template_id, achievement_id)
+
+	local token, error_msg = Achievement.unlock(achievement_id)
+
+	if error_msg then
+		printf("[AchievementManager] #### Error: %s", error_msg)
+	end
+
+	return verified, token
+end
+
 platform_functions.unlock = function (template)
 	assert(template.ID_STEAM, "[AchievementManager] There is no Achievement ID specified for achievement: " .. template.id)
 

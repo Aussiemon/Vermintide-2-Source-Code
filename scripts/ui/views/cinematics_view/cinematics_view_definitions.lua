@@ -388,7 +388,114 @@ local widget_definitions = {
 	}, "video_area_bottom")
 }
 
-local function create_cinematic_entry(renderer, config, index, seen, parent)
+local function create_video_entry(parent)
+	local definition = {
+		scenegraph_id = "fullscreen_video"
+	}
+	definition.element = {
+		passes = {
+			{
+				scenegraph_id = "fullscreen_video",
+				style_id = "video_style",
+				pass_type = "video",
+				content_id = "video_content",
+				content_check_function = function (content, style)
+					return parent:is_video_active(content.video_player_reference)
+				end
+			},
+			{
+				style_id = "video_fade",
+				pass_type = "rect",
+				scenegraph_id = "fullscreen_video",
+				content_check_function = function (content, style)
+					local active = parent:is_video_active(content.video_content.video_player_reference)
+					content.fade_progress = active and content.fade_progress or 0
+
+					return active
+				end,
+				content_change_function = function (content, style)
+					local fade_progress = content.fade_progress
+					local alpha = math.easeInCubic(fade_progress)
+					style.color[1] = (1 - alpha) * 255
+					local t, dt = Managers.time:time_and_delta("main")
+					content.fade_progress = math.min(fade_progress + dt * 0.5, 1)
+				end
+			},
+			{
+				scenegraph_id = "root",
+				style_id = "video_background",
+				pass_type = "rect",
+				content_check_function = function (content)
+					if not parent:is_video_active(content.video_content.video_player_reference) then
+						return false
+					end
+
+					local w, h = Gui.resolution()
+					local aspect_ratio = w / h
+					local default_aspect_ratio = 1.7777777777777777
+					local height = h
+					local width = w
+
+					if math.abs(aspect_ratio - default_aspect_ratio) > 0.005 then
+						return true
+					end
+				end
+			}
+		}
+	}
+	definition.content = {
+		fade_progress = 0
+	}
+	definition.style = {
+		video_style = {
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				1920,
+				1080
+			},
+			offset = {
+				0,
+				0,
+				100
+			}
+		},
+		video_fade = {
+			color = {
+				255,
+				0,
+				0,
+				0
+			},
+			offset = {
+				0,
+				0,
+				101
+			}
+		},
+		video_background = {
+			color = {
+				255,
+				0,
+				0,
+				0
+			},
+			offset = {
+				0,
+				0,
+				99
+			}
+		}
+	}
+
+	return definition
+end
+
+local function create_cinematic_entry(video_renderer, config, index, seen, parent)
 	local header = config.header
 	local description = config.description
 	local time = config.time
@@ -400,20 +507,20 @@ local function create_cinematic_entry(renderer, config, index, seen, parent)
 	local reference_name = config.header .. " " .. Application.guid()
 	local set_loop = false
 
-	if not renderer.video_players[reference_name] then
+	if not video_renderer.video_players[reference_name] then
 		if video_data.set_loop ~= nil then
 			set_loop = video_data.set_loop
 		end
 
-		UIRenderer.create_video_player(renderer, reference_name, renderer.world, resource, set_loop)
+		UIRenderer.create_video_player(video_renderer, reference_name, video_renderer.world, resource, set_loop)
 	end
 
-	local video_player = renderer.video_players[reference_name]
+	local video_player = video_renderer.video_players[reference_name]
 	local num_frames = VideoPlayer.number_of_frames(video_player)
 	local seconds = num_frames / (video_data.frames_per_second or 30)
 	local time = UIUtils.format_time(seconds)
 
-	UIRenderer.destroy_video_player(renderer, reference_name, renderer.world)
+	UIRenderer.destroy_video_player(video_renderer, reference_name, video_renderer.world)
 
 	local definition = {
 		scenegraph_id = "anchor_point",
@@ -504,7 +611,7 @@ local function create_cinematic_entry(renderer, config, index, seen, parent)
 					content_check_function = function (content, style)
 						local parent_content = content.parent
 
-						return not parent:is_video_active(parent_content.reference_name)
+						return not parent:is_video_active(parent_content.video_content.video_player_reference)
 					end,
 					content_change_function = function (content, style)
 						local parent_content = content.parent
@@ -522,53 +629,6 @@ local function create_cinematic_entry(renderer, config, index, seen, parent)
 						local hover_progress = parent_content.hover_progress
 						hover_progress = math.clamp(hover_progress + dt * speed * (content.is_hover and 1 or -1), 0, 1)
 						parent_content.hover_progress = hover_progress
-					end
-				},
-				{
-					scenegraph_id = "fullscreen_video",
-					style_id = "video_style",
-					pass_type = "video",
-					content_id = "video_content",
-					content_check_function = function (content, style)
-						return parent:is_video_active(content.video_player_reference)
-					end
-				},
-				{
-					style_id = "video_fade",
-					pass_type = "rect",
-					scenegraph_id = "fullscreen_video",
-					content_check_function = function (content, style)
-						local active = parent:is_video_active(content.reference_name)
-						content.fade_progress = active and content.fade_progress or 0
-
-						return active
-					end,
-					content_change_function = function (content, style)
-						local fade_progress = content.fade_progress
-						local alpha = math.easeInCubic(fade_progress)
-						style.color[1] = (1 - alpha) * 255
-						local t, dt = Managers.time:time_and_delta("main")
-						content.fade_progress = math.min(fade_progress + dt * 0.5, 1)
-					end
-				},
-				{
-					scenegraph_id = "root",
-					style_id = "video_background",
-					pass_type = "rect",
-					content_check_function = function (content)
-						if not parent:is_video_active(content.reference_name) then
-							return false
-						end
-
-						local w, h = Gui.resolution()
-						local aspect_ratio = w / h
-						local default_aspect_ratio = 1.7777777777777777
-						local height = h
-						local width = w
-
-						if math.abs(aspect_ratio - default_aspect_ratio) > 0.005 then
-							return true
-						end
 					end
 				},
 				{
@@ -617,7 +677,6 @@ local function create_cinematic_entry(renderer, config, index, seen, parent)
 			}
 		},
 		content = {
-			fade_progress = 0,
 			hover_progress = 0,
 			rect_masked = "rect_masked",
 			play_icon = "play_icon_masked",
@@ -850,49 +909,6 @@ local function create_cinematic_entry(renderer, config, index, seen, parent)
 					118
 				}
 			},
-			video_style = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				size = {
-					1920,
-					1080
-				},
-				offset = {
-					0,
-					0,
-					100
-				}
-			},
-			video_fade = {
-				color = {
-					255,
-					0,
-					0,
-					0
-				},
-				offset = {
-					0,
-					0,
-					101
-				}
-			},
-			video_background = {
-				color = {
-					255,
-					0,
-					0,
-					0
-				},
-				offset = {
-					0,
-					0,
-					99
-				}
-			},
 			hotspot = {
 				size = {
 					393.59999999999997,
@@ -1085,6 +1101,7 @@ local generic_input_actions = {
 }
 
 return {
+	create_video_entry = create_video_entry,
 	create_cinematic_entry = create_cinematic_entry,
 	scenegraph_definition = scenegraph_definition,
 	widget_definitions = widget_definitions,

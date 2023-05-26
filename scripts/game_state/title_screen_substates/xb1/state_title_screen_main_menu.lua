@@ -193,8 +193,10 @@ StateTitleScreenMainMenu.on_enter = function (self, params)
 
 	if not self._is_installed then
 		self._title_start_ui:set_menu_item_enable_state_by_index("start_game", false, true, "start_game_disabled_playgo")
+		self._title_start_ui:set_menu_item_enable_state_by_index("cinematics", false, true, "start_game_disabled_playgo")
 	else
 		self._title_start_ui:set_menu_item_enable_state_by_index("start_game", true, true)
+		self._title_start_ui:set_menu_item_enable_state_by_index("cinematics", true, true)
 	end
 
 	if PlayfabBackendSaveDataUtils.online_data_is_dirty() then
@@ -606,6 +608,7 @@ StateTitleScreenMainMenu._update_play_go = function (self, dt, t)
 
 	if installed then
 		self._title_start_ui:set_menu_item_enable_state_by_index("start_game", true, true)
+		self._title_start_ui:set_menu_item_enable_state_by_index("cinematics", true, true)
 
 		self._is_installed = true
 	end

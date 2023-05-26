@@ -537,6 +537,14 @@ PlayFabMirrorBase.sign_in_reward_request_cb = function (self, result)
 				})
 			end
 		end
+
+		local unlocked_weapon_skins = reward_data.unlocked_weapon_skins
+
+		if unlocked_weapon_skins then
+			for i = 1, #unlocked_weapon_skins do
+				self:add_unlocked_weapon_skin(unlocked_weapon_skins[i])
+			end
+		end
 	end
 
 	self:_request_quests()

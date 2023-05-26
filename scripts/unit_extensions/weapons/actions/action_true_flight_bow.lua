@@ -25,7 +25,12 @@ ActionTrueFlightBow.client_owner_start_action = function (self, new_action, t, c
 	local owner_unit = self.owner_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t)
-	self.num_projectiles = new_action.num_projectiles or 1
+	local num_extra_shots = self:_update_extra_shots(buff_extension) or 0
+	self.num_extra_shots = num_extra_shots
+
+	self:_update_extra_shots(buff_extension, num_extra_shots)
+
+	self.num_projectiles = (new_action.num_projectiles or 1) + num_extra_shots
 	local talent_extension = ScriptUnit.has_extension(owner_unit, "talent_system")
 
 	if talent_extension:has_talent("kerillian_waywatcher_activated_ability_additional_projectile") then
@@ -59,7 +64,6 @@ ActionTrueFlightBow.client_owner_start_action = function (self, new_action, t, c
 	self.time_to_shoot = t + (new_action.fire_time or 0)
 	self.power_level = power_level
 	self.extra_buff_shot = false
-	self.owner_buff_extension = buff_extension
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
 	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, "on_critical_shot", nil)
@@ -75,19 +79,9 @@ ActionTrueFlightBow.client_owner_post_update = function (self, dt, t, world, can
 	end
 
 	if self.state == "shooting" then
-		local has_extra_shots = self:_update_extra_shots(self.owner_buff_extension, 1)
-		local add_spread = not self.extra_buff_shot
+		self:fire(current_action)
 
-		self:fire(current_action, add_spread)
-
-		if has_extra_shots then
-			self.state = "waiting_to_shoot"
-			self.time_to_shoot = t + 0.1
-			self.extra_buff_shot = true
-		else
-			self.state = "shot"
-		end
-
+		self.state = "shot"
 		local first_person_extension = self.first_person_extension
 
 		if self.current_action.reset_aim_on_attack then
@@ -118,16 +112,18 @@ ActionTrueFlightBow.finish = function (self, reason, data)
 	end
 end
 
-ActionTrueFlightBow.fire = function (self, current_action, add_spread)
+ActionTrueFlightBow.fire = function (self, current_action)
 	local owner_unit = self.owner_unit
 	local speed = current_action.speed
 	local first_person_extension = self.first_person_extension
 	local position, rotation = first_person_extension:get_projectile_start_position_rotation()
 	local spread_extension = self.spread_extension
 	local num_projectiles = self.num_projectiles
+	local extra_shots_idx = num_projectiles - self.num_extra_shots + 1
 
 	for i = 1, num_projectiles do
 		local fire_rotation = rotation
+		local is_extra_shot = extra_shots_idx <= i
 
 		if spread_extension then
 			if self.num_projectiles_shot > 1 then
@@ -137,7 +133,7 @@ ActionTrueFlightBow.fire = function (self, current_action, add_spread)
 				fire_rotation = spread_extension:combine_spread_rotations(spread_horizontal_angle, angle_offset, fire_rotation)
 			end
 
-			if add_spread then
+			if not is_extra_shot then
 				spread_extension:set_shooting()
 			end
 		end
@@ -154,7 +150,7 @@ ActionTrueFlightBow.fire = function (self, current_action, add_spread)
 
 		ActionUtils.spawn_true_flight_projectile(owner_unit, target_unit, self.true_flight_template_id, position, fire_rotation, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, nil, self._is_critical_strike, self.power_level)
 
-		if self.ammo_extension and not self.extra_buff_shot then
+		if self.ammo_extension and not is_extra_shot then
 			local ammo_usage = self.current_action.ammo_usage
 
 			self.ammo_extension:use_ammo(ammo_usage)
@@ -169,7 +165,7 @@ ActionTrueFlightBow.fire = function (self, current_action, add_spread)
 		self.num_projectiles_shot = self.num_projectiles_shot + 1
 		local overcharge_type = current_action.overcharge_type
 
-		if overcharge_type and not self.extra_buff_shot then
+		if overcharge_type and not is_extra_shot then
 			local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type]
 
 			if current_action.scale_overcharge then

@@ -96,17 +96,6 @@ TitleMainUI.init = function (self, world)
 		end
 	end
 
-	for i = 1, #CinematicsViewSettings do
-		local category_cinematics_view_settings = CinematicsViewSettings[i]
-
-		for j = 1, #category_cinematics_view_settings do
-			local cinematics_settings = category_cinematics_view_settings[j]
-			local video_data = cinematics_settings.video_data
-			materials[#materials + 1] = "material"
-			materials[#materials + 1] = video_data.resource
-		end
-	end
-
 	self._ui_renderer = UIRenderer.create(world, unpack(materials))
 
 	UISetupFontHeights(self._ui_renderer.gui)

@@ -1431,7 +1431,7 @@ StateIngame._check_exit = function (self, t)
 			return
 		end
 
-		if self.is_in_tutorial then
+		if Managers.backend:is_tutorial_backend() then
 			Managers.backend:stop_tutorial()
 		end
 

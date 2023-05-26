@@ -657,6 +657,13 @@ AdventureMechanism.is_packages_loaded = function (self)
 end
 
 AdventureMechanism.load_packages = function (self)
+	local level_key = Managers.level_transition_handler:get_current_level_key()
+	local level_settings = LevelSettings[level_key]
+
+	if level_settings.tutorial_level then
+		return
+	end
+
 	if self._additional_packages_initialized then
 		return
 	end

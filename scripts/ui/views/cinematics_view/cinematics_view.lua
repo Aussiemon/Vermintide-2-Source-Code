@@ -6,6 +6,9 @@ require("scripts/ui/views/skip_input_ui")
 
 local EMPTY_TABLE = {}
 CinematicsView = class(CinematicsView)
+local VIDEO_PACKAGES = {
+	"resource_packages/menu_cinematics_videos"
+}
 
 CinematicsView.init = function (self, ingame_ui_context)
 	self._ui_renderer = ingame_ui_context.ui_renderer
@@ -17,15 +20,45 @@ CinematicsView.init = function (self, ingame_ui_context)
 		alpha_multiplier = 0,
 		snap_pixel_positions = false
 	}
-
-	self:_reset()
-
 	local input_manager = self._input_manager
 
 	input_manager:create_input_service("cinematics_view", "IngameMenuKeymaps", "IngameMenuFilters")
 	input_manager:map_device_to_service("cinematics_view", "keyboard")
 	input_manager:map_device_to_service("cinematics_view", "mouse")
 	input_manager:map_device_to_service("cinematics_view", "gamepad")
+	self:_reset()
+end
+
+CinematicsView._packages_loaded = function (self)
+	local package_manager = Managers.package
+
+	for _, name in ipairs(VIDEO_PACKAGES) do
+		if not package_manager:has_loaded(name, "cinematics_view") then
+			return false
+		end
+	end
+
+	return true
+end
+
+CinematicsView._load_packages = function (self)
+	local package_manager = Managers.package
+
+	for _, name in ipairs(VIDEO_PACKAGES) do
+		if not package_manager:has_loaded(name, "cinematics_view") then
+			package_manager:load(name, "cinematics_view", nil, true, true)
+		end
+	end
+end
+
+CinematicsView._unload_packages = function (self)
+	local package_manager = Managers.package
+
+	for _, name in ipairs(VIDEO_PACKAGES) do
+		if package_manager:has_loaded(name, "cinematics_view") then
+			package_manager:unload(name, "cinematics_view", nil, true)
+		end
+	end
 end
 
 CinematicsView._reset = function (self)
@@ -80,6 +113,10 @@ CinematicsView._create_ui_elements = function (self)
 
 	self._cinematics_widgets = cinematics_widgets
 	self._cinematics_categories_lut = cinematics_categories_lut
+	local create_video_entry = definitions.create_video_entry
+	local widget_definition = create_video_entry(self)
+	local widget = UIWidget.init(widget_definition)
+	self._video_widget = widget
 	self._ui_animations = {}
 	self._animations = {}
 	self._animation_callbacks = {}
@@ -106,11 +143,11 @@ CinematicsView._create_scrollbar = function (self)
 end
 
 CinematicsView._destroy_video_players = function (self)
-	local ui_top_renderer = self._ui_top_renderer
-
 	if not self._cinematics_widgets then
 		return
 	end
+
+	local ui_video_renderer = self._ui_video_renderer
 
 	for i = 1, #self._cinematics_widgets do
 		local category_cinematics_widgets = self._cinematics_widgets[i]
@@ -120,10 +157,10 @@ CinematicsView._destroy_video_players = function (self)
 			local cinematic_widget_content = cinematic_widget.content
 			local reference_name = cinematic_widget_content.reference_name
 
-			if ui_top_renderer.video_players[reference_name] then
-				local world = ui_top_renderer.world
+			if ui_video_renderer.video_players[reference_name] then
+				local world = ui_video_renderer.world
 
-				UIRenderer.destroy_video_player(ui_top_renderer, reference_name, world)
+				UIRenderer.destroy_video_player(ui_video_renderer, reference_name, world)
 			end
 		end
 	end
@@ -135,10 +172,66 @@ end
 
 CinematicsView.on_enter = function (self)
 	self._input_manager:capture_input(ALL_INPUT_METHODS, 1, "cinematics_view", "CinematicsView")
+	self:_load_packages()
+	self:_show_loading_icon()
+end
+
+CinematicsView._show_loading_icon = function (self)
+	Managers.transition:show_loading_icon(false)
+end
+
+CinematicsView._hide_loading_icon = function (self)
+	Managers.transition:hide_loading_icon()
+end
+
+CinematicsView._create_video_renderer = function (self)
+	local materials = {
+		"material",
+		"materials/ui/ui_1080p_menu_atlas_textures",
+		"material",
+		"materials/ui/ui_1080p_menu_single_textures",
+		"material",
+		"materials/ui/ui_1080p_hud_single_textures",
+		"material",
+		"materials/fonts/gw_fonts",
+		"material",
+		"materials/ui/ui_1080p_common"
+	}
+
+	for i = 1, #CinematicsViewSettings do
+		local category_cinematics_view_settings = CinematicsViewSettings[i]
+
+		for j = 1, #category_cinematics_view_settings do
+			local cinematics_settings = category_cinematics_view_settings[j]
+			local video_data = cinematics_settings.video_data
+			materials[#materials + 1] = "material"
+			materials[#materials + 1] = video_data.resource
+		end
+	end
+
+	local world = self._ui_top_renderer.world
+	self._ui_video_renderer = UIRenderer.create(world, unpack(materials))
+end
+
+CinematicsView._destroy_video_renderer = function (self)
+	local world = self._ui_top_renderer.world
+
+	UIRenderer.destroy(self._ui_video_renderer, world)
+end
+
+CinematicsView.initialized = function (self)
+	return self._initialized
+end
+
+CinematicsView._init_view = function (self)
+	self:_create_video_renderer()
 	self:_create_ui_elements()
 	self:_create_scrollbar()
 	self:_reset()
+	self:_hide_loading_icon()
 	self:_start_animation("on_enter")
+
+	self._initialized = true
 end
 
 CinematicsView._start_animation = function (self, animation_name, callback)
@@ -188,6 +281,10 @@ CinematicsView.on_exit = function (self)
 	self._input_manager:release_input(ALL_INPUT_METHODS, 1, "cinematics_view", "CinematicsView")
 	self:deactivate_video()
 	self:_destroy_video_players()
+	self:_destroy_video_renderer()
+	self:_unload_packages()
+
+	self._initialized = false
 end
 
 CinematicsView.do_exit = function (self, return_to_game)
@@ -199,10 +296,16 @@ CinematicsView.do_exit = function (self, return_to_game)
 end
 
 CinematicsView.update = function (self, dt, t)
-	self:_update_input(dt, t)
-	self:_update_animations(dt, t)
-	self:_update_video(dt, t)
-	self:_draw(dt, t)
+	if self._packages_loaded() then
+		if self:initialized() then
+			self:_update_input(dt, t)
+			self:_update_animations(dt, t)
+			self:_update_video(dt, t)
+			self:_draw(dt, t)
+		else
+			self:_init_view()
+		end
+	end
 end
 
 CinematicsView.current_gamepad_selection = function (self)
@@ -377,7 +480,7 @@ CinematicsView._update_video = function (self)
 
 	if current_video_content then
 		local reference_name = current_video_content.video_player_reference
-		local video_player = self._ui_top_renderer.video_players[reference_name]
+		local video_player = self._ui_video_renderer.video_players[reference_name]
 		local num_frames = VideoPlayer.number_of_frames(video_player)
 		local current_frame = VideoPlayer.current_frame(video_player)
 
@@ -393,12 +496,12 @@ CinematicsView.deactivate_video = function (self)
 		self:_enable_viewport(true)
 
 		local reference_name = self._current_video_content.video_player_reference
-		local ui_top_renderer = self._ui_top_renderer
+		local ui_video_renderer = self._ui_video_renderer
 
-		if ui_top_renderer.video_players[reference_name] then
-			local world = ui_top_renderer.world
+		if ui_video_renderer.video_players[reference_name] then
+			local world = ui_video_renderer.world
 
-			UIRenderer.destroy_video_player(ui_top_renderer, reference_name, world)
+			UIRenderer.destroy_video_player(ui_video_renderer, reference_name, world)
 		end
 	end
 
@@ -470,7 +573,7 @@ CinematicsView.activate_video = function (self, video_content, index)
 	end
 
 	local current_video_content = self._current_video_content or EMPTY_TABLE
-	local ui_top_renderer = self._ui_top_renderer
+	local ui_video_renderer = self._ui_video_renderer
 	local reference_name = video_content.video_player_reference
 	local current_reference_name = current_video_content.video_player_reference
 
@@ -480,11 +583,11 @@ CinematicsView.activate_video = function (self, video_content, index)
 
 	local video_data = video_content.video_data
 
-	if not ui_top_renderer.video_players[reference_name] then
-		UIRenderer.create_video_player(ui_top_renderer, reference_name, ui_top_renderer.world, video_data.resource, video_data.set_loop or false)
+	if not ui_video_renderer.video_players[reference_name] then
+		UIRenderer.create_video_player(ui_video_renderer, reference_name, ui_video_renderer.world, video_data.resource, video_data.set_loop or false)
 	end
 
-	local video_player = ui_top_renderer.video_players[reference_name]
+	local video_player = ui_video_renderer.video_players[reference_name]
 	local current_video_data = current_video_content.video_data or EMPTY_TABLE
 	local sound_start = video_data.sound_start
 	local sound_stop = current_video_data.sound_stop
@@ -494,6 +597,9 @@ CinematicsView.activate_video = function (self, video_content, index)
 	self:_enable_viewport(false)
 	self:_create_skip_widget()
 
+	local video_widget = self._video_widget
+	local video_widget_content = video_widget.content
+	video_widget_content.video_content = video_content
 	self._current_video_content = video_content
 	self._current_gamepad_selection_index = index
 
@@ -524,6 +630,7 @@ CinematicsView._draw = function (self, dt, t)
 	local input_service = self:input_service()
 	local ui_top_renderer = self._ui_top_renderer
 	local ui_renderer = self._ui_renderer
+	local ui_video_renderer = self._ui_video_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local render_settings = self._render_settings
 	local gamepad_active = Managers.input:is_device_active("gamepad")
@@ -567,6 +674,10 @@ CinematicsView._draw = function (self, dt, t)
 		if self._skip_input_ui then
 			self._skip_input_ui:update(dt, t, input_service, render_settings)
 		end
+
+		UIRenderer.begin_pass(ui_video_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
+		UIRenderer.draw_widget(ui_video_renderer, self._video_widget)
+		UIRenderer.end_pass(ui_video_renderer)
 	elseif gamepad_active then
 		self._menu_input_description:draw(ui_top_renderer, dt)
 	end

@@ -792,7 +792,6 @@ end
 
 BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, external_cb, result)
 	self:_refresh_login_rewards_cb(nil, result)
-	self:refresh_chips()
 
 	local granted_items = result.FunctionResult.items
 	local rewards_claimed = false
@@ -853,6 +852,18 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 				end
 			end
 		end
+	end
+
+	local currency_added = result.FunctionResult.currency_added
+
+	if currency_added then
+		for i = 1, #currency_added do
+			local data = currency_added[i]
+
+			self:set_chips(data.code, (self._chips[data.code] or 0) + data.amount)
+		end
+
+		rewards_claimed = true
 	end
 
 	if rewards_claimed then

@@ -15,3 +15,11 @@ WeaponMaterialSettingsTemplates.golden_glow = {
 		type = "vector3"
 	}
 }
+WeaponMaterialSettingsTemplates.deep_crimson = {
+	rune_emissive_color = {
+		y = 0,
+		z = 0.1,
+		x = 7,
+		type = "vector3"
+	}
+}

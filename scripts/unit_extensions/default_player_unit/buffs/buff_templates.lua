@@ -3554,10 +3554,7 @@ ProcFunctions = {
 		})
 	end,
 	kerillian_waywatcher_consume_extra_shot_buff = function (owner_unit, buff, params, worlds, params_lookup)
-		local is_career_skill = params[params_lookup.buff_type] == "RANGED_ABILITY"
-		local should_consume_shot = not is_career_skill
-
-		return should_consume_shot
+		return true
 	end,
 	reduce_activated_ability_cooldown_boss_hit = function (owner_unit, buff, params)
 		local hit_unit = params[1]
