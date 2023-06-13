@@ -85,7 +85,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				17
+				11
 			},
 			{
 				"global_context",
@@ -103,7 +103,7 @@ return function ()
 				"faction_memory",
 				"seen_event_skulls",
 				OP.LT,
-				2
+				1
 			},
 			{
 				"faction_memory",
@@ -159,7 +159,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				17
+				11
 			},
 			{
 				"global_context",
@@ -177,7 +177,7 @@ return function ()
 				"faction_memory",
 				"seen_event_skulls",
 				OP.LT,
-				2
+				1
 			},
 			{
 				"faction_memory",
@@ -233,7 +233,7 @@ return function ()
 				"query_context",
 				"distance",
 				OP.LT,
-				17
+				11
 			},
 			{
 				"global_context",
@@ -251,7 +251,7 @@ return function ()
 				"faction_memory",
 				"seen_event_skulls",
 				OP.LT,
-				2
+				1
 			},
 			{
 				"faction_memory",
@@ -2129,7 +2129,7 @@ return function ()
 			face_animations_n = 10,
 			database = "npc_dlc_event_skulls",
 			randomize_indexes_n = 0,
-			category = "level_talk",
+			category = "story_talk",
 			dialogue_animations_n = 10,
 			sound_events = {
 				"nik_mission_skull_sighted_01",

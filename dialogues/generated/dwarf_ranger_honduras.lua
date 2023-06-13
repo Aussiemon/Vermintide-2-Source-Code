@@ -12383,7 +12383,7 @@ return function ()
 			face_animations_n = 11,
 			database = "dwarf_ranger_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 11,
 			sound_events = {
 				"pdr_gameplay_hearing_a_skaven_ratling_gun_03",

@@ -17487,15 +17487,13 @@ return function ()
 			randomize_indexes = {}
 		},
 		pes_gameplay_tension_no_enemies = {
-			sound_events_n = 16,
-			face_animations_n = 16,
+			sound_events_n = 14,
+			face_animations_n = 14,
 			database = "empire_soldier_honduras",
 			randomize_indexes_n = 0,
 			category = "casual_talk",
-			dialogue_animations_n = 16,
+			dialogue_animations_n = 14,
 			sound_events = {
-				"pes_gameplay_tension_no_enemies_06",
-				"pes_gameplay_tension_no_enemies_08",
 				"pes_gameplay_tension_no_enemies_09",
 				"pes_gameplay_tension_no_enemies_10",
 				"pes_gameplay_tension_no_enemies_11",
@@ -17525,13 +17523,9 @@ return function ()
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
 				"dialogue_talk"
 			},
 			face_animations = {
-				"face_angry",
-				"face_concerned",
 				"face_concerned",
 				"face_concerned",
 				"face_concerned",
@@ -17548,8 +17542,6 @@ return function ()
 				"face_concerned"
 			},
 			sound_events_duration = {
-				3.4567,
-				3.4567,
 				2.5494582653046,
 				2.2474582195282,
 				2.6116042137146,
@@ -17566,8 +17558,6 @@ return function ()
 				4.3376665115356
 			},
 			localization_strings = {
-				"pes_gameplay_tension_no_enemies_06",
-				"pes_gameplay_tension_no_enemies_08",
 				"pes_gameplay_tension_no_enemies_09",
 				"pes_gameplay_tension_no_enemies_10",
 				"pes_gameplay_tension_no_enemies_11",
