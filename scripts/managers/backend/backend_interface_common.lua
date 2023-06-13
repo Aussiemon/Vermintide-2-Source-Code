@@ -545,7 +545,14 @@ filter_macros.available_in_current_mechanism = function (item, backend_id)
 		"skin"
 	}, item_data.slot_type)
 
-	return is_cosmetic or mechanisms and table.contains(mechanisms, current_mechanism) or not mechanisms and Managers.mechanism:mechanism_setting("default_inventory")
+	if is_cosmetic then
+		return true
+	end
+
+	local is_item_for_mechanism = mechanisms and table.contains(mechanisms, current_mechanism)
+	local default_mechanism = not mechanisms and Managers.mechanism:mechanism_setting("default_inventory")
+
+	return is_item_for_mechanism or default_mechanism
 end
 
 filter_macros.owned = function (item, backend_id)

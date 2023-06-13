@@ -191,14 +191,6 @@ GameModeManager.ai_killed = function (self, killed_unit, killer_unit, death_data
 	end
 end
 
-GameModeManager.ai_destroyed = function (self, unit, blackboard, reason)
-	local game_mode = self._game_mode
-
-	if game_mode.ai_destroyed then
-		game_mode:ai_destroyed(unit, blackboard, reason)
-	end
-end
-
 GameModeManager.level_object_killed = function (self, killed_unit, killing_blow)
 	self._mutator_handler:level_object_killed(killed_unit, killing_blow)
 end
@@ -577,13 +569,13 @@ GameModeManager.gm_event_round_started = function (self)
 	local round_started_string = self._game_mode_key .. "_round_started"
 
 	Level.trigger_event(level, round_started_string)
-	Managers.telemetry.events:round_started()
+	Managers.telemetry_events:round_started()
 
 	if TelemetrySettings.collect_memory then
 		local memory_tree = Profiler.memory_tree()
 		local memory_resources = Profiler.memory_resources("all")
 
-		Managers.telemetry.events:memory_statistics(memory_tree, memory_resources, "round_started")
+		Managers.telemetry_events:memory_statistics(memory_tree, memory_resources, "round_started")
 	end
 
 	Level.trigger_event(level, "coop_round_started")
@@ -995,7 +987,7 @@ end
 GameModeManager.on_game_mode_data_destroyed = function (self)
 	self._has_created_game_mode_data = false
 
-	self._game_mode:on_game_mode_data_created()
+	self._game_mode:on_game_mode_data_destroyed()
 end
 
 GameModeManager._update_end_level_areas = function (self)

@@ -221,7 +221,7 @@ ExplosionTemplates = {
 	lamp_oil = {
 		explosion = {
 			radius = 3,
-			dot_template_name = "burning_3W_dot",
+			dot_template_name = "burning_dot_fire_grenade_force_fire",
 			max_damage_radius = 1.5,
 			alert_enemies = true,
 			damage_type_glance = "fire_grenade_glance",
@@ -268,7 +268,7 @@ ExplosionTemplates = {
 			}
 		},
 		aoe = {
-			dot_template_name = "burning_1W_dot",
+			dot_template_name = "burning_dot_fire_grenade_force_fire",
 			radius = 6,
 			nav_tag_volume_layer = "fire_grenade",
 			create_nav_tag_volume = true,
@@ -452,7 +452,7 @@ ExplosionTemplates = {
 			alert_enemies_radius = 15,
 			damage_type_glance = "fire_grenade_glance",
 			dont_rotate_fx = true,
-			dot_template_name = "burning_1W_dot",
+			dot_template_name = "burning_dot_fire_grenade_force_fire",
 			sound_event_name = "fireball_big_hit",
 			alert_enemies = true,
 			damage_profile = "explosive_barrel",
@@ -493,7 +493,7 @@ ExplosionTemplates = {
 			}
 		},
 		aoe = {
-			dot_template_name = "burning_dot_fire_grenade",
+			dot_template_name = "burning_dot_fire_grenade_force_fire",
 			radius = 6,
 			nav_tag_volume_layer = "fire_grenade",
 			create_nav_tag_volume = true,
@@ -565,7 +565,7 @@ ExplosionTemplates = {
 			}
 		},
 		aoe = {
-			dot_template_name = "burning_dot_fire_grenade",
+			dot_template_name = "burning_dot_fire_grenade_force_fire",
 			radius = 6,
 			nav_tag_volume_layer = "fire_grenade",
 			create_nav_tag_volume = true,
@@ -1502,6 +1502,23 @@ ExplosionTemplates.tower_wipe = {
 		damage_profile = "tower_wipe",
 		power_level = 1000,
 		level_unit_damage = true
+	}
+}
+ExplosionTemplates.claw_explosion_dwarf = {
+	explosion = {
+		always_hurt_players = true,
+		radius = 5,
+		alert_enemies_radius = 30,
+		max_damage_radius = 50,
+		alert_enemies = true,
+		level_unit_damage = true,
+		attack_template = "drakegun",
+		damage_profile_glance = "overcharge_explosion_glance",
+		sound_event_name = "emitter_dwarf_bomb_explosion",
+		damage_profile = "overcharge_explosion",
+		power_level = 1000,
+		ignore_attacker_unit = true,
+		effect_name = "fx/chr_warp_fire_explosion_01"
 	}
 }
 

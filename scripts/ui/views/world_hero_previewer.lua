@@ -572,7 +572,7 @@ HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin)
 	local item_slot_type = slot.type
 	local slot_index = slot.slot_index
 	local item_data = ItemMasterList[item_name]
-	local item_units = BackendUtils.get_item_units(item_data, backend_id, skin)
+	local item_units = BackendUtils.get_item_units(item_data, backend_id, skin, self._current_career_name)
 	local item_template = ItemHelper.get_template_by_item_name(item_name)
 	local spawn_data = {}
 	local package_names = {}
@@ -871,7 +871,13 @@ HeroPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_temp
 		LODObject.set_static_height(lod_object, 1)
 	end
 
-	GearUtils.link(world, unit_attachment_node_linking, scene_graph_links, character_unit, unit)
+	local parent_unit = character_unit
+
+	if item_template.link_to_skin then
+		parent_unit = self.mesh_unit
+	end
+
+	GearUtils.link(world, unit_attachment_node_linking, scene_graph_links, parent_unit, unit)
 
 	if material_settings then
 		GearUtils.apply_material_settings(unit, material_settings)

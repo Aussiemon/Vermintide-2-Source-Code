@@ -1884,11 +1884,15 @@ AIPlayerSlotExtension.request_best_slot = function (self, slot_consumer_ext, ski
 			in_queue = true
 
 			if slot then
-				local queue = slot.queue
-				local queue_n = #queue
-				queue[queue_n + 1] = slot_consumer_ext
+				if slot == previous_slot then
+					self:free_slot(slot_consumer_ext, previous_slot, false)
+				else
+					local queue = slot.queue
+					local queue_n = #queue
+					queue[queue_n + 1] = slot_consumer_ext
 
-				slot_consumer_ext:on_entered_slot_queue(self, slot)
+					slot_consumer_ext:on_entered_slot_queue(self, slot)
+				end
 			end
 		elseif is_behind_target then
 			local slot_data = self.all_slots[slot_type]

@@ -58,6 +58,10 @@ SideManager._setup_relations = function (self, side_compositions, sides, side_lo
 
 			side:set_relation(relation, temp_sides)
 		end
+
+		side:set_relation("ally", {
+			side
+		})
 	end
 end
 
@@ -122,6 +126,14 @@ SideManager.add_unit_to_side = function (self, unit, side_id)
 		enemy_side:add_enemy_unit(unit)
 	end
 
+	local allied_sides = side:get_allied_sides()
+
+	for i = 1, #allied_sides do
+		local ally_side = allied_sides[i]
+
+		ally_side:add_allied_unit(unit)
+	end
+
 	return side
 end
 
@@ -138,6 +150,14 @@ SideManager.remove_unit_from_side = function (self, unit)
 		local enemy_side = enemy_sides[i]
 
 		enemy_side:remove_enemy_unit(unit)
+	end
+
+	local allied_sides = side:get_allied_sides()
+
+	for i = 1, #allied_sides do
+		local ally_side = allied_sides[i]
+
+		ally_side:remove_allied_unit(unit)
 	end
 
 	self.side_by_unit[unit] = nil
@@ -181,8 +201,9 @@ end
 
 SideManager.is_enemy = function (self, unit1, unit2)
 	local side = self.side_by_unit[unit1]
+	local is_enemy = side and side.enemy_units_lookup[unit2]
 
-	return side.enemy_units_lookup[unit2] ~= nil, side
+	return is_enemy, side
 end
 
 SideManager.is_enemy_by_side = function (self, side1, side2)
@@ -195,6 +216,13 @@ SideManager.is_enemy_by_side = function (self, side1, side2)
 	end
 
 	return true
+end
+
+SideManager.is_ally = function (self, unit1, unit2)
+	local side = self.side_by_unit[unit1]
+	local is_ally = side and side.allied_units_lookup[unit2]
+
+	return is_ally, side
 end
 
 SideManager.is_player_friendly_fire = function (self, unit1, unit2)

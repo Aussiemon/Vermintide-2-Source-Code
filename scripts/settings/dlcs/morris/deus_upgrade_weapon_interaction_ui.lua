@@ -1,3 +1,5 @@
+require("scripts/settings/dlcs/morris/deus_swap_weapon_interaction_ui")
+
 DeusUpgradeWeaponInteractionUI = class(DeusUpgradeWeaponInteractionUI, DeusSwapWeaponInteractionUI)
 DeusUpgradeWeaponInteractionUI.TYPE = "upgrade"
 

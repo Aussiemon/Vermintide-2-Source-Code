@@ -152,7 +152,7 @@ ProjectileSystem._get_projectile_units_names = function (self, projectile_info, 
 	return projectile_units
 end
 
-ProjectileSystem.spawn_player_projectile = function (self, owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, fast_forward_time, is_critical_strike, power_level, gaze_settings)
+ProjectileSystem.spawn_player_projectile = function (self, owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, fast_forward_time, is_critical_strike, power_level, gaze_settings, charge_level)
 	local action = Weapons[item_template_name].actions[action_name][sub_action_name]
 	local projectile_info = action.projectile_info
 	local gravity_settings = projectile_info.gravity_settings
@@ -169,11 +169,13 @@ ProjectileSystem.spawn_player_projectile = function (self, owner_unit, position,
 	local min = projectile_info.radius_min
 	local max = projectile_info.radius_max
 	local radius = projectile_info.radius or min and max and math.lerp(projectile_info.radius_min, projectile_info.radius_max, scale) or nil
+	local seed = action.generate_seed and action.generate_seed() or nil
 	local time_initialized = Managers.time:time("game")
 	local extension_init_data = {
 		projectile_locomotion_system = {
 			angle = angle,
 			speed = speed,
+			seed = seed,
 			initial_position = position,
 			target_vector = target_vector,
 			gravity_settings = gravity_settings,
@@ -214,7 +216,8 @@ ProjectileSystem.spawn_player_projectile = function (self, owner_unit, position,
 			scale = scale,
 			fast_forward_time = fast_forward_time,
 			is_critical_strike = is_critical_strike,
-			power_level = power_level
+			power_level = power_level,
+			charge_level = charge_level
 		}
 	}
 	local projectile_units = self:_get_projectile_units_names(projectile_info, owner_unit)
@@ -557,7 +560,6 @@ ProjectileSystem.spawn_true_flight_projectile = function (self, owner_unit, targ
 	local projectile_info = action.projectile_info
 	local gravity_settings = projectile_info.gravity_settings
 	local trajectory_template_name = projectile_info.trajectory_template_name
-	scale = scale / 100
 	local min = projectile_info.radius_min
 	local max = projectile_info.radius_max
 	local radius = projectile_info.radius or min and max and math.lerp(projectile_info.radius_min, projectile_info.radius_max, scale) or nil
@@ -596,6 +598,50 @@ ProjectileSystem.spawn_true_flight_projectile = function (self, owner_unit, targ
 	local projectile_units = self:_get_projectile_units_names(projectile_info, owner_unit)
 	local projectile_unit_name = projectile_units.projectile_unit_name
 	local projectile_unit = Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, "true_flight_projectile_unit", extension_init_data, position, rotation)
+
+	self:_add_player_projectile_reference(owner_unit, projectile_unit, projectile_info)
+end
+
+ProjectileSystem.spawn_ai_true_flight_projectile = function (self, owner_unit, target_unit, true_flight_template_name, position, rotation, angle, target_vector, speed, projectile_info, impact_template_name, scale, is_critical_strike, power_level)
+	local gravity_settings = projectile_info.gravity_settings
+	local trajectory_template_name = projectile_info.trajectory_template_name
+	local true_flight_template = TrueFlightTemplates[true_flight_template_name]
+	local dont_target_friendly = true_flight_template.dont_target_friendly
+	local ignore_dead = true_flight_template.ignore_dead
+	local min = projectile_info.radius_min
+	local max = projectile_info.radius_max
+	local radius = projectile_info.radius or min and max and math.lerp(projectile_info.radius_min, projectile_info.radius_max, scale) or nil
+	local extension_init_data = {
+		projectile_locomotion_system = {
+			angle = angle,
+			speed = speed,
+			gravity_settings = gravity_settings,
+			trajectory_template_name = trajectory_template_name,
+			initial_position = position,
+			target_vector = target_vector,
+			true_flight_template_name = true_flight_template_name,
+			target_unit = target_unit,
+			owner_unit = owner_unit
+		},
+		projectile_impact_system = {
+			owner_unit = owner_unit,
+			radius = radius,
+			dont_target_friendly = dont_target_friendly,
+			ignore_dead = ignore_dead
+		},
+		projectile_system = {
+			owner_unit = owner_unit,
+			time_initialized = Managers.time:time("game"),
+			scale = scale,
+			is_critical_strike = is_critical_strike,
+			power_level = power_level,
+			impact_template_name = impact_template_name
+		}
+	}
+	local projectile_units = self:_get_projectile_units_names(projectile_info, owner_unit)
+	local projectile_unit_name = projectile_units.projectile_unit_name
+	local unit_template_name = projectile_info.projectile_unit_template_name or "ai_true_flight_projectile_unit"
+	local projectile_unit = Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, unit_template_name, extension_init_data, position, rotation)
 
 	self:_add_player_projectile_reference(owner_unit, projectile_unit, projectile_info)
 end
@@ -647,7 +693,7 @@ ProjectileSystem.get_indexed_projectile_count = function (self, owner_unit)
 	return #indexed_projectiles
 end
 
-ProjectileSystem.get_and_delete_indexed_projectile = function (self, owner_unit, index)
+ProjectileSystem.get_and_delete_indexed_projectile = function (self, owner_unit, index, skip_mark_delete)
 	local indexed_projectiles = self.indexed_player_projectile_units[owner_unit]
 
 	if not indexed_projectiles then
@@ -666,18 +712,45 @@ ProjectileSystem.get_and_delete_indexed_projectile = function (self, owner_unit,
 		projectiles[removed_unit] = nil
 	end
 
-	if Unit.alive(removed_unit) and not unit_spawner:is_marked_for_deletion(removed_unit) then
+	if Unit.alive(removed_unit) and not unit_spawner:is_marked_for_deletion(removed_unit) and not skip_mark_delete then
 		unit_spawner:mark_for_deletion(removed_unit)
 	end
 
 	return removed_unit
 end
 
+ProjectileSystem.delete_indexed_projectiles = function (self, owner_unit)
+	local indexed_projectiles = self.indexed_player_projectile_units[owner_unit]
+
+	if not indexed_projectiles then
+		return
+	end
+
+	local unit_spawner = Managers.state.unit_spawner
+	local owner_projectiles = self.player_projectile_units[owner_unit]
+
+	for i = 1, #indexed_projectiles do
+		local unit = indexed_projectiles[i]
+
+		if unit then
+			if Unit.alive(unit) then
+				unit_spawner:mark_for_deletion(unit)
+			end
+
+			if owner_projectiles then
+				owner_projectiles[unit] = nil
+			end
+		end
+	end
+
+	self.indexed_player_projectile_units[owner_unit] = nil
+end
+
 ProjectileSystem.rpc_generic_impact_projectile_impact = function (self, channel_id, unit_id, hit_go_unit_id, hit_level_unit_id, position, direction, normal, actor_index)
 	if self.is_server then
 		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_generic_impact_projectile_impact", peer_id, unit_id, hit_go_unit_id, position, direction, normal, actor_index)
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_generic_impact_projectile_impact", peer_id, unit_id, hit_go_unit_id, hit_level_unit_id, position, direction, normal, actor_index)
 	end
 
 	local unit_storage = self.unit_storage

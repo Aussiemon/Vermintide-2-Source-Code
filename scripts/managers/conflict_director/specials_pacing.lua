@@ -155,6 +155,12 @@ SpecialsPacing.select_breed_functions = {
 		end
 
 		local breeds = specials_settings.breeds
+		local num_breeds = #breeds
+
+		if num_breeds <= 0 then
+			return nil
+		end
+
 		local count = FrameTable.alloc_table()
 
 		for i = 1, #slots do
@@ -167,7 +173,7 @@ SpecialsPacing.select_breed_functions = {
 		local i = 0
 
 		repeat
-			local pick_index = Math.random(1, #breeds)
+			local pick_index = Math.random(1, num_breeds)
 			breed = breeds[pick_index]
 			i = i + 1
 		until not count[breed] or count[breed] < method_data.max_of_same or max_tries <= i

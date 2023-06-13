@@ -742,8 +742,7 @@ DeusMechanism._build_side_compositions = function (self, state)
 			name = "heroes",
 			relations = {
 				enemy = {
-					"dark_pact",
-					"neutral"
+					"dark_pact"
 				}
 			},
 			party = party_manager:get_party(1),
@@ -758,18 +757,14 @@ DeusMechanism._build_side_compositions = function (self, state)
 			name = "dark_pact",
 			relations = {
 				enemy = {
-					"heroes",
-					"neutral"
+					"heroes"
 				}
 			}
 		},
 		{
 			name = "neutral",
 			relations = {
-				enemy = {
-					"dark_pact",
-					"heroes"
-				}
+				enemy = {}
 			}
 		}
 	}
@@ -913,7 +908,7 @@ DeusMechanism._send_level_started_tracking_data = function (self)
 	local num_bots = #bots
 	local level_tracking_data = self._deus_run_controller:get_level_started_tracking_data(statistics_db, num_bots)
 
-	Managers.telemetry.events:deus_level_started(level_tracking_data)
+	Managers.telemetry_events:deus_level_started(level_tracking_data)
 end
 
 DeusMechanism._send_level_ended_tracking_data = function (self, game_won)
@@ -922,13 +917,13 @@ DeusMechanism._send_level_ended_tracking_data = function (self, game_won)
 	local num_bots = #bots
 	local level_tracking_data = self._deus_run_controller:get_level_ended_tracking_data(statistics_db, game_won, num_bots)
 
-	Managers.telemetry.events:deus_level_ended(level_tracking_data)
+	Managers.telemetry_events:deus_level_ended(level_tracking_data)
 end
 
 DeusMechanism._send_run_tracking_data = function (self, game_won)
 	local run_tracking_data = self._deus_run_controller:get_run_tracking_data(game_won)
 
-	Managers.telemetry.events:deus_run_ended(run_tracking_data)
+	Managers.telemetry_events:deus_run_ended(run_tracking_data)
 end
 
 DeusMechanism.debug_load_shrine_node = function (self)

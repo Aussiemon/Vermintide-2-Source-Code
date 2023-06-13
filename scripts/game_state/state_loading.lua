@@ -45,7 +45,12 @@ end
 
 StateLoading.on_enter = function (self, param_block)
 	print("[Gamestate] Enter state StateLoading")
-	Managers.load_time:start_timer()
+
+	local loading_context = self.parent.loading_context
+	local time_spent_in_level = loading_context.time_spent_in_level
+	local end_reason = loading_context.end_reason
+
+	Managers.load_time:start_timer(time_spent_in_level, end_reason)
 
 	if not Managers.play_go:installed() then
 		Managers.play_go:set_install_speed("suspended")

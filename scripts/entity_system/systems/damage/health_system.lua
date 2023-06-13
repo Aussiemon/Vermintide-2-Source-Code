@@ -652,7 +652,7 @@ HealthSystem.rpc_request_revive = function (self, channel_id, revived_unit_go_id
 
 	local interactable_pos = POSITION_LOOKUP[revived_unit]
 
-	Managers.telemetry.events:player_revived(interactor_player, interactable_player, interactable_pos)
+	Managers.telemetry_events:player_revived(interactor_player, interactable_player, interactable_pos)
 end
 
 HealthSystem.rpc_request_insta_kill = function (self, sender, unit_id, damage_type_id)

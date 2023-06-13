@@ -459,7 +459,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		local player = Managers.player:owner(unit)
 		local position = POSITION_LOOKUP[unit]
 
-		Managers.telemetry.events:player_damaged(player, damage_type, damage_source_name or "n/a", damage_amount, position)
+		Managers.telemetry_events:player_damaged(player, damage_type, damage_source_name or "n/a", damage_amount, position)
 
 		local attacker_player = Managers.player:owner(attacker_unit)
 
@@ -470,7 +470,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 				local attacker_position = POSITION_LOOKUP[attacker_unit]
 				local target_breed = Unit.get_data(unit, "breed")
 
-				Managers.telemetry.events:local_player_damaged_player(attacker_player, target_breed.name, damage_amount, attacker_position, position)
+				Managers.telemetry_events:local_player_damaged_player(attacker_player, target_breed.name, damage_amount, attacker_position, position)
 			end
 		end
 	end

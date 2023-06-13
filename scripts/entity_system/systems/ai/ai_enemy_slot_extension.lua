@@ -15,12 +15,7 @@ AIEnemySlotExtension.init = function (self, extension_init_context, unit, extens
 	self._debug_id = debug_id
 	debug_id = debug_id + 1
 	self.belongs_to_ai = true
-
-	self:_reroll_preferred_ai_slot_distance()
-end
-
-AIEnemySlotExtension._reroll_preferred_ai_slot_distance = function (self)
-	self._ai_random_slot_dist = 0.4 + math.random() * 0.2
+	self.gathering = Managers.state.conflict.gathering
 end
 
 AIEnemySlotExtension.extensions_ready = function (self, world, unit)
@@ -41,7 +36,13 @@ end
 
 AIEnemySlotExtension.cleanup_extension = function (self, unit, update_slots_ai_units, update_slots_ai_units_n)
 	self:_detach_from_slot()
-	self:_detach_from_ai_slot()
+	self:_detach_from_ai_slot("cleanup_extension")
+
+	if USE_ENGINE_SLOID_SYSTEM then
+		notify_attackers(unit, Managers.state.conflict.dogpiled_attackers_on_unit)
+	else
+		self.gathering:notify_attackers(unit)
+	end
 
 	for i = 1, update_slots_ai_units_n do
 		local ai_unit = update_slots_ai_units[i]
@@ -100,44 +101,28 @@ AIEnemySlotExtension._improve_slot_position = function (self, self_unit, t, nav_
 	end
 end
 
-THE_SPARSE_GRID = {}
-local cell_size_xy = 0.3
-local cell_size_z = 0.3
-
-local function sparse_hash(pos)
-	local floor = math.floor
-	local xp = floor(pos.x / cell_size_xy + 0.5)
-	local yp = floor(pos.y / cell_size_xy + 0.5)
-	local zp = floor(pos.z / cell_size_z + 0.5)
-	local hash = xp * 0.0001 + yp + zp * 10000
-
-	return THE_SPARSE_GRID[hash], hash, xp, yp, zp
-end
-
-local function book_sparse_grid(unit, hash, x, y, z)
-	THE_SPARSE_GRID[hash] = {
-		u = unit,
-		x = x,
-		y = y,
-		z = z
-	}
-end
-
 AIEnemySlotExtension._improve_ai_slot_position = function (self, self_unit, t, nav_world, target_unit)
-	local attacker_blackboard = BLACKBOARDS[self_unit]
-
-	if not ALIVE[self_unit] or not attacker_blackboard.slot_position_boxed then
-		return
-	end
-
-	if self.improve_wait_slot_position_t < t then
-		self.improve_wait_slot_position_t = t + 0.2 + Math.random() * 0.4
-	else
-		return
-	end
-
 	local ai_unit_position = POSITION_LOOKUP[self_unit]
-	local new_position = attacker_blackboard.slot_position_boxed:unbox()
+	local new_position = nil
+
+	if USE_ENGINE_SLOID_SYSTEM then
+		if not self.sloid_id then
+			return
+		end
+
+		local sloid_pos = EngineOptimized.get_sloid_position(self.sloid_id)
+		new_position = Vector3(sloid_pos[1], sloid_pos[2], sloid_pos[3])
+	else
+		local ball = self.gathering_ball
+
+		if not ball then
+			return
+		end
+
+		local ball_pos = ball.pos
+		new_position = Vector3(ball_pos[1], ball_pos[2], ball_pos[3])
+	end
+
 	local navigation_extension = self._navigation_ext
 	local previous_destination = navigation_extension:destination()
 	local distance_sq = Vector3_distance_sq(ai_unit_position, new_position)
@@ -147,32 +132,9 @@ AIEnemySlotExtension._improve_ai_slot_position = function (self, self_unit, t, n
 	end
 end
 
-AIEnemySlotExtension._improve_ai_slot_position_with_sparse_grid = function (self, self_unit, t, nav_world, target_unit)
-	if not ALIVE[self_unit] then
-		return
-	end
-
-	local target_blackboard = BLACKBOARDS[target_unit]
-	local p1 = POSITION_LOOKUP[target_unit]
-	local p2 = POSITION_LOOKUP[self_unit]
-	local dir = Vector3.normalize(p2 - p1)
-	local new_position = p1 + dir
-	local occupied, hash, x, y, z = sparse_hash(new_position)
-
-	if not occupied then
-		self._navigation_ext:move_to(new_position)
-		book_sparse_grid(self_unit, hash, x, y, z)
-	elseif occupied.u ~= self_unit then
-		local p3 = POSITION_LOOKUP[occupied.u]
-		local new_position = p3 + dir
-
-		self._navigation_ext:move_to(new_position)
-	end
-end
-
 AIEnemySlotExtension.freeze = function (self, unit)
 	self:_detach_from_slot()
-	self:_detach_from_ai_slot()
+	self:_detach_from_ai_slot("freeze")
 end
 
 AIEnemySlotExtension.unfreeze = function (self, unit)
@@ -180,33 +142,31 @@ AIEnemySlotExtension.unfreeze = function (self, unit)
 	self.improve_wait_slot_position_t = 0
 end
 
-AIEnemySlotExtension.update = function (self, self_unit, all_extensions, nav_world, t, traverse_logic, system)
-	local ai_unit_dead = not ALIVE[self_unit]
-
-	if ai_unit_dead then
-		print("[AIEnemySlotExtension] lol wut, please remove this")
-		self:_detach_from_slot()
-
-		return
-	end
-
+AIEnemySlotExtension.update = function (self, self_unit, all_slot_extensions, nav_world, t, traverse_logic, system)
 	local blackboard = BLACKBOARDS[self_unit]
 	local target_unit = blackboard.target_unit
 
-	self:_update_target(target_unit)
+	if self.gathering_ball then
+		self:_update_ai_target(target_unit)
+	elseif self.sloid_id then
+		self:_engine_update_ai_target(target_unit)
+	else
+		self:_update_target(target_unit)
+	end
 
 	if not target_unit then
 		return
 	end
 
-	local target_unit_extension = all_extensions[target_unit]
+	local target_unit_extension = all_slot_extensions[target_unit]
+	local target_is_player = target_unit_extension and target_unit_extension.belongs_to_player
 
-	if not target_unit_extension then
+	if not target_is_player and not AiUtils.unit_breed(target_unit) then
 		return
 	end
 
-	if target_unit_extension.belongs_to_player then
-		if not self.do_search then
+	if target_is_player then
+		if not self.do_search or self.slot_template.disable_slot_search then
 			return
 		end
 
@@ -227,15 +187,35 @@ AIEnemySlotExtension.update = function (self, self_unit, all_extensions, nav_wor
 
 			self.delayed_prioritized_ai_unit_update_time = nil
 		end
-	else
-		local success = target_unit_extension:request_best_slot(self)
+	elseif USE_ENGINE_SLOID_SYSTEM then
+		if not self.sloid_id then
+			local success = self:ai_has_slot(target_unit)
 
-		if success and not self.ai_target_slot_extension then
-			self:on_ai_slot_gained(target_unit_extension)
+			if success then
+				self:on_ai_slot_gained(target_unit, system)
+				self:_improve_ai_slot_position(self_unit, t, nav_world, target_unit)
+			end
+		else
+			self:_improve_ai_slot_position(self_unit, t, nav_world, target_unit)
 		end
+	elseif not self.gathering_ball then
+		local success = self:ai_has_slot(target_unit)
 
+		if success then
+			self:on_ai_slot_gained(target_unit, system)
+			self:_improve_ai_slot_position(self_unit, t, nav_world, target_unit)
+		end
+	else
 		self:_improve_ai_slot_position(self_unit, t, nav_world, target_unit)
 	end
+end
+
+AIEnemySlotExtension.ai_has_slot = function (self, target_unit)
+	local target_blackboard = BLACKBOARDS[target_unit]
+	local infighting = target_blackboard.breed.infighting or InfightingSettings.small
+	local num_slots = infighting.crowded_slots
+
+	return target_blackboard.lean_dogpile < num_slots
 end
 
 AIEnemySlotExtension.on_unit_blocked_attack = function (self, ai_unit, system)
@@ -257,6 +237,7 @@ AIEnemySlotExtension.on_unit_blocked_attack = function (self, ai_unit, system)
 			self.delayed_prioritized_ai_unit_update_time = t + slot_template.abandon_slot_when_blocked_time
 		else
 			self:_detach_from_slot()
+			self:_detach_from_ai_slot("on_unit_blocked_attack")
 			system:register_prioritized_ai_unit_update(ai_unit)
 		end
 	end
@@ -281,6 +262,7 @@ AIEnemySlotExtension.ai_unit_staggered = function (self, ai_unit, system)
 			self.delayed_prioritized_ai_unit_update_time = t + slot_template.abandon_slot_when_staggered_time
 		else
 			self:_detach_from_slot()
+			self:_detach_from_ai_slot("ai_unit_staggered")
 			system:register_prioritized_ai_unit_update(ai_unit)
 		end
 	end
@@ -297,29 +279,39 @@ AIEnemySlotExtension._detach_from_slot = function (self)
 
 	self.waiting_on_slot = nil
 	self.slot = nil
-
-	self:_detach_from_ai_slot()
 end
 
-AIEnemySlotExtension._detach_from_ai_slot = function (self)
-	local ai_target_slot_extension = self.ai_target_slot_extension
+AIEnemySlotExtension._detach_from_ai_slot = function (self, reason)
+	local target_unit = nil
 
-	if ai_target_slot_extension then
-		ai_target_slot_extension:free_slot(self)
+	if USE_ENGINE_SLOID_SYSTEM then
+		if not self.sloid_id then
+			return
+		end
 
-		self.ai_target_slot_extension = nil
+		target_unit = self.target_unit
+	else
+		local gathering_ball = self.gathering_ball
+
+		if not gathering_ball then
+			return
+		end
+
+		target_unit = gathering_ball.target_unit
 	end
+
+	local blackboard = BLACKBOARDS[target_unit]
+
+	if blackboard then
+		blackboard.lean_dogpile = blackboard.lean_dogpile - 1
+	end
+
+	self:on_ai_slot_lost(target_unit)
 end
 
 AIEnemySlotExtension._update_target = function (self, target_unit)
 	if self.slot and self.slot.target_unit ~= target_unit then
 		self:_detach_from_slot()
-	end
-
-	local ai_target_slot_extension = self.ai_target_slot_extension
-
-	if ai_target_slot_extension and ai_target_slot_extension.unit ~= target_unit then
-		self:_detach_from_ai_slot()
 	end
 
 	if not Unit.alive(target_unit) then
@@ -331,14 +323,24 @@ AIEnemySlotExtension._update_target = function (self, target_unit)
 			self:_detach_from_slot()
 		end
 
-		self:_detach_from_ai_slot()
-
 		return
 	end
 
 	local target_unit_position = POSITION_LOOKUP[target_unit]
 
 	self.target_position:store(target_unit_position)
+end
+
+AIEnemySlotExtension._update_ai_target = function (self, target_unit)
+	if self.gathering_ball.target_unit ~= target_unit then
+		self:_detach_from_ai_slot("new_target_unit")
+	end
+end
+
+AIEnemySlotExtension._engine_update_ai_target = function (self, target_unit)
+	if self.target_unit ~= target_unit then
+		self:_detach_from_ai_slot("new_target_unit")
+	end
 end
 
 AIEnemySlotExtension.on_slot_lost = function (self)
@@ -395,100 +397,65 @@ AIEnemySlotExtension.get_preferred_slot_type = function (self)
 	return self.use_slot_type or DEFAULT_SLOT_TYPE
 end
 
-local AMOUNT_LEAN_SLOTS = 8
-
-local function find_free_lean_slot(lean_slots, unit)
-	if lean_slots[unit] and lean_slots[unit] > 0 then
-		return lean_slots[unit]
-	end
-
-	if not lean_slots[1] then
-		return 1
-	end
-
-	local start_idx = math.random(2, AMOUNT_LEAN_SLOTS)
-
-	for i = start_idx, start_idx + AMOUNT_LEAN_SLOTS do
-		local idx = i % AMOUNT_LEAN_SLOTS + 1
-
-		if not lean_slots[idx] then
-			return idx
-		end
-	end
-
-	return nil
-end
-
-local SLOT_SPREAD_ANGLE = math.pi * 2 / AMOUNT_LEAN_SLOTS
-
-AIEnemySlotExtension.request_best_slot = function (self, attacker_slot_extension)
-	local unit = self.unit
-	local target_blackboard = BLACKBOARDS[unit]
-	local attacker_unit = attacker_slot_extension.unit
-	local attacker_blackboard = BLACKBOARDS[attacker_unit]
-	local lean_slots = target_blackboard.lean_slots
-	local slot_index = attacker_blackboard.lean_slot_index or find_free_lean_slot(lean_slots, attacker_unit)
-
-	if not slot_index then
-		return false
-	end
-
-	lean_slots[attacker_unit] = slot_index
-	lean_slots[slot_index] = attacker_unit
-	attacker_blackboard.lean_slot_index = slot_index
-	local target_position = POSITION_LOOKUP[unit]
-	local attacker_position = POSITION_LOOKUP[attacker_unit]
-	local dist = target_blackboard.breed.radius
-
-	if not lean_slots.center_angle then
-		lean_slots.center_angle = math.atan2(attacker_position.y - target_position.y, attacker_position.x - target_position.x)
-	end
-
-	local angle = lean_slots.center_angle + (slot_index - 1) * SLOT_SPREAD_ANGLE
-	local slot_dist = dist + attacker_slot_extension._ai_random_slot_dist
-	local x = math.cos(angle) * slot_dist + target_position.x
-	local y = math.sin(angle) * slot_dist + target_position.y
-	local z = target_position.z
-	local slot_position = Vector3(x, y, z)
-	local success, z = GwNavQueries.triangle_from_position(attacker_blackboard.nav_world, slot_position, 30, 30)
-
-	if not success then
-		return
-	end
-
-	slot_position.z = z
-	local previous_slot_pos = attacker_blackboard.slot_position_boxed and attacker_blackboard.slot_position_boxed:unbox()
-
-	if not previous_slot_pos or Vector3.distance_squared(slot_position, previous_slot_pos) > 1 then
-		if attacker_blackboard.slot_position_boxed then
-			attacker_blackboard.slot_position_boxed:store(slot_position)
-		else
-			attacker_blackboard.slot_position_boxed = Vector3Box(slot_position)
-		end
-	end
-
-	return true
-end
-
-AIEnemySlotExtension.on_ai_slot_gained = function (self, slot_provider_ext)
-	self.ai_target_slot_extension = slot_provider_ext
-	local target_unit = slot_provider_ext.unit
-	local target_blackboard = BLACKBOARDS[target_unit]
+AIEnemySlotExtension.on_ai_slot_gained = function (self, defender_unit, system)
+	local target_blackboard = BLACKBOARDS[defender_unit]
 	target_blackboard.lean_dogpile = target_blackboard.lean_dogpile + 1
 	local unit = self.unit
 	local blackboard = BLACKBOARDS[unit]
-	target_blackboard.lean_slots[self.unit] = blackboard.lean_slot_index
+	local defender_pos = POSITION_LOOKUP[defender_unit]
+	local attacker_pos = POSITION_LOOKUP[unit]
+	local infighting = target_blackboard.breed.infighting or InfightingSettings.small
+	local distance = USE_ENGINE_SLOID_SYSTEM and 3 or infighting.distance or 2
+	local attacker_infighting = blackboard.breed.infighting or InfightingSettings.small
+	local boid_radius = attacker_infighting.boid_radius or 0.3
+	local to_attacker = Vector3.normalize(attacker_pos - defender_pos) * (distance + boid_radius)
+
+	if USE_ENGINE_SLOID_SYSTEM then
+		self.sloid_id = EngineOptimized.add_sloid(defender_pos + to_attacker, boid_radius, blackboard.side.side_id, unit, defender_unit, tonumber(Unit.get_data(unit, "unique_id") or "?"))
+		local dogpiled_attackers = Managers.state.conflict.dogpiled_attackers_on_unit[defender_unit]
+
+		if not dogpiled_attackers then
+			Managers.state.conflict.dogpiled_attackers_on_unit[defender_unit] = {
+				[unit] = self.sloid_id
+			}
+		else
+			dogpiled_attackers[unit] = self.sloid_id
+		end
+
+		self.target_unit = defender_unit
+	else
+		self.gathering_ball = self.gathering:add_ball(defender_pos + to_attacker, boid_radius, unit, defender_unit)
+	end
 end
 
-AIEnemySlotExtension.on_ai_slot_lost = function (self, slot_provier_ext)
-	self.ai_target_slot_extension = nil
-	local unit = self.unit
-	local blackboard = BLACKBOARDS[unit]
+AIEnemySlotExtension.on_ai_slot_lost = function (self, target_unit)
+	if USE_ENGINE_SLOID_SYSTEM then
+		local attacker_list = Managers.state.conflict.dogpiled_attackers_on_unit[target_unit]
 
-	if blackboard then
-		blackboard.lean_slot_index = nil
+		fassert(attacker_list[self.unit], "missing dogpiled_attackers_on_unit, can't remove", target_unit)
 
-		self:_reroll_preferred_ai_slot_distance()
+		attacker_list[self.unit] = nil
+
+		print("on_ai_slot_lost, sloid_id:", self.sloid_id)
+
+		local sloid_id_changed, affected_unit = EngineOptimized.remove_sloid(self.sloid_id, self.unit)
+
+		if sloid_id_changed then
+			printf("\t-> sloid_id was changed: %s, unit-id: %s, sloid_id: %s", affected_unit, Unit.get_data(affected_unit, "unique_id"), sloid_id_changed)
+
+			local slot_ext = ScriptUnit.has_extension(affected_unit, "ai_slot_system")
+			slot_ext.sloid_id = sloid_id_changed
+		end
+
+		self.sloid_id = nil
+	else
+		if not self.gathering_ball then
+			return
+		end
+
+		self.gathering:remove_ball(self.gathering_ball)
+
+		self.gathering_ball = nil
 	end
 end
 
@@ -497,58 +464,8 @@ AIEnemySlotExtension.free_slot = function (self, slot_consumer_ext)
 	local blackboard = BLACKBOARDS[unit]
 
 	if blackboard then
-		local prev_attacker = slot_consumer_ext.unit
-		local old_slot_id = blackboard.lean_slots[prev_attacker]
-
-		if old_slot_id and old_slot_id > 0 then
-			blackboard.lean_slots[old_slot_id] = nil
-		end
-
-		blackboard.lean_slots[prev_attacker] = nil
 		blackboard.lean_dogpile = blackboard.lean_dogpile - 1
 	end
 
 	slot_consumer_ext:on_ai_slot_lost(self)
-end
-
-AIEnemySlotExtension.get_destination = function (self)
-	return
-end
-
-AIEnemySlotExtension.debug_draw = function (self, drawer, t, nav_world, i_target)
-	local unit = self.unit
-	local blackboard = BLACKBOARDS[unit]
-	local slot_position_boxed = blackboard and blackboard.slot_position_boxed
-
-	if slot_position_boxed then
-		local debug_color = script_data.debug_unit == unit and Color(255, 0, 255) or Color(255, 255, 255)
-
-		drawer:sphere(slot_position_boxed:unbox(), 0.2, debug_color)
-
-		local unit_position = POSITION_LOOKUP[self.unit]
-		local center_angle = blackboard.lean_slots.center_angle or 0
-		local breed_radius = blackboard.breed.radius
-		local lean_slot_center_height = 0.2
-		local center_x = math.cos(center_angle) * breed_radius
-		local center_y = math.sin(center_angle) * breed_radius
-
-		drawer:line(unit_position, unit_position + Vector3(center_x, center_y, 0), debug_color)
-		drawer:line(unit_position + Vector3(center_x, center_y, 0), unit_position + Vector3(center_x, center_y, lean_slot_center_height), debug_color)
-		drawer:line(unit_position, unit_position + Vector3(center_x, center_y, lean_slot_center_height), debug_color)
-		drawer:circle(unit_position, breed_radius, Vector3.up(), debug_color)
-		drawer:arrow_2d(unit_position, self.target_position:unbox(), debug_color)
-		drawer:arrow_2d(unit_position, slot_position_boxed:unbox(), debug_color)
-
-		if script_data.debug_unit == unit then
-			for i = 1, AMOUNT_LEAN_SLOTS do
-				local occupied = blackboard.lean_slots[i]
-				local slot_color = occupied and Color(255, 0, 0) or Color(255, 255, 0)
-				local slot_angle = center_angle + (i - 1) * SLOT_SPREAD_ANGLE
-				local x = math.cos(slot_angle) * (breed_radius + 1)
-				local y = math.sin(slot_angle) * (breed_radius + 1)
-
-				drawer:circle(unit_position + Vector3(x, y, 0.1), 0.35, Vector3.up(), slot_color)
-			end
-		end
-	end
 end

@@ -1888,7 +1888,8 @@ go_type_table = {
 		end,
 		buff_aoe_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local buff_aoe_extension = ScriptUnit.extension(unit, "buff_area_system")
-			local owner_player = buff_aoe_extension.owner_player
+			local owner_unit = buff_aoe_extension.owner_unit
+			local source_unit = buff_aoe_extension.source_unit
 			local life_time = buff_aoe_extension.life_time
 			local radius = buff_aoe_extension.radius
 			local removal_proc_function_name = buff_aoe_extension.removal_proc_function_name
@@ -1898,10 +1899,16 @@ go_type_table = {
 				removal_proc_function_id = NetworkLookup.proc_functions[removal_proc_function_name]
 			end
 
-			local owner_player_id = NetworkConstants.invalid_game_object_id
+			local owner_unit_id = NetworkConstants.invalid_game_object_id
 
-			if owner_player then
-				owner_player_id = owner_player.game_object_id
+			if owner_unit then
+				owner_unit_id = Managers.state.network:unit_game_object_id(owner_unit)
+			end
+
+			local source_unit_id = NetworkConstants.invalid_game_object_id
+
+			if source_unit then
+				source_unit_id = Managers.state.network:unit_game_object_id(source_unit)
 			end
 
 			local data_table = {
@@ -1911,7 +1918,8 @@ go_type_table = {
 				life_time = life_time,
 				removal_proc_function_id = removal_proc_function_id,
 				radius = radius,
-				owner_player_id = owner_player_id
+				owner_unit_id = owner_unit_id,
+				source_unit_id = source_unit_id
 			}
 
 			return data_table
@@ -2131,6 +2139,9 @@ go_type_table = {
 				proximity_system = {
 					profile = profile,
 					side = side
+				},
+				target_override_system = {
+					side = side
 				}
 			}
 			local unit_template_name = profile.unit_template_name or "player_unit_3rd"
@@ -2276,6 +2287,9 @@ go_type_table = {
 				},
 				proximity_system = {
 					profile = profile,
+					side = side
+				},
+				target_override_system = {
 					side = side
 				}
 			}
@@ -4406,17 +4420,24 @@ go_type_table = {
 			local life_time = GameSession.game_object_field(game_session, go_id, "life_time")
 			local removal_proc_function_id = GameSession.game_object_field(game_session, go_id, "removal_proc_function_id")
 			local radius = GameSession.game_object_field(game_session, go_id, "radius")
-			local owner_player_id = GameSession.game_object_field(game_session, go_id, "owner_player_id")
+			local owner_unit_id = GameSession.game_object_field(game_session, go_id, "owner_unit_id")
+			local source_unit_id = GameSession.game_object_field(game_session, go_id, "source_unit_id")
 			local removal_proc_function_name = nil
 
 			if removal_proc_function_id ~= NetworkConstants.invalid_game_object_id then
 				removal_proc_function_name = NetworkLookup.proc_functions[removal_proc_function_id]
 			end
 
-			local owner_player = nil
+			local owner_unit = nil
 
-			if owner_player_id ~= NetworkConstants.invalid_game_object_id then
-				owner_player = Managers.player:player_from_game_object_id(owner_player_id)
+			if owner_unit_id ~= NetworkConstants.invalid_game_object_id then
+				owner_unit = Managers.state.unit_storage:unit(owner_unit_id)
+			end
+
+			local source_unit = nil
+
+			if source_unit_id ~= NetworkConstants.invalid_game_object_id then
+				source_unit = Managers.state.unit_storage:unit(source_unit_id)
 			end
 
 			local extension_init_data = {
@@ -4424,7 +4445,8 @@ go_type_table = {
 					life_time = life_time,
 					removal_proc_function_name = removal_proc_function_name,
 					radius = radius,
-					player = owner_player
+					owner_unit = owner_unit,
+					source_unit = source_unit
 				}
 			}
 			local unit_template_name = "buff_aoe_unit"

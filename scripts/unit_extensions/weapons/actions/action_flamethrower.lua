@@ -67,12 +67,12 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 
 	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
 		self.state = "shooting"
-		local weapon_unit = self.weapon_unit
+		local muzzle_unit = current_action.first_person_muzzle and first_person_unit or self.weapon_unit
 		local muzzle_node_name = self.muzzle_node_name
 		local go_id = self.unit_id
-		local muzzle_node = Unit.node(weapon_unit, muzzle_node_name)
-		local muzzle_position = Unit.world_position(weapon_unit, muzzle_node)
-		local muzzle_rotation = Unit.world_rotation(weapon_unit, muzzle_node)
+		local muzzle_node = Unit.node(muzzle_unit, muzzle_node_name)
+		local muzzle_position = Unit.world_position(muzzle_unit, muzzle_node)
+		local muzzle_rotation = Unit.world_rotation(muzzle_unit, muzzle_node)
 		local flamethrower_effect = current_action.particle_effect_flames
 		local flamethrower_effect_3p = current_action.particle_effect_flames_3p
 		local flamethrower_effect_3p_id = NetworkLookup.effects[flamethrower_effect_3p]
@@ -80,7 +80,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 		if not bot_player then
 			self._flamethrower_effect = World.create_particles(world, flamethrower_effect, muzzle_position, muzzle_rotation)
 
-			World.link_particles(world, self._flamethrower_effect, weapon_unit, muzzle_node, Matrix4x4.identity(), "destroy")
+			World.link_particles(world, self._flamethrower_effect, muzzle_unit, muzzle_node, Matrix4x4.identity(), "destroy")
 		end
 
 		if is_server or LEVEL_EDITOR_TEST then

@@ -11,6 +11,7 @@ PlayerHuskLocomotionExtension.init = function (self, extension_init_context, uni
 	self.velocity_current = Vector3Box(0, 0, 0)
 	self._current_rotation = QuaternionBox(Quaternion.identity())
 	self.has_moved_from_start_position = extension_init_data.has_moved_from_start_position
+	self.anim_move_speed = 0
 	self.move_speed_anim_var = Unit.animation_find_variable(unit, "move_speed")
 
 	Managers.player:assign_unit_ownership(unit, self.player, true)
@@ -204,7 +205,7 @@ PlayerHuskLocomotionExtension.update_movement = function (self, dt, unit, moveme
 	self:_extrapolation_movement(unit, dt, old_pos, new_pos, new_rot, movement_state, velocity, linked_movement)
 	self.velocity_current:store(velocity)
 	self._current_rotation:store(new_rot)
-	self:_update_speed_variable()
+	self:_update_speed_variable(dt)
 end
 
 PlayerHuskLocomotionExtension.update_ladder_animation_position = function (self, ladder_unit)
@@ -270,14 +271,29 @@ local RUN_THRESHOLD = 6.14
 local LOWEST_MOVEMENT_ANIMATION_SCALE = 0.3
 local HIGHEST_MOVEMENT_ANIMATION_SCALE = 1.5
 local MOVE_SPEED_MAX = 99.9999
+local MOVE_SPEED_ANIM_LERP_TIME = 0.3
 
-PlayerHuskLocomotionExtension._update_speed_variable = function (self)
+PlayerHuskLocomotionExtension._update_speed_variable = function (self, dt)
 	local velocity = self.velocity_current:unbox()
 	local flat_velocity = Vector3(velocity.x, velocity.y, 0)
 	local speed = Vector3.length(flat_velocity)
+	local move_speed_lerp_val = self.anim_move_speed
+	local speed_difference = math.abs(move_speed_lerp_val - speed)
+
+	if move_speed_lerp_val < speed then
+		local delta = math.min(speed / MOVE_SPEED_ANIM_LERP_TIME * dt, speed_difference)
+		move_speed_lerp_val = math.clamp(move_speed_lerp_val + delta, 0, speed)
+		self._move_speed_top = move_speed_lerp_val
+	else
+		local ms = self._move_speed_top or speed
+		local delta = math.min(ms / MOVE_SPEED_ANIM_LERP_TIME * dt, speed_difference)
+		move_speed_lerp_val = math.clamp(move_speed_lerp_val - delta, 0, move_speed_lerp_val)
+	end
+
+	self.anim_move_speed = move_speed_lerp_val
 	local unit = self.unit
 
-	Unit.animation_set_variable(unit, self.move_speed_anim_var, math.min(speed, MOVE_SPEED_MAX))
+	Unit.animation_set_variable(unit, self.move_speed_anim_var, math.min(move_speed_lerp_val, MOVE_SPEED_MAX))
 
 	local movement_anim_scale = nil
 

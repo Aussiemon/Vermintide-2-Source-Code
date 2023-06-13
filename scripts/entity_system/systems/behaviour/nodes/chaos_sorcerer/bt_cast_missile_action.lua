@@ -50,9 +50,9 @@ BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 	local cast_target_unit = blackboard.cast_target_unit
 
 	if Unit.alive(cast_target_unit) then
-		local status_ext = ScriptUnit.extension(cast_target_unit, "status_system")
+		local status_ext = ScriptUnit.has_extension(cast_target_unit, "status_system")
 
-		if not status_ext:is_invisible() and not status_ext:get_is_dodging() then
+		if not status_ext or not status_ext:is_invisible() and not status_ext:get_is_dodging() then
 			blackboard.target_position:store(POSITION_LOOKUP[cast_target_unit])
 		end
 	else

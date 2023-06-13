@@ -358,7 +358,7 @@ PlayGoTutorialSystem._load_profile_packages = function (self)
 				local backend_id = item.backend_id
 				local item_data = item.data
 				local item_template = BackendUtils.get_item_template(item_data, backend_id)
-				local item_units = BackendUtils.get_item_units(item_data, backend_id)
+				local item_units = BackendUtils.get_item_units(item_data, backend_id, nil, career_name)
 
 				if slot_category == "weapon" then
 					local left_hand_unit_name = item_units.left_hand_unit

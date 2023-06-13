@@ -157,3 +157,9 @@ end
 TeamPreviewer.set_camera_fov = function (self, fov)
 	Camera.set_vertical_fov(self.camera, math.degrees_to_radians(fov))
 end
+
+TeamPreviewer.get_hero_previewer = function (self, index)
+	fassert(self.hero_previewers[index], "[TeamPreviewer] The hero previewer at the index %d you are trying to access does not exist!", index)
+
+	return self.hero_previewers[index] or nil
+end

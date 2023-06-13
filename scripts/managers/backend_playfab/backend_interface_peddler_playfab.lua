@@ -867,7 +867,7 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 	end
 
 	if rewards_claimed then
-		Managers.telemetry.events:store_calendar_rewards_claimed(result.FunctionResult)
+		Managers.telemetry_events:store_calendar_rewards_claimed(result.FunctionResult)
 	end
 
 	self._is_done_claiming = true

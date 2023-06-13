@@ -69,13 +69,6 @@ settings.aim_templates_file_names = {
 settings.network_sound_events = {
 	"Play_enemy_beastmen_standar_chanting_loop",
 	"Stop_enemy_beastmen_standar_chanting_loop",
-	"beastmen_patrol_forming",
-	"beastmen_patrol_formated",
-	"beastmen_patrol_player_spotted",
-	"beastmen_patrol_foley",
-	"beastmen_patrol_formate",
-	"beastmen_patrol_charge",
-	"beastmen_patrol_voice",
 	"Play_enemy_minotaur_charge_attack_miss",
 	"Play_enemy_bestigor_charge_attack_miss",
 	"Play_boss_aggro_enter"

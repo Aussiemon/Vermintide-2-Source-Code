@@ -127,6 +127,10 @@ end
 StartMenuStateOverview.on_exit = function (self, params)
 	Managers.input:disable_gamepad_cursor()
 
+	if self._active_view then
+		self:exit_current_view()
+	end
+
 	if self.menu_input_description then
 		self.menu_input_description:destroy()
 

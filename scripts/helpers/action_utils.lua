@@ -381,12 +381,12 @@ ActionUtils.get_ranged_boost = function (unit)
 	return has_ranged_boost, boost_curve_multiplier
 end
 
-ActionUtils.spawn_player_projectile = function (owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, is_critical_strike, power_level, gaze_settings)
+ActionUtils.spawn_player_projectile = function (owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, is_critical_strike, power_level, gaze_settings, charge_level)
 	scale = scale or 100
 	local projectile_system = Managers.state.entity:system("projectile_system")
 	local ping = 0
 
-	projectile_system:spawn_player_projectile(owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, ping, is_critical_strike, power_level, gaze_settings)
+	projectile_system:spawn_player_projectile(owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, ping, is_critical_strike, power_level, gaze_settings, charge_level)
 end
 
 ActionUtils.spawn_pickup_projectile = function (world, weapon_unit, projectile_unit_name, projectile_unit_template_name, current_action, owner_unit, position, rotation, velocity, angular_velocity, item_name, spawn_type)
@@ -454,7 +454,6 @@ end
 ActionUtils.spawn_true_flight_projectile = function (owner_unit, target_unit, true_flight_template_id, position, rotation, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, scale, is_critical_strike, power_level)
 	local projectile_system = Managers.state.entity:system("projectile_system")
 	local true_flight_template_name = TrueFlightTemplatesLookup[true_flight_template_id]
-	scale = scale or 100
 
 	projectile_system:spawn_true_flight_projectile(owner_unit, target_unit, true_flight_template_name, position, rotation, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, scale, is_critical_strike, power_level)
 end
@@ -649,11 +648,11 @@ ActionUtils.play_husk_sound_event = function (wwise_world, sound_event, player_u
 	end
 end
 
-ActionUtils.get_critical_strike_chance = function (unit, action)
+ActionUtils.get_critical_strike_chance = function (unit, action, overrides)
 	local career_extension = ScriptUnit.extension(unit, "career_system")
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 	local base_crit_chance = career_extension:get_base_critical_strike_chance()
-	local additional_crit_chance = action.additional_critical_strike_chance or 0
+	local additional_crit_chance = overrides.additional_critical_strike_chance or action.additional_critical_strike_chance or 0
 	local crit_chance = base_crit_chance + additional_crit_chance
 	local action_type = action.kind
 	local is_melee_action = action_type == "sweep" or action_type == "push_stagger" or action_type == "shield_slam"
@@ -671,7 +670,7 @@ end
 
 local last_attack_critical = false
 
-ActionUtils.is_critical_strike = function (unit, action, t)
+ActionUtils.is_critical_strike = function (unit, action, t, overrides)
 	local buff_extension = ScriptUnit.extension(unit, "buff_system")
 	local talent_extension = ScriptUnit.extension(unit, "talent_system")
 	local is_crit = false
@@ -688,7 +687,7 @@ ActionUtils.is_critical_strike = function (unit, action, t)
 	elseif talent_extension:has_talent_perk("no_random_crits") then
 		is_crit = false
 	else
-		local crit_chance = ActionUtils.get_critical_strike_chance(unit, action)
+		local crit_chance = ActionUtils.get_critical_strike_chance(unit, action, overrides or action)
 		is_crit = buff_extension:has_procced(crit_chance, action or "ACTION_UNKNOWN")
 	end
 

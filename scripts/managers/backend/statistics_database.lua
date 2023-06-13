@@ -83,7 +83,8 @@ local RPCS = {
 	"rpc_increment_stat",
 	"rpc_increment_stat_group",
 	"rpc_set_local_player_stat",
-	"rpc_modify_stat"
+	"rpc_modify_stat",
+	"rpc_increment_stat_party"
 }
 
 StatisticsDatabase.register_network_event_delegate = function (self, network_event_delegate)
@@ -611,6 +612,26 @@ StatisticsDatabase.rpc_increment_stat_group = function (self, channel_id, group_
 	local stats_id = player:stats_id()
 
 	self:increment_stat(stats_id, stat_group_name, stat_name)
+end
+
+StatisticsDatabase.rpc_increment_stat_party = function (self, channel_id, stat_id)
+	if Managers.state.network.is_server then
+		local network_transmit = Managers.state.network.network_transmit
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		network_transmit:send_rpc_clients_except("rpc_increment_stat_party", peer_id, stat_id)
+	end
+
+	local player = Managers.player:local_player()
+
+	if not player then
+		return
+	end
+
+	local stats_id = player:stats_id()
+	local stat_name = NetworkLookup.statistics[stat_id]
+
+	self:increment_stat(stats_id, stat_name)
 end
 
 StatisticsDatabase.rpc_set_local_player_stat = function (self, channel_id, stat_id, amount)

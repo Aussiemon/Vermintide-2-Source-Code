@@ -3,7 +3,7 @@ local function count_event_breed(breed_name)
 end
 
 local function spawned_during_event()
-	return Managers.state.conflict:spawned_during_event()
+	return Managers.state.conflict:enemies_spawned_during_event()
 end
 
 local NORMAL = 2

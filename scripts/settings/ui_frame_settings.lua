@@ -1188,5 +1188,26 @@ UIFrameSettings = {
 				10
 			}
 		}
+	},
+	versus_hero_selection_hero_portrait_frame = {
+		texture = "versus_hero_selection_hero_portrait_frame",
+		texture_size = {
+			64,
+			64
+		},
+		texture_sizes = {
+			corner = {
+				14,
+				14
+			},
+			vertical = {
+				4,
+				1
+			},
+			horizontal = {
+				1,
+				4
+			}
+		}
 	}
 }

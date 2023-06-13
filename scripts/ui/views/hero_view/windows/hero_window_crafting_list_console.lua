@@ -93,7 +93,7 @@ HeroWindowCraftingListConsole.on_enter = function (self, params, offset)
 	self.conditions_params = {
 		hero_name = self.hero_name,
 		career_name = career_name,
-		rarities_to_ignore = table.enum("magic")
+		rarities_to_ignore = table.enum_safe("magic")
 	}
 
 	self:_populate_buttons(page_settings)

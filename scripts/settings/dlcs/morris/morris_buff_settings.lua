@@ -684,10 +684,12 @@ dlc_settings.buff_function_templates = {
 				local item_id = NetworkLookup.item_names[item_name]
 				local weapon_skin_id = NetworkLookup.weapon_skins["n/a"]
 
-				if is_server() then
-					network_transmit:send_rpc_clients("rpc_add_equipment", go_id, slot_id, item_id, weapon_skin_id)
-				else
-					network_transmit:send_rpc_server("rpc_add_equipment", go_id, slot_id, item_id, weapon_skin_id)
+				if go_id then
+					if is_server() then
+						network_transmit:send_rpc_clients("rpc_add_equipment", go_id, slot_id, item_id, weapon_skin_id)
+					else
+						network_transmit:send_rpc_server("rpc_add_equipment", go_id, slot_id, item_id, weapon_skin_id)
+					end
 				end
 
 				local wielded_slot_name = inventory_extension:get_wielded_slot_name()
@@ -2953,7 +2955,9 @@ dlc_settings.proc_functions = {
 				if distance_sq < range * range then
 					local go_id = Managers.state.unit_storage:go_id(unit)
 
-					Managers.state.network.network_transmit:send_rpc_server("rpc_server_reduce_activated_ability_cooldown_percent", go_id, amount, ability_id, true)
+					if go_id then
+						Managers.state.network.network_transmit:send_rpc_server("rpc_server_reduce_activated_ability_cooldown_percent", go_id, amount, ability_id, true)
+					end
 				end
 			end
 		end
@@ -4828,58 +4832,18 @@ dlc_settings.buff_templates = {
 				initial_radius = 1,
 				aoe_dot_damage_interval = 1,
 				aoe_init_difficulty_damage = {
-					{
-						5,
-						1,
-						0
-					},
-					{
-						5,
-						1,
-						0
-					},
-					{
-						5,
-						1,
-						0
-					},
-					{
-						5,
-						1,
-						0
-					},
-					{
-						5,
-						1,
-						0
-					}
+					5,
+					5,
+					5,
+					5,
+					5
 				},
 				aoe_dot_difficulty_damage = {
-					{
-						10,
-						0,
-						0
-					},
-					{
-						10,
-						0,
-						0
-					},
-					{
-						10,
-						0,
-						0
-					},
-					{
-						10,
-						0,
-						0
-					},
-					{
-						10,
-						0,
-						0
-					}
+					10,
+					10,
+					10,
+					10,
+					10
 				}
 			},
 			{

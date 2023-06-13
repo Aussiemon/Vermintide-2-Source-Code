@@ -29,7 +29,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			1
+			10
 		}
 	},
 	summary_title = {
@@ -58,6 +58,20 @@ local scenegraph_definition = {
 			0,
 			0,
 			-1
+		}
+	},
+	level = {
+		vertical_alignment = "top",
+		parent = "title_bg",
+		horizontal_alignment = "center",
+		size = {
+			180,
+			180
+		},
+		position = {
+			0,
+			200,
+			5
 		}
 	},
 	player_panel_1 = {
@@ -176,6 +190,21 @@ local summary_title_style = {
 		2
 	}
 }
+local difficulty_subtitle_style = {
+	word_wrap = true,
+	font_size = 32,
+	localize = false,
+	use_shadow = true,
+	horizontal_alignment = "center",
+	vertical_alignment = "center",
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
 local tobii_title_style = {
 	word_wrap = true,
 	upper_case = true,
@@ -209,6 +238,7 @@ local tobii_description_style = {
 	}
 }
 local widgets = {
+	level = UIWidgets.create_level_widget("level"),
 	summary_title = UIWidgets.create_simple_text(Localize("end_screen_scoreboard"), "summary_title", nil, nil, summary_title_style),
 	title_bg = UIWidgets.create_simple_texture("tab_menu_bg_03", "title_bg"),
 	scores_topics = UIWidgets.create_score_topics("scores_topics", scenegraph_definition.scores_topics.size, topics_hover_length, MAX_SCORE_PANEL_ROWS)
@@ -370,6 +400,22 @@ local animation_definitions = {
 				local anim_progress = math.easeInCubic(1 - progress)
 				ui_scenegraph.player_panel_1.local_position[1] = -700 - 400 * anim_progress
 				ui_scenegraph.player_panel_4.local_position[1] = 700 + 400 * anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		},
+		{
+			name = "move_level",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				local anim_progress = 1
+				ui_scenegraph.level.local_position[2] = scenegraph_definition.level.position[2] + 50 * anim_progress
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = 1 - math.easeOutCubic(progress)
+				ui_scenegraph.level.local_position[2] = scenegraph_definition.level.position[2] + 50 * anim_progress
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return

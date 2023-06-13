@@ -22,7 +22,13 @@ GameModeBase.init = function (self, settings, world, network_server, is_server, 
 	self._player_spawners = {}
 	self._pending_bot_remove = {}
 	self._num_pending_bot_remove = 0
-	self._game_mode_state = "initial_state"
+	local new_state = "initial_state"
+
+	if DEDICATED_SERVER then
+		cprintf("[GameMode] State Changed from '%s' to '%s'", self._game_mode_state or "None", new_state)
+	end
+
+	self._game_mode_state = new_state
 end
 
 GameModeBase.destroy = function (self)
@@ -216,7 +222,9 @@ GameModeBase.evaluate_end_conditions = function (self)
 end
 
 GameModeBase.ready_to_transition = function (self)
-	Managers.level_transition_handler:promote_next_level_data()
+	if Managers.level_transition_handler:has_next_level() then
+		Managers.level_transition_handler:promote_next_level_data()
+	end
 end
 
 GameModeBase.wanted_transition = function (self)
@@ -318,6 +326,10 @@ end
 
 GameModeBase.change_game_mode_state = function (self, state_name)
 	printf("[GameMode] Changing game mode state to %s", state_name)
+
+	if DEDICATED_SERVER then
+		cprintf("[GameMode] State Changed from '%s' to '%s'", tostring(self._game_mode_state), state_name)
+	end
 
 	self._game_mode_state = state_name
 

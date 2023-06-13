@@ -1,6 +1,5 @@
 DisruptRitualSystem = class(DisruptRitualSystem, ExtensionSystemBase)
 local extension_name = "DisruptRitualExtension"
-local profiler_name = nil
 
 DisruptRitualSystem.init = function (self, entity_system_creation_context, ...)
 	DisruptRitualSystem.super.init(self, entity_system_creation_context, ...)
@@ -9,7 +8,7 @@ DisruptRitualSystem.init = function (self, entity_system_creation_context, ...)
 	self._units = {}
 	self._is_server = entity_system_creation_context.is_server
 	self._extension_list = {}
-	profiler_name = self.profiler_names.DisruptRitualExtension
+	self._profiler_name = self.profiler_names.DisruptRitualExtension
 end
 
 DisruptRitualSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)

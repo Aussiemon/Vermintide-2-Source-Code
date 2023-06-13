@@ -2,7 +2,6 @@ WardSystem = class(WardSystem, ExtensionSystemBase)
 local extensions = {
 	"WardExtension"
 }
-local profiler_name = nil
 
 WardSystem.init = function (self, entity_system_creation_context, system_name, ...)
 	WardSystem.super.init(self, entity_system_creation_context, system_name, extensions, ...)
@@ -11,7 +10,7 @@ WardSystem.init = function (self, entity_system_creation_context, system_name, .
 	self._units = {}
 	self._to_update = {}
 	self._lookup = {}
-	profiler_name = self.profiler_names.WardExtension
+	self._profiler_name = self.profiler_names.WardExtension
 end
 
 WardSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)

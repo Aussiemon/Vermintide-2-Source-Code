@@ -365,7 +365,7 @@ MatchmakingStateStartGame._capture_telemetry = function (self)
 	local time_taken = Managers.time:time("main") - self.state_context.started_matchmaking_t
 	local using_strict_matchmaking = self.search_config.strict_matchmaking
 
-	Managers.telemetry.events:matchmaking_starting_game(player, time_taken, self.search_config)
+	Managers.telemetry_events:matchmaking_starting_game(player, time_taken, self.search_config)
 end
 
 MatchmakingStateStartGame._handle_verify_dlcs = function (self, dt, t)

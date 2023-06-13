@@ -153,7 +153,7 @@ function flow_callback_ai_follow_path(params)
 	if ScriptUnit.has_extension(ai_entity, "spawner_system") then
 		local spawner = ScriptUnit.extension(ai_entity, "spawner_system")
 
-		for ai_unit, _ in pairs(spawner:spawned_units()) do
+		for ai_unit, _ in pairs(spawner:spawned_enemies()) do
 			local ai_base = ScriptUnit.extension(ai_unit, "ai_system")
 			ai_base:blackboard().move_orders[spline_name] = {
 				name = "follow",
@@ -176,7 +176,7 @@ function flow_callback_ai_patrol_path(params)
 	if ScriptUnit.has_extension(ai_entity, "spawner_system") then
 		local spawner = ScriptUnit.extension(ai_entity, "spawner_system")
 
-		for ai_unit, _ in pairs(spawner:spawned_units()) do
+		for ai_unit, _ in pairs(spawner:spawned_enemies()) do
 			local ai_base = ScriptUnit.extension(ai_unit, "ai_system")
 			ai_base:blackboard().move_orders[spline_name] = {
 				name = "patrol"
@@ -198,7 +198,7 @@ function flow_callback_ai_move_to_command(params)
 	if ScriptUnit.has_extension(ai_entity, "spawner_system") then
 		local spawner = ScriptUnit.extension(ai_entity, "spawner_system")
 
-		for ai_unit, _ in pairs(spawner:spawned_units()) do
+		for ai_unit, _ in pairs(spawner:spawned_enemies()) do
 			local ai_base = ScriptUnit.extension(ai_unit, "ai_system")
 			ai_base:blackboard().move_orders[waypoint_unit] = {
 				name = "move",
@@ -221,7 +221,7 @@ function flow_callback_ai_detect_player(params)
 	if ScriptUnit.has_extension(ai_entity, "spawner_system") then
 		local spawner = ScriptUnit.extension(ai_entity, "spawner_system")
 
-		for ai_unit, _ in pairs(spawner:spawned_units()) do
+		for ai_unit, _ in pairs(spawner:spawned_enemies()) do
 			local ai_base = ScriptUnit.extension(ai_unit, "ai_system")
 			ai_base:blackboard().players[player_unit] = true
 		end
@@ -237,7 +237,7 @@ function flow_callback_ai_hold_position(params)
 	if ScriptUnit.has_extension(ai_entity, "spawner_system") then
 		local spawner = ScriptUnit.extension(ai_entity, "spawner_system")
 
-		for ai_unit, _ in pairs(spawner:spawned_units()) do
+		for ai_unit, _ in pairs(spawner:spawned_enemies()) do
 			local ai_base = ScriptUnit.extension(ai_unit, "ai_system")
 
 			ai_base:steering():reset()
@@ -266,7 +266,7 @@ function flow_callback_set_ai_properties(params)
 	if ScriptUnit.has_extension(ai_entity, "spawner_system") then
 		local spawner = ScriptUnit.extension(ai_entity, "spawner_system")
 
-		for ai_unit, _ in pairs(spawner:spawned_units()) do
+		for ai_unit, _ in pairs(spawner:spawned_enemies()) do
 			local ai_base = ScriptUnit.extension(ai_unit, "ai_system")
 
 			ai_base:set_properties(params)
@@ -284,7 +284,7 @@ function flow_callback_set_ai_perception(params)
 	if ScriptUnit.has_extension(ai_entity, "spawner_system") then
 		local spawner = ScriptUnit.extension(ai_entity, "spawner_system")
 
-		for ai_unit, _ in pairs(spawner:spawned_units()) do
+		for ai_unit, _ in pairs(spawner:spawned_enemies()) do
 			local ai_base = ScriptUnit.extension(ai_unit, "ai_system")
 
 			ai_base:perception():set_config(params)

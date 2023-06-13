@@ -9,7 +9,7 @@ LoadTimeManager.init = function (self)
 	self._current_lobby = nil
 end
 
-LoadTimeManager.start_timer = function (self)
+LoadTimeManager.start_timer = function (self, time_spent_in_level, end_reason)
 	if Managers.time:has_timer("loading_timer") then
 		Managers.time:unregister_timer("loading_timer")
 	end
@@ -18,6 +18,8 @@ LoadTimeManager.start_timer = function (self)
 
 	self._current_lobby = nil
 	self._lobby_failed = false
+	self._time_spent_in_level = time_spent_in_level or -1
+	self._end_reason = end_reason or "unknown"
 
 	table.clear(self._members_joined)
 	table.clear(self._members_left)
@@ -123,6 +125,8 @@ LoadTimeManager.end_timer = function (self)
 	LOAD_TIME_DATA.parameters = {
 		from_level = previous_level_key,
 		to_level = level_key,
+		end_reason = self._end_reason,
+		time_spent_in_level = self._time_spent_in_level,
 		members_joined = #self._members_joined,
 		members_left = #self._members_left,
 		lobby_failed = self._lobby_failed,

@@ -25,7 +25,6 @@ ContractPresentationScreenUI.init = function (self, ingame_ui_context)
 	input_manager:map_device_to_service("contract_presentation_screen_ui", "mouse")
 	input_manager:map_device_to_service("contract_presentation_screen_ui", "gamepad")
 	self:_create_ui_elements()
-	rawset(_G, "contract_log_ui", self)
 end
 
 ContractPresentationScreenUI.on_enter = function (self, ignore_input_blocking)
@@ -63,8 +62,6 @@ end
 
 ContractPresentationScreenUI.destroy = function (self)
 	self.ui_animator = nil
-
-	rawset(_G, "contract_log_ui", nil)
 end
 
 ContractPresentationScreenUI.update = function (self, dt, t)

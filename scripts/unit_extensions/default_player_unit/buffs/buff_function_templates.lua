@@ -501,7 +501,7 @@ BuffFunctionTemplates.functions = {
 	end,
 	start_dot_damage = function (unit, buff, params)
 		if buff.template.start_flow_event then
-			Unit.flow_event(unit, buff.template.start_flow_event)
+			Unit.flow_event(unit, buff.template.start_flow_event, params)
 		end
 
 		if buff.template.damage_type == "burninating" then
@@ -625,7 +625,7 @@ BuffFunctionTemplates.functions = {
 			local death_flow_event = buff.template.death_flow_event
 
 			if death_flow_event then
-				Unit.flow_event(unit, death_flow_event)
+				Unit.flow_event(unit, death_flow_event, params)
 			end
 		end
 	end,
@@ -1235,61 +1235,6 @@ BuffFunctionTemplates.functions = {
 
 		buff.warpfire_next_t = params.t + 0.1
 	end,
-	apply_warpfire_thrower_long_distance_damage = function (unit, buff, params, world)
-		local breed = Unit.get_data(unit, "breed")
-		buff.armor_type = breed.armor_category or 1
-		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
-
-		if first_person_extension then
-			buff.warpfire_particle_id = first_person_extension:create_screen_particles("fx/screenspace_warpfire_hit_onfeet")
-		end
-
-		local attacker_unit = params.attacker_unit
-
-		if Unit.alive(attacker_unit) then
-			local warpfire_unit_breed = Unit.get_data(attacker_unit, "breed")
-			local damage = warpfire_unit_breed.shoot_warpfire_long_attack_damage
-			buff.damage = damage
-			buff.damage_source = warpfire_unit_breed and warpfire_unit_breed.name or "dot_debuff"
-		end
-	end,
-	update_warpfire_thrower_long_distance_damage = function (unit, buff, params, world)
-		local t = params.t
-		local buff_template = buff.template
-
-		if Managers.state.network.is_server then
-			local health_extension = ScriptUnit.extension(unit, "health_system")
-
-			if health_extension:is_alive() then
-				local attacker_unit = params.attacker_unit
-				local attacker_unit = Unit.alive(attacker_unit) and attacker_unit or unit
-				local armor_type = buff.armor_type
-				local buff_template = buff.template
-				local damage_type = buff_template.damage_type
-				local damage = buff.damage[armor_type]
-				local damage_source = buff.damage_source
-
-				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
-			end
-		end
-
-		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
-
-		if first_person_extension then
-			first_person_extension:play_hud_sound_event("Play_player_damage_puke")
-		end
-
-		local warpfire_next_t = t + buff_template.time_between_dot_damages
-
-		return warpfire_next_t
-	end,
-	remove_warpfire_thrower_long_distance_damage = function (unit, buff, params, world)
-		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
-
-		if first_person_extension then
-			first_person_extension:stop_spawning_screen_particles(buff.warpfire_particle_id)
-		end
-	end,
 	update_moving_through_warpfire = function (unit, buff, params, world)
 		local t = params.t
 		local buff_template = buff.template
@@ -1865,6 +1810,31 @@ BuffFunctionTemplates.functions = {
 		local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 		buff_extension:add_buff(buff_name)
+	end,
+	add_buff_synced = function (unit, buff, params)
+		local template = buff.template
+
+		if template.ignore_if_client and not Managers.state.network.is_server then
+			return
+		end
+
+		local sync_type = template.sync_type
+		local peer_id = nil
+
+		if sync_type == BuffSyncType.Client or sync_type == BuffSyncType.ClientAndServer then
+			local player = Managers.player:owner(unit)
+
+			if not player then
+				print(string.format("Tried adding peer_id requiring buff on a unit which no peer owns. Defaulting to own peer_id. (%s)", template.name))
+			end
+
+			peer_id = player and player.peer_id or Network.peer_id()
+		end
+
+		local buff_to_add = template.buff_to_add
+		local buff_system = Managers.state.entity:system("buff_system")
+
+		buff_system:add_buff_synced(unit, buff_to_add, sync_type, nil, peer_id)
 	end,
 	add_buff_server_controlled = function (unit, buff, params)
 		local game = Managers.state.network:game()

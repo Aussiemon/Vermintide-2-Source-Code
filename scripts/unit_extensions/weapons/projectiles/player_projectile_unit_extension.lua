@@ -80,6 +80,7 @@ PlayerProjectileUnitExtension.init = function (self, extension_init_context, uni
 
 	self._time_initialized = extension_init_data.time_initialized
 	self.scale = extension_init_data.scale
+	self.charge_level = (extension_init_data.charge_level or 0) / 100
 	self._num_targets_hit = 0
 	self._hit_units = {}
 	self._hit_afro_units = {}
@@ -128,6 +129,10 @@ PlayerProjectileUnitExtension.initialize_projectile = function (self, projectile
 			self._life_time = math.huge
 		else
 			self:_activate_life_time(self._time_initialized)
+		end
+
+		if timed_data.charge_time then
+			self._charge_t = self._time_initialized + timed_data.charge_time * (1 - self.charge_level)
 		end
 	end
 
@@ -224,6 +229,10 @@ PlayerProjectileUnitExtension.update = function (self, unit, input, _, context, 
 		return
 	end
 
+	if self._delayed_external_events then
+		self:_update_delayed_external_event(t)
+	end
+
 	if self._anim_blend_enabled then
 		local owner_unit = self._owner_unit_1p
 		local anim_blend_settings = self.projectile_info.anim_blend_settings
@@ -309,6 +318,9 @@ PlayerProjectileUnitExtension.handle_timed_events = function (self, t)
 	if self._charge_t and self._charge_t <= t then
 		self._charge_t = nil
 		self.is_charged = true
+		local flow_event_name = self._timed_data.charged_flow_event
+
+		Unit.flow_event(self._projectile_unit, flow_event_name)
 	end
 end
 
@@ -493,10 +505,6 @@ PlayerProjectileUnitExtension._activate_life_time = function (self, game_time)
 	end
 
 	self._life_time = game_time + timed_data.life_time
-
-	if timed_data.charge_time then
-		self._charge_t = game_time + timed_data.charge_time
-	end
 end
 
 PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, breed, has_ranged_boost, ranged_boost_curve_multiplier)
@@ -578,20 +586,7 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 		self:stop(hit_unit, hit_zone_name, hit_normal)
 	end
 
-	local current_action = self._current_action
-
-	if current_action.use_max_targets then
-		if current_action.max_targets <= self._num_targets_hit then
-			if self._num_additional_penetrations > 0 then
-				forced_penetration = true
-			else
-				local hit_enemy_or_player = true
-
-				self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, allow_link, shield_blocked, hit_enemy_or_player)
-				self:stop(hit_unit, hit_zone_name, hit_normal)
-			end
-		end
-	elseif self._max_mass <= self._amount_of_mass_hit then
+	if self._max_mass <= self._amount_of_mass_hit then
 		if self._num_additional_penetrations > 0 then
 			forced_penetration = true
 		else
@@ -798,29 +793,14 @@ PlayerProjectileUnitExtension.hit_player = function (self, impact_data, hit_unit
 			self:stop()
 		end
 
-		if not impact_data.no_stop_on_friendly_fire then
-			local action = self._current_action
+		if not impact_data.no_stop_on_friendly_fire and self._max_mass <= self._amount_of_mass_hit then
+			if self._num_additional_penetrations > 0 then
+				forced_penetration = true
+			else
+				local hit_player_or_enemy = true
 
-			if action.use_max_targets then
-				if action.max_targets <= self._num_targets_hit then
-					if self._num_additional_penetrations > 0 then
-						forced_penetration = true
-					else
-						local hit_player_or_enemy = true
-
-						self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, allow_link, shield_blocked, hit_player_or_enemy)
-						self:stop()
-					end
-				end
-			elseif self._max_mass <= self._amount_of_mass_hit then
-				if self._num_additional_penetrations > 0 then
-					forced_penetration = true
-				else
-					local hit_player_or_enemy = true
-
-					self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, allow_link, shield_blocked, hit_player_or_enemy)
-					self:stop()
-				end
+				self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, allow_link, shield_blocked, hit_player_or_enemy)
+				self:stop()
 			end
 		end
 	end

@@ -45,6 +45,7 @@ EndViewStateScore.on_enter = function (self, params)
 	local players_session_score = self._context.players_session_score
 
 	self:_setup_player_scores(players_session_score)
+	self:_setup_level_widget()
 	self:_play_sound("play_gui_mission_summary_team_summary_enter")
 end
 
@@ -378,9 +379,10 @@ end
 EndViewStateScore._start_transition_animation = function (self, key, animation_name)
 	local params = {
 		wwise_world = self.wwise_world,
-		render_settings = self.render_settings
+		render_settings = self.render_settings,
+		self = self
 	}
-	local widgets = {}
+	local widgets = self._hero_widgets
 	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
 	self._animations[key] = anim_id
 end
@@ -501,6 +503,18 @@ EndViewStateScore._setup_player_scores = function (self, players_session_scores)
 	end
 
 	self:_setup_score_panel(score_panel_scores, player_names)
+end
+
+EndViewStateScore._setup_level_widget = function (self)
+	local content = self._widgets_by_name.level.content
+	local level_key = self._context.level_key
+	local level_settings = LevelSettings[level_key]
+	local level_image = level_settings and level_settings.level_image or "level_image_any"
+	content.icon = level_image
+	local difficulty_key = self._context.difficulty
+	local difficulty_settings = DifficultySettings[difficulty_key]
+	local frame_image = difficulty_settings and difficulty_settings.completed_frame_texture or "map_frame_00"
+	content.frame = frame_image
 end
 
 local position_colors = {

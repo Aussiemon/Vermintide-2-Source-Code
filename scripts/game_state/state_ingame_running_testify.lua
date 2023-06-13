@@ -24,14 +24,14 @@ local StateInGameRunningTestify = {
 		local avg_fps = state_ingame_running._fps_reporter_testify:avg_fps()
 		local cam_pos, cam_rot = Managers.free_flight:camera_position_rotation(1)
 
-		Managers.telemetry.events:fps_at_point(point_id, cam_pos, cam_rot, avg_fps)
+		Managers.telemetry_events:fps_at_point(point_id, cam_pos, cam_rot, avg_fps)
 
 		state_ingame_running._fps_reporter_testify = nil
 	end,
 	memory_usage = function (index)
 		local memory_usage = Memory.usage()
 
-		Managers.telemetry.events:memory_usage(index, memory_usage)
+		Managers.telemetry_events:memory_usage(index, memory_usage)
 	end,
 	wait_for_level_to_be_loaded = function (_, state_ingame_running)
 		if not state_ingame_running._game_started_current_frame then

@@ -177,13 +177,13 @@ end
 BTLeaveHooks.leave_attack_grabbed_smash = function (unit, blackboard, t)
 	local victim_is_alive = Unit.alive(blackboard.victim_grabbed)
 
-	if blackboard.stagger and victim_is_alive or victim_is_alive and not AiUtils.unit_alive(unit) then
-		StatusUtils.set_grabbed_by_chaos_spawn_network(blackboard.victim_grabbed, false, unit)
+	if blackboard.stagger or not AiUtils.unit_alive(unit) or not victim_is_alive then
+		if victim_is_alive then
+			StatusUtils.set_grabbed_by_chaos_spawn_network(blackboard.victim_grabbed, false, unit)
+		end
 
 		blackboard.has_grabbed_victim = nil
 		blackboard.victim_grabbed = nil
-	else
-		blackboard.wants_to_throw = true
 	end
 
 	blackboard.override_target_unit = nil

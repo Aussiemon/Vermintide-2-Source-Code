@@ -378,17 +378,17 @@ settings.buff_templates = {
 							{
 								name = "radius",
 								value = {
-									z = 1,
-									x = 4,
-									y = 4
+									4,
+									4,
+									1
 								}
 							},
 							{
 								name = "diameter",
 								value = {
-									z = 1,
-									x = 8,
-									y = 8
+									8,
+									8,
+									1
 								}
 							}
 						}

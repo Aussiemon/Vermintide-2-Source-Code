@@ -125,9 +125,9 @@ BuffUtils.create_attached_particles = function (world, particle_fx, unit, is_fir
 						local data = fx.custom_variables[i]
 						local name = data.name
 						data.cached_id = data.cached_id or World.find_particles_variable(world, fx.effect, name)
-						local value = data.value
+						local value = data.value or data.dynamic_value()
 						local unit_scale = Unit.local_scale(unit, 0)
-						local effect_variable = Vector3.divide_elements(Vector3(value.x, value.y, value.z), unit_scale)
+						local effect_variable = Vector3.divide_elements(Vector3Aux.unbox(value), unit_scale)
 
 						World.set_particles_variable(world, fx_id, data.cached_id, effect_variable)
 					end

@@ -139,7 +139,7 @@ HeroViewStateStore.on_enter = function (self, params)
 	end
 
 	self:_create_ui_elements(params)
-	Managers.telemetry.events:store_opened()
+	Managers.telemetry_events:store_opened()
 
 	if params.initial_state then
 		params.initial_state = nil
@@ -848,7 +848,7 @@ HeroViewStateStore.on_exit = function (self, params)
 		LevelHelper:flow_event(self._world, flow_event)
 	end
 
-	Managers.telemetry.events:store_closed()
+	Managers.telemetry_events:store_closed()
 end
 
 HeroViewStateStore._close_active_windows = function (self, force_unload)
@@ -1312,7 +1312,7 @@ HeroViewStateStore.product_purchase_request = function (self, product)
 					local backend_items = Managers.backend:get_interface("items")
 
 					backend_items:add_steam_items(item_list)
-					Managers.telemetry.events:steam_store_product_purchased(product)
+					Managers.telemetry_events:steam_store_product_purchased(product)
 
 					local bundle_contains = product.item.data.bundle_contains
 

@@ -1,4 +1,17 @@
 ActionSweep = class(ActionSweep, ActionBase)
+local OVERRIDABLE_ACTION_DATA_KEYS = {
+	"damage_profile",
+	"impact_sound_event",
+	"no_damage_impact_sound_event",
+	"slide_armour_hit",
+	"hit_mass_count",
+	"hit_effect",
+	"use_precision_sweep",
+	"invert_attack_direction",
+	"additional_critical_strike_chance",
+	"hit_stop_anim"
+}
+local OVERRIDABLE_ACTION_DATA_KEYS_N = #OVERRIDABLE_ACTION_DATA_KEYS
 local unit_alive = Unit.alive
 local unit_get_data = Unit.get_data
 local unit_world_position = Unit.world_position
@@ -74,9 +87,11 @@ ActionSweep.init = function (self, world, item_name, is_server, owner_unit, dama
 	self.stored_half_extents:store(weapon_half_extents)
 
 	self._hit_units = {}
+	self._overridable_settings = {}
 	self._could_damage_last_update = false
 	self._has_played_rumble_effect = false
 	self._status_extension = ScriptUnit.extension(owner_unit, "status_system")
+	self._weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
 	self._stored_attack_data = {}
 	self._dt = 0
 end
@@ -138,6 +153,17 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	local anim_time_scale = ActionUtils.get_action_time_scale(owner_unit, new_action)
 	self._anim_time_scale = anim_time_scale
 	self._time_to_hit = t + (new_action.hit_time or 0) / anim_time_scale
+	local overrides = nil
+	local mode_key = new_action.weapon_mode_key
+	local mode_overrides = new_action.weapon_mode_overrides
+
+	if mode_key then
+		local mode = self._weapon_extension:get_custom_data(mode_key)
+		overrides = mode_overrides[mode]
+	end
+
+	self:_populate_sweep_action_data(new_action, overrides)
+
 	local action_hand = action_init_data and action_init_data.action_hand
 	local damage_profile_name = self:_get_damage_profile_name(action_hand, new_action)
 	self._action_hand = action_hand
@@ -149,7 +175,7 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	self._has_starting_melee_boost = nil
 	self._starting_melee_boost_curve_multiplier = nil
 	local has_melee_boost, _ = self:_get_power_boost()
-	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t) or has_melee_boost
+	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action, t, overrides) or has_melee_boost
 	local difficulty_level = Managers.state.difficulty:get_difficulty()
 	local cleave_power_level = ActionUtils.scale_power_levels(power_level, "cleave", owner_unit, difficulty_level)
 	cleave_power_level = buff_extension:apply_buffs_to_value(cleave_power_level, "power_level_melee")
@@ -196,7 +222,7 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 
 	unit_flow_event(first_person_unit, "sfx_swing_started")
 
-	if new_action.use_precision_sweep then
+	if self._overridable_settings.use_precision_sweep then
 		first_person_extension:disable_rig_movement()
 
 		local physics_world = World.get_data(self.world, "physics_world")
@@ -419,7 +445,7 @@ end
 
 ActionSweep._get_target_hit_mass = function (self, difficulty_rank, shield_blocked, current_action, breed, hit_unit_id, hit_unit)
 	local hit_mass_total = shield_blocked and (breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank] or breed.hit_mass_count_block) or breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank] or breed.hit_mass_count or 1
-	local action_mass_override = current_action.hit_mass_count
+	local action_mass_override = self._overridable_settings.hit_mass_count
 
 	if self._unlimited_cleave then
 		hit_mass_total = 0
@@ -488,7 +514,7 @@ ActionSweep._calculate_attack_direction = function (self, action, weapon_rotatio
 	local quaternion_axis = action.attack_direction or "forward"
 	local attack_direction = Quaternion[quaternion_axis](weapon_rotation)
 
-	return action.invert_attack_direction and -attack_direction or attack_direction
+	return self._overridable_settings.invert_attack_direction and -attack_direction or attack_direction
 end
 
 ActionSweep._check_backstab = function (self, breed, is_dummy_unit, hit_unit, owner_unit, buff_extension, first_person_extension)
@@ -720,7 +746,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 	local weapon_furthest_point = position_current + current_rot_up * weapon_half_length * 2
 	local lost_precision_target = nil
 
-	if current_action.use_precision_sweep and self._precision_target_unit then
+	if self._overridable_settings.use_precision_sweep and self._precision_target_unit then
 		local this_frames_precision_target = self:check_precision_target(owner_unit, owner_player, current_action.dedicated_target_range, true, weapon_furthest_point)
 
 		if self._precision_target_unit ~= this_frames_precision_target then
@@ -832,7 +858,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 				local actual_hit_target_index = 1
 				local target_settings = nil
 
-				if current_action.use_precision_sweep and self._precision_target_unit ~= nil and not self._has_hit_precision_target and not final_frame then
+				if self._overridable_settings.use_precision_sweep and self._precision_target_unit ~= nil and not self._has_hit_precision_target and not final_frame then
 					if hit_unit == self._precision_target_unit then
 						self._has_hit_precision_target = true
 						actual_hit_target_index, shield_blocked, can_damage, can_stagger = self:_calculate_hit_mass(difficulty_rank, target_health_extension, actual_hit_target_index, shield_blocked, current_action, breed, hit_unit_id, hit_unit)
@@ -873,10 +899,10 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 						hit_zone_name = "torso"
 					end
 
-					local abort_attack = not self._unlimited_cleave and (self._max_targets <= self._number_of_hit_enemies or self._max_targets <= self._amount_of_mass_hit or hit_armor and not current_action.slide_armour_hit and not current_action.ignore_armour_hit)
+					local abort_attack = not self._unlimited_cleave and (self._max_targets <= self._number_of_hit_enemies or self._max_targets <= self._amount_of_mass_hit or hit_armor and not self._overridable_settings.slide_armour_hit and not current_action.ignore_armour_hit)
 
 					if shield_blocked then
-						abort_attack = not self._unlimited_cleave and (self._max_targets <= self._amount_of_mass_hit + 3 or hit_armor and not current_action.slide_armour_hit and not current_action.ignore_armour_hit)
+						abort_attack = not self._unlimited_cleave and (self._max_targets <= self._amount_of_mass_hit + 3 or hit_armor and not self._overridable_settings.slide_armour_hit and not current_action.ignore_armour_hit)
 					end
 
 					if sound_effect_extension and AiUtils.unit_alive(hit_unit) then
@@ -1004,7 +1030,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 
 						hit_environment_rumble = true
 						local is_armored = hit_unit_armor and hit_unit_armor == 2
-						local abort_attack = not self._unlimited_cleave and (self._max_targets <= self._number_of_hit_enemies or (is_armored or self._max_targets <= self._amount_of_mass_hit) and not current_action.slide_armour_hit)
+						local abort_attack = not self._unlimited_cleave and (self._max_targets <= self._number_of_hit_enemies or (is_armored or self._max_targets <= self._amount_of_mass_hit) and not self._overridable_settings.slide_armour_hit)
 
 						self:_play_hit_animations(owner_unit, current_action, abort_attack)
 
@@ -1117,7 +1143,7 @@ ActionSweep._play_environmental_effect = function (self, weapon_rotation, curren
 	local weapon_up = Quaternion.up(weapon_rotation)
 	local world = self.world
 	local weapon_impact_direction = current_action.impact_axis and current_action.impact_axis:unbox() or Vector3.forward()
-	local hit_effect = current_action.hit_effect
+	local hit_effect = self._overridable_settings.hit_effect
 	local impact_direction = weapon_right * weapon_impact_direction.x + weapon_fwd * weapon_impact_direction.y + weapon_up * weapon_impact_direction.z
 	local impact_rotation = Quaternion.look(impact_direction, -weapon_right)
 	local owner_unit = self.owner_unit
@@ -1163,7 +1189,7 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 	local no_damage = predicted_damage <= 0
 	local hitzone_armor_categories = breed.hitzone_armor_categories
 	local target_unit_armor = hitzone_armor_categories and hitzone_armor_categories[hit_zone_name] or breed.armor_category
-	local sound_event = no_damage and current_action.stagger_impact_sound_event or current_action.impact_sound_event
+	local sound_event = no_damage and current_action.stagger_impact_sound_event or self._overridable_settings.impact_sound_event
 
 	if blocking then
 		if sound_events[sound_event] == "blunt_hit" then
@@ -1176,7 +1202,7 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 			sound_event = breed.shield_stab_block_sound or "Play_weapon_fire_torch_wood_shield_hit"
 		end
 	elseif target_unit_armor == 2 then
-		sound_event = no_damage and current_action.no_damage_impact_sound_event or current_action.armor_impact_sound_event or current_action.impact_sound_event
+		sound_event = no_damage and self._overridable_settings.no_damage_impact_sound_event or current_action.armor_impact_sound_event or self._overridable_settings.impact_sound_event
 	end
 
 	local damage_type = "default"
@@ -1434,9 +1460,9 @@ ActionSweep.destroy = function (self)
 end
 
 ActionSweep._play_hit_animations = function (self, owner_unit, current_action, abort_attack, hit_zone_name, armor_type, blocking, killed_unit)
-	local hit_stop_anim = current_action.dual_hit_stop_anims and self._action_hand and current_action.dual_hit_stop_anims[self._action_hand] or current_action.hit_stop_anim
+	local hit_stop_anim = current_action.dual_hit_stop_anims and self._action_hand and current_action.dual_hit_stop_anims[self._action_hand] or self._overridable_settings.hit_stop_anim
 	local first_person_hit_anim = abort_attack and killed_unit and current_action.hit_stop_kill_anim or hit_zone_name ~= "head" and armor_type == 2 and abort_attack and current_action.hit_armor_anim or abort_attack and blocking and current_action.hit_shield_stop_anim or abort_attack and hit_stop_anim or current_action.first_person_hit_anim
-	local third_person_hit_anim = abort_attack and current_action.hit_stop_anim
+	local third_person_hit_anim = abort_attack and self._overridable_settings.hit_stop_anim
 	self._attack_aborted = self._attack_aborted or abort_attack
 
 	if first_person_hit_anim then
@@ -1460,5 +1486,16 @@ ActionSweep._play_hit_animations = function (self, owner_unit, current_action, a
 end
 
 ActionSweep._get_damage_profile_name = function (self, action_hand, action)
-	return action_hand and action["damage_profile_" .. action_hand] or action.damage_profile or "default"
+	return action_hand and action["damage_profile_" .. action_hand] or self._overridable_settings.damage_profile or "default"
+end
+
+ActionSweep._populate_sweep_action_data = function (self, action, overrides)
+	local overridable_settings = self._overridable_settings
+
+	table.clear(self._overridable_settings)
+
+	for i = 1, OVERRIDABLE_ACTION_DATA_KEYS_N do
+		local key = OVERRIDABLE_ACTION_DATA_KEYS[i]
+		overridable_settings[key] = overrides and overrides[key] or action[key]
+	end
 end

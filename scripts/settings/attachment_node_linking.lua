@@ -5639,6 +5639,74 @@ AttachmentNodeLinking = {
 			}
 		}
 	},
+	hat_skinned_cloak = {
+		slot_hat = {
+			{
+				target = 0,
+				source = "j_spine2"
+			},
+			{
+				target = "j_spine2",
+				source = "j_spine2"
+			},
+			{
+				target = "j_neck",
+				source = "j_neck"
+			},
+			{
+				target = "j_head",
+				source = "j_head"
+			},
+			{
+				target = "j_leftshoulder",
+				source = "j_leftshoulder"
+			},
+			{
+				target = "j_rightshoulder",
+				source = "j_rightshoulder"
+			},
+			{
+				target = "j_leftcloak_01_dynamic",
+				source = "j_leftcloak_01_dynamic"
+			},
+			{
+				target = "j_leftcloak_02_dynamic",
+				source = "j_leftcloak_02_dynamic"
+			},
+			{
+				target = "j_leftcloak_03_dynamic",
+				source = "j_leftcloak_03_dynamic"
+			},
+			{
+				target = "j_rightcloak_01_dynamic",
+				source = "j_rightcloak_01_dynamic"
+			},
+			{
+				target = "j_rightcloak_02_dynamic",
+				source = "j_rightcloak_02_dynamic"
+			},
+			{
+				target = "j_rightcloak_03_dynamic",
+				source = "j_rightcloak_03_dynamic"
+			},
+			{
+				target = "j_cloak_01_dynamic",
+				source = "j_cloak_01_dynamic"
+			},
+			{
+				target = "j_cloak_02_dynamic",
+				source = "j_cloak_02_dynamic"
+			},
+			{
+				target = "j_cloak_03_dynamic",
+				source = "j_cloak_03_dynamic"
+			},
+			{
+				target = "j_cloak_04_dynamic",
+				source = "j_cloak_04_dynamic"
+			}
+		}
+	},
 	dr_beard = {
 		slot_hat = {
 			{
@@ -7740,18 +7808,6 @@ AttachmentNodeLinking = {
 				target = 0,
 				source = "j_hips"
 			}
-		}
-	},
-	skeleton_armor = {
-		{
-			target = 0,
-			source = "j_spine2"
-		}
-	},
-	skeleton_helmet = {
-		{
-			target = 0,
-			source = "j_head"
 		}
 	},
 	ai_mace = {

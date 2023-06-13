@@ -197,7 +197,7 @@ SimpleHuskInventoryExtension.add_equipment = function (self, slot_name, item_nam
 			override_item_data = ItemMasterList[default_item_name]
 		end
 
-		local other_slot_item_units = BackendUtils.get_item_units(override_item_data, nil, override_skin)
+		local other_slot_item_units = BackendUtils.get_item_units(override_item_data, nil, override_skin, self._career_name)
 		skin_name = nil
 
 		for key, _ in pairs(item_data.item_units_to_replace) do
@@ -605,7 +605,7 @@ SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slo
 
 	local override_item_template = self:_override_career_skill_item_template(item_data)
 	local item_template = override_item_template or BackendUtils.get_item_template(item_data)
-	local item_units = BackendUtils.get_item_units(item_data, nil, slot.skin)
+	local item_units = BackendUtils.get_item_units(item_data, nil, slot.skin, self._career_name)
 	local right_hand_weapon_unit_3p, right_hand_weapon_unit_1p, left_hand_weapon_unit_3p, left_hand_weapon_unit_1p, right_hand_ammo_unit_3p, right_hand_ammo_unit_1p, left_hand_ammo_unit_3p, left_hand_ammo_unit_1p = nil
 
 	if item_units.right_hand_unit then
@@ -653,13 +653,13 @@ SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slo
 
 	local item_template = BackendUtils.get_item_template(item_data)
 	local wield_anim = get_wield_anim(item_template.wield_anim, item_template.wield_anim_career, self._career_name)
-	local wield_anim_3p = get_wield_anim(item_template.wield_anim, item_template.wield_anim_career_3p, self._career_name) or wield_anim
+	local wield_anim_3p = get_wield_anim(item_template.wield_anim_3p, item_template.wield_anim_career_3p, self._career_name) or wield_anim
 
 	if right_hand_weapon_unit_3p or left_hand_weapon_unit_3p then
 		if self:ammo_percentage() == 0 and item_template.wield_anim_no_ammo_on_husk then
 			local wield_anim_no_ammo = get_wield_anim(item_template.wield_anim_no_ammo, item_template.wield_anim_no_ammo_career, self._career_name)
 			wield_anim = wield_anim_no_ammo or wield_anim
-			local wield_anim_no_ammo_3p = get_wield_anim(item_template.wield_anim_no_ammo, item_template.wield_anim_no_ammo_career_3p, self._career_name) or wield_anim_no_ammo
+			local wield_anim_no_ammo_3p = get_wield_anim(item_template.wield_anim_no_ammo_3p, item_template.wield_anim_no_ammo_career_3p, self._career_name) or wield_anim_no_ammo
 			wield_anim_3p = wield_anim_no_ammo_3p or wield_anim_3p
 		end
 

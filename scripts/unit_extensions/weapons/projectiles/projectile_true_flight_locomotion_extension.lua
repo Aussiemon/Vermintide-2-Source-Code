@@ -28,6 +28,9 @@ ProjectileTrueFlightLocomotionExtension.init = function (self, extension_init_co
 	self.velocity = Vector3Box()
 	self.speed = extension_init_data.speed
 	self.initial_position_boxed = Vector3Box(initial_position)
+	local side_by_unit = Managers.state.side.side_by_unit
+	self.side = side_by_unit[unit] or side_by_unit[extension_init_data.owner_unit]
+	self.target_broadphase_categories = template.dont_target_friendly and self.side and self.side.enemy_broadphase_categories or nil
 	self.trajectory_template_name = extension_init_data.trajectory_template_name
 
 	assert(self.trajectory_template_name)
@@ -74,7 +77,10 @@ ProjectileTrueFlightLocomotionExtension.init = function (self, extension_init_co
 	end
 
 	if template.init_func then
-		template.init_func(unit, template)
+		local seed = math.random_seed()
+		self._custom_data = {}
+
+		template.init_func(unit, template, seed, self._custom_data)
 	end
 
 	self._current_position = Vector3Box(POSITION_LOOKUP[unit])
@@ -140,6 +146,7 @@ end
 
 ProjectileTrueFlightLocomotionExtension.update = function (self, unit, input, dt, context, t)
 	self.dt = t - self.t
+	self.t = t
 	self.moved = false
 
 	if self.stopped then
@@ -476,7 +483,7 @@ end
 
 ProjectileTrueFlightLocomotionExtension.find_player_target = function (self, position)
 	local player_units = nil
-	local side = Managers.state.side.side_by_unit[self.owner_unit]
+	local side = self.side
 
 	if side then
 		player_units = side.ENEMY_PLAYER_UNITS
@@ -509,19 +516,20 @@ local ai_units = {}
 
 ProjectileTrueFlightLocomotionExtension.find_broadphase_target = function (self, position)
 	local broadphase_radius = TrueFlightTemplates[self.true_flight_template_name].broadphase_radius
+	local broadphase_categories = self.target_broadphase_categories
 
 	table.clear(ai_units)
 
 	local ai_units_n = nil
 
 	if self.target_position then
-		ai_units_n = AiUtils.broadphase_query(self.target_position:unbox(), broadphase_radius, ai_units)
+		ai_units_n = AiUtils.broadphase_query(self.target_position:unbox(), broadphase_radius, ai_units, broadphase_categories)
 	else
 		local current_direction = self.current_direction:unbox()
-		ai_units_n = AiUtils.broadphase_query(position + current_direction * 10, broadphase_radius, ai_units)
+		ai_units_n = AiUtils.broadphase_query(position + current_direction * 10, broadphase_radius, ai_units, broadphase_categories)
 
 		if ai_units_n <= 0 then
-			ai_units_n = AiUtils.broadphase_query(position + current_direction * 20, broadphase_radius * 2, ai_units)
+			ai_units_n = AiUtils.broadphase_query(position + current_direction * 20, broadphase_radius * 2, ai_units, broadphase_categories)
 		end
 	end
 
@@ -543,6 +551,7 @@ end
 ProjectileTrueFlightLocomotionExtension.find_closest_highest_value_target = function (self, position)
 	local template = TrueFlightTemplates[self.true_flight_template_name]
 	local broadphase_radius = template.broadphase_radius
+	local broadphase_categories = self.target_broadphase_categories
 	local forward_search_distance_to_find_target = template.forward_search_distance_to_find_target
 
 	table.clear(ai_units)
@@ -550,13 +559,13 @@ ProjectileTrueFlightLocomotionExtension.find_closest_highest_value_target = func
 	local ai_units_n = nil
 
 	if self.target_position then
-		ai_units_n = AiUtils.broadphase_query(self.target_position:unbox(), broadphase_radius, ai_units)
+		ai_units_n = AiUtils.broadphase_query(self.target_position:unbox(), broadphase_radius, ai_units, broadphase_categories)
 	else
 		local current_direction = self.current_direction:unbox()
-		ai_units_n = AiUtils.broadphase_query(position + current_direction * forward_search_distance_to_find_target, broadphase_radius, ai_units)
+		ai_units_n = AiUtils.broadphase_query(position + current_direction * forward_search_distance_to_find_target, broadphase_radius, ai_units, broadphase_categories)
 
 		if ai_units_n <= 0 then
-			ai_units_n = AiUtils.broadphase_query(position + current_direction * forward_search_distance_to_find_target * 2, broadphase_radius * 2, ai_units)
+			ai_units_n = AiUtils.broadphase_query(position + current_direction * forward_search_distance_to_find_target * 2, broadphase_radius * 2, ai_units, broadphase_categories)
 		end
 	end
 
@@ -732,8 +741,12 @@ ProjectileTrueFlightLocomotionExtension.legitimate_player_target = function (sel
 end
 
 ProjectileTrueFlightLocomotionExtension._unit_set_position_rotation = function (self, unit, position, rotation)
-	Unit.set_local_rotation(unit, 0, rotation)
-	Unit.set_local_position(unit, 0, position)
+	if self.true_flight_template.update_unit_position then
+		self.true_flight_template.update_unit_position(unit, position, rotation, self._custom_data, self)
+	else
+		Unit.set_local_rotation(unit, 0, rotation)
+		Unit.set_local_position(unit, 0, position)
+	end
 end
 
 ProjectileTrueFlightLocomotionExtension.moved_this_frame = function (self)

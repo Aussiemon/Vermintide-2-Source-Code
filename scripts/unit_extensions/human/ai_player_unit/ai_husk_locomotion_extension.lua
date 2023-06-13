@@ -55,7 +55,7 @@ AiHuskLocomotionExtension.init = function (self, extension_init_context, unit, e
 		self._collision_state = MoverHelper.create_collision_state(unit, "c_mover_collision")
 	end
 
-	MoverHelper.set_active_mover(unit, self._mover_state, "mover")
+	MoverHelper.set_active_mover(unit, self._mover_state, self.breed.default_mover or "mover")
 	self:set_mover_disable_reason("not_constrained_by_mover", true)
 
 	self._system_data.all_update_units[unit] = self
@@ -134,7 +134,7 @@ AiHuskLocomotionExtension.unfreeze = function (self)
 		self._collision_state = MoverHelper.create_collision_state(unit, "c_mover_collision")
 	end
 
-	MoverHelper.set_active_mover(unit, self._mover_state, "mover")
+	MoverHelper.set_active_mover(unit, self._mover_state, self.breed.default_mover or "mover")
 	self:set_mover_disable_reason("not_constrained_by_mover", true)
 
 	self._system_data.all_update_units[unit] = self
@@ -174,7 +174,7 @@ AiHuskLocomotionExtension.set_affected_by_gravity = function (self, affected)
 	end
 end
 
-AiHuskLocomotionExtension.set_animation_driven = function (self, is_animation_driven, is_affected_by_gravity, has_script_driven_rotation)
+AiHuskLocomotionExtension.set_animation_driven = function (self, is_animation_driven, is_affected_by_gravity, has_script_driven_rotation, is_on_transport)
 	if not self._engine_extension_id then
 		return
 	end
@@ -184,7 +184,7 @@ AiHuskLocomotionExtension.set_animation_driven = function (self, is_animation_dr
 	self.has_network_driven_rotation = has_script_driven_rotation
 	self.is_affected_by_gravity = is_affected_by_gravity
 	self.hit_wall = false
-	local network_driven = not is_animation_driven or not is_affected_by_gravity
+	local network_driven = not is_on_transport and (not is_animation_driven or not is_affected_by_gravity)
 	self.is_network_driven = network_driven
 
 	self:set_mover_disable_reason("not_constrained_by_mover", true)

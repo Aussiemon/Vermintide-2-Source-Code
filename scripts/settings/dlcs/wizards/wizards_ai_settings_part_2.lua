@@ -43,6 +43,8 @@ settings.ethereal_skull_settings = {
 		2,
 		3,
 		3,
+		4,
+		4,
 		4
 	},
 	speed_multiplier_curve_func = function (lifetime)

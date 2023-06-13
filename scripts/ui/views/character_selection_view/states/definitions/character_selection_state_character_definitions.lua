@@ -1508,44 +1508,6 @@ local empty_hero_widget = {
 	}
 }
 
-local function create_background(scenegraph_id, color, layer)
-	return {
-		element = {
-			passes = {
-				{
-					style_id = "rect",
-					pass_type = "rect",
-					content_check_function = function (content)
-						return true
-					end
-				}
-			}
-		},
-		content = {},
-		style = {
-			rect = {
-				color = color or {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					0,
-					layer or 0
-				}
-			}
-		},
-		offset = {
-			0,
-			0,
-			0
-		},
-		scenegraph_id = scenegraph_id
-	}
-end
-
 local function create_info_text(text, scenegraph_id)
 	return {
 		element = {
@@ -1619,7 +1581,7 @@ end
 
 local disable_with_gamepad = true
 local widgets = {
-	background = create_background("screen", {
+	background = UIWidgets.create_simple_rect("screen", {
 		0,
 		0,
 		0,

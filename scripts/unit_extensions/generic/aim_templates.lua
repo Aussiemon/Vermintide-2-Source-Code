@@ -25,7 +25,7 @@ local function look_at_target_unit(unit, data, dt, target_unit, target_distance,
 	if first_person_extension ~= nil then
 		look_target = first_person_extension:current_position()
 	else
-		local head_index = Unit.node(target_unit, "j_head")
+		local head_index = Unit.has_node(target_unit, "j_head") and Unit.node(target_unit, "j_head") or 0
 		look_target = Unit.world_position(target_unit, head_index)
 	end
 

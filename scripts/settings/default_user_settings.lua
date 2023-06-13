@@ -89,6 +89,7 @@ local default_user_settings = {
 	twitch_mutator_duration = 1,
 	motion_sickness_misc_cam = "normal",
 	gamepad_use_ps4_style_input_icons = false,
+	weapon_trails = "normal",
 	use_pc_menu_layout = false,
 	gamepad_layout = "default",
 	chat_enabled = true,

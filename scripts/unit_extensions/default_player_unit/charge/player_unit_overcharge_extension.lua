@@ -183,6 +183,8 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 	self:_calculate_and_set_buffed_max_overcharge_values()
 	self:_update_game_object()
 
+	local pre_amount = self.overcharge_value
+
 	if not self.is_exploding and self.venting_overcharge and self.overcharge_value >= 0 then
 		local buff_extension = self._buff_extension
 		local wielder = self.unit
@@ -197,10 +199,14 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 		self.vent_damage_pool = self.vent_damage_pool + vent_amount * 2
 
 		if self.vent_damage_pool >= 20 and not self.no_damage and self.overcharge_threshold < self.overcharge_value then
-			local damage_amount = 2 + self.overcharge_value / 12
-			damage_amount = buff_extension:apply_buffs_to_value(damage_amount, "vent_damage")
+			local _, procced = buff_extension:apply_buffs_to_value(0, "overcharge_damage_immunity")
 
-			DamageUtils.add_damage_network(wielder, wielder, damage_amount, "torso", "overcharge", nil, Vector3(0, 1, 0), "overcharge", nil, nil, nil, nil, false, false, false, 0, 1)
+			if not procced then
+				local damage_amount = 2 + self.overcharge_value / 12
+				damage_amount = buff_extension:apply_buffs_to_value(damage_amount, "vent_damage")
+
+				DamageUtils.add_damage_network(wielder, wielder, damage_amount, "torso", "overcharge", nil, Vector3(0, 1, 0), "overcharge", nil, nil, nil, nil, false, false, false, 0, 1)
+			end
 
 			self.vent_damage_pool = 0
 		end
@@ -299,6 +305,12 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 
 		self._had_overcharge = false
 	end
+
+	local post_amount = self.overcharge_value
+
+	if post_amount < pre_amount then
+		self._buff_extension:trigger_procs("on_overcharge_lost", pre_amount - post_amount, self.max_value)
+	end
 end
 
 PlayerUnitOverchargeExtension.add_charge = function (self, overcharge_amount, charge_level, overcharge_type)
@@ -359,6 +371,10 @@ PlayerUnitOverchargeExtension.remove_charge = function (self, overcharge_amount)
 	local new_overcharge_value = math.max(current_overcharge_value - overcharge_amount, 0)
 
 	self:_check_overcharge_level_thresholds(new_overcharge_value)
+
+	local overcharge_lost = math.max(current_overcharge_value - new_overcharge_value, 0)
+
+	self._buff_extension:trigger_procs("on_overcharge_lost", overcharge_lost, self.max_value)
 
 	self.overcharge_value = new_overcharge_value
 end

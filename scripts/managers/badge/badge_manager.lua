@@ -174,7 +174,7 @@ BadgeManager._update_client = function (self, dt, t)
 end
 
 BadgeManager.rpc_show_badge = function (self, channel_id, badge_id)
-	Managers.telemetry.events:badge_gained(NetworkLookup.badges[badge_id])
+	Managers.telemetry_events:badge_gained(NetworkLookup.badges[badge_id])
 	Managers.state.event:trigger("add_local_badge", badge_id)
 end
 

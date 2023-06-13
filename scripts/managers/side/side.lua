@@ -14,10 +14,19 @@ Side.init = function (self, definition, side_id)
 	self._enemy_player_units = {}
 	self._allied_sides = {}
 	self.allied_sides_lookup = {}
+	self._allied_units = {}
+	self.allied_units_lookup = {}
+	self._num_allied_units = 0
 	self._neutral_sides = {}
 	self.neutral_sides_lookup = {}
 	self.party = definition.party
 	self.side_id = side_id
+	self.broadphase_category = {
+		definition.name
+	}
+	self.enemy_broadphase_categories = {}
+	self.ally_broadphase_categories = {}
+	self.neutral_broadphase_categories = {}
 	local add_these_settings = definition.add_these_settings
 
 	if add_these_settings then
@@ -43,25 +52,29 @@ Side.init = function (self, definition, side_id)
 end
 
 Side.set_relation = function (self, relation, sides)
-	local relation_sides, relation_side_lookup = nil
+	local relation_sides, relation_side_lookup, relation_broadphase_categories = nil
 
 	if relation == "enemy" then
 		relation_sides = self._enemy_sides
 		relation_side_lookup = self.enemy_sides_lookup
+		relation_broadphase_categories = self.enemy_broadphase_categories
 	elseif relation == "ally" then
 		relation_sides = self._allied_sides
 		relation_side_lookup = self.allied_sides_lookup
+		relation_broadphase_categories = self.ally_broadphase_categories
 	elseif relation == "neutral" then
 		relation_sides = self._neutral_sides
 		relation_side_lookup = self.neutral_sides_lookup
+		relation_broadphase_categories = self.neutral_broadphase_categories
 	else
 		ferror("Unknown relation (%s)", relation)
 	end
 
 	for i = 1, #sides do
 		local side = sides[i]
-		relation_sides[i] = side
+		relation_sides[#relation_sides + 1] = side
 		relation_side_lookup[side] = true
+		relation_broadphase_categories[#relation_broadphase_categories + 1] = side:name()
 	end
 end
 
@@ -71,6 +84,10 @@ end
 
 Side.get_enemy_sides = function (self)
 	return self._enemy_sides
+end
+
+Side.get_allied_sides = function (self)
+	return self._allied_sides
 end
 
 Side.add_unit = function (self, unit)
@@ -119,6 +136,30 @@ Side.remove_enemy_unit = function (self, unit)
 	enemy_units[num_enemy_units] = nil
 	enemy_units_lookup[unit] = nil
 	self._num_enemy_units = num_enemy_units - 1
+end
+
+Side.add_allied_unit = function (self, unit)
+	fassert(self.allied_units_lookup[unit] == nil, "Ally unit is already added to side.")
+
+	local num_allied_units = self._num_allied_units + 1
+	self._allied_units[num_allied_units] = unit
+	self.allied_units_lookup[unit] = num_allied_units
+	self._num_allied_units = num_allied_units
+end
+
+Side.remove_allied_unit = function (self, unit)
+	fassert(self.allied_units_lookup[unit] ~= nil, "Ally unit has not been added or is already removed from side.")
+
+	local ally_units = self._allied_units
+	local num_allied_units = self._num_allied_units
+	local allied_units_lookup = self.allied_units_lookup
+	local replace_index = allied_units_lookup[unit]
+	local last_unit = ally_units[num_allied_units]
+	ally_units[replace_index] = last_unit
+	allied_units_lookup[last_unit] = replace_index
+	ally_units[num_allied_units] = nil
+	allied_units_lookup[unit] = nil
+	self._num_allied_units = num_allied_units - 1
 end
 
 Side.add_player_unit = function (self, player_unit)

@@ -1,3 +1,5 @@
+require("scripts/settings/dlcs/morris/deus_swap_weapon_interaction_ui")
+
 DeusPowerUpInteractionUI = class(DeusPowerUpInteractionUI, DeusSwapWeaponInteractionUI)
 DeusPowerUpInteractionUI.TYPE = "power_up"
 

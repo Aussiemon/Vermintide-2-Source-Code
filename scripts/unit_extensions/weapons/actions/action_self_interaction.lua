@@ -23,5 +23,5 @@ ActionSelfInteraction.finish = function (self, reason)
 	local player = Managers.player:unit_owner(self.owner_unit)
 	local position = POSITION_LOOKUP[self.owner_unit]
 
-	Managers.telemetry.events:player_used_item(player, self.item_name, position)
+	Managers.telemetry_events:player_used_item(player, self.item_name, position)
 end

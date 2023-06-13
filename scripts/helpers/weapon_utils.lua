@@ -95,17 +95,23 @@ WeaponUtils.get_weapon_packages = function (item_template, item_units, first_per
 			local projectile_info = sub_action_data.projectile_info
 
 			if projectile_info then
-				if projectile_info.projectile_unit_name then
-					packages[#packages + 1] = projectile_info.projectile_unit_name
-				end
+				local projectile_units_template = projectile_info.projectile_units_template
 
-				if projectile_info.dummy_linker_unit_name then
-					packages[#packages + 1] = projectile_info.dummy_linker_unit_name
-				end
+				if projectile_units_template then
+					local projectile_units = ProjectileUnits[projectile_units_template]
 
-				if projectile_info.dummy_linker_broken_units then
-					for _, unit in pairs(projectile_info.dummy_linker_broken_units) do
-						packages[#packages + 1] = unit
+					if projectile_units.projectile_unit_name then
+						packages[#packages + 1] = projectile_units.projectile_unit_name
+					end
+
+					if projectile_units.dummy_linker_unit_name then
+						packages[#packages + 1] = projectile_units.dummy_linker_unit_name
+					end
+
+					if projectile_units.dummy_linker_broken_units then
+						for _, unit in pairs(projectile_units.dummy_linker_broken_units) do
+							packages[#packages + 1] = unit
+						end
 					end
 				end
 			end

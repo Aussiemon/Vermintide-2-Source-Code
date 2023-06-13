@@ -444,6 +444,69 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_karak_01 = {
+		{
+			texture = "portrait_frame_karak_01_child",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				128,
+				140
+			},
+			offset = {
+				0,
+				-61,
+				0
+			}
+		}
+	},
+	frame_karak_02 = {
+		{
+			texture = "portrait_frame_karak_02_child",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				128,
+				140
+			},
+			offset = {
+				0,
+				-61,
+				0
+			}
+		}
+	},
+	frame_karak_03 = {
+		{
+			texture = "portrait_frame_karak_03_child",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				128,
+				140
+			},
+			offset = {
+				0,
+				-61,
+				0
+			}
+		}
+	},
 	default = {
 		{
 			texture = "portrait_frame_0000",

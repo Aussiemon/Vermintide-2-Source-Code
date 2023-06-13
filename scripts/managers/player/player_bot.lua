@@ -87,7 +87,7 @@ PlayerBot.despawn = function (self)
 
 	if Unit.alive(player_unit) then
 		Managers.state.unit_spawner:mark_for_deletion(player_unit)
-		Managers.telemetry.events:player_despawned(self)
+		Managers.telemetry_events:player_despawned(self)
 	else
 		print("player_bot was already despawned. Should not happen.")
 	end
@@ -256,6 +256,9 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 		proximity_system = {
 			side = side,
 			breed = breed
+		},
+		target_override_system = {
+			side = side
 		}
 	}
 	local unit_template_name = "player_bot_unit"
@@ -279,7 +282,7 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	end
 
 	self:_set_spawn_state("spawned")
-	Managers.telemetry.events:player_spawned(self)
+	Managers.telemetry_events:player_spawned(self)
 
 	return unit
 end

@@ -1050,7 +1050,7 @@ GamePadEquipmentUI._add_item = function (self, slot_data, data)
 		hud_icon = "hud_icon_melee"
 	elseif slot_name == "slot_ranged" then
 		hud_icon = "hud_icon_ranged"
-	else
+	elseif hud_icon then
 		hud_icon_glow = hud_icon .. "_glow"
 	end
 

@@ -147,7 +147,7 @@ PingSystem.hot_join_sync = function (self, sender)
 		local pinged_unit_id, is_level_unit = nil
 
 		if pinged_unit then
-			pinged_unit_id, is_level_unit = network_manager:game_object_or_level_id(data.pinged_unit)
+			pinged_unit_id, is_level_unit = network_manager:game_object_or_level_id(pinged_unit)
 		end
 
 		local position = data.position
@@ -257,7 +257,7 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 		social_wheel_event_id = social_wheel_event_id
 	}
 
-	Managers.telemetry.events:ping_used(sender_player, parent_pinger_unit == nil, table.find(PingTypes, ping_type), pinged_unit, POSITION_LOOKUP[pinger_unit])
+	Managers.telemetry_events:ping_used(sender_player, parent_pinger_unit == nil, table.find(PingTypes, ping_type), pinged_unit, POSITION_LOOKUP[pinger_unit])
 
 	if self.is_server then
 		if pinged_unit then
@@ -557,7 +557,7 @@ PingSystem._add_world_marker = function (self, pinger_unit, pinged_unit, positio
 		}
 	end
 
-	position = position and position or Unit.local_position(pinged_unit, 0)
+	position = position or Unit.local_position(pinged_unit, 0)
 
 	Managers.state.event:trigger("add_world_marker_position", "ping", position, cb)
 end

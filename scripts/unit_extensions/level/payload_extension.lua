@@ -37,16 +37,20 @@ PayloadExtension.init = function (self, extension_init_context, unit, extension_
 		self._anim_group = Unit.get_data(unit, "wheel_anim_group")
 	end
 
-	local unit_hazard_type = Unit.get_data(unit, "hazard_type")
-	local player = Managers.player:local_player()
-	local statistics_db = Managers.player:statistics_db()
-	local stats_id = player:stats_id()
+	if not DEDICATED_SERVER then
+		local unit_hazard_type = Unit.get_data(unit, "hazard_type")
+		local player = Managers.player:local_player()
+		local statistics_db = Managers.player:statistics_db()
+		local stats_id = player:stats_id()
 
-	if unit_hazard_type == "sled" then
-		if statistics_db:get_persistent_stat(stats_id, "trail_sleigher") <= 50 then
-			Managers.state.event:register(self, "on_killed", "increment_kill_stat")
+		if unit_hazard_type == "sled" then
+			if statistics_db:get_persistent_stat(stats_id, "trail_sleigher") <= 50 then
+				Managers.state.event:register(self, "on_killed", "increment_kill_stat")
+			end
 		end
 	end
+
+	self._side = Managers.state.side:get_side_from_name("heroes")
 end
 
 PayloadExtension.activate = function (self)
@@ -337,7 +341,7 @@ end
 local PLAYERS_IN_PROXIMITY = {}
 
 PayloadExtension._players_in_proximity = function (self)
-	local side = Managers.state.side:get_side_from_name("heroes")
+	local side = self._side
 	local player_units = side.PLAYER_UNITS
 	local num_player_units = #player_units
 	local positions = POSITION_LOOKUP

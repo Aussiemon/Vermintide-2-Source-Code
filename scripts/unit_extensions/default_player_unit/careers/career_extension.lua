@@ -269,6 +269,16 @@ CareerExtension.destroy = function (self)
 
 		ability:destroy()
 	end
+
+	local abilities = self._abilities
+
+	for i = 1, self._num_abilities do
+		local ability = abilities[i].activated_ability
+
+		if ability and ability.destroy then
+			ability:destroy()
+		end
+	end
 end
 
 CareerExtension.get_activated_ability_data = function (self, ability_id)

@@ -127,6 +127,23 @@ GenericHealthExtension.hot_join_sync = function (self, peer_id)
 	end
 end
 
+GenericHealthExtension.set_server_damage_taken = function (self, damage_taken)
+	fassert(self.is_server, "[GenericHealthExtension] Only server is allowed to call this function")
+
+	local unit = self.unit
+	local network_manager = Managers.state.network
+	local go_id, is_level_unit = network_manager:game_object_or_level_id(unit)
+
+	if go_id then
+		local state_id = NetworkLookup.health_statuses[self.state]
+		local network_transmit = self.network_transmit
+
+		network_transmit:send_rpc_clients("rpc_sync_damage_taken", go_id, is_level_unit, false, damage_taken, state_id)
+	end
+
+	self.damage = damage_taken
+end
+
 GenericHealthExtension.is_alive = function (self)
 	return not self.dead
 end

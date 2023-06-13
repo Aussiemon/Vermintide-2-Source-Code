@@ -3443,13 +3443,11 @@ UIPasses.item_tooltip = {
 						local tooltip_bottom_y_position = wanted_max_height - (tooltip_sizes[2] + tooltip_sizes[3] + equipped_panel_height * 2)
 
 						if tooltip_bottom_y_position < 0 then
-							local new_wanted_height = wanted_max_height + math.abs(tooltip_bottom_y_position)
-
-							if index == 2 then
-								position[2] = new_wanted_height + equipped_panel_height
-							else
-								position[2] = new_wanted_height - (tooltip_sizes[2] + equipped_panel_height)
+							if index > 2 then
+								position[1] = position[1] + size[1] * direction
 							end
+
+							position[2] = wanted_max_height
 						elseif index == 2 then
 							position[2] = wanted_max_height
 						else

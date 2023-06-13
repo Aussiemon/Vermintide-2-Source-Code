@@ -574,6 +574,7 @@ function flow_callback_attach_player_item(params)
 						end
 
 						Unit.set_data(parent_unit, "skin_events", skin_events)
+						Unit.set_data(item_unit, "skin_events", skin_events)
 
 						if Unit.has_animation_state_machine(item_unit) and Unit.has_animation_event(item_unit, "enable") then
 							Unit.animation_event(item_unit, "enable")
@@ -652,6 +653,9 @@ function flow_callback_remove_player_items(params)
 	local item_attachments = Unit.get_data(parent_unit, "flow_item_attachments") or {}
 
 	for i = 1, #item_attachments do
+		params.unit = item_attachments[i]
+		local temp = flow_callback_remove_player_items(params)
+
 		World.destroy_unit(world, item_attachments[i])
 	end
 
@@ -1217,6 +1221,7 @@ function flow_callback_chr_editor_inventory_spawn(params)
 		for i = 1, #inventory_configuration.items do
 			local item = inventory_configuration.items[i][math.random(1, inventory_configuration.items[i].count)]
 			local item_node_linking = item.attachment_node_linking
+			local item_flow_event = item.flow_event or nil
 			local node_linking_data = item_node_linking.wielded or item_node_linking
 
 			if unwielded then
@@ -1234,6 +1239,10 @@ function flow_callback_chr_editor_inventory_spawn(params)
 
 					break
 				end
+			end
+
+			if item_flow_event then
+				Unit.flow_event(unit, item_flow_event)
 			end
 
 			local item_unit = World.spawn_unit(world, item.unit_name, item_position, item_rotation)

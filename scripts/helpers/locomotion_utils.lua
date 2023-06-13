@@ -297,10 +297,10 @@ LocomotionUtils.constrain_on_clients = function (unit, constrain, min, max)
 	end
 end
 
-LocomotionUtils.set_animation_driven_movement = function (unit, animation_driven, is_affected_by_gravity, script_driven_rotation)
+LocomotionUtils.set_animation_driven_movement = function (unit, animation_driven, is_affected_by_gravity, script_driven_rotation, is_on_transport)
 	local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
-	locomotion_extension:set_animation_driven(animation_driven, is_affected_by_gravity, script_driven_rotation)
+	locomotion_extension:set_animation_driven(animation_driven, is_affected_by_gravity, script_driven_rotation, is_on_transport)
 end
 
 LocomotionUtils.set_animation_translation_scale = function (unit, animation_translation_scale)

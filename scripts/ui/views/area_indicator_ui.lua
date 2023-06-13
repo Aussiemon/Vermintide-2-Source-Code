@@ -10,7 +10,6 @@ AreaIndicatorUI.init = function (self, parent, ingame_ui_context)
 	self.wwise_world = Managers.world:wwise_world(world)
 
 	self:create_ui_elements()
-	rawset(_G, "area_indicator_ui", self)
 end
 
 AreaIndicatorUI.create_ui_elements = function (self)
@@ -21,7 +20,7 @@ AreaIndicatorUI.create_ui_elements = function (self)
 end
 
 AreaIndicatorUI.destroy = function (self)
-	rawset(_G, "area_indicator_ui", nil)
+	return
 end
 
 AreaIndicatorUI.update = function (self, dt)

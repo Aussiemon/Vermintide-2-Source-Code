@@ -12,7 +12,6 @@ BuffPresentationUI.init = function (self, parent, ingame_ui_context)
 	self.wwise_world = Managers.world:wwise_world(world)
 
 	self:create_ui_elements()
-	rawset(_G, "buff_presentation_ui", self)
 end
 
 BuffPresentationUI.create_ui_elements = function (self)
@@ -29,8 +28,6 @@ end
 
 BuffPresentationUI.destroy = function (self)
 	self.ui_animator = nil
-
-	rawset(_G, "buff_presentation_ui", nil)
 end
 
 local customizer_data = {

@@ -419,10 +419,6 @@ AINavigationSystem.far_astar = function (self, p1, p2)
 		return false
 	end
 
-	if script_data.ai_debug_failed_pathing then
-		navigation_group_manager:draw_group_path(path)
-	end
-
 	local nav_group = path[2]
 	local goal_pos = nav_group:get_group_center():unbox()
 

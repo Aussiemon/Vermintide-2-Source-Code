@@ -304,6 +304,7 @@ ItemMasterList.five_career_bundle_0006 = {
 	item_type = "bundle",
 	unit = "",
 	steam_itemdefid = 836,
+	store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_five_career_bundle_0006",
 	store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_five_career_bundle_0006",
 	subtitle = "five_career_bundle_0001_subtitle",
 	inventory_icon = "",

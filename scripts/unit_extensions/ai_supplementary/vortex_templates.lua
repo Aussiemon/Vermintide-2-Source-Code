@@ -18,6 +18,7 @@ VortexTemplates = {
 		player_eject_speed = 12,
 		max_height = 10,
 		ai_attractable = true,
+		damage = 5,
 		medium_cost_nav_cost_map_cost_type = "vortex_near",
 		player_in_vortex_max_duration = 5,
 		player_attract_speed = 15,
@@ -45,53 +46,6 @@ VortexTemplates = {
 		time_of_life = {
 			20,
 			22
-		},
-		damage = {
-			5,
-			3,
-			1.5
-		},
-		difficulty_damage = {
-			easy = {
-				2,
-				4,
-				2
-			},
-			normal = {
-				3,
-				5,
-				3
-			},
-			hard = {
-				5,
-				7,
-				5
-			},
-			harder = {
-				10,
-				8,
-				10
-			},
-			hardest = {
-				20,
-				10,
-				15
-			},
-			cataclysm = {
-				10,
-				8,
-				5
-			},
-			cataclysm_2 = {
-				15,
-				10,
-				10
-			},
-			cataclysm_3 = {
-				30,
-				15,
-				22.5
-			}
 		}
 	},
 	boss_sorcerer = {
@@ -112,6 +66,7 @@ VortexTemplates = {
 		player_eject_speed = 12,
 		max_height = 20,
 		ai_attractable = true,
+		damage = 5,
 		medium_cost_nav_cost_map_cost_type = "vortex_near",
 		min_outer_radius = 7,
 		player_in_vortex_max_duration = 5,
@@ -140,53 +95,6 @@ VortexTemplates = {
 		time_of_life = {
 			7,
 			8
-		},
-		damage = {
-			5,
-			3,
-			1.5
-		},
-		difficulty_damage = {
-			easy = {
-				2,
-				4,
-				2
-			},
-			normal = {
-				3,
-				5,
-				3
-			},
-			hard = {
-				5,
-				7,
-				5
-			},
-			harder = {
-				10,
-				8,
-				10
-			},
-			hardest = {
-				20,
-				10,
-				15
-			},
-			cataclysm = {
-				10,
-				8,
-				5
-			},
-			cataclysm_2 = {
-				15,
-				10,
-				10
-			},
-			cataclysm_3 = {
-				30,
-				15,
-				22.5
-			}
 		},
 		suck_in_ai_func = function (blackboard)
 			local stat_names = {
@@ -237,6 +145,7 @@ VortexTemplates = {
 		player_eject_speed = 16,
 		max_height = 10,
 		ai_attractable = true,
+		damage = 5,
 		medium_cost_nav_cost_map_cost_type = "vortex_near",
 		player_in_vortex_max_duration = 5,
 		player_attract_speed = 15,
@@ -264,53 +173,6 @@ VortexTemplates = {
 		time_of_life = {
 			20,
 			22
-		},
-		damage = {
-			5,
-			3,
-			1.5
-		},
-		difficulty_damage = {
-			easy = {
-				2,
-				4,
-				2
-			},
-			normal = {
-				3,
-				5,
-				3
-			},
-			hard = {
-				5,
-				7,
-				5
-			},
-			harder = {
-				10,
-				8,
-				10
-			},
-			hardest = {
-				20,
-				10,
-				15
-			},
-			cataclysm = {
-				10,
-				8,
-				5
-			},
-			cataclysm_2 = {
-				15,
-				10,
-				10
-			},
-			cataclysm_3 = {
-				30,
-				15,
-				22.5
-			}
 		}
 	},
 	carousel = {
@@ -332,6 +194,7 @@ VortexTemplates = {
 		player_eject_speed = 12,
 		max_height = 10,
 		ai_attractable = true,
+		damage = 5,
 		medium_cost_nav_cost_map_cost_type = "vortex_near",
 		player_in_vortex_max_duration = 5,
 		player_attract_speed = 15,
@@ -360,53 +223,6 @@ VortexTemplates = {
 		time_of_life = {
 			5,
 			8
-		},
-		damage = {
-			5,
-			3,
-			1.5
-		},
-		difficulty_damage = {
-			easy = {
-				2,
-				4,
-				2
-			},
-			normal = {
-				3,
-				5,
-				3
-			},
-			hard = {
-				5,
-				7,
-				5
-			},
-			survival_hard = {
-				10,
-				8,
-				5
-			},
-			harder = {
-				10,
-				8,
-				10
-			},
-			survival_harder = {
-				15,
-				10,
-				10
-			},
-			hardest = {
-				20,
-				10,
-				15
-			},
-			survival_hardest = {
-				30,
-				15,
-				22.5
-			}
 		}
 	}
 }

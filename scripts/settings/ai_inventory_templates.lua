@@ -1617,7 +1617,9 @@ for category_name, category in pairs(item_categories) do
 	local drop_reasons = (category_name == "stormvermin_shield" or category_name == "shield" or category_name == "marauder_shield") and drop_reasons_shield or drop_reasons_other
 
 	for i, item in ipairs(category) do
-		item.drop_reasons = drop_reasons
+		if not item.drop_reasons then
+			item.drop_reasons = drop_reasons
+		end
 	end
 end
 

@@ -85,9 +85,9 @@ AISlotSystem2.ai_unit_have_slot = function (self, ai_unit)
 		return false
 	end
 
-	local target_slot_extension = ai_unit_extension.ai_target_slot_extension
+	local ai_have_slot = ai_unit_extension.gathering_ball or ai_unit_extension.sloid_id
 
-	if target_slot_extension and target_slot_extension.belongs_to_ai then
+	if ai_have_slot then
 		return true
 	end
 
@@ -293,21 +293,13 @@ AISlotSystem2.update_slot_providers = function (self, t)
 	end
 end
 
+AISlotSystem2.traverse_logic = function (self)
+	return self._traverse_logic
+end
+
 AISlotSystem2.update_slot_consumers = function (self, t)
 	local nav_world = self.nav_world
 	local unit_extension_data = self.unit_extension_data
-	local update_slots_ai_units_prioritized = self.update_slots_ai_units_prioritized
-
-	for ai_unit, _ in pairs(update_slots_ai_units_prioritized) do
-		local extension = unit_extension_data[ai_unit]
-
-		if extension then
-			extension:update(ai_unit, unit_extension_data, nav_world, t, self._traverse_logic, self)
-		end
-
-		update_slots_ai_units_prioritized[ai_unit] = nil
-	end
-
 	local update_slots_ai_units = self.update_slots_ai_units
 	local update_slots_ai_units_n = #update_slots_ai_units
 
@@ -318,12 +310,25 @@ AISlotSystem2.update_slot_consumers = function (self, t)
 	local start_index = self.current_ai_index
 	local end_index = math.min(start_index + AI_UPDATES_PER_FRAME - 1, update_slots_ai_units_n)
 	self.current_ai_index = end_index + 1
+	local update_slots_ai_units_prioritized = self.update_slots_ai_units_prioritized
 
 	for i = start_index, end_index do
 		local ai_unit = update_slots_ai_units[i]
 		local extension = unit_extension_data[ai_unit]
 
 		extension:update(ai_unit, unit_extension_data, nav_world, t, self._traverse_logic, self)
+
+		update_slots_ai_units_prioritized[ai_unit] = nil
+	end
+
+	for ai_unit, _ in pairs(update_slots_ai_units_prioritized) do
+		local extension = unit_extension_data[ai_unit]
+
+		if extension then
+			extension:update(ai_unit, unit_extension_data, nav_world, t, self._traverse_logic, self)
+		end
+
+		update_slots_ai_units_prioritized[ai_unit] = nil
 	end
 end
 
@@ -506,7 +511,9 @@ function debug_draw_slots(unit_extension_data, nav_world, t)
 	})
 
 	for unit, extension in pairs(unit_extension_data) do
-		extension:debug_draw(drawer, t, nav_world)
+		if extension.debug_draw then
+			extension:debug_draw(drawer, t, nav_world)
+		end
 	end
 end
 

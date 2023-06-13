@@ -37,8 +37,9 @@ local video_settings_definition = {
 	{
 		setup = "cb_vsync_setup",
 		saved_value = "cb_vsync_saved_value",
-		callback = "cb_vsync",
 		tooltip_text = "tooltip_vsync",
+		callback = "cb_vsync",
+		condition = "cb_vsync_condition",
 		widget_type = "stepper"
 	},
 	{
@@ -217,6 +218,7 @@ local video_settings_definition = {
 		tooltip_text = "tooltip_fsr_quality",
 		callback = "cb_fsr_quality",
 		disabled_tooltip_text = "tooltip_fsr_disabled",
+		indent_level = 1,
 		condition = "cb_fsr_quality_condition",
 		widget_type = "drop_down"
 	},
@@ -231,15 +233,17 @@ local video_settings_definition = {
 	{
 		setup = "cb_anti_aliasing_setup",
 		saved_value = "cb_anti_aliasing_saved_value",
-		callback = "cb_anti_aliasing",
 		tooltip_text = "tooltip_anti_aliasing",
+		callback = "cb_anti_aliasing",
+		condition = "cb_anti_aliasing_condition",
 		widget_type = "drop_down"
 	},
 	{
 		setup = "cb_sharpen_setup",
 		saved_value = "cb_sharpen_saved_value",
-		callback = "cb_sharpen",
 		tooltip_text = "tooltip_sharpen",
+		callback = "cb_sharpen",
+		condition = "cb_sharpen_condition",
 		widget_type = "stepper"
 	},
 	{
@@ -713,6 +717,24 @@ local gameplay_settings_definition = {
 			{
 				value = false,
 				text = Localize("menu_settings_off")
+			}
+		}
+	},
+	{
+		setting_name = "weapon_trails",
+		widget_type = "stepper",
+		options = {
+			{
+				value = "normal",
+				text = Localize("menu_settings_normal")
+			},
+			{
+				value = "no_crits",
+				text = Localize("menu_settings_no_crits")
+			},
+			{
+				value = "none",
+				text = Localize("menu_settings_no_misc")
 			}
 		}
 	},
@@ -1397,33 +1419,6 @@ local keybind_settings_definition = {
 		widget_type = "keybind",
 		actions = {
 			"ping_only"
-		}
-	},
-	{
-		keybind_description = "ping_only_enemy",
-		required_dlc = "carousel",
-		keymappings_key = "PlayerControllerKeymaps",
-		widget_type = "keybind",
-		actions = {
-			"ping_only_enemy"
-		}
-	},
-	{
-		keybind_description = "ping_only_movement",
-		required_dlc = "carousel",
-		keymappings_key = "PlayerControllerKeymaps",
-		widget_type = "keybind",
-		actions = {
-			"ping_only_movement"
-		}
-	},
-	{
-		keybind_description = "ping_only_item",
-		required_dlc = "carousel",
-		keymappings_key = "PlayerControllerKeymaps",
-		widget_type = "keybind",
-		actions = {
-			"ping_only_item"
 		}
 	},
 	{

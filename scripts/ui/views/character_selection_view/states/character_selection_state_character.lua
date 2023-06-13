@@ -1093,7 +1093,7 @@ CharacterSelectionStateCharacter._update_animations = function (self, dt)
 
 	if self.pick_time then
 		self.pick_time = math.clamp(self.pick_time - dt, 0, 100)
-		select_button.content.title_text = string.format("Confirm %.1f", self.pick_time)
+		select_button.content.title_text = string.format(Localize("confirm_menu_button_name") .. " %.1f", self.pick_time)
 		select_button.element.dirty = true
 	end
 
@@ -1164,7 +1164,7 @@ CharacterSelectionStateCharacter.cb_hero_unit_spawned = function (self, hero_nam
 			local slot = InventorySettings.slots_by_name.slot_hat
 
 			world_previewer:equip_item(item_name, slot, backend_id)
-		else
+		elseif career_settings.required_dlc and Managers.unlock:is_dlc_unlocked(career_settings.required_dlc) then
 			Crashify.print_exception("[Cosmetic] Failed to equip item in slot \"slot_hat\" for career %q in character selection state character", career_name)
 		end
 

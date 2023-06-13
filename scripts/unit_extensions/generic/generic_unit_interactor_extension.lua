@@ -489,6 +489,11 @@ GenericUnitInteractorExtension.can_interact = function (self, interactable_unit,
 
 	local interaction_data = interaction_context.data
 	local interaction_template = InteractionDefinitions[interaction_type]
+
+	if not interaction_template then
+		return false
+	end
+
 	local can_interact_func = interaction_template.client.can_interact
 
 	if can_interact_func then

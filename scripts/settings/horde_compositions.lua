@@ -13581,6 +13581,92 @@ HordeCompositions = {
 			}
 		}
 	},
+	explosive_horde_small_mixed = {
+		{
+			{
+				name = "explo_small",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					3,
+					"skaven_explosive_loot_rat",
+					1
+				}
+			}
+		},
+		{
+			{
+				name = "explo_small",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					4,
+					"skaven_explosive_loot_rat",
+					2
+				}
+			}
+		},
+		{
+			{
+				name = "explo_small",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					5,
+					"skaven_explosive_loot_rat",
+					3
+				}
+			}
+		},
+		{
+			{
+				name = "explo_small",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					6,
+					"skaven_explosive_loot_rat",
+					4
+				}
+			}
+		},
+		{
+			{
+				name = "explo_small",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					6,
+					"skaven_explosive_loot_rat",
+					6
+				}
+			}
+		},
+		{
+			{
+				name = "explo_small",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					6,
+					"skaven_explosive_loot_rat",
+					8
+				}
+			}
+		},
+		{
+			{
+				name = "explo_small",
+				weight = 3,
+				breeds = {
+					"skaven_slave",
+					8,
+					"skaven_explosive_loot_rat",
+					8
+				}
+			}
+		}
+	},
 	end_boss_event_stormvermin = {
 		{
 			{

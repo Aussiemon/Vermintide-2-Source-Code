@@ -501,8 +501,9 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 	end
 
 	local attacker_unit = damage_data[DamageDataIndex.ATTACKER]
+	local source_attacker_unit = damage_data[DamageDataIndex.SOURCE_ATTACKER_UNIT]
 	attacker_unit = AiUtils.get_actual_attacker_unit(attacker_unit)
-	local attacker_player = player_manager:owner(attacker_unit)
+	local attacker_player = player_manager:owner(attacker_unit) or player_manager:owner(source_attacker_unit)
 
 	if attacker_player then
 		local target_breed = Unit_alive(victim_unit) and Unit_get_data(victim_unit, "breed")

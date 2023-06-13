@@ -110,7 +110,7 @@ local function get_head_shot_boost_amount(target_settings, damage_profile, is_fi
 	return head_shot_boost_amount
 end
 
-local function do_damage_calculation(attacker_unit, damage_source, original_power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, static_base_damage, is_player_friendly_fire, has_power_boost, difficulty_level, target_unit_armor, target_unit_primary_armor, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk, target_max_health, target_unit)
+local function do_damage_calculation(attacker_unit, damage_source, original_power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, static_base_damage, is_friendly_fire, has_power_boost, difficulty_level, target_unit_armor, target_unit_primary_armor, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk, target_max_health, target_unit)
 	if damage_profile and damage_profile.no_damage then
 		return 0
 	end
@@ -158,7 +158,13 @@ local function do_damage_calculation(attacker_unit, damage_source, original_powe
 	end
 
 	local damage, target_damages = nil
-	target_damages = static_base_damage and (type(damage_output) == "table" and damage_output[1] or damage_output) or damage_output[target_unit_armor] or target_unit_armor == 0 and 0 or damage_output[1]
+
+	if type(damage_output) == "table" then
+		local armor_type = target_unit_primary_armor or target_unit_armor
+		target_damages = damage_output[armor_type] or armor_type == 0 and 0 or damage_output[1]
+	else
+		target_damages = damage_output
+	end
 
 	if type(target_damages) == "table" then
 		local damage_range = target_damages.max - target_damages.min
@@ -347,7 +353,7 @@ local function do_damage_calculation(attacker_unit, damage_source, original_powe
 		end
 	end
 
-	if is_player_friendly_fire then
+	if is_friendly_fire then
 		local friendly_fire_multiplier = difficulty_settings.friendly_fire_multiplier
 
 		if damage_profile and damage_profile.friendly_fire_multiplier then
@@ -393,10 +399,10 @@ DamageUtils.calculate_damage_tooltip = function (attacker_unit, damage_source, o
 	local damage_output = DamageOutput
 	local dummy_unit_armor, is_dummy = nil
 	local static_base_damage = false
-	local is_player_friendly_fire = false
+	local is_friendly_fire = false
 	local has_crit_head_shot_killing_blow_perk = false
 	local has_crit_backstab_killing_blow_perk = false
-	local calculated_damage = do_damage_calculation(attacker_unit, damage_source, original_power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, static_base_damage, is_player_friendly_fire, has_power_boost, difficulty_level, target_unit_armor, target_unit_primary_armor, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk)
+	local calculated_damage = do_damage_calculation(attacker_unit, damage_source, original_power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, static_base_damage, is_friendly_fire, has_power_boost, difficulty_level, target_unit_armor, target_unit_primary_armor, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk)
 	calculated_damage = DamageUtils.networkify_damage(calculated_damage)
 
 	return calculated_damage
@@ -459,7 +465,7 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 	end
 
 	local static_base_damage = not attacker_breed or not attacker_breed.is_hero
-	local is_player_friendly_fire = not static_base_damage and Managers.state.side:is_player_friendly_fire(attacker_unit, target_unit)
+	local is_friendly_fire = not static_base_damage and Managers.state.side:is_ally(attacker_unit, target_unit)
 	local target_is_hero = breed and breed.is_hero
 	local dropoff_scalar = 0
 
@@ -488,7 +494,7 @@ DamageUtils.calculate_damage = function (damage_output, target_unit, attacker_un
 		target_unit_armor, _, target_unit_primary_armor, _ = ActionUtils.get_target_armor(hit_zone_name, breed, dummy_unit_armor)
 	end
 
-	local calculated_damage = do_damage_calculation(attacker_unit, damage_source, original_power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, static_base_damage, is_player_friendly_fire, has_power_boost, difficulty_level, target_unit_armor, target_unit_primary_armor, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk, unit_max_health, target_unit)
+	local calculated_damage = do_damage_calculation(attacker_unit, damage_source, original_power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, static_base_damage, is_friendly_fire, has_power_boost, difficulty_level, target_unit_armor, target_unit_primary_armor, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk, unit_max_health, target_unit)
 
 	if damage_profile and not damage_profile.is_dot then
 		local blackboard = BLACKBOARDS[target_unit]
@@ -1195,9 +1201,8 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 		local attacker_is_player = attacker_player ~= nil
 		local friendly_fire_disabled = explosion_data.no_friendly_fire
 		local friendly_fire_allowed = attacker_is_player and DamageUtils.allow_friendly_fire_ranged(difficulty_settings, attacker_player)
-		local forced_friendly_fire = explosion_data.always_hurt_players
-		local friendly_fire_enabled = forced_friendly_fire or friendly_fire_allowed and not friendly_fire_disabled
-		local force_disable_friendly_fire = explosion_data.force_disable_friendly_fire
+		local forced_friendly_player_damage = explosion_data.always_hurt_players
+		local friendly_fire_enabled = friendly_fire_allowed and not friendly_fire_disabled
 		local physics_world = World.physics_world(world)
 		local actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", impact_position, "size", radius, "collision_filter", collision_filter)
 		local aoe_target_units = AOE_TARGET_UNITS
@@ -1345,15 +1350,17 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 			local hit_unit = actor_unit(hit_actor)
 			local blackboard = BLACKBOARDS[hit_unit]
 			local breed = blackboard and blackboard.breed
-			local damage_unit = not breed or not breed.is_player or friendly_fire_enabled
+			local is_player = breed and breed.is_player
+			local is_enemy = DamageUtils.is_enemy(attacker_unit, hit_unit)
+			local damage_unit = is_enemy or friendly_fire_enabled
 
-			if not damage_unit and DamageUtils.is_enemy(attacker_unit, hit_unit) then
-				local ghost_mode_extension = ScriptUnit.has_extension(hit_unit, "ghost_mode_system")
-				damage_unit = ghost_mode_extension and not ghost_mode_extension:is_in_ghost_mode()
-			end
-
-			if force_disable_friendly_fire then
-				damage_unit = DamageUtils.is_enemy(attacker_unit, hit_unit)
+			if is_player then
+				if not is_enemy then
+					damage_unit = damage_unit or forced_friendly_player_damage
+				elseif damage_unit then
+					local ghost_mode_extension = ScriptUnit.has_extension(hit_unit, "ghost_mode_system")
+					damage_unit = not ghost_mode_extension or not ghost_mode_extension:is_in_ghost_mode()
+				end
 			end
 
 			if damage_unit then
@@ -1630,6 +1637,7 @@ DamageUtils.create_hit_zone_lookup = function (unit, breed)
 				prio = zone.prio,
 				actor_name = actor_name
 			}
+			hit_zones_lookup[zone_name] = node
 			hit_zones_lookup[breed_name] = true
 		end
 	end
@@ -3229,6 +3237,7 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 
 			local is_player = player_manager:is_player_unit(hit_unit)
 			local is_character = breed or is_player
+			hit_data.hit_any_player = hit_data.hit_any_player or is_player
 			local block_processing = false
 
 			if is_character and owner_player then
@@ -3236,7 +3245,7 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 				local owner_side = side_manager.side_by_unit[owner_unit]
 
 				if side and owner_side and side.side_id == owner_side.side_id then
-					block_processing = not allow_friendly_fire
+					block_processing = not allow_friendly_fire or breed.disable_friendly_fire
 				end
 			end
 
@@ -3647,11 +3656,11 @@ DamageUtils.custom_calculate_damage = function (attacker_unit, damage_source, po
 	local damage_output = DamageOutput
 	local dummy_unit_armor, is_dummy = nil
 	local static_base_damage = false
-	local is_player_friendly_fire = false
+	local is_friendly_fire = false
 	local has_crit_head_shot_killing_blow_perk = false
 	local has_crit_backstab_killing_blow_perk = false
 	local target_buff_extension, target_max_health, target_unit = nil
-	local base_damage = do_damage_calculation(attacker_unit, damage_source, power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, static_base_damage, is_player_friendly_fire, has_power_boost, difficulty_level, armor_type, primary_armor_type, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk, target_max_health, target_unit)
+	local base_damage = do_damage_calculation(attacker_unit, damage_source, power_level, damage_output, hit_zone_name, damage_profile, target_index, boost_curve, boost_damage_multiplier, is_critical_strike, backstab_multiplier, breed, is_dummy, dummy_unit_armor, dropoff_scalar, static_base_damage, is_friendly_fire, has_power_boost, difficulty_level, armor_type, primary_armor_type, has_crit_head_shot_killing_blow_perk, has_crit_backstab_killing_blow_perk, target_max_health, target_unit)
 	local stagger_damage = base_damage * DamageUtils.calculate_stagger_multiplier(damage_profile, target_buff_extension, difficulty_settings, stagger_level)
 	local total_damage = base_damage + stagger_damage
 

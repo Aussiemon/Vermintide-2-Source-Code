@@ -184,13 +184,16 @@ MissionTemplates = {
 			return end_time <= network_time
 		end,
 		update_text = function (data)
+			local mission_data = data.mission_data
 			local time = math.ceil(data.time_left)
 			local minutes = math.floor(time / 60)
 			local seconds = time % 60
 			local sminutes = minutes >= 10 and tostring(minutes) or string.format("0%s", tostring(minutes))
 			local sseconds = seconds >= 10 and tostring(seconds) or string.format("0%s", tostring(seconds))
-			local text = string.format("%s:%s\n%s", sminutes, sseconds, data.mission_text)
+			local text = string.format("%s", data.mission_text)
+			local duration_text = string.format("%s:%s", sminutes, sseconds)
 			data.text = text
+			data.duration_text = duration_text
 		end,
 		evaluate_mission = function (data, dt)
 			return data.time_left > 0, 0

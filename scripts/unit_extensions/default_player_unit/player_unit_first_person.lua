@@ -196,6 +196,10 @@ PlayerUnitFirstPerson.update_game_options = function (self)
 	end
 
 	self._eyetracking_extension = eyetracking_extension
+	local weapon_trails = Application.user_setting("weapon_trails")
+
+	Unit.set_data(self.first_person_unit, "trails_enabled", weapon_trails ~= "none")
+
 	self._game_options_dirty = false
 end
 

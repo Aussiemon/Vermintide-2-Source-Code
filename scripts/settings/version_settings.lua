@@ -1,3 +1,3 @@
 VersionSettings = {
-	version = "4.9.6"
+	version = "5.0.0"
 }

@@ -815,7 +815,7 @@ BackendInterfaceWeavesPlayFab.upgrade_item_magic_level_cb = function (self, exte
 	local new_magic_level = function_result.new_magic_level
 	local new_essence = function_result.new_essence
 
-	Managers.telemetry.events:magic_item_level_upgraded(item_id, essence_cost, new_magic_level)
+	Managers.telemetry_events:magic_item_level_upgraded(item_id, essence_cost, new_magic_level)
 
 	local backend_mirror = self._backend_mirror
 

@@ -3,6 +3,8 @@ require("scripts/helpers/mover_helper")
 PlayerUnitLocomotionExtension = class(PlayerUnitLocomotionExtension)
 IS_NEW_FRAME = false
 local POSITION_LOOKUP = POSITION_LOOKUP
+local MAX_MOVE_SPEED = 99.9999
+local MOVE_SPEED_ANIM_LERP_TIME = 0.3
 
 PlayerUnitLocomotionExtension.set_new_frame = function ()
 	IS_NEW_FRAME = true
@@ -29,7 +31,7 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 
 	self:reset()
 
-	self._move_speed_lerp_val = 0
+	self.anim_move_speed = 0
 	self.move_speed_anim_var = Unit.animation_find_variable(unit, "move_speed")
 	self.collides_down = true
 	self.on_ground = true
@@ -289,24 +291,27 @@ PlayerUnitLocomotionExtension.post_update = function (self, unit, input, dt, con
 		Unit.set_local_position(unit, 0, new_pos)
 	end
 
+	local move_speed = self.on_ground and Vector3.length(self.velocity_current:unbox()) or 0
+	local move_speed_lerp_val = self.anim_move_speed
+	local speed_difference = math.abs(move_speed_lerp_val - move_speed)
+
+	if move_speed_lerp_val < move_speed then
+		local delta = math.min(move_speed / MOVE_SPEED_ANIM_LERP_TIME * dt, speed_difference)
+		move_speed_lerp_val = math.clamp(move_speed_lerp_val + delta, 0, move_speed)
+		self._move_speed_top = move_speed_lerp_val
+	else
+		local ms = self._move_speed_top or move_speed
+		local delta = math.min(ms / MOVE_SPEED_ANIM_LERP_TIME * dt, speed_difference)
+		move_speed_lerp_val = math.clamp(move_speed_lerp_val - delta, 0, move_speed_lerp_val)
+	end
+
+	self.anim_move_speed = move_speed_lerp_val
 	local first_person_unit = self.first_person_extension and self.first_person_extension.first_person_unit
 
 	if first_person_unit and self._move_speed_anim_var_1p then
-		local lerp_time = 0.3
-		local move_speed = self.on_ground and Vector3.length(self.velocity_current:unbox()) or 0
-		local move_speed_lerp_val = self._move_speed_lerp_val
+		local fp_move_speed = self.on_ground and move_speed_lerp_val or 0
 
-		if move_speed_lerp_val < move_speed then
-			move_speed_lerp_val = math.clamp(move_speed_lerp_val + move_speed / lerp_time * dt, 0, move_speed)
-			self._move_speed_top = move_speed_lerp_val
-		else
-			local ms = self._move_speed_top or move_speed
-			move_speed_lerp_val = math.clamp(move_speed_lerp_val - ms / lerp_time * dt, 0, move_speed_lerp_val)
-		end
-
-		self._move_speed_lerp_val = move_speed_lerp_val
-
-		Unit.animation_set_variable(first_person_unit, self._move_speed_anim_var_1p, math.min(move_speed_lerp_val, 99.9999))
+		Unit.animation_set_variable(first_person_unit, self._move_speed_anim_var_1p, math.min(fp_move_speed, MAX_MOVE_SPEED))
 	end
 
 	if script_data.debug_player_skeletons then
@@ -744,8 +749,6 @@ PlayerUnitLocomotionExtension.sync_network_position = function (self, game, go_i
 	GameSession.set_game_object_field(game, go_id, "position", Vector3.clamp(position, min, max))
 end
 
-local MAX_MOVE_SPEED = 99.9999
-
 PlayerUnitLocomotionExtension.sync_network_velocity = function (self, game, go_id, dt)
 	local velocity = self.velocity_network:unbox()
 	local platform_ext = self._platform_extension
@@ -753,8 +756,6 @@ PlayerUnitLocomotionExtension.sync_network_velocity = function (self, game, go_i
 	if platform_ext then
 		velocity = velocity + platform_ext:movement_delta() / dt
 	end
-
-	Unit.animation_set_variable(self.unit, self.move_speed_anim_var, math.min(Vector3.length(self.velocity_current:unbox()), MAX_MOVE_SPEED))
 
 	local min = NetworkConstants.velocity.min
 	local max = NetworkConstants.velocity.max

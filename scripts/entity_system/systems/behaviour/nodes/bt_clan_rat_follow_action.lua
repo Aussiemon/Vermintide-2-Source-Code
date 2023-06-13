@@ -23,6 +23,7 @@ BTClanRatFollowAction.init = function (self, ...)
 end
 
 BTClanRatFollowAction.name = "BTClanRatFollowAction"
+local EPSILON_SQ = 0.0001
 
 BTClanRatFollowAction.enter = function (self, unit, blackboard, t)
 	local action_data = self._tree_node.action_data
@@ -62,6 +63,10 @@ BTClanRatFollowAction.enter = function (self, unit, blackboard, t)
 		else
 			blackboard.walk_timer = t + 3 + 1 * Math.random()
 		end
+	end
+
+	if action_data.skip_start_anim_if_moving and blackboard.move_state == "moving" then
+		blackboard.skip_start_anim = true
 	end
 end
 
@@ -117,6 +122,7 @@ BTClanRatFollowAction.leave = function (self, unit, blackboard, t, reason, destr
 	blackboard.deacceleration_factor = nil
 	blackboard.walking = nil
 	blackboard.walking_direction = nil
+	blackboard.skip_start_anim = nil
 	local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 	local navigation_extension = blackboard.navigation_extension
 
@@ -132,11 +138,12 @@ BTClanRatFollowAction.run = function (self, unit, blackboard, t, dt)
 		return "done"
 	end
 
-	if blackboard.spawn_to_running then
+	if blackboard.spawn_to_running or blackboard.skip_start_anim then
 		blackboard.spawn_to_running = nil
 		blackboard.start_anim_done = true
 		blackboard.move_state = "moving"
 		blackboard.start_anim_locked = nil
+		blackboard.skip_start_anim = nil
 
 		self:set_start_move_animation_lock(unit, blackboard, false)
 	end

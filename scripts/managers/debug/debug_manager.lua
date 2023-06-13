@@ -189,7 +189,7 @@ DebugManager.update = function (self, dt, t)
 
 	self:_update_unit_spawning(dt, t)
 
-	if script_data.debug_unit and script_data.debug_behaviour_trees then
+	if script_data.debug_unit and self._is_server and script_data.debug_behaviour_trees then
 		local debug_unit = script_data.debug_unit
 
 		if Unit.alive(debug_unit) then

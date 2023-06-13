@@ -211,7 +211,10 @@ T.update_network = function (data, dt)
 
 		GameSession_set_game_object_field(game, go_id, "position", Vector3.clamp(position, min, max))
 		GameSession_set_game_object_field(game, go_id, "has_moved_from_start_position", extension.has_moved_from_start_position)
-		Unit.animation_set_variable(unit, extension.move_speed_anim_var, math.min(Vector3.length(extension.velocity_current:unbox()), MAX_MOVE_SPEED))
+
+		local speed = extension.anim_move_speed or math.min(Vector3.length(extension.velocity_current:unbox()), MAX_MOVE_SPEED)
+
+		Unit.animation_set_variable(unit, extension.move_speed_anim_var, speed)
 		GameSession_set_game_object_field(game, go_id, "velocity", Vector3.clamp(velocity, min_vel, max_vel))
 		GameSession_set_game_object_field(game, go_id, "average_velocity", Vector3.clamp(extension._average_velocity:unbox(), min_vel, max_vel))
 		GameSession_set_game_object_field(game, go_id, "small_sample_size_average_velocity", Vector3.clamp(extension._small_sample_size_average_velocity:unbox(), min_vel, max_vel))
@@ -251,10 +254,12 @@ T.update_rotation = function (data, t, dt)
 					local target_rotation = extension.target_rotation:unbox()
 					local target_rotation_flat = Vector3_flat(Quaternion_forward(target_rotation))
 					local target_rotation_normalised = Vector3_normalize(target_rotation_flat)
-					local dot = Vector3_dot(current_rotation_normalised, target_rotation_normalised)
+					local should_store_rotation = Vector3_dot(current_rotation_normalised, target_rotation_normalised) < 0
 
-					if dot < 0 then
+					if should_store_rotation then
 						extension.target_rotation:store(current_rotation)
+
+						extension.disable_rotation_update_when_still = false
 					end
 
 					velocity_current = target_rotation_flat

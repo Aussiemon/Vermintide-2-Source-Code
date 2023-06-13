@@ -26,6 +26,7 @@ PingTypes = {
 IgnoreCooldownPingTypes = {
 	[PingTypes.PLAYER_PICK_UP] = true
 }
+IgnoreFreeEvents = {}
 PingTemplates = {
 	generic_item = {
 		check_func = function (self, pinger_unit, pinged_unit)

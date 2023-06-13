@@ -958,7 +958,7 @@ LevelAnalysis._give_events = function (self, main_paths, terror_spawners, genera
 				start_index = level_sections[i]
 				end_index = level_sections[i + 1] - 1
 
-				fassert(start_index <= end_index, "Level Error: Too few boss-gizmo spawners of type '%d' in section %d: start-index: %d, end-index: %d,", terror_event_kind, i, tostring(start_index), tostring(end_index))
+				fassert(start_index <= end_index, "Level Error: Too few boss-gizmo spawners of type '%s' in section %d: start-index: %d, end-index: %d,", terror_event_kind, i, tostring(start_index), tostring(end_index))
 
 				local start_travel_dist = spawners[start_index][2]
 				local end_travel_dist = spawners[end_index][2]

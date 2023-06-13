@@ -36,3 +36,11 @@ end
 string.remove = function (str, i, j)
 	return sub(str, 1, i - 1) .. sub(str, j + 1)
 end
+
+string.value_or_nil = function (str)
+	if str == "" or str == false then
+		return nil
+	else
+		return str
+	end
+end

@@ -81,26 +81,32 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 	local results = PhysicsWorld.immediate_raycast(physics_world, pos, direction, new_action.dedicated_target_range, "all", "collision_filter", collision_filter)
 
 	if results then
+		local side_manager = Managers.state.side
 		local num_results = #results
 
 		for i = 1, num_results do
 			local result = results[i]
 			local actor = result[4]
 			local hit_unit = Actor.unit(actor)
-			local breed = Unit.get_data(hit_unit, "breed")
 
-			if breed then
-				local node = Actor.node(actor)
-				local hit_zone = breed.hit_zones_lookup[node]
-				local hit_zone_name = hit_zone.name
+			if not melee_friendly_fire and side_manager:is_ally(owner_unit, hit_unit) then
+				-- Nothing
+			else
+				local breed = Unit.get_data(hit_unit, "breed")
 
-				if hit_zone_name ~= "afro" then
-					local target_health_extension = ScriptUnit.extension(hit_unit, "health_system")
+				if breed then
+					local node = Actor.node(actor)
+					local hit_zone = breed.hit_zones_lookup[node]
+					local hit_zone_name = hit_zone.name
 
-					if target_health_extension:is_alive() then
-						self.target_breed_unit = hit_unit
+					if hit_zone_name ~= "afro" then
+						local target_health_extension = ScriptUnit.extension(hit_unit, "health_system")
 
-						break
+						if target_health_extension:is_alive() then
+							self.target_breed_unit = hit_unit
+
+							break
+						end
 					end
 				end
 			end
@@ -204,21 +210,29 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 		target_breed_unit = nil
 	end
 
-	local side = Managers.state.side.side_by_unit[owner_unit]
-	local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+	local side_manager = Managers.state.side
 
 	for i = 1, actors_n do
 		repeat
 			local hit_actor = actors[i]
 			local hit_unit = Actor.unit(hit_actor)
+
+			if hit_units[hit_unit] then
+				break
+			end
+
+			hit_units[hit_unit] = true
+			local target_is_friendly = side_manager:is_ally(owner_unit, hit_unit)
+
+			if target_is_friendly then
+				break
+			end
+
 			local breed = unit_get_data(hit_unit, "breed")
 			local dummy = not breed and unit_get_data(hit_unit, "is_dummy")
 			local hit_self = hit_unit == owner_unit
-			local target_is_friendly_player = table.contains(player_and_bot_units, hit_unit)
 
-			if not target_is_friendly_player and (breed or dummy) and not hit_units[hit_unit] then
-				hit_units[hit_unit] = true
-
+			if breed or dummy then
 				if hit_unit == target_breed_unit then
 					break
 				end
@@ -252,6 +266,8 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 						local is_critical_strike = self._is_critical_strike
 
 						if not dummy then
+							self._overridable_settings = current_action
+
 							ActionSweep._play_character_impact(self, is_server, owner_unit, hit_unit, breed, hit_position, target_hit_zone_name, current_action, damage_profile, target_index, power_level, attack_direction, shield_blocked, self.melee_boost_curve_multiplier, is_critical_strike)
 						end
 
@@ -260,11 +276,10 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 						weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, self.damage_profile_aoe_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true, "first_hit", self._num_targets_hit == 1)
 					end
 				end
-			elseif not target_is_friendly_player and not hit_units[hit_unit] and not hit_self and ScriptUnit.has_extension(hit_unit, "health_system") then
+			elseif not hit_self and ScriptUnit.has_extension(hit_unit, "health_system") then
 				local hit_unit_id, is_level_unit = Managers.state.network:game_object_or_level_id(hit_unit)
 
 				if is_level_unit then
-					hit_units[hit_unit] = true
 					local no_player_damage = unit_get_data(hit_unit, "no_damage_from_players")
 
 					if not no_player_damage then
@@ -286,7 +301,6 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 						end
 					end
 				else
-					hit_units[hit_unit] = true
 					local hit_position = POSITION_LOOKUP[hit_unit] or Unit.world_position(hit_unit, 0)
 					local distance_to_inner_position_sq = math.min(Vector3.distance_squared(hit_position, inner_attack_pos), Vector3.distance_squared(hit_position, inner_attack_pos_near))
 
@@ -337,6 +351,8 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 			local actor_position_hit = actor and Actor.center_of_mass(actor)
 
 			if not dummy and actor_position_hit then
+				self._overridable_settings = current_action
+
 				ActionSweep._play_character_impact(self, is_server, owner_unit, hit_unit, breed, actor_position_hit, hit_zone_name, current_action, damage_profile, target_index, power_level, attack_direction, shield_blocked, self.melee_boost_curve_multiplier, is_critical_strike)
 			end
 

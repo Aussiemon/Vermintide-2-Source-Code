@@ -612,6 +612,30 @@ for breed_name, breed in pairs(Breeds) do
 	end
 end
 
+for breed_name, breed in pairs(PlayerBreeds) do
+	player.kills_per_breed[breed_name] = {
+		value = 0,
+		sync_on_hot_join = true,
+		name = breed_name
+	}
+	player.kill_assists_per_breed[breed_name] = {
+		value = 0,
+		name = breed_name
+	}
+	player.damage_dealt_per_breed[breed_name] = {
+		value = 0,
+		name = breed_name
+	}
+	local race = breed.race
+
+	if race and not player.kills_per_race[race] then
+		player.kills_per_race[race] = {
+			value = 0,
+			name = race
+		}
+	end
+end
+
 LevelDifficultyDBNames = {}
 
 for level_key, level in pairs(LevelSettings) do

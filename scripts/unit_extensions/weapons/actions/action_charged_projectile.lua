@@ -263,8 +263,9 @@ ActionChargedProjectile._shoot = function (self, t)
 	local item_template_name = lookup_data.item_template_name
 	local action_name = lookup_data.action_name
 	local sub_action_name = lookup_data.sub_action_name
+	local scaled_charge = math.round(math.max(charge_level, 0) * 100)
 	local scale_projectile = current_action.scale_projectile ~= false
-	local scale = scale_projectile and math.round(math.max(charge_level, 0) * 100) or 1
+	local scale = scale_projectile and scaled_charge or 1
 	local projectile_power_level = self.power_level
 	local full_charge_boost = self.owner_buff_extension:has_buff_perk("full_charge_boost")
 
@@ -274,7 +275,7 @@ ActionChargedProjectile._shoot = function (self, t)
 
 	projectile_power_level = ActionUtils.scale_charged_projectile_power_level(projectile_power_level, current_action, self.charge_level)
 
-	ActionUtils.spawn_player_projectile(owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, self._is_critical_strike, projectile_power_level, gaze_settings)
+	ActionUtils.spawn_player_projectile(owner_unit, position, rotation, scale, angle, target_vector, speed, item_name, item_template_name, action_name, sub_action_name, self._is_critical_strike, projectile_power_level, gaze_settings, scaled_charge)
 
 	local fire_sound_event = self.current_action.fire_sound_event
 

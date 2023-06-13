@@ -479,8 +479,7 @@ AdventureMechanism._build_side_compositions = function (self, state)
 			name = "heroes",
 			relations = {
 				enemy = {
-					"dark_pact",
-					"neutral"
+					"dark_pact"
 				}
 			},
 			party = party_manager:get_party(1),
@@ -495,18 +494,14 @@ AdventureMechanism._build_side_compositions = function (self, state)
 			name = "dark_pact",
 			relations = {
 				enemy = {
-					"heroes",
-					"neutral"
+					"heroes"
 				}
 			}
 		},
 		{
 			name = "neutral",
 			relations = {
-				enemy = {
-					"dark_pact",
-					"heroes"
-				}
+				enemy = {}
 			}
 		}
 	}

@@ -11,6 +11,8 @@ ProjectileRaycastImpactUnitExtension.init = function (self, extension_init_conte
 	self.owner_is_local = owner_player and owner_player.local_player or owner_player and owner_player.bot_player or false
 	self.server_side_raycast = extension_init_data.server_side_raycast
 	self.is_server = Managers.player.is_server
+	self._dont_target_friendly = extension_init_data.dont_target_friendly
+	self._ignore_dead = extension_init_data.ignore_dead
 	self.last_position = nil
 end
 
@@ -79,7 +81,6 @@ ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, t
 		return
 	end
 
-	local owner_unit = self.owner_unit
 	local num_hits = #result
 
 	for i = 1, num_hits do
@@ -89,9 +90,9 @@ ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, t
 		local hit_normal = hit[INDEX_NORMAL]
 		local hit_actor = hit[INDEX_ACTOR]
 		local hit_unit = Actor.unit(hit_actor)
-		local hit_self = hit_unit == unit or hit_unit == owner_unit
+		local valid = self:_valid_target(unit, hit_unit)
 
-		if not hit_self then
+		if valid then
 			local num_actors = Unit.num_actors(hit_unit)
 			local actor_index = nil
 
@@ -112,4 +113,25 @@ ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, t
 			self:impact(hit_unit, hit_position, direction, hit_normal, actor_index)
 		end
 	end
+end
+
+ProjectileRaycastImpactUnitExtension._valid_target = function (self, unit, hit_unit)
+	if unit == hit_unit or unit == self.owner_unit then
+		return false
+	end
+
+	if self._dont_target_friendly then
+		local side_manager = Managers.state.side
+		local has_side = side_manager.side_by_unit[hit_unit]
+
+		if has_side and not side_manager:is_enemy(self.owner_unit, hit_unit) then
+			return false
+		end
+	end
+
+	if self._ignore_dead and not AiUtils.unit_alive(hit_unit) then
+		return false
+	end
+
+	return true
 end

@@ -152,6 +152,10 @@ for breed_name, breed_data in pairs(Breeds) do
 	end
 
 	inject_breed_category_mask(breed_data)
+
+	if not breed_data.aoe_height then
+		breed_data.aoe_height = DEFAULT_BREED_AOE_HEIGHT
+	end
 end
 
 for breed_name, breed_data in pairs(PlayerBreeds) do

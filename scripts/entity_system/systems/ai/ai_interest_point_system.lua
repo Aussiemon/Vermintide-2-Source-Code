@@ -6,6 +6,18 @@ local extensions = {
 	"AIInterestPointExtension",
 	"AIInterestPointHuskExtension"
 }
+local broadphase_race_filters = {
+	skaven = {
+		"skaven"
+	},
+	human = {
+		"human"
+	},
+	all = {
+		"skaven",
+		"human"
+	}
+}
 
 local function ipprintf(...)
 	if script_data.ai_interest_point_debug then
@@ -65,7 +77,7 @@ AIInterestPointSystem.init = function (self, context, name)
 
 	self.traverse_logic = traverse_logic
 	self.broadphase_radius = broadphase_radius
-	self.broadphase = Broadphase(self.broadphase_radius, broadphase_num_objects)
+	self.broadphase = Broadphase(self.broadphase_radius, broadphase_num_objects, broadphase_race_filters.all)
 	local network_event_delegate = context.network_event_delegate
 	self.network_event_delegate = network_event_delegate
 
@@ -163,6 +175,15 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 
 			extension.wwise_event = Unit.get_data(unit, "interest_point", "wwise_event") or "enemy_skaven_idle_chatter"
 			extension.wwise_minimum_needed = Unit.get_data(unit, "interest_point", "wwise_minimum_needed") or 2
+			local filter_string = Unit.get_data(unit, "interest_point", "race_filter")
+
+			if filter_string then
+				fassert(broadphase_race_filters[filter_string], "Badly named race filter '%s' for interest-point. See 'broadphase_race_filters' ", filter_string)
+			else
+				filter_string = "skaven"
+			end
+
+			extension.race_filter = broadphase_race_filters[filter_string]
 			local num_valid_to_spawn = 0
 			extension.num_claimed_points = 0
 			extension.points = {}
@@ -218,7 +239,7 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 			end
 
 			local radius = 4
-			extension.broadphase_id = Broadphase.add(self.broadphase, unit, unit_position, radius)
+			extension.broadphase_id = Broadphase.add(self.broadphase, unit, unit_position, radius, extension.race_filter)
 			extension.num_valid_to_spawn = num_valid_to_spawn
 
 			if num_valid_to_spawn == 0 then
@@ -446,7 +467,9 @@ local function _get_best_interest_point(broadphase, request, claim_unit_position
 	local max_range_sq = request.max_range * request.max_range
 	local request_position = Vector3Aux.unbox(request.position)
 	local min_dist_sq = math.huge
-	local interest_points_result_n = Broadphase.query(broadphase, request_position, request.max_range, interest_points_result)
+	local blackboard = BLACKBOARDS[request.claim_unit]
+	local filter = broadphase_race_filters[blackboard.breed.race]
+	local interest_points_result_n = Broadphase.query(broadphase, request_position, request.max_range, interest_points_result, filter)
 
 	for bp_i = 1, interest_points_result_n do
 		local point_unit = interest_points_result[bp_i]
@@ -629,7 +652,7 @@ AIInterestPointSystem.debug_draw = function (self, t, dt)
 		local claim_unit = request.claim_unit
 
 		if AiUtils.unit_alive(claim_unit) then
-			local ip_end_time = ScriptUnit.extension(claim_unit, "ai_system")._blackboard.ip_end_time
+			local ip_end_time = BLACKBOARDS[claim_unit].ip_end_time
 
 			if ip_end_time then
 				local end_position = POSITION_LOOKUP[claim_unit] + Vector3.up() * (ip_end_time - t) + Vector3.up()

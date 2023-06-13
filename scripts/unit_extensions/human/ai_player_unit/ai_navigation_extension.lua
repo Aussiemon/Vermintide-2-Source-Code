@@ -88,6 +88,21 @@ AINavigationExtension.release_bot = function (self)
 	self._traverse_logic = nil
 end
 
+local DEFAULT_AVOIDANCE_CONFIG = {
+	half_height = 0.5,
+	radius = 4,
+	frame_delay = 45,
+	enable_forcing = true,
+	sample_count = 20,
+	enable_stop = false,
+	stop_wait_time_s = 1,
+	enable_slowing = true,
+	forcing_time_s = 1,
+	angle_span = 75,
+	time_to_collision = 1.25,
+	forcing_wait_time_s = 0.2
+}
+
 AINavigationExtension.init_position = function (self)
 	local unit = self._unit
 	local nav_world = self._nav_world
@@ -123,6 +138,14 @@ AINavigationExtension.init_position = function (self)
 	self._is_avoiding = breed.use_avoidance == true
 
 	GwNavBot.set_use_avoidance(nav_bot, self._is_avoiding)
+
+	if self._is_avoiding then
+		local config = breed.avoidance_config or DEFAULT_AVOIDANCE_CONFIG
+
+		GwNavBot.set_avoidance_behavior(nav_bot, config.enable_slowing, config.enable_forcing, config.enable_stop, config.stop_wait_time_s, config.forcing_time_s, config.forcing_wait_time_s)
+		GwNavBot.set_avoidance_collider_collector_configuration(nav_bot, config.half_height, config.radius, config.forcing_wait_time_s)
+		GwNavBot.set_avoidance_computer_configuration(nav_bot, config.angle_span, config.time_to_collision, config.sample_count)
+	end
 
 	if not breed.ignore_nav_propagation_box then
 		GwNavBot.set_propagation_box(nav_bot, 30)

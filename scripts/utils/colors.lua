@@ -1208,18 +1208,6 @@ Colors.color_definitions = {
 		197,
 		174
 	},
-	vs_corruptor = {
-		255,
-		187,
-		235,
-		30
-	},
-	vs_vortex_sorcerer = {
-		255,
-		41,
-		219,
-		255
-	},
 	vs_ratling_gunner = {
 		255,
 		228,

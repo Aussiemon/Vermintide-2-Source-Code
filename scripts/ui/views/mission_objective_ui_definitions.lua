@@ -105,6 +105,20 @@ local scenegraph_definition = {
 			0
 		}
 	},
+	duration_text_background = {
+		vertical_alignment = "center",
+		parent = "background",
+		horizontal_alignment = "center",
+		size = {
+			1800,
+			90
+		},
+		position = {
+			0,
+			0,
+			0
+		}
+	},
 	top_center = {
 		vertical_alignment = "center",
 		parent = "mission_pivot",
@@ -311,6 +325,22 @@ local widget_definitions = {
 					text_id = "area_text_content"
 				},
 				{
+					style_id = "duration_text_style",
+					pass_type = "text",
+					text_id = "duration_text_content",
+					content_check_function = function (content, style)
+						return content.duration_text_content
+					end
+				},
+				{
+					style_id = "duration_text_shadow_style",
+					pass_type = "text",
+					text_id = "duration_text_content",
+					content_check_function = function (content, style)
+						return content.duration_text_content
+					end
+				},
+				{
 					style_id = "background",
 					pass_type = "texture_uv",
 					content_id = "background"
@@ -464,8 +494,8 @@ local widget_definitions = {
 			}
 		},
 		content = {
-			background_texture = "hud_difficulty_notification_bg_center",
 			bottom_edge_glow = "mission_objective_glow_01",
+			background_texture = "hud_difficulty_notification_bg_center",
 			fraction = 1,
 			mission_icon_right = "hud_tutorial_icon_mission",
 			area_text_content = "n/a",
@@ -877,6 +907,42 @@ local widget_definitions = {
 					10
 				}
 			},
+			duration_text_style = {
+				min_font_size = 20,
+				upper_case = false,
+				localize = false,
+				font_size = 30,
+				default_font_size = 30,
+				horizontal_alignment = "center",
+				word_wrap = true,
+				vertical_alignment = "center",
+				scenegraph_id = "duration_text_background",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					-1,
+					11
+				}
+			},
+			duration_text_shadow_style = {
+				min_font_size = 20,
+				upper_case = false,
+				localize = false,
+				font_size = 30,
+				default_font_size = 30,
+				horizontal_alignment = "center",
+				word_wrap = true,
+				vertical_alignment = "center",
+				scenegraph_id = "duration_text_background",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					2,
+					-3,
+					10
+				}
+			},
 			mission_icon_left = {
 				uv_start_pixels = 0,
 				uv_scale_pixels = 64,
@@ -1020,6 +1086,12 @@ animation_definitions.mission_start = {
 			area_text_shadow_style.font_size = area_text_style.default_font_size
 			area_text_style.text_color[1] = 0
 			area_text_shadow_style.text_color[1] = 0
+			local duration_text_style = style.duration_text_style
+			local duration_text_shadow_style = style.duration_text_shadow_style
+			duration_text_style.font_size = duration_text_style.default_font_size
+			duration_text_shadow_style.font_size = duration_text_style.default_font_size
+			duration_text_style.text_color[1] = 0
+			duration_text_shadow_style.text_color[1] = 0
 		end,
 		update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
 			local anim_progress = math.easeOutCubic(progress)
@@ -1197,6 +1269,10 @@ animation_definitions.mission_start = {
 			local alpha = 255 * anim_progress
 			area_text_style.text_color[1] = alpha
 			area_text_shadow_style.text_color[1] = alpha
+			local duration_text_style = style.duration_text_style
+			local duration_text_shadow_style = style.duration_text_shadow_style
+			duration_text_style.text_color[1] = alpha
+			duration_text_shadow_style.text_color[1] = alpha
 			local size_progress = math.ease_pulse(math.easeInCubic(progress))
 		end,
 		on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
@@ -1217,15 +1293,37 @@ animation_definitions.mission_start = {
 			local content = widget.content
 			local area_text_style = style.area_text_style
 			local area_text_shadow_style = style.area_text_shadow_style
+			local duration_text_style = style.duration_text_style
+			local duration_text_shadow_style = style.duration_text_shadow_style
 			local min_font_size = area_text_style.min_font_size
 			local default_font_size = area_text_style.default_font_size
 			local font_size_diff = default_font_size - min_font_size
 			local new_font_size = default_font_size - font_size_diff * anim_progress
 			area_text_style.font_size = new_font_size
 			area_text_shadow_style.font_size = new_font_size
+			duration_text_style.font_size = new_font_size
+			duration_text_shadow_style.font_size = new_font_size
 		end,
 		on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-			return
+			local style = widget.style
+			local content = widget.content
+			local text = content.area_text_content
+			local duration_text = content.duration_text_content
+
+			if duration_text then
+				local ui_renderer = params.ui_renderer
+				local font, size_of_font = UIFontByResolution(style.area_text_style)
+				local font_material = font[1]
+				local font_size = size_of_font
+				local text_string = string.upper(content.area_text_content)
+				local text_width = UIRenderer.text_size(ui_renderer, text_string, font_material, font_size)
+				local duration_string = duration_text
+				local duration_width = UIRenderer.text_size(ui_renderer, duration_string, font_material, font_size)
+				local area_text_background_size_x = ui_scenegraph.area_text_background.size[1]
+				local duration_text_background_size_x = ui_scenegraph.duration_text_background.size[1]
+				ui_scenegraph.area_text_background.position[1] = duration_width * 0.5
+				ui_scenegraph.duration_text_background.position[1] = -text_width * 0.5
+			end
 		end
 	},
 	{
@@ -1339,7 +1437,16 @@ animation_definitions.mission_end = {
 			end
 		end,
 		on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-			return
+			local style = widget.style
+			local content = widget.content
+			local area_text_style = style.area_text_style
+			local area_text_shadow_style = style.area_text_shadow_style
+			area_text_style.font_size = area_text_style.default_font_size
+			area_text_shadow_style.font_size = area_text_style.default_font_size
+			local duration_text_style = style.duration_text_style
+			local duration_text_shadow_style = style.duration_text_shadow_style
+			duration_text_style.font_size = duration_text_style.default_font_size
+			duration_text_shadow_style.font_size = duration_text_style.default_font_size
 		end
 	}
 }

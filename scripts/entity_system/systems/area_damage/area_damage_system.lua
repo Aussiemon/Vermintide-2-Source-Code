@@ -513,16 +513,15 @@ AreaDamageSystem.rpc_damage_wave_set_state = function (self, channel_id, unit_id
 	end
 end
 
-AreaDamageSystem._create_damage_wave = function (self, source_unit, position, damage_wave_template, unit_name)
+AreaDamageSystem._create_damage_wave = function (self, source_unit, position, damage_wave_template, unit_name, optional_extension_init_data)
 	fassert(self.is_server, "Error! Only the server should create Damage Waves!")
 
 	unit_name = unit_name or "units/hub_elements/empty"
-	local extension_init_data = {
-		area_damage_system = {
-			damage_wave_template_name = damage_wave_template,
-			source_unit = source_unit
-		}
-	}
+	local extension_init_data = optional_extension_init_data or {}
+	local area_system_data = extension_init_data.area_damage_system or {}
+	area_system_data.damage_wave_template_name = damage_wave_template
+	area_system_data.source_unit = source_unit
+	extension_init_data.area_damage_system = area_system_data
 	local damage_wave_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "damage_wave_unit", extension_init_data, position)
 	local damage_wave_extension = ScriptUnit.extension(damage_wave_unit, "area_damage_system")
 
@@ -562,13 +561,13 @@ AreaDamageSystem.rpc_create_thornsister_push_wave = function (self, channel_id, 
 	damage_wave_extension:launch_wave(nil, optional_target_position, optional_data)
 end
 
-AreaDamageSystem.rpc_add_damage_wave_fx = function (self, channel_id, damage_wave_unit_id, position)
+AreaDamageSystem.rpc_add_damage_wave_fx = function (self, channel_id, damage_wave_unit_id, position, rotation, fx_idx, name_index)
 	local unit = self.unit_storage:unit(damage_wave_unit_id)
 
 	if unit then
 		local damage_wave_extension = ScriptUnit.extension(unit, "area_damage_system")
 
-		damage_wave_extension:add_damage_wave_fx(position)
+		damage_wave_extension:add_damage_wave_fx(position, rotation, fx_idx, name_index)
 	end
 end
 

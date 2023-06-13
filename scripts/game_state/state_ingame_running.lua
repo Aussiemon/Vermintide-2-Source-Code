@@ -116,7 +116,6 @@ StateInGameRunning.on_enter = function (self, params)
 	self.network_event_delegate:register(self, unpack(RPCS))
 
 	local level_key = params.level_key
-	self.parent.parent.loading_context.last_level_id = params.level_key
 	self.free_flight_manager = params.free_flight_manager
 
 	self.free_flight_manager:set_teleport_override(function (pos, rot)
@@ -255,6 +254,7 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 			game_won = game_won,
 			game_mode_key = game_mode_key,
 			difficulty = Managers.state.difficulty:get_difficulty(),
+			level_key = Managers.state.game_mode:level_key(),
 			weave_personal_best_achieved = self._weave_personal_best_achieved,
 			completed_weave = self._completed_weave,
 			profile_synchronizer = self.profile_synchronizer
@@ -752,6 +752,10 @@ StateInGameRunning.update = function (self, dt, t)
 
 		if allowed_to_transition then
 			self:_game_actually_starts()
+
+			if IS_WINDOWS and not self.is_in_inn and not Window.has_focus() then
+				Window.flash_window(nil, "start", 3)
+			end
 
 			self._transitioned_from_black_screen = true
 		end

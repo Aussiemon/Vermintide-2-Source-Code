@@ -146,6 +146,26 @@ HitEffectsStormfiend = {
 			}
 		}
 	},
+	burn_death_force_fire = {
+		inherits = "default_death",
+		flow_event = "burn_force_fire",
+		extra_conditions = {
+			damage_type = {
+				"burning_tank",
+				"heavy_burning_tank",
+				"burning_stab_fencer",
+				"burn",
+				"burn_force_fire",
+				"burninating_force_fire",
+				"burn_sniper",
+				"burn_carbine",
+				"burn_machinegun",
+				"drakegun_shot",
+				"drakegun",
+				"drakegun_glance"
+			}
+		}
+	},
 	push = {
 		extra_conditions = {
 			damage_type = "push"

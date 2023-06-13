@@ -54,7 +54,15 @@ end
 AISystem.init = function (self, context, name)
 	AISystem.super.init(self, context, name, extensions)
 
-	self.broadphase = Broadphase(50, 128)
+	local all_categories = {}
+	local sides = Managers.state.side:sides()
+
+	for i = 1, #sides do
+		local side = sides[i]
+		all_categories[#all_categories + 1] = side:name()
+	end
+
+	self.broadphase = Broadphase(50, 128, all_categories)
 	self._behavior_trees = {}
 	self.group_blackboard = {
 		rats_currently_moving_to_ip = 0,
@@ -499,7 +507,6 @@ AISystem.set_default_blackboard_values = function (self, unit, blackboard)
 	blackboard.target_dist_z_abs = math.huge
 	blackboard.target_dist_xy_sq = math.huge
 	blackboard.ally_distance = math.huge
-	blackboard.slot_dist_z = math.huge
 	blackboard.move_speed = 0
 	blackboard.total_slots_count = 0
 	blackboard.total_occupied_slots = 0
@@ -649,7 +656,8 @@ AISystem.unfreeze = function (self, unit, extension_name, data)
 	end
 
 	if extension._health_extension then
-		extension.broadphase_id = Broadphase.add(self.broadphase, unit, POSITION_LOOKUP[unit], 1)
+		local side = Managers.state.side.side_by_unit[unit]
+		extension.broadphase_id = Broadphase.add(self.broadphase, unit, POSITION_LOOKUP[unit], 1, side.broadphase_category)
 	end
 end
 
@@ -773,7 +781,7 @@ AISystem.update_perception = function (self, t, dt)
 		local extension = ai_units_perception[current_perception_unit]
 		local blackboard = extension._blackboard
 		local breed = extension._breed
-		local target_selection_func_name = extension._target_selection_func_name
+		local target_selection_func_name = blackboard.override_target_selection_name or extension._target_selection_func_name
 		local perception_func_name = extension._perception_func_name
 		local perception_function = PerceptionUtils[perception_func_name]
 		local target_selection_function = PerceptionUtils[target_selection_func_name]
@@ -1184,9 +1192,6 @@ local function update_blackboard(unit, blackboard, t, dt)
 		local target_dist = sqrt(flat_sq + z * z)
 		local inside_priority_distance = target_dist < PRIORITIZED_DISTANCE
 		blackboard.target_dist = target_dist
-		local slot_pos = ai_slot_system:ai_unit_slot_position(unit) or current_position
-		local slot_dist = slot_pos.z - current_position.z
-		blackboard.slot_dist_z = slot_dist
 		local target_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
 
 		if target_slot_extension then
@@ -1202,7 +1207,6 @@ local function update_blackboard(unit, blackboard, t, dt)
 		blackboard.target_dist = math.huge
 		blackboard.target_dist_z_abs = math.huge
 		blackboard.target_dist_xy_sq = math.huge
-		blackboard.slot_dist_z = math.huge
 
 		if not is_valid_attacking_target then
 			blackboard.attack_aborted = true

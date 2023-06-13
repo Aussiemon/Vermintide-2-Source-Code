@@ -36,7 +36,7 @@ PickupUnitExtension.init = function (self, extension_init_context, unit, extensi
 	if self.is_server then
 		local position = POSITION_LOOKUP[unit]
 
-		Managers.telemetry.events:pickup_spawned(pickup_name, spawn_type, position)
+		Managers.telemetry_events:pickup_spawned(pickup_name, spawn_type, position)
 	end
 end
 
@@ -101,7 +101,7 @@ PickupUnitExtension.destroy = function (self)
 	if self.is_server then
 		local position = POSITION_LOOKUP[self.unit]
 
-		Managers.telemetry.events:pickup_destroyed(self.pickup_name, self.spawn_type, position)
+		Managers.telemetry_events:pickup_destroyed(self.pickup_name, self.spawn_type, position)
 	end
 end
 

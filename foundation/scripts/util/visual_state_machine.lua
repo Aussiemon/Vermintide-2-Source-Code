@@ -104,7 +104,7 @@ VisualStateMachine.set_initial_state = function (self, state_class, ...)
 	})
 end
 
-VisualStateMachine.update = function (self, dt)
+VisualStateMachine.update = function (self, dt, t)
 	if self._root_state_machine ~= self then
 		return
 	end
@@ -126,7 +126,7 @@ VisualStateMachine.update = function (self, dt)
 
 		if update_func ~= nil then
 			local args = {
-				update_func(state, dt)
+				update_func(state, dt, t)
 			}
 			local event_name = args[1]
 

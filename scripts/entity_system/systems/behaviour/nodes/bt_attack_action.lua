@@ -348,15 +348,17 @@ BTAttackAction.attack_blocked = function (self, unit, blackboard, direction)
 	local blocked_push_speed = action.player_push_speed_blocked
 
 	if blocked_push_speed then
-		local target_status_extension = ScriptUnit.extension(target_unit, "status_system")
+		local status_ext = ScriptUnit.has_extension(target_unit, "status_system")
 
-		if not target_status_extension:is_disabled() then
+		if status_ext and not status_ext:is_disabled() then
 			local attacker_pos = POSITION_LOOKUP[unit] or Unit.world_position(unit, 0)
 			local target_pos = POSITION_LOOKUP[target_unit] or Unit.local_position(target_unit, 0)
 			local damage_direction = Vector3.normalize(target_pos - attacker_pos)
-			local player_locomotion = ScriptUnit.extension(target_unit, "locomotion_system")
+			local target_locomotion = ScriptUnit.has_extension(target_unit, "locomotion_system")
 
-			player_locomotion:add_external_velocity(blocked_push_speed * damage_direction, action.max_player_push_speed)
+			if target_locomotion then
+				target_locomotion:add_external_velocity(blocked_push_speed * damage_direction, action.max_player_push_speed)
+			end
 		end
 	end
 end

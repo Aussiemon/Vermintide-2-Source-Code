@@ -9,7 +9,6 @@ FatigueUI.init = function (self, parent, ingame_ui_context)
 	self.local_player = ingame_ui_context.player_manager:local_player()
 
 	self:create_ui_elements()
-	rawset(_G, "fatigue_ui", self)
 end
 
 FatigueUI.create_ui_elements = function (self)
@@ -26,7 +25,7 @@ FatigueUI.create_ui_elements = function (self)
 end
 
 FatigueUI.destroy = function (self)
-	rawset(_G, "fatigue_ui", nil)
+	return
 end
 
 FatigueUI.shield_state = function (self, shield_number, living_shields)

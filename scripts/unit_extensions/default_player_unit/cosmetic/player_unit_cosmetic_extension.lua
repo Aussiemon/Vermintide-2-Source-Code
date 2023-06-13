@@ -28,14 +28,11 @@ PlayerUnitCosmeticExtension.init = function (self, extension_init_context, unit,
 	local skin_data = Cosmetics[skin_name]
 	self._cosmetics.skin = skin_data
 
-	if frame_name then
-		self._cosmetics.frame = Cosmetics[frame_name]
-	end
-
-	self._frame_name = frame_name
-
-	CosmeticUtils.update_cosmetic_slot(self._player, "slot_frame", frame_name)
 	CosmeticUtils.update_cosmetic_slot(self._player, "slot_skin", skin_name)
+
+	if frame_name then
+		self:set_equipped_frame(frame_name)
+	end
 
 	local career_index = self._player and self._player:career_index() or 1
 	local career = profile.careers[career_index]

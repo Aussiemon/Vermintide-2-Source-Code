@@ -1723,6 +1723,81 @@ Paintings.ver_The_Empire_at_War_Page_096 = {
 		wood = true
 	}
 }
+Paintings.ver_dwarfs_page_13 = {
+	sound_event = "painting_dwarfs_page_13_description",
+	rarity = "common",
+	display_name = "painting_dwarfs_page_13_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_dwarfs_page_13_description",
+	artist = "painting_whf17_engineer_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_dwarfs_page_14 = {
+	sound_event = "painting_dwarfs_page_14_description",
+	rarity = "common",
+	display_name = "painting_dwarfs_page_14_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_dwarfs_page_14_description",
+	artist = "painting_whf17_engineer_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_dwarfs_page_19 = {
+	sound_event = "painting_dwarfs_page_19_description",
+	rarity = "common",
+	display_name = "painting_dwarfs_page_19_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_dwarfs_page_19_description",
+	artist = "painting_whf17_engineer_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_dwarfs_page_46 = {
+	sound_event = "painting_dwarfs_page_46_description",
+	rarity = "common",
+	display_name = "painting_dwarfs_page_46_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_dwarfs_page_46_description",
+	artist = "painting_whf17_engineer_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_dwarfs_page_43 = {
+	sound_event = "painting_dwarfs_page_43_description",
+	rarity = "common",
+	display_name = "painting_dwarfs_page_43_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_dwarfs_page_43_description",
+	artist = "painting_whf17_engineer_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -1841,7 +1916,12 @@ local painting_order = {
 	"ver_empire_page_059",
 	"ver_end_times_thanquol_narrative_Page_205",
 	"ver_legend_of_sigmar_cover",
-	"ver_The_Empire_at_War_Page_096"
+	"ver_The_Empire_at_War_Page_096",
+	"ver_dwarfs_page_13",
+	"ver_dwarfs_page_14",
+	"ver_dwarfs_page_19",
+	"ver_dwarfs_page_46",
+	"ver_dwarfs_page_43"
 }
 PaintingOrder = PaintingOrder or {}
 

@@ -32,7 +32,7 @@ end
 
 FPSReporter.report = function (self)
 	self:_normalize_histogram()
-	Managers.telemetry.events:fps(self._avg_fps, self._histogram)
+	Managers.telemetry_events:fps(self._avg_fps, self._histogram)
 end
 
 FPSReporter.avg_fps = function (self)

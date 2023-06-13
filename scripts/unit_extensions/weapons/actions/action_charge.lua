@@ -25,6 +25,7 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 	self.current_action = new_action
 	self.audio_loop_id = new_action.audio_loop_id or "charge"
 	self.charge_ready_sound_event = self.current_action.charge_ready_sound_event
+	self.charge_flow_event_left_weapon = new_action.charge_flow_event_left_weapon
 	self.venting_overcharge = nil
 	self._max_charge = false
 	local overcharge_extension = self.overcharge_extension

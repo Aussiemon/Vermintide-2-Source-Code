@@ -327,12 +327,51 @@ DLCSettings = DLCSettings or {
 			level = "scripts/settings/dlcs/wizards/wizards_level_settings_part_2"
 		}
 	},
+	karak_azgaraz_part_1 = {
+		localization = "localization/karak_azgaraz",
+		package_name = "resource_packages/dlcs/karak_azgaraz_part_1",
+		additional_settings = {
+			common = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_common_settings_part_1",
+			ai = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_ai_settings_part_1",
+			sound = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_sound_settings_part_1",
+			achievements = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_achievement_settings_part_1",
+			level = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_level_settings_part_1"
+		}
+	},
+	karak_azgaraz_part_2 = {
+		package_name = "resource_packages/dlcs/karak_azgaraz_part_2",
+		additional_settings = {
+			common = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_common_settings_part_2",
+			ai = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_ai_settings_part_2",
+			sound = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_sound_settings_part_2",
+			achievements = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_achievement_settings_part_2",
+			level = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_level_settings_part_2"
+		}
+	},
+	karak_azgaraz_part_3 = {
+		package_name = "resource_packages/dlcs/karak_azgaraz_part_3",
+		additional_settings = {
+			common = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_common_settings_part_3",
+			ai = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_ai_settings_part_3",
+			sound = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_sound_settings_part_3",
+			achievements = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_achievement_settings_part_3",
+			level = "scripts/settings/dlcs/karak_azgaraz/karak_azgaraz_level_settings_part_3"
+		}
+	},
 	cosmetics_2023_q1 = {
 		localization = "localization/cosmetics_2023_q1",
 		package_name = "resource_packages/dlcs/cosmetics_2023_q1",
 		additional_settings = {
 			common = "scripts/settings/dlcs/cosmetics_2023_q1/cosmetics_2023_q1_common_settings",
 			equipment = "scripts/settings/dlcs/cosmetics_2023_q1/cosmetics_2023_q1_equipment_settings"
+		}
+	},
+	cosmetics_2023_q2 = {
+		localization = "localization/cosmetics_2023_q2",
+		package_name = "resource_packages/dlcs/cosmetics_2023_q2",
+		additional_settings = {
+			common = "scripts/settings/dlcs/cosmetics_2023_q2/cosmetics_2023_q2_common_settings",
+			equipment = "scripts/settings/dlcs/cosmetics_2023_q2/cosmetics_2023_q2_equipment_settings"
 		}
 	},
 	menu_cinematics = {

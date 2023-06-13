@@ -57,18 +57,20 @@ PingTargetExtension.set_pinged = function (self, pinged, flash, pinger_unit, sho
 		local breed = Unit.get_data(owner_unit, "breed")
 
 		if breed then
-			local pinger_buff_extension = ScriptUnit.has_extension(pinger_unit, "buff_system")
-
-			if pinger_buff_extension then
-				pinger_buff_extension:trigger_procs("on_enemy_pinged", owner_unit, pinger_unit)
-			end
-
 			local proximity_extension = ScriptUnit.has_extension(owner_unit, "proximity_system")
 
 			if proximity_extension then
 				proximity_extension.has_been_seen = true
 			end
 		end
+
+		local pinger_buff_extension = ScriptUnit.has_extension(pinger_unit, "buff_system")
+
+		if pinger_buff_extension then
+			pinger_buff_extension:trigger_procs("on_pinged", owner_unit, pinger_unit, pinged)
+		end
+
+		Managers.state.event:trigger_referenced(owner_unit, "on_pinged", pinger_unit, pinged)
 	end
 
 	if self._locomotion_extension and self._locomotion_extension.bone_lod_extension_id then

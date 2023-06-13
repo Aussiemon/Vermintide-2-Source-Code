@@ -112,9 +112,7 @@ PickupSystem.on_add_extension = function (self, world, unit, extension_name, ext
 				init_data = extension_init_data,
 				next_line_of_sight_check = t + pickup_settings.teleport_time
 			}
-		end
-
-		if extension_name == "LifeTimePickupUnitExtension" then
+		elseif extension_name == "LifeTimePickupUnitExtension" then
 			local t = Managers.time:time("game")
 			local pickup_settings = AllPickups[pickup_name]
 			self._life_time_pickups[unit] = {
@@ -122,9 +120,7 @@ PickupSystem.on_add_extension = function (self, world, unit, extension_name, ext
 				pickup_settings = pickup_settings,
 				life_time = t + pickup_settings.life_time
 			}
-		end
-
-		if extension_name == "LimitedOwnedPickupUnitExtension" then
+		elseif extension_name == "LimitedOwnedPickupUnitExtension" then
 			local peer_id = extension_init_data.owner_peer_id
 
 			if peer_id then
@@ -161,9 +157,7 @@ PickupSystem.on_remove_extension = function (self, unit, extension_name, ...)
 
 		if extension_name == "PlayerTeleportingPickupExtension" then
 			self._teleporting_pickups[unit] = nil
-		end
-
-		if extension_name == "LifeTimePickupUnitExtension" then
+		elseif extension_name == "LifeTimePickupUnitExtension" then
 			self._life_time_pickups[unit] = nil
 		end
 

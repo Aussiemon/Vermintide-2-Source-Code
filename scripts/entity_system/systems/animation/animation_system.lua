@@ -18,6 +18,7 @@ local RPCS = {
 	"rpc_anim_event",
 	"rpc_anim_event_variable_float",
 	"rpc_anim_set_variable_float",
+	"rpc_anim_set_variable_int",
 	"rpc_link_unit",
 	"rpc_anim_set_variable_by_distance",
 	"rpc_anim_set_variable_by_time",
@@ -159,6 +160,27 @@ AnimationSystem.rpc_anim_set_variable_float = function (self, channel_id, go_id,
 		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 		self.network_transmit:send_rpc_clients_except("rpc_anim_set_variable_float", peer_id, go_id, variable_id, variable_value)
+	end
+
+	if Unit.has_animation_state_machine(unit) then
+		local variable_name = NetworkLookup.anims[variable_id]
+		local variable_index = Unit.animation_find_variable(unit, variable_name)
+
+		Unit.animation_set_variable(unit, variable_index, variable_value)
+	end
+end
+
+AnimationSystem.rpc_anim_set_variable_int = function (self, channel_id, go_id, variable_id, variable_value)
+	local unit = self.unit_storage:unit(go_id)
+
+	if not unit or not Unit.alive(unit) then
+		return
+	end
+
+	if self.is_server then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_anim_set_variable_int", peer_id, go_id, variable_id, variable_value)
 	end
 
 	if Unit.has_animation_state_machine(unit) then

@@ -126,9 +126,6 @@ TestCases.run_through_level = function (case_settings, skip_cinematic)
 		local level_key = settings.level_key
 		local memory_usage = settings.memory_usage
 
-		Testify:make_request("set_telemetry_settings", {
-			send = true
-		})
 		TestifySnippets.load_level({
 			level_key = level_key
 		})
@@ -210,6 +207,7 @@ TestCases.run_through_level = function (case_settings, skip_cinematic)
 			result = result .. "End of level reached"
 		end
 
+		Testify:make_request("post_telemetry_events")
 		TestifySnippets.wait(5)
 		print("[Testify] Level finished!")
 
@@ -229,11 +227,6 @@ TestCases.run_through_weave = function (case_settings)
 		local settings = cjson.decode(case_settings or "{}")
 		local memory_usage = settings.memory_usage
 		local weave_number = settings.weave_number
-
-		Testify:make_request("set_telemetry_settings", {
-			send = true
-		})
-
 		local weave_name = "weave_" .. weave_number
 		local end_zone_name = Testify:make_request("get_weave_end_zone", weave_number)
 
@@ -367,6 +360,7 @@ TestCases.run_through_weave = function (case_settings)
 			end
 		end
 
+		Testify:make_request("post_telemetry_events")
 		Testify:make_request("make_game_ready_for_next_weave")
 
 		return result
@@ -416,10 +410,6 @@ TestCases.measure_performance = function (level_key, skip_cinematic)
 			Testify:make_request("wait_for_cutscene_to_finish")
 		end
 
-		Testify:make_request("set_telemetry_settings", {
-			send = true
-		})
-
 		local NB_POINTS = 10
 		local TIME_TO_WAIT = 2
 		local ROTATIONS = {
@@ -462,6 +452,8 @@ TestCases.measure_performance = function (level_key, skip_cinematic)
 				Testify:make_request("stop_measure_fps", point_id)
 			end
 		end
+
+		Testify:make_request("post_telemetry_events")
 	end)
 end
 
@@ -592,12 +584,6 @@ TestCases.run_through_pvp_level = function (case_settings)
 		local level_key = settings.level_key
 		local memory_usage = settings.memory_usage
 
-		if memory_usage then
-			Testify:make_request("set_telemetry_settings", {
-				send = true
-			})
-		end
-
 		TestifySnippets.load_level({
 			level_key = level_key
 		})
@@ -691,6 +677,10 @@ TestCases.run_through_pvp_level = function (case_settings)
 			result = result .. "Defeated"
 		else
 			result = result .. "End of level reached"
+		end
+
+		if memory_usage then
+			Testify:make_request("post_telemetry_events")
 		end
 
 		TestifySnippets.wait(5)

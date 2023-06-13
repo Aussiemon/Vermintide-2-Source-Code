@@ -826,7 +826,7 @@ UnitFrameUI.update_respawn_countdown = function (self, dt, t)
 			respawn_delta = 0
 		end
 
-		widget_content.respawn_countdown_text = string.format("%.1fs", respawn_delta)
+		widget_content.respawn_countdown_text = string.format("%d", math.abs(respawn_delta))
 	elseif state == "fadeout" then
 		local widget_style = widget.style
 		local fadeout_time = widget_content.fadeout_time - dt

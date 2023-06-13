@@ -25,7 +25,8 @@ local RPCS = {
 	"rpc_set_on_moving_platform",
 	"rpc_hot_join_nail_to_wall_fix",
 	"rpc_set_forced_velocity",
-	"rpc_set_affected_by_gravity"
+	"rpc_set_affected_by_gravity",
+	"rpc_set_linked_transport_driven"
 }
 local extensions = {
 	"AiHuskLocomotionExtension",
@@ -271,7 +272,7 @@ end
 
 local MAX_ALLOWABLE_RESYNC_TELEPORT_DISTANCE_SQ = 9
 
-LocomotionSystem.rpc_set_animation_driven_movement = function (self, channel_id, game_object_id, animation_driven, script_driven_rotation, is_affected_by_gravity, position, rotation)
+LocomotionSystem.rpc_set_animation_driven_movement = function (self, channel_id, game_object_id, animation_driven, script_driven_rotation, is_affected_by_gravity, is_on_transport, position, rotation)
 	local unit = self.unit_storage:unit(game_object_id)
 
 	if not unit then
@@ -282,7 +283,7 @@ LocomotionSystem.rpc_set_animation_driven_movement = function (self, channel_id,
 
 	local locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 
-	locomotion_extension:set_animation_driven(animation_driven, is_affected_by_gravity, script_driven_rotation)
+	locomotion_extension:set_animation_driven(animation_driven, is_affected_by_gravity, script_driven_rotation, is_on_transport)
 
 	if animation_driven then
 		local source_position = Unit.local_position(unit, 0)
@@ -292,7 +293,7 @@ LocomotionSystem.rpc_set_animation_driven_movement = function (self, channel_id,
 			local breed = AiUtils.unit_breed(unit)
 			local breed_name = breed and breed.name or "n/a"
 
-			Managers.telemetry.events:breed_position_desync(source_position, position, distance_sq, breed_name)
+			Managers.telemetry_events:breed_position_desync(source_position, position, distance_sq, breed_name)
 		end
 
 		locomotion_extension:teleport_to(position, rotation, locomotion_extension:current_velocity())
@@ -300,15 +301,19 @@ LocomotionSystem.rpc_set_animation_driven_movement = function (self, channel_id,
 end
 
 LocomotionSystem.rpc_set_animation_driven_script_movement = function (self, channel_id, game_object_id, position, rotation, is_affected_by_gravity)
-	self:rpc_set_animation_driven_movement(channel_id, game_object_id, true, true, is_affected_by_gravity, position, rotation)
+	self:rpc_set_animation_driven_movement(channel_id, game_object_id, true, true, is_affected_by_gravity, false, position, rotation)
 end
 
 LocomotionSystem.rpc_set_animation_driven = function (self, channel_id, game_object_id, position, rotation, is_affected_by_gravity)
-	self:rpc_set_animation_driven_movement(channel_id, game_object_id, true, false, is_affected_by_gravity, position, rotation)
+	self:rpc_set_animation_driven_movement(channel_id, game_object_id, true, false, is_affected_by_gravity, false, position, rotation)
 end
 
 LocomotionSystem.rpc_set_script_driven = function (self, channel_id, game_object_id, is_affected_by_gravity)
-	self:rpc_set_animation_driven_movement(channel_id, game_object_id, false, true, is_affected_by_gravity)
+	self:rpc_set_animation_driven_movement(channel_id, game_object_id, false, true, is_affected_by_gravity, false)
+end
+
+LocomotionSystem.rpc_set_linked_transport_driven = function (self, channel_id, game_object_id, is_affected_by_gravity)
+	self:rpc_set_animation_driven_movement(channel_id, game_object_id, false, true, is_affected_by_gravity, true)
 end
 
 LocomotionSystem.rpc_set_animation_translation_scale = function (self, channel_id, game_object_id, animation_translation_scale)

@@ -77,7 +77,7 @@ BulldozerPlayer.despawn = function (self)
 
 	if Unit.alive(player_unit) then
 		Managers.state.unit_spawner:mark_for_deletion(player_unit)
-		Managers.telemetry.events:player_despawned(self)
+		Managers.telemetry_events:player_despawned(self)
 	elseif not Boot.is_controlled_exit then
 		Application.warning("bulldozer_player unit was already despawned. Should not happen.")
 	end
@@ -302,7 +302,8 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 			energy_data = energy_data
 		},
 		smart_targeting_system = {
-			player = self
+			player = self,
+			side = side
 		},
 		aggro_system = {
 			side = side
@@ -313,6 +314,9 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 		},
 		boon_system = {
 			profile_index = profile_index
+		},
+		target_override_system = {
+			side = side
 		}
 	}
 	local using_ghost_mode_system = Managers.mechanism:mechanism_setting("using_ghost_mode_system")
@@ -360,7 +364,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 
 	player_manager:assign_unit_ownership(unit, self, is_player_unit)
 	Managers.state.event:trigger("level_start_local_player_spawned", is_initial_spawn)
-	Managers.telemetry.events:player_spawned(self)
+	Managers.telemetry_events:player_spawned(self)
 
 	if not breed.is_hero then
 		Unit.create_actor(unit, "enemy_collision", false)

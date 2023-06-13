@@ -84,7 +84,10 @@ settings.inventory_package_list = {
 	"units/beings/player/way_watcher_thornsister/headpiece/ww_t_hat_02",
 	"units/beings/player/way_watcher_thornsister/headpiece/ww_t_hat_03",
 	"units/beings/player/way_watcher_thornsister/headpiece/ww_t_hat_04",
-	"units/beings/player/way_watcher_thornsister/headpiece/ww_t_fatshark_hat_01"
+	"units/beings/player/way_watcher_thornsister/headpiece/ww_t_fatshark_hat_01",
+	"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01",
+	"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01_bleed",
+	"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wave_01"
 }
 settings.husk_lookup = {
 	"units/weapons/player/wpn_we_javelin_01/wpn_we_javelin_01",
@@ -104,7 +107,8 @@ settings.husk_lookup = {
 	"units/weapons/player/wpn_we_javelin_02/prj_we_javelin_02_magic_3ps",
 	"units/weapons/player/wpn_we_life_staff_01/prj_we_life_staff_01_3ps",
 	"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01",
-	"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01_bleed"
+	"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01_bleed",
+	"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wave_01"
 }
 settings.projectile_units = {
 	javelin = {
@@ -363,6 +367,7 @@ settings.vortex_templates = {
 		ai_attractable = true,
 		full_inner_radius = 1,
 		ai_radius_change_speed = 1,
+		damage = 5,
 		use_nav_cost_map_volumes = true,
 		ai_ascension_speed = 1.5,
 		max_allowed_inner_radius_dist = 0.1,
@@ -377,53 +382,6 @@ settings.vortex_templates = {
 		},
 		reduce_duration_per_breed = {
 			chaos_warrior = 0.5
-		},
-		damage = {
-			5,
-			3,
-			1.5
-		},
-		difficulty_damage = {
-			easy = {
-				2,
-				4,
-				2
-			},
-			normal = {
-				3,
-				5,
-				3
-			},
-			hard = {
-				5,
-				7,
-				5
-			},
-			harder = {
-				10,
-				8,
-				10
-			},
-			hardest = {
-				20,
-				10,
-				15
-			},
-			cataclysm = {
-				10,
-				8,
-				5
-			},
-			cataclysm_2 = {
-				15,
-				10,
-				10
-			},
-			cataclysm_3 = {
-				30,
-				15,
-				22.5
-			}
 		}
 	}
 }

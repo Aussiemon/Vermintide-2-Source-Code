@@ -1596,6 +1596,7 @@ local action_data = {
 		offset_up = 0,
 		range = 5,
 		damage = 15,
+		allow_friendly_fire = true,
 		attack_intensity_type = "sweep",
 		width = 1.5,
 		considerations = UtilityConsiderations.drachenfels_swing_floating_attack,
@@ -1689,6 +1690,7 @@ local action_data = {
 		shield_blocked_fatigue_type = "chaos_spawn_combo",
 		damage = 15,
 		damage_type = "cutting",
+		allow_friendly_fire = true,
 		attack_intensity_type = "combo",
 		action_weight = 1,
 		difficulty_attack_intensity = AttackIntensityPerDifficulty,
@@ -2006,11 +2008,11 @@ local action_data = {
 		considerations = UtilityConsiderations.swarm_players
 	},
 	defensive_magic_missile = {
-		damage_type = "poison",
-		nav_tag_volume_layer = "bot_poison_wind",
 		create_nav_tag_volume = true,
-		target_close_distance = 50,
 		cast_anim = "attack_shoot_staff",
+		nav_tag_volume_layer = "bot_poison_wind",
+		target_close_distance = 50,
+		damage_type = "poison",
 		duration = 8,
 		face_target_while_casting = true,
 		only_cb = true,
@@ -2018,94 +2020,7 @@ local action_data = {
 		target_close_anim = "attack_shoot_staff",
 		volley_delay = 1,
 		action_weight = 1,
-		aoe_dot_damage_interval = 1,
 		considerations = UtilityConsiderations.defensive_magic_missile_drachenfels,
-		aoe_init_damage = {
-			{
-				0,
-				1,
-				0
-			},
-			{
-				0,
-				1,
-				0
-			},
-			{
-				5,
-				1,
-				0
-			},
-			{
-				7,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			}
-		},
-		aoe_dot_damage = {
-			{
-				2,
-				0,
-				0
-			},
-			{
-				4,
-				0,
-				0
-			},
-			{
-				6,
-				0,
-				0
-			},
-			{
-				8,
-				0,
-				0
-			},
-			{
-				15,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			}
-		},
-		radius = MISSILE_RADIUS,
-		initial_radius = MISSILE_RADIUS * 0.6,
 		missile_spawn_offset = {
 			0.1281,
 			1.1719,
@@ -2132,104 +2047,17 @@ local action_data = {
 		}
 	},
 	defensive_seeking_bomb = {
-		create_nav_tag_volume = true,
-		damage_type = "poison",
-		nav_tag_volume_layer = "bot_poison_wind",
 		cast_anim = "attack_shoot_staff",
+		volleys = 1,
+		create_nav_tag_volume = true,
+		nav_tag_volume_layer = "bot_poison_wind",
+		volley_delay = 0.3,
+		action_weight = 1,
+		damage_type = "poison",
 		duration = 8,
 		face_target_while_casting = true,
 		only_cb = true,
-		volleys = 1,
-		volley_delay = 0.3,
-		action_weight = 1,
-		aoe_dot_damage_interval = 1,
 		considerations = UtilityConsiderations.defensive_seeking_bomb,
-		aoe_init_damage = {
-			{
-				0,
-				1,
-				0
-			},
-			{
-				0,
-				1,
-				0
-			},
-			{
-				5,
-				1,
-				0
-			},
-			{
-				7,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			}
-		},
-		aoe_dot_damage = {
-			{
-				2,
-				0,
-				0
-			},
-			{
-				4,
-				0,
-				0
-			},
-			{
-				6,
-				0,
-				0
-			},
-			{
-				8,
-				0,
-				0
-			},
-			{
-				15,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			}
-		},
-		radius = MISSILE_RADIUS,
-		initial_radius = MISSILE_RADIUS * 0.6,
 		missile_spawn_offset = {
 			0.1281,
 			1.1719,

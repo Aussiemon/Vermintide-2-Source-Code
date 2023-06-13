@@ -659,9 +659,10 @@ settings[52] = {
 	category = "Player mechanics recommended"
 }
 settings[53] = {
-	description = "Toggles player invisibility for local player.",
-	setting_name = "toggle_player_invisibility",
+	description = "Sets player invisibility for local player.",
+	setting_name = "player_invisibility",
 	category = "Player mechanics recommended",
+	is_boolean = true,
 	func = function ()
 		local player_manager = Managers.player
 		local local_player = player_manager:local_player()

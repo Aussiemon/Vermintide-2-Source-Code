@@ -93,8 +93,6 @@ LobbyFinder.update = function (self, dt)
 			for i = 0, num_lobbies - 1 do
 				local engine_lobby_data = LobbyInternal.get_lobby(lobby_browser, i)
 
-				table.dump(engine_lobby_data, "LOBBY_DATA", 2)
-
 				if engine_lobby_data.network_hash == self._network_hash and LobbyAux.verify_lobby_data(engine_lobby_data) then
 					engine_lobbies[#engine_lobbies + 1] = engine_lobby_data
 					engine_lobby_data.valid = true

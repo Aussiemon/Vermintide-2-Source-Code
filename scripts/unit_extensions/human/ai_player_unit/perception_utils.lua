@@ -353,6 +353,18 @@ PerceptionUtils.perception_regular = function (unit, blackboard, breed, pick_tar
 	end
 end
 
+PerceptionUtils.keep_target_until_invalid = function (unit, blackboard, breed, pick_target_func, t)
+	local target_unit = blackboard.target_unit
+	local health_ext = ScriptUnit.has_extension(target_unit, "health_system")
+	local status_ext = ScriptUnit.has_extension(target_unit, "status_system")
+
+	if not ALIVE[target_unit] or health_ext and health_ext:is_dead() or status_ext and status_ext:is_invisible() then
+		blackboard.override_target_selection_name = nil
+	end
+
+	return target_unit
+end
+
 PerceptionUtils.perception_regular_update_aggro = function (unit, blackboard, breed, pick_target_func, t, dt)
 	AiUtils.update_aggro(unit, blackboard, breed, t, dt)
 	PerceptionUtils.perception_regular(unit, blackboard, breed, pick_target_func, t, dt)

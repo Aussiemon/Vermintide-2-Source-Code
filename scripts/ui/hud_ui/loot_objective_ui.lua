@@ -33,7 +33,6 @@ LootObjectiveUI.init = function (self, parent, ingame_ui_context)
 	self._event_queue = {}
 
 	self:create_ui_elements()
-	rawset(_G, "loot_objective_ui", self)
 end
 
 local DO_RELOAD = true
@@ -70,7 +69,6 @@ LootObjectiveUI.create_ui_elements = function (self)
 end
 
 LootObjectiveUI.destroy = function (self)
-	rawset(_G, "loot_objective_ui", nil)
 	GarbageLeakDetector.register_object(self, "loot_objective_ui")
 end
 

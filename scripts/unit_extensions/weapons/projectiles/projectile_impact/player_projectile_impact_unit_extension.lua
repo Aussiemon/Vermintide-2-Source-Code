@@ -8,6 +8,7 @@ PlayerProjectileImpactUnitExtension.init = function (self, extension_init_contex
 	local owner_unit = extension_init_data.owner_unit
 	self.owner_unit = owner_unit
 	local owner_player = Managers.player:owner(owner_unit)
+	self._dont_target_friendly = extension_init_data.dont_target_friendly
 	local item_name = extension_init_data.item_name
 	local item_data = ItemMasterList[item_name]
 	local item_template = BackendUtils.get_item_template(item_data)
@@ -121,27 +122,24 @@ PlayerProjectileImpactUnitExtension._do_raycast = function (self, unit, from, to
 		local hit_normal = hit[INDEX_NORMAL]
 		local hit_actor = hit[INDEX_ACTOR]
 		local hit_unit = Actor.unit(hit_actor)
+		local valid = self:_valid_target(unit, hit_unit)
 
-		if not Unit.is_frozen(hit_unit) then
-			local hit_self = hit_unit == unit
+		if valid then
+			local num_actors = Unit.num_actors(hit_unit)
+			local actor_index = nil
 
-			if not hit_self then
-				local num_actors = Unit.num_actors(hit_unit)
-				local actor_index = nil
+			for j = 0, num_actors - 1 do
+				local actor = Unit.actor(hit_unit, j)
 
-				for j = 0, num_actors - 1 do
-					local actor = Unit.actor(hit_unit, j)
+				if hit_actor == actor then
+					actor_index = j
 
-					if hit_actor == actor then
-						actor_index = j
-
-						break
-					end
+					break
 				end
-
-				fassert(actor_index, "No actor index found for unit [\"%s\"] that was hit on actor [\"%s\"]", hit_unit, hit_actor)
-				self:impact(hit_unit, hit_position, direction, hit_normal, actor_index)
 			end
+
+			fassert(actor_index, "No actor index found for unit [\"%s\"] that was hit on actor [\"%s\"]", hit_unit, hit_actor)
+			self:impact(hit_unit, hit_position, direction, hit_normal, actor_index)
 		end
 	end
 end
@@ -172,28 +170,42 @@ PlayerProjectileImpactUnitExtension.update_sphere_sweep = function (self, unit, 
 			local hit_normal = hit.normal
 			local hit_actor = hit.actor
 			local hit_unit = Actor.unit(hit_actor)
+			local valid = self:_valid_target(unit, hit_unit)
 
-			if not Unit.is_frozen(hit_unit) then
-				local hit_self = hit_unit == unit
+			if valid then
+				local num_actors = Unit.num_actors(hit_unit)
+				local actor_index = nil
 
-				if not hit_self then
-					local num_actors = Unit.num_actors(hit_unit)
-					local actor_index = nil
+				for j = 0, num_actors - 1 do
+					local actor = Unit.actor(hit_unit, j)
 
-					for j = 0, num_actors - 1 do
-						local actor = Unit.actor(hit_unit, j)
+					if hit_actor == actor then
+						actor_index = j
 
-						if hit_actor == actor then
-							actor_index = j
-
-							break
-						end
+						break
 					end
-
-					fassert(actor_index, "No actor index found for unit [\"%s\"] that was hit on actor [\"%s\"]", hit_unit, hit_actor)
-					self:impact(hit_unit, hit_position, direction, hit_normal, actor_index)
 				end
+
+				fassert(actor_index, "No actor index found for unit [\"%s\"] that was hit on actor [\"%s\"]", hit_unit, hit_actor)
+				self:impact(hit_unit, hit_position, direction, hit_normal, actor_index)
 			end
 		end
 	end
+end
+
+PlayerProjectileImpactUnitExtension._valid_target = function (self, unit, hit_unit)
+	if unit == hit_unit or Unit.is_frozen(hit_unit) then
+		return false
+	end
+
+	if self._dont_target_friendly then
+		local side_manager = Managers.state.side
+		local has_side = side_manager.side_by_unit[hit_unit]
+
+		if has_side and not side_manager:is_enemy(self.owner_unit, hit_unit) then
+			return false
+		end
+	end
+
+	return true
 end

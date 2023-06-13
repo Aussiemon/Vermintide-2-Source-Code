@@ -255,10 +255,12 @@ BuffExtension.add_buff = function (self, template_name, params)
 						duration = duration,
 						radius = sub_buff_template.area_radius,
 						sub_buff_template = sub_buff_template,
-						owner_player = Managers.player:owner(unit)
+						owner_unit = unit,
+						source_unit = source_attacker_unit
 					}
 				}
-				local buff_unit, buff_unit_go_id = unit_spawner:spawn_network_unit(sub_buff_template.area_unit_name, "buff_aoe_unit", extension_init_data, POSITION_LOOKUP[self._unit], Quaternion.identity(), nil)
+				local position = params and params.buff_area_position or POSITION_LOOKUP[self._unit]
+				local buff_unit, buff_unit_go_id = unit_spawner:spawn_network_unit(sub_buff_template.area_unit_name, "buff_aoe_unit", extension_init_data, position, Quaternion.identity(), nil)
 				buff.area_buff_unit = buff_unit
 			end
 
@@ -603,7 +605,11 @@ BuffExtension.update = function (self, unit, input, dt, context, t)
 			local done_ticking = ticks and ticks <= current_ticks
 
 			if end_time and end_time <= t or not end_time and done_ticking then
-				self:_remove_sub_buff(buff, i, buff_extension_function_params, true)
+				if template.remove_buff_on_duration_end then
+					self:remove_buff(buff.id)
+				else
+					self:_remove_sub_buff(buff, i, buff_extension_function_params, true)
+				end
 
 				local delayed_func_name = buff.delayed_func_name
 
@@ -976,6 +982,10 @@ BuffExtension.get_buff_type = function (self, buff_type)
 end
 
 BuffExtension.get_buff_by_id = function (self, buff_id)
+	if not buff_id then
+		return nil
+	end
+
 	local buffs = self._buffs
 
 	for i = 1, self._num_buffs do
@@ -1431,7 +1441,9 @@ BuffExtension._remove_buff_synced = function (self, id)
 		else
 			local owner_peer_id = self._synced_buff_owner[id]
 
-			network_transmit:send_rpc("rpc_remove_buff_synced", owner_peer_id, unit_id, server_sync_id)
+			if PEER_ID_TO_CHANNEL[owner_peer_id] then
+				network_transmit:send_rpc("rpc_remove_buff_synced", owner_peer_id, unit_id, server_sync_id)
+			end
 		end
 	else
 		network_transmit:send_rpc_server("rpc_remove_buff_synced", unit_id, server_sync_id)

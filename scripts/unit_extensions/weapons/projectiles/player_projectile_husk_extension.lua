@@ -78,6 +78,7 @@ PlayerProjectileHuskExtension.init = function (self, extension_init_context, uni
 	self._timed_data = timed_data
 	self._time_initialized = extension_init_data.time_initialized
 	self.scale = extension_init_data.scale
+	self.charge_level = (extension_init_data.charge_level or 0) / 100
 	self._num_targets_hit = 0
 	self._hit_units = {}
 	local entity_manager = Managers.state.entity
@@ -128,6 +129,10 @@ PlayerProjectileHuskExtension.initialize_projectile = function (self, projectile
 			self._life_time = math.huge
 		else
 			self:_activate_life_time(self._time_initialized)
+		end
+
+		if timed_data.charge_time then
+			self._charge_t = self._time_initialized + timed_data.charge_time * (1 - self.charge_level)
 		end
 	end
 
@@ -204,7 +209,7 @@ PlayerProjectileHuskExtension.handle_timed_events = function (self, t)
 	if self._life_time <= t then
 		local unit = self._projectile_unit
 		local timed_data = self._timed_data
-		local aoe_data = self._charge_t and self._charge_t <= t and timed_data.charged_aoe or timed_data.aoe
+		local aoe_data = timed_data.aoe
 
 		if aoe_data then
 			local position = POSITION_LOOKUP[unit]
@@ -236,6 +241,9 @@ PlayerProjectileHuskExtension.handle_timed_events = function (self, t)
 	if self._charge_t and self._charge_t <= t then
 		self._charge_t = nil
 		self.is_charged = true
+		local flow_event_name = self._timed_data.charged_flow_event
+
+		Unit.flow_event(self._projectile_unit, flow_event_name)
 	end
 end
 
@@ -265,10 +273,6 @@ PlayerProjectileHuskExtension._activate_life_time = function (self, game_time)
 	end
 
 	self._life_time = game_time + timed_data.life_time
-
-	if timed_data.charge_time then
-		self._charge_t = game_time + timed_data.charge_time
-	end
 end
 
 PlayerProjectileHuskExtension.impact_dynamic = function (self, hit_unit, hit_position, hit_direction, hit_normal, hit_actor)
@@ -349,21 +353,7 @@ PlayerProjectileHuskExtension.hit_enemy = function (self, impact_data, hit_unit,
 		self:stop(hit_unit, hit_zone_name)
 	end
 
-	local current_action = self._current_action
-
-	if current_action.use_max_targets then
-		if current_action.max_targets <= self._num_targets_hit then
-			if self._num_additional_penetrations > 0 then
-				forced_penetration = true
-			else
-				if allow_link then
-					self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._did_damage, true)
-				end
-
-				self:stop(hit_unit, hit_zone_name)
-			end
-		end
-	elseif self._max_mass <= self._amount_of_mass_hit then
+	if self._max_mass <= self._amount_of_mass_hit then
 		if self._num_additional_penetrations > 0 then
 			forced_penetration = true
 		else

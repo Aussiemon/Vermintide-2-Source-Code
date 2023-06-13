@@ -29,6 +29,7 @@ GameModeWeave.init = function (self, settings, world, network_server, is_server,
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "level_start_local_player_spawned", "event_local_player_spawned")
+	event_manager:register(self, "on_ai_unit_destroyed", "on_ai_unit_destroyed")
 end
 
 GameModeWeave.register_rpcs = function (self, network_event_delegate, network_transmit)
@@ -133,7 +134,7 @@ GameModeWeave.ai_killed = function (self, killed_unit, killer_unit, death_data, 
 	weave_manager:ai_killed(killed_unit, killer_unit, death_data, killing_blow)
 end
 
-GameModeWeave.ai_destroyed = function (self, unit, blackboard, reason)
+GameModeWeave.on_ai_unit_destroyed = function (self, unit, blackboard, reason)
 	if reason == "far_away" and blackboard then
 		local spawn_type = Unit.get_data(unit, "spawn_type") or "unknown"
 		local enemy_recycler = Managers.state.conflict.enemy_recycler

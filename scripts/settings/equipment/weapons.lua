@@ -183,6 +183,7 @@ DotTypeLookup = {
 	burning_1W_dot = "burning_dot",
 	burning_1W_dot_unchained_push = "burning_dot",
 	aoe_poison_dot = "poison_dot",
+	burning_dot_fire_grenade_force_fire = "burning_dot",
 	chaos_zombie_explosion = "poison_dot"
 }
 
@@ -197,11 +198,8 @@ local checked_templates = {
 	vs_poison_wind_globadier = {},
 	vs_packmaster = {},
 	vs_gutter_runner = {},
-	vs_corruptor = {},
-	vs_vortex_sorcerer = {},
 	vs_ratling_gunner = {},
 	vs_warpfire_thrower = {},
-	vs_chaos_troll = {},
 	vs_chaos_spawn = {},
 	vs_stormfiend = {},
 	vs_rat_ogre = {}

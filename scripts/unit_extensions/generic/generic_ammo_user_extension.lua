@@ -181,7 +181,7 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 					local item_name = self.item_name
 					local position = POSITION_LOOKUP[self.owner_unit]
 
-					Managers.telemetry.events:player_ammo_depleted(player, item_name, position)
+					Managers.telemetry_events:player_ammo_depleted(player, item_name, position)
 				end
 
 				Unit.flow_event(unit, "used_last_ammo")
@@ -323,7 +323,7 @@ GenericAmmoUserExtension.add_ammo = function (self, amount)
 		local item_name = self.item_name
 		local position = POSITION_LOOKUP[self.owner_unit]
 
-		Managers.telemetry.events:player_ammo_refilled(player, item_name, position)
+		Managers.telemetry_events:player_ammo_refilled(player, item_name, position)
 
 		local buff_extension = self.owner_buff_extension
 

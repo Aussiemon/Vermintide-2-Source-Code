@@ -1701,6 +1701,20 @@ HitEffectsStormVermin = {
 			"death_burn"
 		}
 	},
+	burn_death_force_fire = {
+		flow_event = "burn_force_fire",
+		extra_conditions = {
+			death = true,
+			damage = true,
+			damage_type = {
+				"burn_force_fire",
+				"burninating_force_fire"
+			}
+		},
+		animations = {
+			"death_burn"
+		}
+	},
 	burn_sniper = {
 		inherits = "default",
 		extra_conditions = {

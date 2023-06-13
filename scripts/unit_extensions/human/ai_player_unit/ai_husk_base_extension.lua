@@ -37,15 +37,17 @@ end
 
 AiHuskBaseExtension.extensions_ready = function (self, world, unit)
 	local side_id = self._side_id
+	local side_manager = Managers.state.side
 
-	Managers.state.side:add_unit_to_side(unit, side_id)
+	side_manager:add_unit_to_side(unit, side_id)
 
 	local health_extension = ScriptUnit.has_extension(unit, "health_system")
 
 	if health_extension then
 		local ai_system = Managers.state.entity:system("ai_system")
 		local broadphase = ai_system.broadphase
-		self.broadphase_id = Broadphase.add(broadphase, unit, Unit.local_position(unit, 0), 1)
+		local side = side_manager:get_side(side_id)
+		self.broadphase_id = Broadphase.add(broadphase, unit, Unit.local_position(unit, 0), 1, side.broadphase_category)
 		self.broadphase = broadphase
 		self._health_extension = health_extension
 	end

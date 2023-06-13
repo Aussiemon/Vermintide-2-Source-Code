@@ -307,7 +307,7 @@ DeusRunController.setup_run = function (self, run_seed, difficulty, journey_name
 			self._run_state:set_profile_initialized(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, true)
 		end
 
-		Managers.telemetry.events:deus_run_started(run_id, journey_name, run_seed, dominant_god, difficulty)
+		Managers.telemetry_events:deus_run_started(run_id, journey_name, run_seed, dominant_god, difficulty)
 		self:_add_coin_tracking_entry(own_peer_id, REAL_PLAYER_LOCAL_ID, initial_own_soft_currency, "set initial soft currency")
 	else
 		local server_peer_id = self._run_state:get_server_peer_id()
@@ -1084,8 +1084,7 @@ DeusRunController.try_grant_end_of_level_deus_power_ups = function (self)
 		local existing_power_ups = self._run_state:get_player_power_ups(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
 		local profile = SPProfiles[profile_index]
 		local career_name = profile.careers[career_index].name
-		local new_power_ups = nil
-		_, new_power_ups = DeusPowerUpUtils.generate_random_power_ups(power_up_seed, granted_random_power_up_count, existing_power_ups, self._run_state:get_run_difficulty(), run_progress, DeusPowerUpAvailabilityTypes.weapon_chest, career_name, power_up_rarity)
+		local _, new_power_ups = DeusPowerUpUtils.generate_random_power_ups(power_up_seed, granted_random_power_up_count, existing_power_ups, self._run_state:get_run_difficulty(), run_progress, DeusPowerUpAvailabilityTypes.weapon_chest, career_name, power_up_rarity)
 		local skip_metatable = true
 		existing_power_ups = table.clone(existing_power_ups, skip_metatable)
 
@@ -2015,7 +2014,7 @@ DeusRunController._add_coin_tracking_entry = function (self, peer_id, local_play
 	local telemetry_id = run_state:get_player_telemetry_id(peer_id, local_player_id)
 	local run_id = run_state:get_run_id()
 
-	Managers.telemetry.events:deus_coins_changed(telemetry_id, run_id, coins, description)
+	Managers.telemetry_events:deus_coins_changed(telemetry_id, run_id, coins, description)
 
 	if coins > 0 then
 		local coins_earned = self._run_state:get_coins_earned()

@@ -134,17 +134,6 @@ BackendManagerPlayFab.on_shutdown = function (self, external_callback)
 	return self:commit(true, commit_cb)
 end
 
-BackendManagerPlayFab.update_items = function (self, leader_peer_id)
-	local mirror = self._backend_mirror
-
-	if mirror == nil then
-		return
-	end
-
-	self._backend_mirror:update_items(leader_peer_id)
-	self:dirtify_interfaces()
-end
-
 BackendManagerPlayFab._backend_plugin_loaded = function (self)
 	if self._backend_implementation == "fishtank" then
 		return rawget(_G, "Backend")
@@ -657,7 +646,7 @@ BackendManagerPlayFab._post_error = function (self, error_data, crashify_overrid
 	fassert(error_data.reason, "Posting error without reason, %q: %q", error_data.reason or "nil")
 
 	if DEDICATED_SERVER then
-		cprintf("Playfab error: %s, %s", error_data.reason, error_data.details)
+		cprintf("[BackendManagerPlayFab] Playfab error: %s, %s", error_data.reason, error_data.details)
 	end
 
 	print("[BackendManagerPlayFab] adding error:", error_data.reason, error_data.details)

@@ -392,7 +392,7 @@ if not StoreLayoutConfig then
 		display_name = "wh_priest",
 		item_filter = "can_wield_wh_priest",
 		sort_order = 4,
-		category_button_texture = "store_category_icon_victor_priest"
+		category_button_texture = "store_category_icon_priest"
 	}
 	StoreLayoutConfig.pages.sienna = {
 		sound_event_enter = "Play_hud_store_sienna",

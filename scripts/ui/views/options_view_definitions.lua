@@ -492,6 +492,14 @@ local scenegraph_definition = {
 	}
 }
 
+local function calculate_indent(indent_level)
+	if indent_level then
+		return 25 * indent_level
+	else
+		return 0
+	end
+end
+
 local function create_safe_rect_widget(scenegraph_id)
 	local extra_offset = {
 		0,
@@ -2226,7 +2234,7 @@ local DROP_DOWN_WIDGET_SIZE = {
 	30
 }
 
-local function create_drop_down_widget(text, options, selected_option, tooltip_text, disabled_tooltip_text, scenegraph_id, base_offset, ignore_upper_case)
+local function create_drop_down_widget(text, options, selected_option, tooltip_text, disabled_tooltip_text, scenegraph_id, base_offset, indent_level, ignore_upper_case)
 	local options_texts = {}
 	local options_values = {}
 	local options_n = #options
@@ -2272,6 +2280,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				default_color = Colors.get_color_table_with_alpha("font_default", 255),
 				hover_color = Colors.get_color_table_with_alpha("font_default", 255),
+				disabled_color = Colors.get_color_table_with_alpha("font_default", 75),
 				upper_case = not ignore_upper_case,
 				size = item_size
 			},
@@ -2472,7 +2481,9 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 									hotspot.is_selected = false
 								end
 
-								if hotspot.is_selected then
+								if hotspot.disabled then
+									text_style.text_color = text_style.disabled_color
+								elseif hotspot.is_selected then
 									text_style.text_color = text_style.hover_color
 								else
 									text_style.text_color = text_style.default_color
@@ -2489,7 +2500,13 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 							style_id = "highlight_texture",
 							texture_id = "highlight_texture",
 							content_check_function = function (content)
-								return content.hotspot.is_hover or Managers.input:is_device_active("gamepad") and content.hotspot.is_selected
+								local hotspot = content.hotspot
+
+								if hotspot.disabled then
+									return false
+								end
+
+								return hotspot.is_hover or Managers.input:is_device_active("gamepad") and hotspot.is_selected
 							end
 						}
 					}
@@ -2656,7 +2673,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 				dynamic_font = true,
 				font_type = "hell_shark_masked",
 				offset = {
-					base_offset[1] + 2,
+					base_offset[1] + 2 + calculate_indent(indent_level),
 					base_offset[2] + 5,
 					base_offset[3] + 10
 				},
@@ -2929,7 +2946,7 @@ local STEPPER_WIDGET_SIZE = {
 	30
 }
 
-local function create_stepper_widget(text, options, selected_option, tooltip_text, disabled_tooltip_text, scenegraph_id, base_offset)
+local function create_stepper_widget(text, options, selected_option, tooltip_text, disabled_tooltip_text, scenegraph_id, base_offset, indent_level)
 	local options_texts = {}
 	local options_values = {}
 	local num_options = #options
@@ -3328,7 +3345,7 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				dynamic_font = true,
 				font_type = "hell_shark_masked",
 				offset = {
-					base_offset[1] + 2,
+					base_offset[1] + 2 + calculate_indent(indent_level),
 					base_offset[2] + 2,
 					base_offset[3]
 				},

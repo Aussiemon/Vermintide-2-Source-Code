@@ -166,18 +166,15 @@ local action_data = {
 		animation = "float_idle_nostaff"
 	},
 	defensive_seeking_bomb = {
-		create_nav_tag_volume = true,
-		radius = 2,
+		volleys = 1,
 		cast_time = 1,
-		initial_radius = 1.2,
+		create_nav_tag_volume = true,
 		nav_tag_volume_layer = "bot_poison_wind",
+		volley_delay = 0.3,
+		action_weight = 1,
 		damage_type = "poison",
 		duration = 8,
 		face_target_while_casting = true,
-		volleys = 1,
-		volley_delay = 0.3,
-		action_weight = 1,
-		aoe_dot_damage_interval = 1,
 		considerations = UtilityConsiderations.dummy_defensive_seeking_bomb,
 		spell_data = {
 			name = "seeking_bomb_missile",
@@ -194,90 +191,6 @@ local action_data = {
 				3,
 				3,
 				3
-			}
-		},
-		aoe_init_damage = {
-			{
-				0,
-				1,
-				0
-			},
-			{
-				0,
-				1,
-				0
-			},
-			{
-				5,
-				1,
-				0
-			},
-			{
-				7,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			},
-			{
-				15,
-				1,
-				0
-			},
-			{
-				15,
-				1,
-				0
-			},
-			{
-				15,
-				1,
-				0
-			}
-		},
-		aoe_dot_damage = {
-			{
-				2,
-				0,
-				0
-			},
-			{
-				4,
-				0,
-				0
-			},
-			{
-				6,
-				0,
-				0
-			},
-			{
-				8,
-				0,
-				0
-			},
-			{
-				15,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
 			}
 		},
 		missile_spawn_offset = {

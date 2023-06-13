@@ -988,7 +988,7 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 				local condition_failed = false
 
 				if condition_func then
-					condition_failed = not condition_func(unit, input_extension, ammo_extension)
+					condition_failed = not condition_func(unit, input_extension, ammo_extension, current_action_extension)
 				end
 
 				local cooldown = CharacterStateHelper._check_cooldown(current_action_extension, new_action, t)
@@ -1110,7 +1110,7 @@ local function validate_action(unit, action_name, sub_action_name, action_settin
 	if has_input or wield_input then
 		local condition_func = action_settings.condition_func
 
-		if (not condition_func or condition_func(unit, input_extension, ammo_extension)) and not CharacterStateHelper._check_cooldown(current_action_extension, action_name, t) then
+		if (not condition_func or condition_func(unit, input_extension, ammo_extension, current_action_extension)) and not CharacterStateHelper._check_cooldown(current_action_extension, action_name, t) then
 			if not wield_input_init then
 				wield_input = CharacterStateHelper.wield_input(input_extension, inventory_extension, input_id)
 			end
@@ -1139,7 +1139,7 @@ local interupting_action_data = {}
 CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension, inventory_extension, health_extension)
 	local breed = Unit.get_data(unit, "breed")
 
-	if not breed.is_hero then
+	if not breed.boss and not breed.is_hero then
 		return
 	end
 

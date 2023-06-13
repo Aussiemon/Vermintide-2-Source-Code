@@ -1,6 +1,6 @@
 require("foundation/scripts/util/local_require")
 require("scripts/ui/hud_ui/hud_customizer")
-require("scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure")
+local_require("scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure")
 require("scripts/ui/ui_animator")
 require("scripts/ui/ui_cleanui")
 DLCUtils.dofile("hud_component_list_path")

@@ -43,7 +43,6 @@ GamepadConsumableUI.init = function (self, ingame_ui_context)
 	self.ui_animations = {}
 
 	self:_create_ui_elements()
-	rawset(_G, "gamepad_consumable_ui", self)
 end
 
 GamepadConsumableUI._create_ui_elements = function (self)
@@ -75,7 +74,6 @@ GamepadConsumableUI.destroy = function (self)
 	self.ui_animator = nil
 
 	self:set_visible(false)
-	rawset(_G, "gamepad_consumable_ui", nil)
 end
 
 GamepadConsumableUI.set_visible = function (self, visible)

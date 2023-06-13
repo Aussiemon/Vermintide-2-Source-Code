@@ -1154,7 +1154,7 @@ function check_for_players(group, nav_world, t, dt)
 	local use_controlled_advance = group.use_controlled_advance
 	local someone_is_climbing = false
 	local side = group.side
-	local VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
+	local VALID_ENEMIES = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
 
 	for i = 1, num_indexed_members do
 		local unit = indexed_members[i]
@@ -1165,7 +1165,7 @@ function check_for_players(group, nav_world, t, dt)
 			someone_is_climbing = true
 		end
 
-		local valid_player = VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[target_unit]
+		local valid_player = VALID_ENEMIES[target_unit]
 
 		if valid_player then
 			group_targets[target_unit] = true

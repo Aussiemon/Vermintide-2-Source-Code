@@ -25,7 +25,6 @@ settings.network_sound_events = {
 	"Play_sorcerer_boss_special_ability_start",
 	"Play_sorcerer_boss_special_windup_end",
 	"Play_sorcerer_boss_special_ability_burn",
-	"Play_sorcerer_boss_dead",
 	"Play_sorcerer_boss_fly_start",
 	"Play_sorcerer_boss_fly_stop",
 	"Play_sorcerer_boss_weapon_swing",

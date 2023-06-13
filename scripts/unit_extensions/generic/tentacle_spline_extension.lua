@@ -525,7 +525,7 @@ TentacleSplineExtension.update = function (self, unit, input, dt, context, t)
 				end
 			end
 
-			local success, altitude = GwNavQueries.triangle_from_position(nav_world, target_pos, 0.5, 1)
+			local success, altitude = GwNavQueries.triangle_from_position(nav_world, target_pos, 1, 1)
 
 			if not success then
 				local close_pos = GwNavQueries.inside_position_from_outside_position(nav_world, target_pos, 1, 4, 4, 1)

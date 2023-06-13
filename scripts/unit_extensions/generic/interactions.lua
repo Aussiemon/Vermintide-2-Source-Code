@@ -169,7 +169,7 @@ InteractionDefinitions.revive = {
 
 				local interactable_pos = POSITION_LOOKUP[interactable_unit]
 
-				Managers.telemetry.events:player_revived(interactor_player, interactable_player, interactable_pos)
+				Managers.telemetry_events:player_revived(interactor_player, interactable_player, interactable_pos)
 			elseif Unit.alive(interactable_unit) then
 				local health_extension = ScriptUnit.extension(interactable_unit, "health_system")
 
@@ -261,7 +261,7 @@ InteractionDefinitions.revive = {
 					local interactable_pos = POSITION_LOOKUP[interactable_unit]
 
 					if not interactable_player.is_server then
-						Managers.telemetry.events:player_revived(interactor_player, interactable_player, interactable_pos)
+						Managers.telemetry_events:player_revived(interactor_player, interactable_player, interactable_pos)
 					end
 				end
 			elseif interactable_alive then
@@ -786,6 +786,62 @@ InteractionDefinitions.smartobject = {
 InteractionDefinitions.control_panel = InteractionDefinitions.control_panel or table.clone(InteractionDefinitions.smartobject)
 InteractionDefinitions.control_panel.config.swap_to_3p = true
 InteractionDefinitions.control_panel.config.show_weapons = false
+
+local function _has_grimoire(inventory_extension)
+	local slot_data = inventory_extension:get_slot_data("slot_potion")
+
+	if not slot_data then
+		return false
+	end
+
+	local item_template = inventory_extension:get_item_template(slot_data)
+
+	if item_template.is_grimoire then
+		return true
+	end
+
+	local additional_items = inventory_extension:get_additional_items("slot_potion")
+
+	if additional_items then
+		for i = 1, #additional_items do
+			local additional_item = additional_items[i]
+			local additional_item_template = BackendUtils.get_item_template(additional_item)
+
+			if additional_item_template.is_grimoire then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
+local function _replaceable_item_filter(pickup_item_name)
+	local function filter(other_data)
+		return pickup_item_name ~= other_data.name
+	end
+
+	return filter
+end
+
+local function _drop_pickup_position_rotation(item_data, position, rotation)
+	local item_template = BackendUtils.get_item_template(item_data)
+	local pickup_data = item_template.pickup_data
+
+	if pickup_data then
+		local pickup_name = pickup_data.pickup_name
+
+		if pickup_name then
+			local pickup_spawn_type = "dropped"
+			local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
+			local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types[pickup_spawn_type]
+			local network_manager = Managers.state.network
+
+			network_manager.network_transmit:send_rpc_server("rpc_spawn_pickup", pickup_name_id, position, rotation, pickup_spawn_type_id)
+		end
+	end
+end
+
 InteractionDefinitions.pickup_object = {
 	config = {
 		allow_movement = true,
@@ -1031,7 +1087,7 @@ InteractionDefinitions.pickup_object = {
 					local pickup_spawn_type = pickup_extension.spawn_type
 					local pickup_position = POSITION_LOOKUP[interactable_unit]
 
-					Managers.telemetry.events:player_pickup(player, pickup_name, pickup_spawn_type, pickup_position)
+					Managers.telemetry_events:player_pickup(player, pickup_name, pickup_spawn_type, pickup_position)
 
 					local lorebook_page_name = pickup_settings.lorebook_page_name
 
@@ -1057,6 +1113,7 @@ InteractionDefinitions.pickup_object = {
 					if pickup_settings.type == "inventory_item" then
 						local slot_name = pickup_settings.slot_name
 						local item_name = pickup_settings.item_name
+						local pickup_rotation = Unit.local_rotation(interactable_unit, 0)
 						local unit_template = nil
 						local extra_extension_init_data = {}
 						local is_limited_item = ScriptUnit.has_extension(interactable_unit, "limited_item_track_system")
@@ -1072,23 +1129,51 @@ InteractionDefinitions.pickup_object = {
 							}
 						end
 
+						local current_slot_data = inventory_extension:get_slot_data(slot_name)
+						local current_item_data = current_slot_data and current_slot_data.item_data
+						local dont_unwield_current = current_item_data and current_item_data.dont_unwield_on_pickup
 						local wielded_slot_name = inventory_extension:get_wielded_slot_name()
+						local should_wield = not dont_unwield_current and (pickup_settings.wield_on_pickup or wielded_slot_name == slot_name)
+						local can_store = inventory_extension:can_store_additional_item(slot_name)
+						local pickup_item_data = ItemMasterList[item_name]
 
-						if pickup_settings.wield_on_pickup or wielded_slot_name == slot_name then
+						if should_wield then
 							CharacterStateHelper.stop_weapon_actions(inventory_extension, "picked_up_object")
 							CharacterStateHelper.stop_career_abilities(career_extension, "picked_up_object")
 						end
 
-						local slot_data = inventory_extension:get_slot_data(slot_name)
-						local item_stored = false
-						local item_data = ItemMasterList[item_name]
+						local slot_full = current_item_data and not can_store
 
-						if slot_data then
-							item_stored = inventory_extension:store_additional_item(slot_name, slot_data.item_data)
+						if slot_full then
+							local has_droppable, is_stored, drop_item_data = inventory_extension:has_droppable_item(slot_name, _replaceable_item_filter(item_name))
+
+							fassert(has_droppable, "Can't pickup item '%s'. Nothing to replace. Should be caught in 'can_interact'", item_name)
+							_drop_pickup_position_rotation(drop_item_data, pickup_position, pickup_rotation)
+
+							if is_stored then
+								if should_wield then
+									inventory_extension:swap_equipment_from_storage(slot_name, SwapFromStorageType.Same, drop_item_data)
+									inventory_extension:destroy_slot(slot_name)
+									inventory_extension:add_equipment(slot_name, pickup_item_data, unit_template, extra_extension_init_data)
+								else
+									inventory_extension:remove_additional_item(slot_name, drop_item_data)
+									inventory_extension:store_additional_item(slot_name, pickup_item_data)
+								end
+							else
+								inventory_extension:destroy_slot(slot_name)
+								inventory_extension:add_equipment(slot_name, pickup_item_data, unit_template, extra_extension_init_data)
+							end
+						elseif current_item_data then
+							if should_wield then
+								inventory_extension:store_additional_item(slot_name, current_item_data)
+								inventory_extension:destroy_slot(slot_name)
+								inventory_extension:add_equipment(slot_name, pickup_item_data, unit_template, extra_extension_init_data)
+							else
+								inventory_extension:store_additional_item(slot_name, pickup_item_data)
+							end
+						else
+							inventory_extension:add_equipment(slot_name, pickup_item_data, unit_template, extra_extension_init_data)
 						end
-
-						inventory_extension:destroy_slot(slot_name)
-						inventory_extension:add_equipment(slot_name, item_data, unit_template, extra_extension_init_data)
 
 						if not LEVEL_EDITOR_TEST then
 							local unit_object_id = Managers.state.unit_storage:go_id(interactor_unit)
@@ -1112,44 +1197,13 @@ InteractionDefinitions.pickup_object = {
 							else
 								network_manager.network_transmit:send_rpc_server("rpc_add_equipment", unit_object_id, slot_id, item_id, weapon_skin_id)
 							end
-
-							if slot_data and not item_stored then
-								local item_data = slot_data.item_data
-								local item_template = BackendUtils.get_item_template(item_data)
-								local pickup_data = item_template.pickup_data
-
-								if pickup_data then
-									local pickup_name = pickup_data.pickup_name
-
-									if pickup_name then
-										local position = POSITION_LOOKUP[interactable_unit]
-										local rotation = Unit.local_rotation(interactable_unit, 0)
-										local pickup_spawn_type = "dropped"
-										local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
-										local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types[pickup_spawn_type]
-										local network_manager = Managers.state.network
-
-										network_manager.network_transmit:send_rpc_server("rpc_spawn_pickup", pickup_name_id, position, rotation, pickup_spawn_type_id)
-									end
-								end
-							end
-
-							if pickup_settings.dupable and pickup_extension.spawn_type ~= "dropped" then
-								local _, procced = buff_extension:apply_buffs_to_value(0, "not_consume_pickup")
-
-								if procced then
-									local pickup_name = pickup_extension.pickup_name
-
-									_drop_pickup(interactor_unit, pickup_name)
-								end
-							end
 						end
 
-						if pickup_settings.wield_on_pickup or wielded_slot_name == slot_name then
+						if should_wield then
 							local action_on_wield = pickup_settings.action_on_wield
 
 							if action_on_wield then
-								local item_template = BackendUtils.get_item_template(item_data)
+								local item_template = BackendUtils.get_item_template(pickup_item_data)
 								item_template.next_action = action_on_wield
 							end
 
@@ -1358,26 +1412,31 @@ InteractionDefinitions.pickup_object = {
 			end
 
 			local slot_data = slot_name and inventory_extension:get_slot_data(slot_name)
-			local item_template = slot_data and inventory_extension:get_item_template(slot_data)
 
-			if return_value and slot_name and item_template and slot_name == "slot_potion" and item_template.is_grimoire then
+			if return_value and slot_name == "slot_potion" and _has_grimoire(inventory_extension) then
 				fail_reason = "grimoire_equipped"
 				return_value = false
 			end
 
-			if return_value and slot_name and item_template and item_template.is_not_droppable then
-				fail_reason = "not_droppable"
-				return_value = false
+			local can_hold_more = inventory_extension:can_store_additional_item(slot_name)
+			local slot_item_data = slot_data and slot_data.item_data
+
+			if return_value and slot_item_data and slot_item_data.is_not_droppable then
+				local can_add_anyway = can_hold_more or inventory_extension:has_droppable_item(slot_name, _replaceable_item_filter(pickup_settings.item_name))
+
+				if not can_add_anyway then
+					fail_reason = "not_droppable"
+					return_value = false
+				end
 			end
 
-			local pickup_item_name = pickup_settings.item_name
-			local slot_item_name = inventory_extension:get_item_name(slot_name)
-			local can_hold_more = inventory_extension:can_store_additional_item(slot_name)
-			local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
+			if return_value and slot_item_data and not can_hold_more then
+				local has_replaceable_item = inventory_extension:has_droppable_item(slot_name, _replaceable_item_filter(pickup_settings.item_name))
 
-			if return_value and pickup_item_name and slot_item_name and not can_hold_more and pickup_item_name == slot_item_name and (not buff_extension:has_buff_type("not_consume_pickup") or not pickup_settings.dupable or pickup_extension.spawn_type == "dropped") then
-				fail_reason = "already_equipped"
-				return_value = false
+				if not has_replaceable_item then
+					fail_reason = "already_equipped"
+					return_value = false
+				end
 			end
 
 			if return_value and ScriptUnit.has_extension(interactable_unit, "death_system") then
@@ -1435,18 +1494,6 @@ InteractionDefinitions.pickup_object = {
 						interaction_action_description = "interaction_action_grimoire_equipped"
 					elseif fail_reason == "not_droppable" then
 						interaction_action_description = "interaction_action_not_droppable"
-					end
-				else
-					local pickup_extension = ScriptUnit.extension(interactable_unit, "pickup_system")
-					local pickup_settings = pickup_extension:get_pickup_settings()
-					local pickup_item_name = pickup_settings.item_name
-					local slot_name = pickup_settings.slot_name
-					local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
-					local slot_item_name = inventory_extension:get_item_name(slot_name)
-					local buff_extension = ScriptUnit.extension(interactor_unit, "buff_system")
-
-					if pickup_item_name and slot_item_name and pickup_item_name == slot_item_name and buff_extension:has_buff_type("not_consume_pickup") and pickup_settings.dupable and pickup_extension.spawn_type ~= "dropped" then
-						interaction_action_description = "trinket_not_consume_pickup_tier1"
 					end
 				end
 			end
@@ -1881,7 +1928,13 @@ InteractionDefinitions.linker_transportation_unit.client.can_interact = function
 
 	if units_inside_oobb then
 		if units_inside_oobb.ai.count > 0 then
-			return false, "enemies_inside"
+			local side_manager = Managers.state.side
+
+			for unit in pairs(units_inside_oobb.ai.units) do
+				if side_manager:is_enemy(interactor_unit, unit) then
+					return false, "enemies_inside"
+				end
+			end
 		end
 
 		local side = Managers.state.side.side_by_unit[interactor_unit]

@@ -60,7 +60,7 @@ HeroWindowPanelConsole.on_enter = function (self, params, offset)
 	self.conditions_params = {
 		hero_name = self.hero_name,
 		career_name = career_name,
-		rarities_to_ignore = table.enum("magic")
+		rarities_to_ignore = table.enum_safe("magic")
 	}
 	local title_button_widgets = self._title_button_widgets
 	self.button_widgets_by_news_template = {
@@ -121,6 +121,12 @@ HeroWindowPanelConsole.create_ui_elements = function (self, params, offset)
 	assert(title_button_widgets[3].content.text_field == "hero_window_crafting")
 
 	title_button_widgets[3].content.button_hotspot.disable_button = script_data["eac-untrusted"]
+
+	for i = 1, #title_button_widgets do
+		local title_button_widget = title_button_widgets[i]
+		title_button_widget.content.button_hotspot.disable_button = not self.parent:can_add(layout_name_by_index[i])
+	end
+
 	self._title_button_widgets = title_button_widgets
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
@@ -313,7 +319,7 @@ HeroWindowPanelConsole._handle_input = function (self, dt, t)
 		input_made = true
 	end
 
-	if self.is_in_inn and not self.force_ingame_menu then
+	if not self.force_ingame_menu then
 		local close_on_exit = parent:close_on_exit()
 
 		if not close_on_exit and not input_made and self:_is_button_pressed(back_button) then
@@ -326,7 +332,9 @@ HeroWindowPanelConsole._handle_input = function (self, dt, t)
 				input_made = true
 			end
 		end
+	end
 
+	if self.is_in_inn and not self.force_ingame_menu then
 		local title_button_widgets = self._title_button_widgets
 
 		for i, widget in ipairs(title_button_widgets) do

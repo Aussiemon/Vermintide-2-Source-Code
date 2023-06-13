@@ -1,10 +1,10 @@
 GearUtils = {}
 local unit_node = Unit.node
 
-GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent, override_item_template, override_item_units)
+GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent, override_item_template, override_item_units, career_name)
 	local right_hand_weapon_unit_3p, right_hand_weapon_unit_1p, left_hand_weapon_unit_3p, left_hand_weapon_unit_1p, right_hand_ammo_unit_3p, right_hand_ammo_unit_1p, left_hand_ammo_unit_3p, left_hand_ammo_unit_1p = nil
 	local item_template = override_item_template or BackendUtils.get_item_template(item_data)
-	local item_units = override_item_units or BackendUtils.get_item_units(item_data)
+	local item_units = override_item_units or BackendUtils.get_item_units(item_data, nil, nil, career_name)
 
 	if item_units.right_hand_unit then
 		right_hand_weapon_unit_3p, right_hand_ammo_unit_3p, right_hand_weapon_unit_1p, right_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "right", item_template, item_units, slot_name, item_data, unit_1p, unit_3p, unit_template, extra_extension_data, ammo_percent, item_units.material_settings)
@@ -92,6 +92,7 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 		projectile_units_template = item_units.projectile_units_template,
 		pickup_template_name = item_units.pickup_template_name,
 		link_pickup_template_name = item_units.link_pickup_template_name,
+		destroy_indexed_projectiles = item_template.destroy_indexed_projectiles,
 		right_hand_unit_name = item_units.right_hand_unit,
 		left_hand_unit_name = item_units.left_hand_unit
 	}

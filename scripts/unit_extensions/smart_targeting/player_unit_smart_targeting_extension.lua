@@ -12,6 +12,8 @@ PlayerUnitSmartTargetingExtension.init = function (self, extension_init_context,
 	self.world = extension_init_context.world
 	self.conflict_manager = Managers.state.conflict
 	self.player = extension_init_data.player
+	local side = extension_init_data.side
+	self._target_broadphase_categories = side and side.enemy_broadphase_categories
 	self.targeting_data = {}
 	self.move_time = 0
 	self.clicking = false
@@ -92,7 +94,7 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 	table.clear(nearby_ai_positions)
 	table.clear(nearby_ai_distances)
 
-	local num_nearby_ai_units = EngineOptimized.smart_targeting_query(ai_broadphase, own_position, look_dir, 1.5, max_range, 0.1, 0.2, 0.8, 5, nearby_ai_units, nearby_ai_positions, nearby_ai_distances)
+	local num_nearby_ai_units = EngineOptimized.smart_targeting_query(ai_broadphase, own_position, look_dir, 1.5, max_range, 0.1, 0.2, 0.8, 5, nearby_ai_units, nearby_ai_positions, nearby_ai_distances, self._target_broadphase_categories)
 	local highest_score = 0
 	local target_unit = nil
 	local aim_score = 0
@@ -244,7 +246,7 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 
 	table.clear(nearby_ai_units)
 
-	local num_nearby_ai_units = Broadphase.query(ai_broadphase, own_position, max_range, nearby_ai_units)
+	local num_nearby_ai_units = Broadphase.query(ai_broadphase, own_position, max_range, nearby_ai_units, self._target_broadphase_categories)
 	local highest_score = 0
 	local target_unit = nil
 	local aim_score = 0

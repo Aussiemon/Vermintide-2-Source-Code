@@ -1226,7 +1226,7 @@ weapon_template.display_unit = "units/weapons/weapon_display/display_2h_swords_e
 weapon_template.wield_anim = "to_2h_sword"
 weapon_template.buff_type = "MELEE_2H"
 weapon_template.max_fatigue_points = 6
-weapon_template.dodge_count = 2
+weapon_template.dodge_count = 3
 weapon_template.block_angle = 90
 weapon_template.outer_block_angle = 360
 weapon_template.block_fatigue_point_multiplier = 0.5
@@ -1261,18 +1261,18 @@ weapon_template.aim_assist_settings = {
 }
 weapon_template.weapon_diagram = {
 	light_attack = {
-		[DamageTypes.ARMOR_PIERCING] = 1,
-		[DamageTypes.CLEAVE] = 5,
-		[DamageTypes.SPEED] = 3,
-		[DamageTypes.STAGGER] = 1,
-		[DamageTypes.DAMAGE] = 5
+		[DamageTypes.ARMOR_PIERCING] = 3,
+		[DamageTypes.CLEAVE] = 2,
+		[DamageTypes.SPEED] = 2,
+		[DamageTypes.STAGGER] = 2,
+		[DamageTypes.DAMAGE] = 3
 	},
 	heavy_attack = {
-		[DamageTypes.ARMOR_PIERCING] = 5,
-		[DamageTypes.CLEAVE] = 1,
+		[DamageTypes.ARMOR_PIERCING] = 4,
+		[DamageTypes.CLEAVE] = 3,
 		[DamageTypes.SPEED] = 1,
 		[DamageTypes.STAGGER] = 3,
-		[DamageTypes.DAMAGE] = 6
+		[DamageTypes.DAMAGE] = 5
 	}
 }
 weapon_template.tooltip_keywords = {

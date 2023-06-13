@@ -115,6 +115,8 @@ AIInventoryExtension._setup_configuration = function (self, unit, start_n, inven
 		end
 	end
 
+	Unit.flow_event(unit, "lua_spawned_inventory")
+
 	return index
 end
 

@@ -1005,6 +1005,7 @@ NetworkLookup.damage_types = {
 	"burn_carbine",
 	"burn_machinegun",
 	"burninating",
+	"burninating_force_fire",
 	"bleed",
 	"burning_tank",
 	"heavy_burning_tank",
@@ -1138,6 +1139,15 @@ NetworkLookup.projectile_templates = {
 	"straight_target_traversal",
 	"straight_direction_traversal"
 }
+
+for _, dlc in pairs(DLCSettings) do
+	local projectile_templates = dlc.projectile_templates
+
+	if projectile_templates then
+		table.append(NetworkLookup.projectile_templates, projectile_templates)
+	end
+end
+
 NetworkLookup.overpowered_templates = create_lookup({}, PlayerUnitMovementSettings.overpowered_templates)
 NetworkLookup.vortex_templates = create_lookup({}, VortexTemplates)
 NetworkLookup.tentacle_templates = create_lookup({}, TentacleTemplates)
@@ -1432,21 +1442,6 @@ NetworkLookup.sound_events = {
 	"player_combat_weapon_shortbow_fire_heavy_homing",
 	"player_combat_weapon_shortbow_fire_heavy",
 	"player_combat_weapon_shortbow_fire_light",
-	"storm_vermin_patrol_formate",
-	"Play_stormvermin_patrol_foley",
-	"storm_vermin_patrol_player_spotted",
-	"storm_vermin_patrol_charge",
-	"Play_stormvemin_patrol_formated",
-	"Play_stormvermin_patrol_forming",
-	"Play_stormvermin_patrol_voice",
-	"Play_stormvermin_patrol_shield_foley",
-	"chaos_marauder_patrol_charge",
-	"chaos_marauder_patrol_foley",
-	"chaos_marauder_patrol_formate",
-	"chaos_marauder_patrol_formated",
-	"chaos_marauder_patrol_forming",
-	"chaos_marauder_patrol_player_spotted",
-	"chaos_marauder_patrol_voice",
 	"blunt_hit_shield_wood",
 	"slashing_hit_shield_wood",
 	"stab_hit_shield_wood",
@@ -1456,13 +1451,6 @@ NetworkLookup.sound_events = {
 	"stab_hit_shield_metal",
 	"Play_weapon_fire_torch_metal_shield_hit",
 	"weapon_staff_fire_cone",
-	"Play_clan_rat_attack_player_back_vce",
-	"Play_clan_rat_attack_player_vce",
-	"Play_clan_rat_attack_husk_vce",
-	"Play_clan_rat_attack_vce",
-	"Play_slave_rat_attack_player_vce",
-	"Play_slave_rat_attack_husk_vce",
-	"Play_enemy_plague_monk_death_new_vce",
 	"Play_hud_matchmaking_countdown",
 	"Play_hud_enemy_attack_back_hit",
 	"player_combat_weapon_repeating_crossbow_elf_fire",
@@ -1472,19 +1460,10 @@ NetworkLookup.sound_events = {
 	"stop_player_combat_weapon_staff_fire_beam_husk",
 	"Play_stormfiend_ambience",
 	"Stop_stormfiend_ambience",
-	"Play_enemy_marauder_death_vce",
 	"Play_enemy_marauder_swing_vce",
 	"Play_enemy_marauder_attack_vce",
-	"Play_enemy_marauder_attack_player_vce",
-	"Play_enemy_marauder_attack_husk_vce",
-	"Play_enemy_marauder_attack_player_back_vce",
-	"Play_enemy_berserker_attack_player_vce",
-	"Play_enemy_berserker_attack_husk_vce",
 	"ecm_gameplay_backstab_a_player",
 	"ecm_gameplay_flanking_players",
-	"Play_breed_triggered_sound",
-	"Play_enemy_vce_chaos_warrior_die",
-	"Play_plague_monk_frenzy_attack_vce",
 	"Play_plague_monk_heavy_attack_vce",
 	"Play_enemy_plague_monk_start_frenzy",
 	"Play_enemy_sorcerer_tentacle_foley_attack_swing",
@@ -1528,29 +1507,12 @@ NetworkLookup.sound_events = {
 	"Play_generic_pushed_impact_small",
 	"Play_generic_pushed_impact_small_armour",
 	"Play_generic_pushed_impact_large_armour",
-	"Play_enemy_ungor_attack_player_back_vce",
-	"Play_enemy_ungor_attack_vce",
-	"Play_enemy_ungor_attack_husk_vce",
-	"Play_enemy_ungor_die_vce",
-	"play_enemy_gor_attack_player_back_vce",
 	"play_enemy_gor_attack_vce",
 	"play_enemy_gor_attack_husk_vce",
-	"play_enemy_gor_attack_short_vce",
-	"play_enemy_gor_attack_short_husk_vce",
-	"play_enemy_gor_die_vce",
-	"Play_enemy_bestigor_attack_player_back_vce",
-	"Play_enemy_bestigor_attack_short_vce",
-	"Play_enemy_bestigor_attack_short_husk_vce",
-	"Play_enemy_bestigor_die_short_vce",
 	"enemy_horde_beastmen_stinger",
 	"Play_enemy_ungor_archer_group_attack_vce",
 	"Play_enemy_ungor_archer_attack_order_vce",
-	"play_enemy_standard_bearer_attack_vce",
-	"play_enemy_standard_bearer_attack_husk_vce",
-	"Play_enemy_standard_bearer_attack_player_back_vce",
-	"Play_standard_bearer_die_vce",
 	"Play_enemy_minotaur_spawn",
-	"Play_enemy_minotaur_die_vce",
 	"Stop_enemy_beastmen_standar_spell_loop",
 	"Play_enemy_standard_bearer_place_standar",
 	"Play_enemy_beastmen_standar_spell_loop",
@@ -1558,9 +1520,6 @@ NetworkLookup.sound_events = {
 	"Play_enemy_beastmen_standar_taking_damage",
 	"Play_prop_magic_barrel_socket",
 	"Play_prop_magic_barrel_explosion",
-	"Play_enemy_vce_chaos_warrior_attack_player_back",
-	"Play_plague_monk_attack_player_back_vce",
-	"Play_stormvermin_attack_player_back_vce",
 	"Play_enemy_mutator_chaos_sorcerer_wind_loop",
 	"Stop_enemy_mutator_chaos_sorcerer_wind_loop",
 	"Play_enemy_mutator_chaos_sorcerer_skulking_loop",
@@ -1588,6 +1547,42 @@ NetworkLookup.sound_events = {
 	"enemy_grudge_cursed_enter",
 	"Play_skulls_event_mutator_extra_hordes"
 }
+local add_these_breed_sound_events = {
+	"attack_player_sound_event",
+	"attack_general_sound_event",
+	"backstab_player_sound_event",
+	"death_sound_event"
+}
+local num_breed_sound_events = #add_these_breed_sound_events
+local added = {}
+
+for breed_name, breed in pairs(Breeds) do
+	for i = 1, num_breed_sound_events do
+		local sound_event = add_these_breed_sound_events[i]
+
+		if breed[sound_event] then
+			local event_name = breed[sound_event]
+
+			if not added[event_name] then
+				added[event_name] = true
+				NetworkLookup.sound_events[#NetworkLookup.sound_events + 1] = event_name
+			end
+		end
+	end
+end
+
+for formation_name, formation_settings in pairs(PatrolFormationSettings) do
+	local sounds = type(formation_settings) == "table" and formation_settings.settings and formation_settings.settings.sounds
+
+	if sounds then
+		for action, event_name in pairs(sounds) do
+			if not added[event_name] then
+				added[event_name] = true
+				NetworkLookup.sound_events[#NetworkLookup.sound_events + 1] = event_name
+			end
+		end
+	end
+end
 
 for _, dlc in pairs(DLCSettings) do
 	local sound_events = dlc.network_sound_events
@@ -1654,74 +1649,7 @@ NetworkLookup.movement_funcs = {
 	"none",
 	"update_local_animation_driven_movement"
 }
-NetworkLookup.ai_inventory = {
-	"empty",
-	"sword",
-	"skaven_clan_rat_sword",
-	"opt_skaven_clan_rat_sword",
-	"skaven_slave_sword",
-	"opt_skaven_slave_sword",
-	"dual_sword",
-	"dual_axes",
-	"spear",
-	"skaven_clan_rat_spear",
-	"opt_skaven_clan_rat_spear",
-	"skaven_slave_spear",
-	"opt_skaven_slave_spear",
-	"halberd",
-	"halberd_stormvermin_champion",
-	"sword_and_shield",
-	"skaven_clan_rat_sword_and_shield",
-	"opt_skaven_clan_rat_sword_and_shield",
-	"stormvermin_sword_and_shield",
-	"stormvermin_dual_wield",
-	"pack_master",
-	"loot_rat_sack",
-	"ratlinggun",
-	"rat_ogre",
-	"stormfiend_warpfire",
-	"gutter_runner",
-	"chaos_troll",
-	"chaos_sorcerer",
-	"chaos_sorcerer_vortex",
-	"chaos_mutator_sorcerer",
-	"chaos_exalted_sorcerer",
-	"mace",
-	"axe",
-	"warrior_axe",
-	"exalted_axe",
-	"exalted_spawn_axe",
-	"axe_2h",
-	"warpfiregun",
-	"marauder_mace",
-	"marauder_sword_and_shield",
-	"raider_axe_2h",
-	"berzerker_dual_axes",
-	"warlord_dual_setups",
-	"fanatic",
-	"zombie_blobs",
-	"beastmen_ungor_1h",
-	"beastmen_ungor_spear",
-	"opt_beastmen_ungor_spear",
-	"beastmen_gor_1h",
-	"opt_beastmen_gor_1h",
-	"beastmen_bestigor_2h_axe",
-	"beastmen_standard_bearer_2h_axe",
-	"beastmen_2h_axe_standard",
-	"beastmen_standard_bearer_dual_setup",
-	"beastmen_ungor_bow",
-	"opt_beastmen_ungor_bow",
-	"beastmen_ungor_just_add_spear",
-	"beastmen_ungor_archer_bow_and_spear",
-	"opt_beastmen_ungor_archer_bow_and_spear",
-	"beastmen_minotaur_dual_axes",
-	"critter_nurgling",
-	"undead_ethereal_skeleton_with_shield",
-	"undead_ethereal_skeleton_2h"
-}
-
-DLCUtils.append("ai_inventory", NetworkLookup.ai_inventory)
-
+NetworkLookup.ai_inventory = create_lookup({}, InventoryConfigurations)
 NetworkLookup.connection_fails = {
 	"no_peer_data_on_join",
 	"no_peer_data_on_enter_game",

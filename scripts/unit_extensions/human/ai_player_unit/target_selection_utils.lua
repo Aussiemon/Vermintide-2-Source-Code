@@ -400,15 +400,27 @@ PerceptionUtils.horde_pick_closest_target_with_spillover = function (ai_unit, bl
 	local distance_to_target_sq = nil
 	local using_override_target = false
 	local override_targets = blackboard.override_targets
-	local VALID_ENEMIES = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
+	local valid_players = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
+	local enemy_units = side.enemy_units_lookup
 
 	for target_unit, end_of_override_t in pairs(override_targets) do
-		local target_unit_valid = VALID_ENEMIES[target_unit]
+		local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+		local is_player = status_extension
+		local is_valid = nil
+		is_valid = is_player and valid_players[target_unit] or enemy_units[target_unit] and AiUtils.unit_alive(target_unit)
+		local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
 
-		if not target_unit_valid or end_of_override_t < t or ScriptUnit.extension(target_unit, "status_system"):is_disabled() then
+		if not is_valid or end_of_override_t < t or status_extension and status_extension:is_disabled() then
 			override_targets[target_unit] = nil
 		else
-			local score, distance_sq = _calculate_horde_pick_closest_target_with_spillover_score(target_unit, target_current, previous_attacker, ai_unit_position, breed, perception_previous_attacker_stickyness_value)
+			local score, distance_sq = nil
+
+			if is_player then
+				score, distance_sq = _calculate_horde_pick_closest_target_with_spillover_score(target_unit, target_current, previous_attacker, ai_unit_position, breed, perception_previous_attacker_stickyness_value)
+			else
+				local target_blackboard = BLACKBOARDS[target_unit]
+				score, distance_sq = get_lean_score(target_blackboard, ai_unit_position, ai_unit, target_unit)
+			end
 
 			if score and score < best_score then
 				best_score = score
@@ -586,16 +598,26 @@ PerceptionUtils.pick_closest_target_with_spillover = function (ai_unit, blackboa
 	local raycast_pos = Unit.world_position(ai_unit, Unit.node(ai_unit, "j_head"))
 	local using_override_target = false
 	local override_targets = blackboard.override_targets
-	local VALID_ENEMIES = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
+	local valid_players = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
+	local enemy_units = side.enemy_units_lookup
 
 	for target_unit, end_of_override_t in pairs(override_targets) do
-		local target_unit_valid = VALID_ENEMIES[target_unit]
 		local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+		local is_player = status_extension
+		local is_valid = nil
+		is_valid = is_player and valid_players[target_unit] or enemy_units[target_unit] and AiUtils.unit_alive(target_unit)
 
-		if not target_unit_valid or end_of_override_t < t or status_extension and status_extension:is_disabled() then
+		if not is_valid or end_of_override_t < t or status_extension and status_extension:is_disabled() then
 			override_targets[target_unit] = nil
 		else
-			local score, distance_sq = _calculate_closest_target_with_spillover_score(ai_unit, target_unit, target_current, previous_attacker, ai_unit_position, raycast_pos, breed, detection_radius_sq, perception_previous_attacker_stickyness_value, is_horde)
+			local score, distance_sq = nil
+
+			if is_player then
+				score, distance_sq = _calculate_closest_target_with_spillover_score(ai_unit, target_unit, target_current, previous_attacker, ai_unit_position, raycast_pos, breed, detection_radius_sq, perception_previous_attacker_stickyness_value, is_horde)
+			else
+				local target_blackboard = BLACKBOARDS[target_unit]
+				score, distance_sq = get_lean_score(target_blackboard, ai_unit_position, ai_unit, target_unit)
+			end
 
 			if score and score < best_score then
 				best_score = score

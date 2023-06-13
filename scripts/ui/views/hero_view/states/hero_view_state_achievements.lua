@@ -1529,7 +1529,7 @@ HeroViewStateAchievements._setup_reward_presentation = function (self, reward_po
 		ferror("Unknown reward_polling_type (%s)", polling_type)
 	end
 
-	local num_rewards = #rewards
+	local num_rewards = rewards and #rewards or 0
 
 	if num_rewards > 0 then
 		local presentation_data = {}

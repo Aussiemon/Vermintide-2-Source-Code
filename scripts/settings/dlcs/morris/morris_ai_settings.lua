@@ -16,11 +16,12 @@ settings.vortex_templates = {
 		inner_fx_name = "fx/deus_bloodstorm_vortex_small",
 		windup_time = 3,
 		random_wander = true,
+		stop_and_process_player = false,
 		max_height = 10,
 		start_sound_event_name = "Play_curse_blood_storm_loop",
 		full_inner_radius = 4,
 		full_outer_radius = 6,
-		stop_and_process_player = false,
+		damage = 5,
 		forced_standing_still = false,
 		use_nav_cost_map_volumes = true,
 		breed_name = "chaos_vortex",
@@ -29,53 +30,6 @@ settings.vortex_templates = {
 		time_of_life = {
 			4,
 			6
-		},
-		damage = {
-			5,
-			3,
-			1.5
-		},
-		difficulty_damage = {
-			easy = {
-				2,
-				4,
-				2
-			},
-			normal = {
-				3,
-				5,
-				3
-			},
-			hard = {
-				5,
-				7,
-				5
-			},
-			harder = {
-				10,
-				8,
-				10
-			},
-			hardest = {
-				20,
-				10,
-				15
-			},
-			cataclysm = {
-				10,
-				8,
-				5
-			},
-			cataclysm_2 = {
-				15,
-				10,
-				10
-			},
-			cataclysm_3 = {
-				30,
-				15,
-				22.5
-			}
 		}
 	}
 }

@@ -123,7 +123,7 @@ StoreWindowPathTitle._setup_breadcrumb_widgets = function (self)
 	local num_buttons = #breadcrumb_widgets
 	local selected_product = self._params.selected_product
 
-	Managers.telemetry.events:store_breadcrumbs_changed(breadcrumb_widgets, selected_product)
+	Managers.telemetry_events:store_breadcrumbs_changed(breadcrumb_widgets, selected_product)
 
 	local start_position_x = 0
 	local spacing = 2

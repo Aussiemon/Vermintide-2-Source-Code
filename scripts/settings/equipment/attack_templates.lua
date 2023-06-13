@@ -738,13 +738,13 @@ AttackTemplates = {
 		damage_type = "grenade_glance"
 	},
 	fire_grenade_explosion = {
-		dot_type = "burning_dot",
+		dot_type = "burning_dot_force_fire",
 		stagger_value = 2,
 		dot_template_name = "burning_3W_dot",
 		damage_type = "fire_grenade_glance"
 	},
 	fire_grenade_dot = {
-		dot_type = "burning_dot",
+		dot_type = "burning_dot_force_fire",
 		dot_template_name = "burning_1W_dot",
 		sound_type = "light",
 		damage_type = "drakegun_shot"

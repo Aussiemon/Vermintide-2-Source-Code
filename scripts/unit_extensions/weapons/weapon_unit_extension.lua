@@ -185,6 +185,8 @@ WeaponUnitExtension.init = function (self, extension_init_context, unit, extensi
 	self.looping_audio_events = {}
 	self._current_weapon_buffs = {}
 	self._custom_data = {}
+	self._passive_update_actions = nil
+	self._passive_update_actions_n = 0
 	local item_data = rawget(ItemMasterList, self.item_name)
 	local weapon_template_name = item_data and item_data.template
 
@@ -194,7 +196,11 @@ WeaponUnitExtension.init = function (self, extension_init_context, unit, extensi
 
 		if custom_data then
 			for key, value in pairs(custom_data) do
-				self._custom_data[key] = value
+				if type(value) == "table" then
+					self._custom_data[key] = Script.new_table(value.array_size or 0, value.map_size or 0)
+				else
+					self._custom_data[key] = value
+				end
 			end
 		end
 
@@ -247,6 +253,27 @@ end
 
 local interupting_action_data = {}
 
+local function get_action_anim_event(previous_action_settings, current_action_settings, skin_data, anim_key)
+	if previous_action_settings then
+		local anim_event_from_chain = current_action_settings.anim_event_from_chain
+
+		if anim_event_from_chain then
+			local lookup_data = previous_action_settings.lookup_data
+			local action_anim_data = anim_event_from_chain[lookup_data.action_name]
+
+			if action_anim_data then
+				local sub_action_anim_data = action_anim_data[lookup_data.sub_action_name]
+
+				if sub_action_anim_data and sub_action_anim_data[anim_key] then
+					return sub_action_anim_data[anim_key]
+				end
+			end
+		end
+	end
+
+	return skin_data and skin_data[anim_key] or current_action_settings[anim_key]
+end
+
 WeaponUnitExtension.start_action = function (self, action_name, sub_action_name, actions, t, power_level, action_init_data)
 	local owner_unit = self.owner_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
@@ -271,7 +298,24 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		local action_settings = self:get_action(new_action, new_sub_action, actions)
 		action_settings, new_action, new_sub_action = ActionUtils.resolve_action_selector(action_settings, talent_extension, buff_extension, self)
 		local action_kind = action_settings.kind
-		self.actions[action_kind] = self.actions[action_kind] or create_attack(self.item_name, action_kind, self.world, self.is_server, owner_unit, self.actual_damage_unit, self.first_person_unit, self.unit, self.weapon_system)
+
+		if not self.actions[action_kind] then
+			local new_action_instance = create_attack(self.item_name, action_kind, self.world, self.is_server, owner_unit, self.actual_damage_unit, self.first_person_unit, self.unit, self.weapon_system)
+			self.actions[action_kind] = new_action_instance
+
+			if new_action_instance.passive_update then
+				if not self._passive_update_actions then
+					self._passive_update_actions = {
+						new_action_instance
+					}
+					self._passive_update_actions_n = 1
+				else
+					local passive_update_actions_n = self._passive_update_actions_n + 1
+					self._passive_update_actions[passive_update_actions_n] = new_action_instance
+					self._passive_update_actions_n = passive_update_actions_n
+				end
+			end
+		end
 	end
 
 	local ammo_extension = self.ammo_extension
@@ -305,9 +349,10 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		end
 	end
 
-	local chain_action_data = nil
+	local chain_action_data, previous_action_settings = nil
 
 	if new_action and current_action_settings then
+		previous_action_settings = current_action_settings
 		interupting_action_data.new_action = new_action
 		interupting_action_data.new_sub_action = new_sub_action
 		interupting_action_data.new_action_settings = self:get_action(new_action, new_sub_action, actions)
@@ -372,9 +417,9 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		local action_time_scale = ActionUtils.get_action_time_scale(owner_unit, current_action_settings)
 		time_to_complete = time_to_complete / action_time_scale
 		local skin_data = get_skin_action_override_data(self.weapon_skin_anim_overrides, current_action_settings)
-		local event = skin_data and skin_data.anim_event or current_action_settings.anim_event
-		local event_3p = skin_data and skin_data.anim_event_3p or current_action_settings.anim_event_3p or event
-		local looping_event = skin_data and skin_data.looping_anim or current_action_settings.looping_anim
+		local event = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event")
+		local event_3p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_3p") or event
+		local looping_event = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "looping_anim")
 
 		for _, data in pairs(self.action_buff_data) do
 			table.clear(data)
@@ -403,11 +448,11 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 		if self.ammo_extension then
 			if self.ammo_extension:total_remaining_ammo() == 0 then
-				event = skin_data and skin_data.anim_event_no_ammo_left or current_action_settings.anim_event_no_ammo_left or event
-				event_3p = skin_data and skin_data.anim_event_no_ammo_left_3p or current_action_settings.anim_event_no_ammo_left_3p or event_3p
+				event = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_no_ammo_left") or event
+				event_3p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_no_ammo_left_3p") or event_3p
 			elseif self.ammo_extension:total_remaining_ammo() == 1 then
-				event = skin_data and skin_data.anim_event_last_ammo or current_action_settings.anim_event_last_ammo or event
-				event_3p = skin_data and skin_data.anim_event_last_ammo_3p or current_action_settings.anim_event_last_ammo_3p or event_3p
+				event = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_last_ammo") or event
+				event_3p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_last_ammo_3p") or event_3p
 			end
 		end
 
@@ -415,8 +460,8 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			local infinite_ammo = buff_extension:has_buff_perk("infinite_ammo")
 
 			if infinite_ammo then
-				event = skin_data and skin_data.anim_event_infinite_ammo or current_action_settings.anim_event_infinite_ammo or event
-				event_3p = skin_data and skin_data.anim_event_infinite_ammo_3p or current_action_settings.anim_event_infinite_ammo_3p or event_3p
+				event = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_infinite_ammo") or event
+				event_3p = get_action_anim_event(previous_action_settings, current_action_settings, skin_data, "anim_event_infinite_ammo_3p") or event_3p
 			end
 		end
 
@@ -691,6 +736,12 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
+	local passive_update_actions = self._passive_update_actions
+
+	for i = 1, self._passive_update_actions_n do
+		passive_update_actions[i]:passive_update(dt, t)
+	end
+
 	if self._weapon_update then
 		self:_weapon_update(dt, t)
 	end
@@ -787,6 +838,30 @@ end
 
 WeaponUnitExtension.get_current_action_settings = function (self)
 	return self.current_action_settings
+end
+
+WeaponUnitExtension.is_after_damage_window = function (self)
+	local action = self.current_action_settings
+
+	if not action then
+		return false
+	end
+
+	local damage_window_start = action.damage_window_start
+	local damage_window_end = action.damage_window_end
+
+	if not damage_window_start and not damage_window_end then
+		return false
+	end
+
+	local owner_unit = self.owner_unit
+	local t = Managers.time:time("game")
+	local current_time_in_action = t - self.action_time_started
+	local damage_time_scale = ActionUtils.get_action_time_scale(owner_unit, action, false)
+	damage_window_end = damage_window_end or action.total_time or math.huge
+	damage_window_end = damage_window_end / damage_time_scale
+
+	return current_time_in_action >= damage_window_end
 end
 
 WeaponUnitExtension.bot_should_stop_attack_on_leave = function (self)

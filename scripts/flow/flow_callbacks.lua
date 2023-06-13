@@ -1354,6 +1354,64 @@ function flow_callback_get_random_player(params)
 	return nil
 end
 
+function flow_callback_get_random_player_or_global_observer(params)
+	local players = Managers.player:human_and_bot_players()
+	local surrounding_aware_system = Managers.state.entity:system("surrounding_aware_system")
+	local global_observers = surrounding_aware_system.global_observers
+
+	table.clear(temp)
+
+	local unit_list = temp
+	local unit_list_n = 0
+
+	for _, player in pairs(players) do
+		local unit = player.player_unit
+
+		if unit_alive(unit) and ScriptUnit.extension(unit, "health_system"):is_alive() then
+			unit_list_n = unit_list_n + 1
+			unit_list[unit_list_n] = unit
+		end
+	end
+
+	for unit in pairs(global_observers) do
+		unit_list_n = unit_list_n + 1
+		unit_list[unit_list_n] = unit
+	end
+
+	if unit_list_n > 0 then
+		local unit = unit_list[math.random(1, unit_list_n)]
+		flow_return_table.unit = unit
+
+		return flow_return_table
+	end
+
+	return nil
+end
+
+function flow_callback_get_random_global_observer(params)
+	local surrounding_aware_system = Managers.state.entity:system("surrounding_aware_system")
+	local global_observers = surrounding_aware_system.global_observers
+
+	table.clear(temp)
+
+	local unit_list = temp
+	local unit_list_n = 0
+
+	for unit in pairs(global_observers) do
+		unit_list_n = unit_list_n + 1
+		unit_list[unit_list_n] = unit
+	end
+
+	if unit_list_n > 0 then
+		local unit = unit_list[math.random(1, unit_list_n)]
+		flow_return_table.unit = unit
+
+		return flow_return_table
+	end
+
+	return nil
+end
+
 function flow_callback_trigger_dialogue_event(params)
 	local unit = params.source
 
@@ -1476,6 +1534,8 @@ function flow_callback_objective_entered_socket_zone(params)
 		else
 			print("[flow_callback_objective_entered_socket_zone] Socket type doesn't match", params.socket_unit, params.objective_unit)
 		end
+
+		Managers.state.achievement:trigger_event("objective_entered_socket_zone", false, objective_unit)
 	end
 end
 
@@ -5256,4 +5316,56 @@ end
 
 function flow_callback_trigger_gameplay_start(params)
 	Managers.state.achievement:trigger_event("gameplay_start")
+end
+
+function flow_callback_dwarf_emote_achievement(params)
+	Managers.state.achievement:trigger_event("dwarf_valaya_emote", params.is_inside)
+end
+
+function flow_callback_complete_dwarf_barrel_challenge(params)
+	Managers.state.achievement:trigger_event("dwarf_barrel_carry", true)
+end
+
+function flow_callback_complete_dwarf_rune_challenge(params)
+	Managers.state.achievement:trigger_event("dwarf_rune")
+end
+
+function flow_callback_complete_dwarf_bell_challenge(params)
+	Managers.state.achievement:trigger_event("dwarf_bells")
+end
+
+function flow_callback_update_dwarf_pressure_challenge(params)
+	Managers.state.achievement:trigger_event("dwarf_pressure", params.start_timer)
+end
+
+function flow_callback_progress_dwarf_towers_challenge(params)
+	Managers.state.achievement:trigger_event("progress_dwarf_towers_challenge")
+end
+
+function flow_callback_progress_dwarf_chain_speed_challenge(params)
+	Managers.state.achievement:trigger_event("progress_dwarf_chain_speed_challenge")
+end
+
+function flow_callback_complete_dwarf_jump_puzzle_challenge(params)
+	Managers.state.achievement:trigger_event("complete_dwarf_jump_puzzle_challenge")
+end
+
+function flow_callback_update_dwarf_pressure_pad_challenge(params)
+	Managers.state.achievement:trigger_event("dwarf_pressure_pad", params.unit, params.is_on_pad, params.complete_challenge)
+end
+
+function flow_callback_complete_dwarf_crows_challenge(params)
+	Managers.state.achievement:trigger_event("dwarf_crows")
+end
+
+function flow_callback_update_big_jump_challenge(params)
+	Managers.state.achievement:trigger_event("dwarf_big_jump", params.is_landing)
+end
+
+function flow_callback_complete_dwarf_speedrun_challenge(params)
+	Managers.state.achievement:trigger_event("dwarf_speedrun_end")
+end
+
+function flow_callback_start_dwarf_speedrun_challenge(params)
+	Managers.state.achievement:trigger_event("dwarf_speedrun_start")
 end

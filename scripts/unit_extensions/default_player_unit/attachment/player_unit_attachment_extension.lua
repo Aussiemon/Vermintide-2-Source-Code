@@ -96,7 +96,14 @@ end
 PlayerUnitAttachmentExtension.create_attachment = function (self, slot_name, item_data)
 	local attachments = self._attachments
 	local unit = self._unit
-	local slot_data = AttachmentUtils.create_attachment(self._world, unit, attachments, slot_name, item_data, false)
+	local item_template = BackendUtils.get_item_template(item_data)
+	local parent_unit = unit
+
+	if item_template.link_to_skin then
+		parent_unit = self._tp_unit_mesh
+	end
+
+	local slot_data = AttachmentUtils.create_attachment(self._world, parent_unit, attachments, slot_name, item_data, false)
 	attachments.slots[slot_name] = slot_data
 	local item_data = slot_data.item_data
 	local item_template = BackendUtils.get_item_template(item_data)

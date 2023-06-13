@@ -40,7 +40,7 @@ HeroWindowOptions.on_enter = function (self, params, offset)
 	self.conditions_params = {
 		hero_name = self.hero_name,
 		career_name = career_name,
-		rarities_to_ignore = table.enum("magic")
+		rarities_to_ignore = table.enum_safe("magic")
 	}
 	local widgets_by_name = self._widgets_by_name
 	self.button_widgets_by_news_template = {

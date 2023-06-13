@@ -442,22 +442,24 @@ OptionsView._setup_input_functions = function (self)
 					local item_content = item_contents[i]
 					local hotspot = item_content.hotspot
 
-					if hotspot.on_hover_enter then
-						WwiseWorld.trigger_event(self.wwise_world, "Play_hud_hover")
-					end
+					if not hotspot.disabled then
+						if hotspot.on_hover_enter then
+							WwiseWorld.trigger_event(self.wwise_world, "Play_hud_hover")
+						end
 
-					if hotspot.on_release then
-						WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
+						if hotspot.on_release then
+							WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
 
-						content.current_selection = i
+							content.current_selection = i
 
-						content:callback()
+							content:callback()
 
-						content.active = false
-						list_style.active = false
-						self.disable_all_input = false
+							content.active = false
+							list_style.active = false
+							self.disable_all_input = false
 
-						break
+							break
+						end
 					end
 				end
 
@@ -1006,9 +1008,21 @@ OptionsView.build_settings_list = function (self, definition, scenegraph_id)
 		local widget = nil
 		local size_y = 0
 		local widget_type = element.widget_type
-		local required_dlc = element.required_dlc
+		local should_add_setting = true
 
-		if not required_dlc or (unlock_manager:dlc_exists(required_dlc) and unlock_manager:is_dlc_unlocked(required_dlc)) then
+		if element.required_dlc and not unlock_manager:is_dlc_unlocked(element.required_dlc) then
+			should_add_setting = false
+		elseif element.required_render_caps then
+			for render_cap_name, expected_value in pairs(element.required_render_caps) do
+				if Application.render_caps(render_cap_name) ~= expected_value then
+					should_add_setting = false
+
+					break
+				end
+			end
+		end
+
+		if should_add_setting then
 			if widget_type == "drop_down" then
 				widget = self:build_drop_down_widget(element, scenegraph_id_start, base_offset)
 			elseif widget_type == "option" then
@@ -1165,7 +1179,7 @@ OptionsView.build_stepper_widget = function (self, element, scenegraph_id, base_
 	local condition_cb = condition_cb_name and callback(self, condition_cb_name)
 	local setup_name = element.setup
 	local selected_option, options, text, default_value = self[setup_name](self)
-	local widget = definitions.create_stepper_widget(text, options, selected_option, element.tooltip_text, element.disabled_tooltip_text, scenegraph_id, base_offset)
+	local widget = definitions.create_stepper_widget(text, options, selected_option, element.tooltip_text, element.disabled_tooltip_text, scenegraph_id, base_offset, element.indent_level)
 	local content = widget.content
 	content.callback = callback_func
 	content.saved_value_cb = saved_value_cb
@@ -1207,7 +1221,7 @@ OptionsView.build_drop_down_widget = function (self, element, scenegraph_id, bas
 	local ignore_upper_case = element.ignore_upper_case
 	local setup_name = element.setup
 	local selected_option, options, text, default_value = self[setup_name](self)
-	local widget = definitions.create_drop_down_widget(text, options, selected_option, element.tooltip_text, element.disabled_tooltip_text, scenegraph_id, base_offset, ignore_upper_case)
+	local widget = definitions.create_drop_down_widget(text, options, selected_option, element.tooltip_text, element.disabled_tooltip_text, scenegraph_id, base_offset, element.indent_level, ignore_upper_case)
 	local content = widget.content
 	content.callback = callback_func
 	content.saved_value_cb = saved_value_cb
@@ -1688,6 +1702,14 @@ OptionsView.set_original_settings = function (self)
 	local include_saved_keybinds = true
 	self.original_keymaps = self:get_keymaps(include_saved_keybinds, "win32")
 	self.original_bot_spawn_priority = table.create_copy(self.original_bot_spawn_priority, self:_get_original_bot_spawn_priority())
+end
+
+OptionsView._get_current_user_setting = function (self, setting_name)
+	return assigned(self.changed_user_settings[setting_name], Application.user_setting(setting_name))
+end
+
+OptionsView._get_current_render_setting = function (self, setting_name)
+	return assigned(self.changed_render_settings[setting_name], Application.user_setting("render_settings", setting_name))
 end
 
 OptionsView.set_wwise_parameter = function (self, name, value)
@@ -4103,6 +4125,10 @@ OptionsView.cb_vsync = function (self, content)
 	self.changed_user_settings.vsync = options_values[current_selection]
 end
 
+OptionsView.cb_vsync_condition = function (self, content, style)
+	return
+end
+
 OptionsView.cb_hud_clamp_ui_scaling_setup = function (self)
 	local options = {
 		{
@@ -4799,6 +4825,10 @@ OptionsView.cb_lock_framerate = function (self, content)
 	self.changed_user_settings.max_fps = value
 end
 
+OptionsView.cb_lock_framerate_condition = function (self, content, style)
+	return
+end
+
 OptionsView.cb_max_stacking_frames_setup = function (self)
 	local options = {
 		{
@@ -4941,6 +4971,21 @@ OptionsView.cb_anti_aliasing = function (self, content, style, called_from_graph
 	end
 end
 
+OptionsView.cb_anti_aliasing_condition = function (self, content, style)
+	if self:_get_current_render_setting("fsr_enabled") then
+		if not content.disabled then
+			content.current_selection = 3
+			content.disabled = true
+
+			self:cb_anti_aliasing(content, style)
+		end
+
+		return
+	end
+
+	content.disabled = false
+end
+
 OptionsView.cb_gamma_setup = function (self)
 	local min = 1.5
 	local max = 5
@@ -5041,24 +5086,7 @@ OptionsView.cb_fsr_enabled = function (self, content, style, called_from_graphic
 end
 
 OptionsView.cb_fsr_enabled_condition = function (self, content, style)
-	local content_enabled = not content.disable
-	local taa_enabled_changed_value = self.changed_render_settings.taa_enabled
-	local taa_enabled_value = Application.user_setting("render_settings", "taa_enabled")
-	local fsr_allowed = nil
-
-	if taa_enabled_changed_value ~= nil then
-		fsr_allowed = taa_enabled_changed_value
-	else
-		fsr_allowed = taa_enabled_value
-	end
-
-	if not fsr_allowed and content_enabled and content.current_selection ~= content.default_value then
-		content.current_selection = content.default_value
-
-		self:cb_fsr_enabled(content, style)
-	end
-
-	content.disabled = not fsr_allowed
+	return
 end
 
 OptionsView.cb_fsr_quality_setup = function (self)
@@ -5103,18 +5131,7 @@ OptionsView.cb_fsr_quality = function (self, content, style, called_from_graphic
 end
 
 OptionsView.cb_fsr_quality_condition = function (self, content, style)
-	local content_enabled = not content.disable
-	local taa_enabled_changed_value = self.changed_render_settings.taa_enabled
-	local taa_enabled_value = Application.user_setting("render_settings", "taa_enabled")
-	local fsr_allowed = nil
-
-	if taa_enabled_changed_value ~= nil then
-		fsr_allowed = taa_enabled_changed_value
-	else
-		fsr_allowed = taa_enabled_value
-	end
-
-	content.disabled = not fsr_allowed
+	content.disabled = not self:_get_current_render_setting("fsr_enabled")
 end
 
 OptionsView.cb_sun_shadows_setup = function (self)
@@ -5875,6 +5892,10 @@ OptionsView.cb_sharpen = function (self, content, style, called_from_graphics_qu
 	if not called_from_graphics_quality then
 		self:force_set_widget_value("graphics_quality_settings", "custom")
 	end
+end
+
+OptionsView.cb_sharpen_condition = function (self, content, style)
+	return
 end
 
 OptionsView.cb_lens_quality_setup = function (self)

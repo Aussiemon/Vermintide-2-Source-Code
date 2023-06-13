@@ -9,6 +9,8 @@ CommonPopupHandler.init = function (self, context)
 	self._popups = {}
 	self._n_popups = 0
 	self._popup_ids = 0
+	local menu_active = context.ingame_ui.menu_active or context.ingame_ui.current_view or context.ingame_ui._transition_fade_data
+	self._menu_active = menu_active
 
 	Managers.state.event:register(self, "ui_show_popup", "ui_show_popup")
 end
@@ -37,6 +39,16 @@ CommonPopupHandler.update = function (self, dt, t)
 	local managers_state = Managers.state
 
 	if managers_state and managers_state.voting:vote_in_progress() and Managers.popup:has_popup() then
+		popup:hide()
+
+		return
+	end
+
+	local current_menu_active = self:_is_menu_active()
+
+	if self._menu_active ~= current_menu_active and popup:is_popup_showing() then
+		self._menu_active = current_menu_active
+
 		popup:hide()
 
 		return
@@ -100,4 +112,8 @@ CommonPopupHandler.new_popup = function (self, dlc_name, popup_settings)
 	local popup = popup_class:new(self._context, dlc_name, popup_settings)
 
 	self:queue_popup(popup)
+end
+
+CommonPopupHandler._is_menu_active = function (self)
+	return self._context.ingame_ui.menu_active or self._context.ingame_ui.current_view or self._context.ingame_ui._transition_fade_data
 end

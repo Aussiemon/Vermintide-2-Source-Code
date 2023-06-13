@@ -204,7 +204,7 @@ AISimpleExtension.extensions_ready = function (self, world, unit)
 	self:init_perception(breed, is_horde)
 
 	if self._health_extension then
-		self.broadphase_id = Broadphase.add(blackboard.group_blackboard.broadphase, unit, Unit.local_position(unit, 0), 1)
+		self.broadphase_id = Broadphase.add(blackboard.group_blackboard.broadphase, unit, Unit.local_position(unit, 0), 1, side.broadphase_category)
 	end
 
 	local optional_spawn_data = blackboard.optional_spawn_data

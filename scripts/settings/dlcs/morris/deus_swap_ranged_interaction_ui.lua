@@ -1,3 +1,5 @@
+require("scripts/settings/dlcs/morris/deus_swap_weapon_interaction_ui")
+
 DeusSwapRangedInteractionUI = class(DeusSwapRangedInteractionUI, DeusSwapWeaponInteractionUI)
 DeusSwapRangedInteractionUI.TYPE = "swap_ranged"
 

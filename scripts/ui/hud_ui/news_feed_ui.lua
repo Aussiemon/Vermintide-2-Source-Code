@@ -25,7 +25,6 @@ NewsFeedUI.init = function (self, parent, ingame_ui_context)
 	self.is_in_inn = ingame_ui_context.is_in_inn
 
 	self:_create_ui_elements()
-	rawset(_G, "news_feed_ui", self)
 end
 
 NewsFeedUI._create_ui_elements = function (self)
@@ -42,7 +41,7 @@ NewsFeedUI._create_ui_elements = function (self)
 	self._unused_news_widgets = unused_news_widgets
 	self._active_news = {}
 	self.conditions_params = {
-		rarities_to_ignore = table.enum("magic")
+		rarities_to_ignore = table.enum_safe("magic")
 	}
 	self.templates_on_cooldown = {}
 	self.feed_sync_delay = SYNC_WAIT_DURATION_TIME
@@ -437,7 +436,6 @@ end
 
 NewsFeedUI.destroy = function (self)
 	self:set_visible(false)
-	rawset(_G, "news_feed_ui", nil)
 end
 
 NewsFeedUI.set_visible = function (self, visible)

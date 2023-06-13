@@ -47,6 +47,7 @@ BTMeleeOverlapAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.move_state = "attacking"
 	blackboard.attack_aborted = false
 	blackboard.keep_target = true
+	blackboard.past_damage_in_attack = false
 	local attack = blackboard.attack
 	local freeze_intensity_decay_time = attack.freeze_intensity_decay_time or 15
 
@@ -255,6 +256,12 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, target_unit, bla
 		end
 	end
 
+	local lock_attack_time = attack.lock_attack_time
+
+	if lock_attack_time then
+		blackboard.attack_locked_in_t = t + lock_attack_time
+	end
+
 	return true
 end
 
@@ -308,6 +315,8 @@ BTMeleeOverlapAttackAction.leave = function (self, unit, blackboard, t, reason, 
 	blackboard.attack_finished = nil
 	blackboard.attack_aborted = nil
 	blackboard.locked_target_unit = nil
+	blackboard.past_damage_in_attack = nil
+	blackboard.attack_locked_in_t = nil
 
 	if blackboard.continous_overlap_data then
 		table.clear(blackboard.continous_overlap_data)
@@ -410,8 +419,12 @@ BTMeleeOverlapAttackAction._check_wall_collision = function (self, unit, blackbo
 end
 
 BTMeleeOverlapAttackAction.run = function (self, unit, blackboard, t, dt)
-	if blackboard.attack_aborted then
-		return "done"
+	if not ALIVE[blackboard.locked_target_unit] or blackboard.attack_aborted then
+		if blackboard.attack_locked_in_t and t <= blackboard.attack_locked_in_t then
+			return "running"
+		else
+			return "done"
+		end
 	end
 
 	if t <= blackboard.anim_locked then
@@ -507,7 +520,7 @@ BTMeleeOverlapAttackAction.run = function (self, unit, blackboard, t, dt)
 			self:weapon_sweep_overlap(unit, blackboard, action, attack, overlap_data, physics_world, t, dt)
 		end
 
-		if blackboard.attack_finished then
+		if (not blackboard.attack_locked_in_t or blackboard.attack_locked_in_t <= t) and blackboard.attack_finished then
 			blackboard.attack_finished = false
 
 			if self:_attack_finished(unit, blackboard, t, dt) then
@@ -516,7 +529,7 @@ BTMeleeOverlapAttackAction.run = function (self, unit, blackboard, t, dt)
 		end
 
 		return "running"
-	elseif self:_attack_finished(unit, blackboard, t, dt) then
+	elseif (not blackboard.attack_locked_in_t or blackboard.attack_locked_in_t <= t) and self:_attack_finished(unit, blackboard, t, dt) then
 		return "done"
 	end
 end
@@ -577,6 +590,7 @@ end
 BTMeleeOverlapAttackAction.hit_ai = function (self, unit, hit_unit, action, attack, blackboard, t)
 	local push_data = attack.push_ai
 	local immune_breeds = attack.immune_breeds
+	local damage_target_only = attack.damage_target_only
 	local hit_unit_blackboard = BLACKBOARDS[hit_unit]
 
 	if hit_unit_blackboard.is_illusion then
@@ -617,6 +631,7 @@ BTMeleeOverlapAttackAction.anim_cb_frenzy_damage = function (self, unit, blackbo
 end
 
 BTMeleeOverlapAttackAction.anim_cb_damage = function (self, unit, blackboard)
+	blackboard.past_damage_in_attack = true
 	local attack = blackboard.attack
 	local width = attack.width
 	local range = attack.range
@@ -798,7 +813,10 @@ BTMeleeOverlapAttackAction.overlap_checks = function (self, unit, blackboard, ph
 	local unit_rotation = Unit.local_rotation(unit, 0)
 	local forward_dir = Quaternion.forward(unit_rotation)
 	local hit_multiple_targets = attack.hit_multiple_targets
+	local damage_target_only = attack.damage_target_only
 	local num_hit_units = 0
+	local allow_friendly_fire = action.allow_friendly_fire
+	local side_manager = Managers.state.side
 
 	for i = 1, num_hit_actors do
 		local hit_actor = hit_actors[i]
@@ -808,26 +826,34 @@ BTMeleeOverlapAttackAction.overlap_checks = function (self, unit, blackboard, ph
 			local hit_unit_pos = POSITION_LOOKUP[hit_unit]
 
 			if hit_unit_pos then
-				local attack_dir = Vector3.normalize(hit_unit_pos - self_pos)
+				local valid_side = true
 
-				if not attack.ignore_targets_behind or Vector3.dot(attack_dir, forward_dir) > 0 then
-					if Managers.player:owner(hit_unit) then
-						self:hit_player(unit, blackboard, hit_unit, action, attack)
+				if not allow_friendly_fire then
+					valid_side = Managers.state.side:is_enemy(unit, hit_unit)
+				end
 
-						hit_units[hit_unit] = true
-						num_hit_units = num_hit_units + 1
+				if valid_side then
+					local attack_dir = Vector3.normalize(hit_unit_pos - self_pos)
 
-						if not hit_multiple_targets then
-							break
-						end
-					elseif Unit.has_data(hit_unit, "breed") then
-						self:hit_ai(unit, hit_unit, action, attack, blackboard, t)
+					if not attack.ignore_targets_behind or Vector3.dot(attack_dir, forward_dir) > 0 then
+						if Managers.player:owner(hit_unit) then
+							self:hit_player(unit, blackboard, hit_unit, action, attack)
 
-						hit_units[hit_unit] = true
-						num_hit_units = num_hit_units + 1
+							hit_units[hit_unit] = true
+							num_hit_units = num_hit_units + 1
 
-						if not hit_multiple_targets then
-							break
+							if not hit_multiple_targets then
+								break
+							end
+						elseif Unit.has_data(hit_unit, "breed") then
+							self:hit_ai(unit, hit_unit, action, attack, blackboard, t)
+
+							hit_units[hit_unit] = true
+							num_hit_units = num_hit_units + 1
+
+							if not hit_multiple_targets then
+								break
+							end
 						end
 					end
 				end

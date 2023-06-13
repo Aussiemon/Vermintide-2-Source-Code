@@ -591,7 +591,7 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	end
 
 	self.ingame_hud:update(dt, t)
-	self:_update_chat_ui(dt, t, input_service, end_of_level_ui)
+	self:_update_menu_blocking_information(dt, t, input_service, end_of_level_ui)
 	self:_render_debug_ui(dt, t)
 	self:_update_fade_transition()
 
@@ -654,7 +654,7 @@ IngameUI._handle_resolution_changes = function (self)
 	end
 end
 
-IngameUI._update_chat_ui = function (self, dt, t, input_service, end_of_level_ui)
+IngameUI._update_menu_blocking_information = function (self, dt, t, input_service, end_of_level_ui)
 	local in_view, menu_input_service, no_unblock = self:_menu_blocking_information(input_service, end_of_level_ui)
 
 	Managers.chat:update(dt, t, in_view, menu_input_service, no_unblock)

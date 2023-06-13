@@ -332,6 +332,7 @@ FreeFlightManager._update_global_free_flight = function (self, dt, data, input_s
 			self:_pause_game(true)
 		end
 	elseif input_service:get("step_frame") then
+		printf("step %d frame", self._frames_to_step)
 		self:_pause_game(false)
 
 		self._frames_until_pause = self._frames_to_step

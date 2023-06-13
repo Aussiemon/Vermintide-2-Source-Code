@@ -125,7 +125,7 @@ SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 
 		if not slot_data then
 			table.dump(self._equipment.slots, "self._equipment.slots", 1)
-			Application.error("Tried to wield default slot %s for %s that contained no weapon.", default_wielded_slot, career_extension:career_name())
+			ferror("Tried to wield default slot %s for %s that contained no weapon.", default_wielded_slot, career_extension:career_name())
 		end
 
 		self:_wield_slot(equipment, slot_data, unit_1p, unit_3p)
@@ -321,6 +321,7 @@ end
 
 SimpleInventoryExtension.destroy = function (self)
 	local pickup_system = Managers.state.entity:system("pickup_system")
+	local projectile_system = Managers.state.entity:system("projectile_system")
 	local player_network_id = self.player:network_id()
 
 	for slot_id, slot_data in pairs(self._equipment.slots) do
@@ -330,6 +331,10 @@ SimpleInventoryExtension.destroy = function (self)
 			if linked_pickup_type then
 				pickup_system:delete_limited_owned_pickup_type(player_network_id, linked_pickup_type)
 			end
+		end
+
+		if slot_data.destroy_indexed_projectiles and projectile_system then
+			projectile_system:delete_indexed_projectiles(self._unit)
 		end
 
 		GearUtils.destroy_slot(self._world, self._unit, slot_data, self._equipment, true)
@@ -671,8 +676,9 @@ SimpleInventoryExtension.add_equipment = function (self, slot_name, item_name, u
 	local unit_1p = self._first_person_unit
 	local unit_3p = self._unit
 	local is_bot = self.is_bot
+	local career_name = self._career_name
 	local override_item_template, override_item_units = self:_override_career_skill_item_template(item_data)
-	local slot_equipment_data = GearUtils.create_equipment(world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent, override_item_template, override_item_units)
+	local slot_equipment_data = GearUtils.create_equipment(world, slot_name, item_data, unit_1p, unit_3p, is_bot, unit_template, extra_extension_data, ammo_percent, override_item_template, override_item_units, career_name)
 	slot_equipment_data.master_item = item_data
 	equipment.slots[slot_name] = slot_equipment_data
 	self.recently_acquired_list[slot_name] = slot_equipment_data
@@ -943,6 +949,12 @@ SimpleInventoryExtension.destroy_slot = function (self, slot_name, allow_destroy
 		pickup_system:delete_limited_owned_pickup_type(self.player:network_id(), linked_pickup_type)
 	end
 
+	if slot_data.destroy_indexed_projectiles then
+		local projectile_system = Managers.state.entity:system("projectile_system")
+
+		projectile_system:delete_indexed_projectiles(self._unit)
+	end
+
 	local go_id = Managers.state.unit_storage:go_id(self._unit)
 	local slot_id = NetworkLookup.equipment_slots[slot_name]
 	local network_manager = Managers.state.network
@@ -1161,7 +1173,7 @@ SimpleInventoryExtension.create_equipment_in_slot = function (self, slot_id, bac
 		weapon_already_equiped = slot_data.item_data == item_data
 	end
 
-	local item_units = BackendUtils.get_item_units(item_data)
+	local item_units = BackendUtils.get_item_units(item_data, nil, nil, self._career_name)
 
 	if weapon_already_equiped then
 		return
@@ -1770,7 +1782,7 @@ SimpleInventoryExtension._wield_slot = function (self, equipment, slot_data, uni
 	local wield_anim = get_wield_anim(item_template.wield_anim, item_template.wield_anim_career, self._career_name)
 
 	if not script_data.disable_third_person_weapon_animation_events then
-		local wield_anim_3p = get_wield_anim(item_template.wield_anim, item_template.wield_anim_career_3p, self._career_name) or wield_anim
+		local wield_anim_3p = get_wield_anim(item_template.wield_anim_3p, item_template.wield_anim_career_3p, self._career_name) or wield_anim
 
 		Unit.animation_event(unit_3p, wield_anim_3p)
 	end
@@ -2062,6 +2074,47 @@ SimpleInventoryExtension.store_additional_item = function (self, slot_name, item
 	end
 
 	return false
+end
+
+SimpleInventoryExtension.remove_additional_item = function (self, slot_name, item_data, skip_resync)
+	local stored_items = self:get_additional_items(slot_name)
+	local item_id = self:get_additional_item_swap_id(stored_items, SwapFromStorageType.Same, item_data)
+
+	table.remove(stored_items, item_id)
+
+	if not skip_resync then
+		self:_resync_stored_items(slot_name)
+	end
+end
+
+SimpleInventoryExtension.has_droppable_item = function (self, slot_name, filter_func)
+	local has_droppable = false
+	local is_stored = false
+	local current_item = self:get_item_data(slot_name)
+
+	if current_item and not current_item.is_not_droppable and (not filter_func or filter_func(current_item)) then
+		has_droppable = true
+		is_stored = false
+
+		return has_droppable, is_stored, current_item
+	end
+
+	local items = self:get_additional_items(slot_name)
+
+	if items then
+		for i = 1, #items do
+			local item_data = items[i]
+
+			if not item_data.is_not_droppable and (not filter_func or filter_func(item_data)) then
+				has_droppable = true
+				is_stored = true
+
+				return has_droppable, is_stored, item_data
+			end
+		end
+	end
+
+	return has_droppable, is_stored, nil
 end
 
 SimpleInventoryExtension.get_additional_item_swap_id = function (self, stored_items, swap_type, current_item)

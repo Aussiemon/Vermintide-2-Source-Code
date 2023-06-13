@@ -72,10 +72,6 @@ PlayerCharacterStateJumping.on_enter = function (self, unit, input, dt, context,
 	first_person_extension:play_camera_effect_sequence("jump", t)
 	CharacterStateHelper.look(input_extension, player.viewport_name, first_person_extension, status_extension, self.inventory_extension)
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, self.health_extension)
-
-	local position = POSITION_LOOKUP[unit]
-
-	Managers.telemetry.events:player_jumped(player, position)
 	ScriptUnit.extension(unit, "whereabouts_system"):set_jumped()
 
 	local start_jump_height = position_lookup[unit].z

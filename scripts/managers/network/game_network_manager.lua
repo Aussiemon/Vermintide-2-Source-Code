@@ -62,7 +62,7 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 
 	self._event_delegate = event_delegate
 
-	event_delegate:register(self, "rpc_play_particle_effect_no_rotation", "rpc_play_particle_effect", "rpc_play_particle_effect_with_variable", "rpc_gm_event_end_conditions_met", "rpc_gm_event_round_started", "rpc_gm_event_initial_peers_spawned", "rpc_surface_mtr_fx", "rpc_surface_mtr_fx_lvl_unit", "rpc_skinned_surface_mtr_fx", "rpc_play_melee_hit_effects", "game_object_created", "game_session_disconnect", "game_object_destroyed", "rpc_enemy_is_alerted", "rpc_assist", "rpc_coop_feedback", "rpc_ladder_shake", "rpc_request_spawn_network_unit", "rpc_flow_event")
+	event_delegate:register(self, "rpc_play_particle_effect_no_rotation", "rpc_play_particle_effect", "rpc_play_particle_effect_with_variable", "rpc_play_particle_effect_spline", "rpc_gm_event_end_conditions_met", "rpc_gm_event_round_started", "rpc_gm_event_initial_peers_spawned", "rpc_surface_mtr_fx", "rpc_surface_mtr_fx_lvl_unit", "rpc_skinned_surface_mtr_fx", "rpc_play_melee_hit_effects", "game_object_created", "game_session_disconnect", "game_object_destroyed", "rpc_enemy_is_alerted", "rpc_assist", "rpc_coop_feedback", "rpc_ladder_shake", "rpc_request_spawn_network_unit", "rpc_flow_event")
 end
 
 GameNetworkManager.lobby = function (self)
@@ -679,7 +679,7 @@ GameNetworkManager.game_object_destroyed_player_unit = function (self, go_id, ow
 			local position = POSITION_LOOKUP[local_player.player_unit]
 			local target_position = POSITION_LOOKUP[target_unit]
 
-			Managers.telemetry.events:local_player_killed_player(local_player, position, target_position)
+			Managers.telemetry_events:local_player_killed_player(local_player, position, target_position)
 		end
 	end
 end
@@ -881,6 +881,20 @@ GameNetworkManager.rpc_play_particle_effect_with_variable = function (self, send
 	local beam_effect_id = World.create_particles(world, effect_name, position, rotation)
 
 	World.set_particles_variable(world, beam_effect_id, particle_variable, value)
+end
+
+GameNetworkManager.rpc_play_particle_effect_spline = function (self, sender, fx_name_id, variable_ids, spline_points)
+	if self.is_server then
+		self.network_transmit:send_rpc_clients("rpc_play_particle_effect_spline", fx_name_id, variable_ids, spline_points)
+	end
+
+	local fx_name = NetworkLookup.effects[fx_name_id]
+	local world = self._world
+	local fx_id = World.create_particles(world, fx_name, spline_points[1])
+
+	for i = 1, #spline_points do
+		World.set_particles_variable(world, fx_id, variable_ids[i], spline_points[i])
+	end
 end
 
 GameNetworkManager._pack_percentages_completed_arrays = function (self, percentages_completed)

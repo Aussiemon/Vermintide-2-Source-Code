@@ -21,6 +21,12 @@ DamageWaveHuskExtension.init = function (self, extension_init_context, unit, ext
 	self.fx_name_running = template.fx_name_running
 	self.fx_name_impact = template.fx_name_impact
 	self.fx_name_arrived = template.fx_name_arrived
+
+	if template.running_spawn_config then
+		self._running_spawn_configs = template.running_spawn_config
+		self._local_units = {}
+	end
+
 	local fx_name_init = template.fx_name_init
 
 	if fx_name_init then
@@ -52,9 +58,19 @@ DamageWaveHuskExtension.destroy = function (self)
 	local num_fx = #fx_list
 
 	for i = 1, num_fx do
-		local fx_id = fx_list[i]
+		local fx_id = fx_list[i].id
 
 		World.stop_spawning_particles(world, fx_id)
+	end
+
+	local local_units = self._local_units
+
+	if local_units then
+		for i = 1, #local_units do
+			World.destroy_unit(world, local_units[i])
+
+			local_units[i] = nil
+		end
 	end
 end
 
@@ -83,12 +99,35 @@ DamageWaveHuskExtension.update = function (self, unit, input, dt, context, t)
 	end
 end
 
-DamageWaveHuskExtension.add_damage_wave_fx = function (self, position)
-	local unit = self.unit
-	local rotation = Unit.local_rotation(unit, 0)
-	local fx_list = self.fx_list
-	local fx_id = World.create_particles(self.world, self.fx_name_filled, position, rotation)
-	fx_list[#fx_list + 1] = fx_id
+DamageWaveHuskExtension.add_damage_wave_fx = function (self, position, rotation, fx_idx, name_idx)
+	local name, config = nil
+
+	if fx_idx == 0 then
+		name = self.fx_name_filled
+	else
+		config = self._running_spawn_configs[fx_idx]
+		name = config.names[name_idx]
+	end
+
+	local unit_or_id = nil
+
+	if fx_idx == 0 or config.spawn_type == "effect" then
+		unit_or_id = World.create_particles(self.world, name, position, rotation)
+		local fx_list = self.fx_list
+		fx_list[#fx_list + 1] = {
+			id = unit_or_id,
+			position = Vector3Box(position),
+			rotation = QuaternionBox(rotation),
+			index = fx_idx
+		}
+	elseif config.spawn_type == "unit" then
+		unit_or_id = World.spawn_unit(self.world, name, position, rotation)
+		self._local_units[#self._local_units + 1] = unit_or_id
+	end
+
+	if fx_idx > 0 and config.on_spawn then
+		config.on_spawn(self, config, name, unit_or_id, self.world)
+	end
 end
 
 DamageWaveHuskExtension.set_running_wave = function (self, unit)

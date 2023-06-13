@@ -12,7 +12,6 @@ CharacterInspectUI.init = function (self, ingame_ui_context)
 	self._animations = {}
 
 	self:create_ui_elements()
-	rawset(_G, "character_inspect_ui", self)
 end
 
 local DO_RELOAD = true
@@ -38,7 +37,6 @@ CharacterInspectUI.create_ui_elements = function (self)
 end
 
 CharacterInspectUI.destroy = function (self)
-	rawset(_G, "character_inspect_ui", nil)
 	GarbageLeakDetector.register_object(self, "character_inspect_ui")
 end
 

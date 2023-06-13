@@ -114,7 +114,7 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 	self:_setup_grid_products(grid_content)
 	self:_start_transition_animation("on_enter")
 	self._parent:set_list_details_visibility(false)
-	Managers.telemetry.events:store_breadcrumbs_changed({
+	Managers.telemetry_events:store_breadcrumbs_changed({
 		{
 			content = {
 				page_name = "featured",

@@ -1010,7 +1010,7 @@ MatchmakingManager.cancel_matchmaking = function (self)
 			local time_taken = t - started_matchmaking_t
 			local using_strict_matchmaking = self.state_context.search_config.strict_matchmaking
 
-			Managers.telemetry.events:matchmaking_cancelled(player, time_taken, self.state_context.search_config)
+			Managers.telemetry_events:matchmaking_cancelled(player, time_taken, self.state_context.search_config)
 		end
 	end
 

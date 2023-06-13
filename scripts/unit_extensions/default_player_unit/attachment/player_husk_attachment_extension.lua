@@ -51,8 +51,14 @@ PlayerHuskAttachmentExtension.create_attachment = function (self, slot_name, ite
 		self:remove_attachment(slot_name)
 	end
 
-	local slot_data = AttachmentUtils.create_attachment(self._world, unit, attachments, slot_name, item_data, true)
 	local item_template = BackendUtils.get_item_template(item_data)
+	local parent_unit = unit
+
+	if item_template.link_to_skin then
+		parent_unit = self._tp_unit_mesh
+	end
+
+	local slot_data = AttachmentUtils.create_attachment(self._world, parent_unit, attachments, slot_name, item_data, true)
 	local show_attachments_event = item_template.show_attachments_event
 
 	if show_attachments_event then

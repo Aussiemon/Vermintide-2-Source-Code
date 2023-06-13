@@ -408,12 +408,14 @@ ChatManager.remove_ignore_peer_id = function (self, peer_id)
 end
 
 ChatManager.destroy = function (self)
-	self.chat_gui:destroy()
+	if not DEDICATED_SERVER then
+		self.chat_gui:destroy()
 
-	self.chat_gui = nil
-	local top_world = Managers.world:world("top_ingame_view")
+		self.chat_gui = nil
+		local top_world = Managers.world:world("top_ingame_view")
 
-	UIRenderer.destroy(self._ui_top_renderer, top_world)
+		UIRenderer.destroy(self._ui_top_renderer, top_world)
+	end
 
 	self.channels = nil
 	self.message_targets = {}
@@ -559,7 +561,7 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 		end
 
 		if not localize then
-			Managers.telemetry.events:chat_message(message)
+			Managers.telemetry_events:chat_message(message)
 		end
 	elseif message_type == Irc.CHANNEL_MSG or message_type == Irc.PRIVATE_MSG then
 		Managers.irc:send_message(message, message_target)

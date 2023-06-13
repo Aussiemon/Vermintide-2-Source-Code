@@ -1,53 +1,54 @@
 local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
-	boss_staggers = false,
 	walk_speed = 5,
-	ai_strength = 10,
-	run_speed = 5,
-	awards_positive_reinforcement_message = true,
-	race = "skaven",
-	animation_sync_rpc = "rpc_sync_anim_state_8",
-	ai_toughness = 10,
-	unit_template = "ai_unit_grey_seer",
-	exchange_order = 1,
-	default_spawn_animation = "to_stormfiend_rasknitt_boss",
-	stagger_count_reset_time = 5,
-	lord_damage_reduction = true,
-	has_inventory = false,
-	armor_category = 1,
+	boss = true,
+	minion_detection_radius = 20,
+	threat_value = 8,
+	headshot_coop_stamina_fatigue_type = "headshot_special",
 	poison_resistance = 100,
-	target_selection = "pick_rat_ogre_target_with_weights",
-	hit_reaction = "ai_default",
+	has_inventory = false,
 	armored_on_no_damage = true,
 	bot_hitbox_radius_approximation = 0.8,
+	lord_damage_reduction = true,
+	stagger_count_reset_time = 5,
+	ai_toughness = 10,
+	animation_sync_rpc = "rpc_sync_anim_state_8",
+	race = "skaven",
+	ai_strength = 10,
+	behavior = "grey_seer",
+	bone_lod_level = 0,
 	dialogue_source_name = "skaven_grey_seer",
-	headshot_coop_stamina_fatigue_type = "headshot_special",
-	smart_targeting_outer_width = 1.4,
-	minion_detection_radius = 20,
-	hit_effect_template = "HitEffectsSkavenGreySeer",
-	smart_targeting_height_multiplier = 1.5,
+	boss_staggers = false,
 	radius = 1,
 	server_controlled_health_bar = true,
-	boss = true,
 	small_boss_staggers = true,
-	smart_object_template = "stormfiend",
 	use_avoidance = false,
 	proximity_system_check = true,
 	death_reaction = "ai_default",
-	perception = "perception_rat_ogre",
-	player_locomotion_constrain_radius = 0.7,
-	override_mover_move_distance = 0.7,
-	teleport_sound_event = "Play_emitter_grey_seer_lightning_bolt_hit",
-	behavior = "grey_seer",
-	combat_music_state = "champion_skaven_grey_seer",
-	far_off_despawn_immunity = true,
+	armor_category = 1,
 	smart_targeting_width = 0.6,
 	perception_continuous = "perception_continuous_rat_ogre",
 	initial_is_passive = false,
-	base_unit = "units/beings/enemies/skaven_grey_seer/chr_skaven_grey_seer",
-	bone_lod_level = 0,
-	threat_value = 8,
 	boost_curve_multiplier_override = 2,
+	target_selection = "pick_rat_ogre_target_with_weights",
+	run_speed = 5,
+	awards_positive_reinforcement_message = true,
+	exchange_order = 1,
+	default_spawn_animation = "to_stormfiend_rasknitt_boss",
+	combat_music_state = "champion_skaven_grey_seer",
+	hit_reaction = "ai_default",
+	smart_targeting_outer_width = 1.4,
+	hit_effect_template = "HitEffectsSkavenGreySeer",
+	smart_targeting_height_multiplier = 1.5,
+	unit_template = "ai_unit_grey_seer",
+	smart_object_template = "stormfiend",
+	perception = "perception_rat_ogre",
+	player_locomotion_constrain_radius = 0.7,
+	teleport_sound_event = "Play_emitter_grey_seer_lightning_bolt_hit",
+	far_off_despawn_immunity = true,
+	override_mover_move_distance = 0.7,
+	base_unit = "units/beings/enemies/skaven_grey_seer/chr_skaven_grey_seer",
+	aoe_height = 1.5,
 	detection_radius = math.huge,
 	perception_weights = {
 		target_catapulted_mul = 0.1,
@@ -393,103 +394,16 @@ local action_data = {
 		}
 	},
 	cast_missile = {
-		radius = 4,
+		create_nav_tag_volume = true,
 		volleys = 3,
 		damage_type = "poison",
+		nav_tag_volume_layer = "bot_poison_wind",
 		volley_delay = 0.5,
 		action_weight = 2,
-		initial_radius = 2.4,
-		create_nav_tag_volume = true,
-		nav_tag_volume_layer = "bot_poison_wind",
 		cast_anim = "attack_shoot_missile",
-		face_target_while_casting = true,
 		duration = 8,
-		aoe_dot_damage_interval = 1,
-		considerations = UtilityConsiderations.grey_seer_missile,
-		aoe_init_damage = {
-			{
-				0,
-				1,
-				0
-			},
-			{
-				0,
-				1,
-				0
-			},
-			{
-				3,
-				1,
-				0
-			},
-			{
-				5,
-				1,
-				0
-			},
-			{
-				7,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			}
-		},
-		aoe_dot_damage = {
-			{
-				1,
-				0,
-				0
-			},
-			{
-				2,
-				0,
-				0
-			},
-			{
-				4,
-				0,
-				0
-			},
-			{
-				6,
-				0,
-				0
-			},
-			{
-				10,
-				0,
-				0
-			},
-			{
-				15,
-				0,
-				0
-			},
-			{
-				15,
-				0,
-				0
-			},
-			{
-				15,
-				0,
-				0
-			}
-		}
+		face_target_while_casting = true,
+		considerations = UtilityConsiderations.grey_seer_missile
 	},
 	spawn_plague_wave = {
 		spawn_func_name = "spawn_plague_wave",

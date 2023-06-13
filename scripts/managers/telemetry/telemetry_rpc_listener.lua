@@ -17,5 +17,5 @@ end
 
 TelemetryRPCListener.rpc_to_client_sync_session_id = function (self, channel_id, session_id)
 	print("[TelemetryRPCListener] Receiving session id from server", session_id)
-	self._events:session_id(session_id)
+	self._events:server_session_id(session_id)
 end

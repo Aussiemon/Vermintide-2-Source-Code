@@ -25,7 +25,7 @@ GameServerInternal.init_server = function (network_options, server_name)
 	local server = Network.init_steam_server(config_file_name, settings, use_eac)
 
 	GameSettingsDevelopment.set_ignored_rpc_logs()
-	cprint(string.format("Appid: %s", SteamGameServer.app_id()))
+	cprintf("Appid: %s", SteamGameServer.app_id())
 
 	return server
 end

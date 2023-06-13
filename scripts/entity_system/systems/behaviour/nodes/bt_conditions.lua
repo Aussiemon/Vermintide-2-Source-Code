@@ -744,3 +744,7 @@ end
 BTConditions.has_no_idle_spot = function (blackboard)
 	return not blackboard.has_idle_spot
 end
+
+BTConditions.is_transported = function (blackboard)
+	return blackboard.is_transported
+end

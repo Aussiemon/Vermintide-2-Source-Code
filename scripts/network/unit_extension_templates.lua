@@ -407,7 +407,8 @@ local unit_templates = {
 			"DialogueActorExtension",
 			"AIVolumeExtension",
 			"AIUnitFadeExtension",
-			"AISimpleExtension"
+			"AISimpleExtension",
+			"UnitFlowOverrideExtension"
 		},
 		husk_extensions = {
 			"AiHuskLocomotionExtension",
@@ -420,7 +421,8 @@ local unit_templates = {
 			"EnemyOutlineExtension",
 			"DialogueActorExtension",
 			"AIUnitFadeExtension",
-			"AiHuskBaseExtension"
+			"AiHuskBaseExtension",
+			"UnitFlowOverrideExtension"
 		},
 		remove_when_killed = {
 			self_owned_extensions = {
@@ -959,6 +961,24 @@ local unit_templates = {
 			"EnemyOutlineExtension",
 			"AIUnitFadeExtension",
 			"AiHuskBaseExtension"
+		},
+		remove_when_killed = {
+			self_owned_extensions = {
+				"AINavigationExtension",
+				"AIProximityExtension",
+				"BuffExtension",
+				"AIGroupMember",
+				"DialogueActorExtension",
+				"AIVolumeExtension",
+				"AISimpleExtension"
+			},
+			husk_extensions = {
+				"AiHuskLocomotionExtension",
+				"AIProximityExtension",
+				"BuffExtension",
+				"DialogueActorExtension",
+				"AiHuskBaseExtension"
+			}
 		}
 	},
 	ai_unit_rat_ogre = {

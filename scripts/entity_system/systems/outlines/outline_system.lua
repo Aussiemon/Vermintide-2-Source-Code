@@ -664,27 +664,3 @@ OutlineSystem.conditional_within_distance = function (self, unit, extension)
 
 	return false
 end
-
-OutlineSystem.in_ghost_mode = function (self, unit, extension)
-	local ghost_mode_extension = ScriptUnit.has_extension(unit, "ghost_mode_system")
-
-	return ghost_mode_extension and ghost_mode_extension:is_in_ghost_mode()
-end
-
-OutlineSystem.has_gutter_runner_invisible_buff = function (self, unit, extension)
-	local buff_system = ScriptUnit.extension(unit, "buff_system")
-
-	return buff_system and buff_system:has_buff_type("gutter_runner_foff_invis")
-end
-
-OutlineSystem.show_versus_dark_pact_outline = function (self, unit, extension)
-	if not self:within_distance_and_not_in_dark(unit, extension) then
-		return false
-	end
-
-	if self:in_ghost_mode(unit, extension) then
-		return false
-	end
-
-	return not self:has_gutter_runner_invisible_buff(unit, extension)
-end

@@ -4,6 +4,8 @@ local math_cos = math.cos
 local math_sin = math.sin
 local math_random = math.random
 local math_max = math.max
+local math_abs = math.abs
+local math_acos = math.acos
 local pi = math.pi
 math.half_pi = pi * 0.5
 math.inverse_sqrt_2 = 1 / math_sqrt(2)
@@ -112,6 +114,12 @@ Math.random_range = function (min, max)
 	return min + math_random() * (max - min)
 end
 
+math.next_random_range = function (seed, min, max)
+	local next_seed, value = Math.next_random(seed)
+
+	return next_seed, min + value * (max - min)
+end
+
 math.point_is_inside_2d_box = function (pos, lower_left_corner, size)
 	return lower_left_corner[1] < pos[1] and pos[1] < lower_left_corner[1] + size[1] and lower_left_corner[2] < pos[2] and pos[2] < lower_left_corner[2] + size[2]
 end
@@ -121,7 +129,14 @@ math.box_overlap_box = function (a_pos, a_size, b_pos, b_size)
 end
 
 math.point_is_inside_aabb = function (pos, aabb_pos, aabb_half_extents)
-	return pos.x >= aabb_pos.x - aabb_half_extents.x and pos.x <= aabb_pos.x + aabb_half_extents.x and pos.y >= aabb_pos.y - aabb_half_extents.y and pos.y <= aabb_pos.y + aabb_half_extents.y and pos.z >= aabb_pos.z - aabb_half_extents.z and pos.z <= aabb_pos.z + aabb_half_extents.z
+	return pos[1] >= aabb_pos[1] - aabb_half_extents[1] and pos[1] <= aabb_pos[1] + aabb_half_extents[1] and pos[2] >= aabb_pos[2] - aabb_half_extents[2] and pos[2] <= aabb_pos[2] + aabb_half_extents[2] and pos[3] >= aabb_pos[3] - aabb_half_extents[3] and pos[3] <= aabb_pos[3] + aabb_half_extents[3]
+end
+
+math.point_is_inside_box = function (pos, box_pose, box_half_extents)
+	local to_local_matrix = Matrix4x4.inverse(box_pose)
+	local local_pos = Matrix4x4.transform(to_local_matrix, pos)
+
+	return math.point_is_inside_aabb(local_pos, Vector3.zero(), box_half_extents)
 end
 
 math.point_is_inside_oobb = function (pos, oobb_pose, oobb_radius)
@@ -303,6 +318,48 @@ Geometry.convex_hull = function (points, hull)
 	num = num - 1
 
 	return hull, num
+end
+
+Geometry.convex_hull_tracking = function (points, hull, hull_indexes)
+	local num_points = #points
+
+	if num_points == 0 then
+		return hull, 0
+	end
+
+	table.sort(points, left_to_right)
+
+	local num = 0
+
+	for i = 1, num_points do
+		local pt = points[i]
+
+		while num >= 2 and not ccw(hull[num - 1], hull[num], pt) do
+			num = num - 1
+		end
+
+		num = num + 1
+		hull[num] = pt
+		hull_indexes[num] = i
+	end
+
+	local t = num + 1
+
+	for i = num_points, 1, -1 do
+		local pt = points[i]
+
+		while t <= num and not ccw(hull[num - 1], hull[num], pt) do
+			num = num - 1
+		end
+
+		num = num + 1
+		hull[num] = pt
+		hull_indexes[num] = i
+	end
+
+	num = num - 1
+
+	return hull, num, hull_indexes
 end
 
 Geometry.concave_hull = function (points, hull)
@@ -680,6 +737,19 @@ math.get_uniformly_random_point_inside_sector_seeded = function (seed, radius1, 
 	return seed, dx, dy
 end
 
+math.get_random_point_inside_box_seeded = function (seed, box_pose, bounds)
+	local rnd_x, rnd_y, rnd_z, x, y, z = nil
+	seed, rnd_x = Math.next_random(seed)
+	seed, rnd_y = Math.next_random(seed)
+	seed, rnd_z = Math.next_random(seed)
+	x = math.lerp(-bounds[1], bounds[1], rnd_x)
+	y = math.lerp(-bounds[2], bounds[2], rnd_y)
+	z = math.lerp(-bounds[3], bounds[3], rnd_z)
+	local local_pos = Matrix4x4.transform(box_pose, Vector3(x, y, z))
+
+	return seed, local_pos
+end
+
 math.random_seed = function ()
 	return Math.random(2147483647)
 end
@@ -700,6 +770,29 @@ math.index_wrapper = function (index, max_index)
 	return (index - 1) % max_index + 1
 end
 
+math.wrap_index_between = function (index, from, to)
+	if to < from then
+		to = from
+		from = to
+	end
+
+	local d_max = to - from
+	local d_idx = index - from
+
+	return from + d_idx % (d_max + 1)
+end
+
 math.value_inside_range = function (value, min, max)
 	return min <= value and value <= max
+end
+
+math.quat_angle = function (from, to)
+	local dot = math_abs(Quaternion.dot(from, to))
+	local target_angle = 0
+
+	if dot < 1 then
+		target_angle = 2 * math_acos(dot)
+	end
+
+	return target_angle
 end

@@ -889,6 +889,7 @@ local action_data = {
 	charge = {
 		damage_type = "cutting",
 		damage = 20,
+		allow_friendly_fire = true,
 		fatigue_type = "blocked_slam",
 		action_weight = 3,
 		ignore_ai_damage = true,

@@ -147,8 +147,9 @@ ActionTrueFlightBow.fire = function (self, current_action)
 
 		local target_unit = self.targets and (current_action.single_target and self.targets[1] or self.targets[i])
 		local lookup_data = current_action.lookup_data
+		local scale = 1
 
-		ActionUtils.spawn_true_flight_projectile(owner_unit, target_unit, self.true_flight_template_id, position, fire_rotation, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, nil, self._is_critical_strike, self.power_level)
+		ActionUtils.spawn_true_flight_projectile(owner_unit, target_unit, self.true_flight_template_id, position, fire_rotation, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, scale, self._is_critical_strike, self.power_level)
 
 		if self.ammo_extension and not is_extra_shot then
 			local ammo_usage = self.current_action.ammo_usage

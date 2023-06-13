@@ -155,10 +155,7 @@ end
 PassiveAbilityQuestingKnight._create_quests = function (self)
 	local challenge_manager = Managers.venture.challenge
 	local player_unique_id = self._player_unique_id
-	local player = Managers.player:local_player()
-	local peer_id = player:network_id()
-	local local_player_id = player:local_player_id()
-	local status = Managers.party:get_player_status(peer_id, local_player_id)
+	local status = Managers.party:get_status_from_unique_id(player_unique_id)
 	local health_state = status.game_mode_data.health_state
 	local respawning = health_state == "respawning"
 

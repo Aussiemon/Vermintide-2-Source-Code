@@ -3,7 +3,7 @@ local function player_stuck_cb()
 	local player = Managers.player:local_player()
 
 	if player and Unit.alive(player.player_unit) then
-		Managers.telemetry.events:player_stuck(player, level_key)
+		Managers.telemetry_events:player_stuck(player, level_key)
 	end
 end
 

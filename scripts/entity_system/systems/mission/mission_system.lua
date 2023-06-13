@@ -170,7 +170,7 @@ MissionSystem.start_mission = function (self, mission_name, unit, sync_data)
 	template.update_text(data)
 
 	if not mission_data.hidden and not data.mission_data.is_side_mission then
-		Managers.state.event:trigger("ui_event_add_mission_objective", mission_name, data.center_text or data.text)
+		Managers.state.event:trigger("ui_event_add_mission_objective", mission_name, data.center_text or data.text, data.duration_text)
 	end
 
 	self.active_missions[mission_name] = data
@@ -263,7 +263,7 @@ MissionSystem.update_mission = function (self, mission_name, positive, dt, sync)
 	template.update_text(data)
 
 	if not data.mission_data.hidden then
-		Managers.state.event:trigger("ui_event_update_mission", mission_name, data.center_text or data.text)
+		Managers.state.event:trigger("ui_event_update_mission", mission_name, data.center_text or data.text, data.duration_text)
 	end
 
 	if sync and self.is_server then

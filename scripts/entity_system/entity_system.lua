@@ -81,6 +81,7 @@ require("scripts/entity_system/systems/weaves/weave_item_spawner_system")
 require("scripts/entity_system/systems/weaves/weave_loadout_system")
 require("scripts/entity_system/systems/career/career_system")
 require("scripts/entity_system/systems/disrupt_ritual/disrupt_ritual_system")
+require("scripts/entity_system/systems/unit_flow_override_system/unit_flow_override_system")
 DLCUtils.require_list("systems")
 require("scripts/unit_extensions/human/ai_player_unit/ai_anim_utils")
 require("scripts/unit_extensions/human/ai_player_unit/ai_husk_base_extension")
@@ -276,6 +277,12 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 		self:_add_system("versus_objective_system", VersusObjectiveSystem, entity_system_creation_context)
 	end
 
+	if DEDICATED_SERVER then
+		self.entity_manager:add_ignore_extensions({
+			"UnitFlowOverrideExtension"
+		})
+	end
+
 	self:_add_system("buff_system", BuffSystem, entity_system_creation_context)
 	self:_add_system("buff_area_system", ExtensionSystemBase, entity_system_creation_context, {
 		"BuffAreaExtension"
@@ -411,6 +418,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("boon_system", ExtensionSystemBase, entity_system_creation_context, {
 		"BoonExtension"
 	})
+	self:_add_system("unit_flow_override_system", UnitFlowOverrideSystem, entity_system_creation_context, nil, nil, nil, nil, dont_run_on_dedicated_server)
 
 	for _, dlc in pairs(DLCSettings) do
 		local entity_system_params = dlc.entity_system_params or {}

@@ -26,6 +26,7 @@ ActionTrueFlightBowAim.init = function (self, world, item_name, is_server, owner
 
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 	self.first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+	self._weapon_extension = ScriptUnit.extension(self.weapon_unit, "weapon_system")
 end
 
 ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t, chain_action_data)
@@ -45,6 +46,8 @@ ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t
 
 	self.time_to_shoot = t
 	local owner_unit = self.owner_unit
+	self.side = Managers.state.side.side_by_unit[owner_unit]
+	self.target_broadphase_categories = self.side and self.side.enemy_broadphase_categories
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self.charge_time = buff_extension:apply_buffs_to_value(new_action.charge_time or 0, "reduced_ranged_charge_time")
 	self.overcharge_timer = 0
@@ -163,6 +166,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 		self:_mark_target(nil)
 
 		self.target = nil
+		self.aimed_target = nil
 		current_target = nil
 	end
 
@@ -182,8 +186,11 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 			results, num_results = PhysicsWorld.immediate_raycast_actors(physics_world, player_position, direction, "dynamic_collision_filter", "filter_ray_true_flight_ai_only", "dynamic_collision_filter", "filter_ray_true_flight_hitbox_only")
 		end
 
+		local side_manager = Managers.state.side
+		local side_by_unit = side_manager.side_by_unit
 		local hit_unit = nil
 		local higest_priority = -1
+		local side = self.side
 
 		if num_results > 0 then
 			local prio_breeds = self.prioritized_breeds or EMPTY_TABLE
@@ -197,19 +204,25 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 					local unit = actor_unit(hit_actor)
 
 					if AiUtils.unit_alive(unit) then
-						local node = actor_node(hit_actor)
-						local breed = AiUtils.unit_breed(unit)
-						local hit_zone = breed and breed.hit_zones_lookup[node]
+						local hit_unit_side = side_by_unit[unit]
 
-						if hit_zone and hit_zone.name ~= "afro" and not breed.no_autoaim and (not ignore_bosses or not breed.boss) then
-							local priority = prio_breeds[breed.name] or -1
+						if not hit_unit_side or side_manager:is_enemy_by_side(side, hit_unit_side) then
+							local node = actor_node(hit_actor)
+							local breed = AiUtils.unit_breed(unit)
+							local hit_zone = breed and breed.hit_zones_lookup[node]
 
-							if priority > 0 and higest_priority < priority then
-								hit_unit = unit
-								higest_priority = priority
-							else
-								hit_unit = hit_unit or unit
+							if hit_zone and hit_zone.name ~= "afro" and not breed.no_autoaim and (not ignore_bosses or not breed.boss) then
+								local priority = prio_breeds[breed.name] or -1
+
+								if priority > 0 and higest_priority < priority then
+									hit_unit = unit
+									higest_priority = priority
+								elseif not hit_unit then
+									hit_unit = unit
+								end
 							end
+						elseif hit_unit_side and side ~= hit_unit_side and higest_priority < 0 and Unit.get_data(unit, "is_dummy") then
+							hit_unit = unit
 						end
 					end
 				end
@@ -220,7 +233,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 			local old_target_distance_sq = vector3_distance_squared(POSITION_LOOKUP[current_target], player_position)
 			local new_target_distance_sq = hit_unit and vector3_distance_squared(POSITION_LOOKUP[hit_unit], player_position) or math.huge
 
-			if old_target_distance_sq < new_target_distance_sq or self._priority_target and not priority_target then
+			if old_target_distance_sq < new_target_distance_sq then
 				local target_node = unit_has_node(current_target, "j_spine1") and unit_node(current_target, "j_spine1") or 0
 				local position = unit_world_position(current_target, target_node)
 				local to_old_target = position - player_position
@@ -238,19 +251,36 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 			end
 		end
 
-		if hit_unit and self.aimed_target ~= hit_unit then
-			self.aimed_target = hit_unit
-			self.aim_timer = 0
+		if hit_unit then
+			if self.aimed_target ~= hit_unit then
+				self.aimed_target = hit_unit
+				self.aim_timer = 0
 
-			if ALIVE[hit_unit] and current_target ~= hit_unit then
-				current_target = hit_unit
-				self.target = hit_unit
+				if ALIVE[hit_unit] and current_target ~= hit_unit then
+					current_target = hit_unit
+					self.target = hit_unit
 
-				self:_mark_target(hit_unit)
+					self:_mark_target(hit_unit)
 
-				self.aim_sticky_timer = 0
-				self._is_sticky_target = higest_priority > 0
-				self._current_target_priority = higest_priority
+					self.aim_sticky_timer = 0
+					self._is_sticky_target = higest_priority > 0
+					self._current_target_priority = higest_priority
+				end
+			end
+		elseif current_action.target_break_size and current_target then
+			local target_node = unit_has_node(current_target, "j_spine1") and unit_node(current_target, "j_spine1") or 0
+			local position = unit_world_position(current_target, target_node)
+			local dir_to_target, dist_to_target = Vector3.direction_length(position - player_position)
+			local radius = current_action.target_break_size
+			local target_break_threshold = math.cos(math.atan2(radius, dist_to_target))
+			local aim_dir = vector3_dot(direction, dir_to_target)
+
+			if aim_dir < target_break_threshold then
+				self:_mark_target(nil)
+
+				self.target = nil
+				self.aimed_target = nil
+				current_target = nil
 			end
 		end
 	end
@@ -308,6 +338,12 @@ ActionTrueFlightBowAim._get_visible_targets = function (self, aimed_target, num_
 		end
 	else
 		targets = self.targets
+
+		for i = #targets, 1, -1 do
+			if not ALIVE[targets[i]] then
+				table.remove(targets, i)
+			end
+		end
 	end
 
 	TrueFlightUtility.sort_prioritize_specials(targets)
@@ -367,6 +403,14 @@ end
 ActionTrueFlightBowAim._mark_target = function (self, unit)
 	if self.is_bot then
 		return
+	end
+
+	if self.current_action.weapon_mode_target_swap then
+		if unit then
+			self._weapon_extension:set_mode(true)
+		else
+			self._weapon_extension:set_mode(false)
+		end
 	end
 
 	local old_marked_target = self._marked_target

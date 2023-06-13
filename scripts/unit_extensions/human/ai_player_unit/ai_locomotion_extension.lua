@@ -48,7 +48,7 @@ AILocomotionExtension.init = function (self, extension_init_context, unit, exten
 		self._collision_state = MoverHelper.create_collision_state(unit, collision_actor_name)
 	end
 
-	MoverHelper.set_active_mover(unit, self._mover_state, "mover")
+	MoverHelper.set_active_mover(unit, self._mover_state, self.breed.default_mover or "mover")
 	self:set_movement_type("snap_to_navmesh")
 end
 
@@ -123,25 +123,42 @@ end
 local ANIMATION_DRIVEN_SCRIPT_DRIVEN_ROTATION_FUNCTION_NAME = "update_animation_driven_movement_script_driven_rotation"
 local ANIMATION_DRIVEN_FUNCTION_NAME = "update_animation_driven"
 local SCRIPT_DRIVEN_FUNCTION_NAME = "update_script_driven"
+local LINKED_TRANSPORT_FUNCTION_NAME = "update_linked_transport"
 
-AILocomotionExtension.set_animation_driven = function (self, is_animation_driven, is_affected_by_gravity, script_driven_rotation)
+AILocomotionExtension.set_animation_driven = function (self, is_animation_driven, is_affected_by_gravity, script_driven_rotation, is_on_transport)
 	is_affected_by_gravity = is_affected_by_gravity or false
 	local unit = self._unit
-	local old_func_name = self._update_function_name
-	local was_affected_by_gravity = self._affected_by_gravity
-	local was_animation_driven = old_func_name == ANIMATION_DRIVEN_FUNCTION_NAME
-	local was_animation_driven_script_rot = old_func_name == ANIMATION_DRIVEN_SCRIPT_DRIVEN_ROTATION_FUNCTION_NAME
-	local was_script_driven = old_func_name == SCRIPT_DRIVEN_FUNCTION_NAME
 
 	self:set_affected_by_gravity(is_affected_by_gravity)
 
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
 	local game_object_id = network_manager:game() and network_manager:unit_game_object_id(unit)
+
+	if not game_object_id then
+		return
+	end
+
+	local old_func_name = self._update_function_name
+	local was_affected_by_gravity = self._affected_by_gravity
+	local was_animation_driven = old_func_name == ANIMATION_DRIVEN_FUNCTION_NAME
+	local was_animation_driven_script_rot = old_func_name == ANIMATION_DRIVEN_SCRIPT_DRIVEN_ROTATION_FUNCTION_NAME
+	local was_script_driven = old_func_name == SCRIPT_DRIVEN_FUNCTION_NAME
+	local was_on_transport = old_func_name == LINKED_TRANSPORT_FUNCTION_NAME
 	local changed = false
 	local system_data = self._system_data
 
-	if is_animation_driven and script_driven_rotation and not was_animation_driven_script_rot then
+	if is_on_transport then
+		if not was_on_transport then
+			self._update_function_name = LINKED_TRANSPORT_FUNCTION_NAME
+			system_data.animation_update_units[unit] = nil
+			system_data.animation_and_script_update_units[unit] = nil
+
+			network_transmit:send_rpc_clients("rpc_set_linked_transport_driven", game_object_id, is_affected_by_gravity)
+		end
+
+		changed = true
+	elseif is_animation_driven and script_driven_rotation and not was_animation_driven_script_rot then
 		self._update_function_name = ANIMATION_DRIVEN_SCRIPT_DRIVEN_ROTATION_FUNCTION_NAME
 		system_data.animation_update_units[unit] = nil
 		system_data.animation_and_script_update_units[unit] = self

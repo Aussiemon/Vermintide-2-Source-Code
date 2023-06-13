@@ -6,6 +6,34 @@ menu_cinematics_atlas = {
 		},
 		uv00 = {
 			0.583984,
+			0.443359
+		},
+		uv11 = {
+			0.776367,
+			0.660156
+		}
+	},
+	bless_thumbnail = {
+		size = {
+			394,
+			222
+		},
+		uv00 = {
+			0.77832,
+			0.222656
+		},
+		uv11 = {
+			0.970703,
+			0.439453
+		}
+	},
+	bogenhafen_thumbnail = {
+		size = {
+			394,
+			222
+		},
+		uv00 = {
+			0.583984,
 			0.222656
 		},
 		uv11 = {
@@ -13,7 +41,7 @@ menu_cinematics_atlas = {
 			0.439453
 		}
 	},
-	bless_thumbnail = {
+	celebrate_thumbnail = {
 		size = {
 			394,
 			222
@@ -27,7 +55,7 @@ menu_cinematics_atlas = {
 			0.21875
 		}
 	},
-	bogenhafen_thumbnail = {
+	cog_thumbnail = {
 		size = {
 			394,
 			222
@@ -41,7 +69,7 @@ menu_cinematics_atlas = {
 			0.21875
 		}
 	},
-	celebrate_thumbnail = {
+	holly_thumbnail = {
 		size = {
 			394,
 			222
@@ -53,34 +81,6 @@ menu_cinematics_atlas = {
 		uv11 = {
 			0.582031,
 			0.880859
-		}
-	},
-	cog_thumbnail = {
-		size = {
-			394,
-			222
-		},
-		uv00 = {
-			0.389648,
-			0.443359
-		},
-		uv11 = {
-			0.582031,
-			0.660156
-		}
-	},
-	holly_thumbnail = {
-		size = {
-			394,
-			222
-		},
-		uv00 = {
-			0.389648,
-			0.222656
-		},
-		uv11 = {
-			0.582031,
-			0.439453
 		}
 	},
 	honduras_thumbnail = {
@@ -90,6 +90,34 @@ menu_cinematics_atlas = {
 		},
 		uv00 = {
 			0.389648,
+			0.443359
+		},
+		uv11 = {
+			0.582031,
+			0.660156
+		}
+	},
+	karak_thumbnail = {
+		size = {
+			394,
+			222
+		},
+		uv00 = {
+			0.389648,
+			0.222656
+		},
+		uv11 = {
+			0.582031,
+			0.439453
+		}
+	},
+	lake_thumbnail = {
+		size = {
+			394,
+			222
+		},
+		uv00 = {
+			0.389648,
 			0.001953
 		},
 		uv11 = {
@@ -97,7 +125,7 @@ menu_cinematics_atlas = {
 			0.21875
 		}
 	},
-	lake_thumbnail = {
+	morris_thumbnail = {
 		size = {
 			394,
 			222
@@ -111,7 +139,7 @@ menu_cinematics_atlas = {
 			0.880859
 		}
 	},
-	morris_thumbnail = {
+	penny_thumbnail = {
 		size = {
 			394,
 			222
@@ -125,7 +153,7 @@ menu_cinematics_atlas = {
 			0.660156
 		}
 	},
-	penny_thumbnail = {
+	prologue_thumbnail = {
 		size = {
 			394,
 			222
@@ -139,7 +167,7 @@ menu_cinematics_atlas = {
 			0.439453
 		}
 	},
-	prologue_thumbnail = {
+	scorpion_thumbnail = {
 		size = {
 			394,
 			222
@@ -153,7 +181,7 @@ menu_cinematics_atlas = {
 			0.21875
 		}
 	},
-	scorpion_thumbnail = {
+	tower_thumbnail = {
 		size = {
 			394,
 			222

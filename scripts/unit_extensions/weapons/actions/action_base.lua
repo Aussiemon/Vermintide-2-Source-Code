@@ -45,8 +45,10 @@ ActionBase._do_critical_strike_fx = function (self, hud_extension, first_person_
 	local owner_unit = self.owner_unit
 	local first_person_unit = self.first_person_unit
 
-	unit_flow_event(owner_unit, "vfx_critical_strike")
-	unit_flow_event(first_person_unit, "vfx_critical_strike")
+	if Application.user_setting("weapon_trails") == "normal" then
+		unit_flow_event(owner_unit, "vfx_critical_strike")
+		unit_flow_event(first_person_unit, "vfx_critical_strike")
+	end
 
 	if hud_extension then
 		hud_extension.show_critical_indication = true

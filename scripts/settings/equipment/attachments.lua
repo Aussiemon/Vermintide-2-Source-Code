@@ -459,6 +459,17 @@ local ww_half_mask_full_face = {
 	buffs = {}
 }
 Attachments.ww_half_mask_full_face = table.clone(ww_half_mask_full_face)
+local ww_hide_eyes_hair_hood_down = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_hide_eyes_hair_hood_down",
+	attachment_node_linking = AttachmentNodeLinking.hat,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.ww_hide_eyes_hair_hood_down = table.clone(ww_hide_eyes_hair_hood_down)
 local es_hats = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",

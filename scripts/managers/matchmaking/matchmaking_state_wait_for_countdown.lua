@@ -62,7 +62,7 @@ MatchmakingStateWaitForCountdown._capture_telemetry = function (self)
 				is_friend = Friends.in_category(peer_id, Friends.FRIEND_FLAG)
 			end
 
-			Managers.telemetry.events:matchmaking_player_joined(player, time_taken, self._search_config)
+			Managers.telemetry_events:matchmaking_player_joined(player, time_taken, self._search_config)
 		end
 	end
 end

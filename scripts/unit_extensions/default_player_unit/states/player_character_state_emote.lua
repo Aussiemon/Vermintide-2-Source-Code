@@ -60,6 +60,7 @@ PlayerCharacterStateEmote.on_exit = function (self, unit, input, dt, context, t,
 	self._emote_ui:set_enabled(false)
 
 	self._emote_ui = nil
+	self.current_emote = nil
 end
 
 PlayerCharacterStateEmote.update = function (self, unit, input, dt, context, t)
@@ -168,5 +169,7 @@ PlayerCharacterStateEmote._update_emote = function (self)
 
 		self.network_transmit:send_rpc_server("rpc_server_request_emote", unit_id, anim_event_id, hide_weapons)
 		self.cosmetic_extension:consume_queued_3p_emote()
+
+		self.current_emote = emote_anim_event
 	end
 end

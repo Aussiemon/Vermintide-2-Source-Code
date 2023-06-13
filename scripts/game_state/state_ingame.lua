@@ -273,23 +273,13 @@ StateIngame.on_enter = function (self)
 		Managers.state.controller_features = ControllerFeaturesManager:new(self.is_in_inn)
 	end
 
-	Managers.telemetry.rpc_listener:register(self.network_event_delegate)
-	Managers.telemetry:reset()
-
-	local is_testify_session = script_data.testify
-	local engine_revision = script_data.build_identifier
-	local content_revision = is_testify_session and script_data.content_revision or script_data.settings.content_revision
-	local client_version = VersionSettings.version
-	local steam_branch = script_data.steam_branch
-	local svn_branch = script_data.svn_branch
-	local machine_name = script_data.machine_name
-
-	Managers.telemetry.events:header(engine_revision, content_revision, client_version, steam_branch, svn_branch, machine_name, is_testify_session)
+	Managers.telemetry_events:client_session_id(Application.guid())
+	Managers.telemetry_events.rpc_listener:register(self.network_event_delegate)
 
 	if is_server then
 		local session_id = Managers.state.network:session_id()
 
-		Managers.telemetry.events:session_id(session_id)
+		Managers.telemetry_events:server_session_id(session_id)
 		self.network_transmit:send_rpc_clients("rpc_to_client_sync_session_id", session_id)
 	end
 
@@ -532,8 +522,7 @@ StateIngame.on_enter = function (self)
 		realm = "modded"
 	end
 
-	Managers.telemetry.events:game_started({
-		player_id = player_id,
+	Managers.telemetry_events:game_started({
 		peer_type = self:peer_type(),
 		country_code = Managers.account:region(),
 		quick_game = quick_game,
@@ -556,7 +545,7 @@ StateIngame.on_enter = function (self)
 			round = 2
 		end
 
-		Managers.telemetry.events:versus_round_started(player_id, round, win_condition)
+		Managers.telemetry_events:versus_round_started(player_id, round, win_condition)
 	end
 
 	if self.network_server then
@@ -575,16 +564,16 @@ StateIngame.on_enter = function (self)
 	local graphics_quality = Application.user_setting("graphics_quality")
 	local rendering_backend = Renderer.render_device_string()
 
-	Managers.telemetry.events:tech_settings(resolution_string, graphics_quality, screen_mode, rendering_backend)
+	Managers.telemetry_events:tech_settings(resolution_string, graphics_quality, screen_mode, rendering_backend)
 
 	local system_info = Application.sysinfo()
 	local adapter_index = Application.user_setting("adapter_index")
 
-	Managers.telemetry.events:tech_system(system_info, adapter_index)
+	Managers.telemetry_events:tech_system(system_info, adapter_index)
 
 	local use_pc_menu_layout = Application.user_setting("use_pc_menu_layout")
 
-	Managers.telemetry.events:ui_settings(use_pc_menu_layout)
+	Managers.telemetry_events:ui_settings(use_pc_menu_layout)
 
 	if IS_XB1 then
 		Managers.account:set_presence("playing")
@@ -1480,6 +1469,8 @@ StateIngame._check_exit = function (self, t)
 
 			self.parent.loading_context.restart_network = true
 			self.parent.loading_context.level_end_view_context = nil
+			self.parent.loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
+			self.parent.loading_context.end_reason = exit_type
 
 			if exit_type == "lobby_state_failed" then
 				if IS_WINDOWS or IS_LINUX then
@@ -1496,6 +1487,8 @@ StateIngame._check_exit = function (self, t)
 			self.parent.loading_context.restart_network = true
 			self.parent.loading_context.show_profile_on_startup = true
 			self.parent.loading_context.return_to_pc_menu = true
+			self.parent.loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
+			self.parent.loading_context.end_reason = "return_to_pc_menu"
 
 			return StateLoading
 		elseif exit_type == "demo_completed" then
@@ -1505,6 +1498,8 @@ StateIngame._check_exit = function (self, t)
 		elseif exit_type == "finished_tutorial" then
 			local loading_context = self.parent.loading_context
 			loading_context.finished_tutorial = true
+			loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
+			loading_context.end_reason = "finished_tutorial"
 
 			if Managers.play_go:installed() then
 				loading_context.restart_network = true
@@ -1530,6 +1525,8 @@ StateIngame._check_exit = function (self, t)
 			self.parent.loading_context.host_migration_info = host_migration_info
 			self.parent.loading_context.wanted_profile_index = self:wanted_profile_index()
 			self.parent.loading_context.wanted_party_index = self:wanted_party_index()
+			self.parent.loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
+			self.parent.loading_context.end_reason = "host_migration"
 			self.leave_lobby = true
 
 			return StateLoading
@@ -1537,6 +1534,8 @@ StateIngame._check_exit = function (self, t)
 			local loading_context = self.parent.loading_context
 			loading_context.restart_network = true
 			loading_context.rejoin_lobby = true
+			self.parent.loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
+			self.parent.loading_context.end_reason = "rejoin_party"
 			self.leave_lobby = true
 
 			return StateLoading
@@ -1583,6 +1582,8 @@ StateIngame._check_exit = function (self, t)
 			self.parent.loading_context.quickplay_bonus = Managers.matchmaking:is_quick_game()
 			self.parent.loading_context.local_quickplay_bonus = Managers.matchmaking:is_local_quick_game()
 			self.parent.loading_context.previous_session_error = Managers.twitch and Managers.twitch:get_twitch_popup_message()
+			self.parent.loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
+			self.parent.loading_context.end_reason = Managers.state.game_mode:get_end_reason()
 
 			return StateLoading
 		elseif exit_type == "join_game" then
@@ -1592,6 +1593,8 @@ StateIngame._check_exit = function (self, t)
 			self.parent.loading_context.wanted_party_index = self:wanted_party_index()
 			self.parent.loading_context.quickplay_bonus = Managers.matchmaking:is_quick_game()
 			self.parent.loading_context.local_quickplay_bonus = Managers.matchmaking:is_local_quick_game()
+			self.parent.loading_context.time_spent_in_level = math.floor(Managers.time and Managers.time:time("game") or -1)
+			self.parent.loading_context.end_reason = "join_game"
 
 			return StateLoading
 		elseif exit_type == "restart_game" then
@@ -1720,16 +1723,10 @@ StateIngame.on_exit = function (self, application_shutdown)
 		local memory_tree = Profiler.memory_tree()
 		local memory_resources = Profiler.memory_resources("all")
 
-		Managers.telemetry.events:memory_statistics(memory_tree, memory_resources, "game_ended")
+		Managers.telemetry_events:memory_statistics(memory_tree, memory_resources, "game_ended")
 	end
 
-	if TelemetrySettings.send then
-		Managers.telemetry:send()
-	else
-		printf("[StateIngame] Skipped uploading telemetry data")
-	end
-
-	Managers.telemetry.rpc_listener:unregister(self.network_event_delegate)
+	Managers.telemetry_events.rpc_listener:unregister(self.network_event_delegate)
 	Managers.state.performance_title:unregister_rpcs()
 	DebugKeyHandler.set_enabled(false)
 	DebugScreen.destroy()
@@ -1937,13 +1934,6 @@ StateIngame.on_exit = function (self, application_shutdown)
 				self._lobby_host:enable_matchmaking(false)
 			end
 		end
-
-		if DEDICATED_SERVER and self.is_in_inn then
-			local leader_peer_id = Managers.party:leader()
-
-			print(string.format("Start loading leader %s's characters and gear in the backend", leader_peer_id))
-			Managers.backend:update_items(leader_peer_id)
-		end
 	end
 
 	self.free_flight_manager:unregister_input_manager()
@@ -2042,7 +2032,7 @@ StateIngame._check_and_add_end_game_telemetry = function (self, application_shut
 		end
 	end
 
-	Managers.telemetry.events:game_ended(reason)
+	Managers.telemetry_events:game_ended(reason)
 end
 
 StateIngame._setup_state_context = function (self, world, is_server, network_event_delegate)

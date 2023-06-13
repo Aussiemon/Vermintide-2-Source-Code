@@ -1884,6 +1884,19 @@ HitEffectsChaosBerzerker = {
 			"ragdoll"
 		}
 	},
+	burn_death_force_fire = {
+		flow_event = "burn_force_fire",
+		extra_conditions = {
+			death = true,
+			damage_type = {
+				"burn_force_fire",
+				"burninating_force_fire"
+			}
+		},
+		animations = {
+			"ragdoll"
+		}
+	},
 	burn_sniper_death = {
 		flow_event = "burn",
 		extra_conditions = {

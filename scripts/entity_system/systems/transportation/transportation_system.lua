@@ -26,10 +26,12 @@ end
 
 TransportationSystem.rpc_hot_join_sync_linker_transporting = function (self, channel_id, level_unit_id, game_object_id)
 	local unit = Level.unit_by_index(LevelHelper:current_level(self.world), level_unit_id)
-	local ext = ScriptUnit.extension(unit, "transportation_system"):rpc_hot_join_sync_linker_transporting(game_object_id)
+
+	ScriptUnit.extension(unit, "transportation_system"):rpc_hot_join_sync_linker_transporting(game_object_id)
 end
 
 TransportationSystem.rpc_hot_join_sync_linker_transport_state = function (self, channel_id, level_unit_id, state_id, story_time)
 	local unit = Level.unit_by_index(LevelHelper:current_level(self.world), level_unit_id)
-	local ext = ScriptUnit.extension(unit, "transportation_system"):rpc_hot_join_sync_linker_transport_state(state_id, story_time)
+
+	ScriptUnit.extension(unit, "transportation_system"):rpc_hot_join_sync_linker_transport_state(state_id, story_time)
 end

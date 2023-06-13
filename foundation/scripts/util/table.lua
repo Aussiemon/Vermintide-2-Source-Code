@@ -390,6 +390,34 @@ table.dump_string = function (t, depth)
 	end
 end
 
+local _buffer = {}
+
+table.minidump = function (t, name)
+	local b = _buffer
+	local i = 1
+
+	if name then
+		b[1] = "["
+		b[2] = name
+		b[3] = "] "
+		i = 4
+	end
+
+	for key, value in pairs(t) do
+		b[i] = key
+		b[i + 1] = " = "
+		b[i + 2] = tostring(value)
+		b[i + 3] = "; "
+		i = i + 4
+	end
+
+	local result = table.concat(b, 1, i - 2)
+
+	table.clear(b)
+
+	return result
+end
+
 table.shuffle = function (source, seed)
 	if seed then
 		for ii = #source, 2, -1 do
@@ -436,43 +464,76 @@ function _add_tabs(str, tabs)
 	return str
 end
 
-table.tostring = function (t, tabs)
-	if not t then
-		return "nil"
-	end
+local _value_to_string_array, _table_tostring_array = nil
 
-	tabs = tabs or 0
-	local str = "{\n"
-
-	for key, value in ipairs(t) do
-		str = _add_tabs(str, tabs + 1)
-		local value_type = type(value)
-
-		if value_type == "table" then
-			str = str .. table.tostring(value, tabs + 1) .. ",\n"
-		elseif value_type == "string" then
-			str = str .. "\"" .. value .. "\",\n"
+function _value_to_string_array(v, depth, max_depth, skip_private)
+	if type(v) == "table" then
+		if depth <= max_depth then
+			return _table_tostring_array(v, depth + 1, max_depth, skip_private)
 		else
-			str = str .. tostring(value) .. ",\n"
+			return {
+				"(rec-limit)"
+			}
 		end
+	elseif type(v) == "string" then
+		return {
+			"\"",
+			v,
+			"\""
+		}
+	else
+		return {
+			tostring(v)
+		}
+	end
+end
+
+function _table_tostring_array(t, depth, max_depth, skip_private)
+	local str = {
+		"{\n"
+	}
+	local last_tabs = string.rep("\t", depth - 1)
+	local tabs = last_tabs .. "\t"
+	local len = #t
+
+	for i = 1, len do
+		str[#str + 1] = tabs
+
+		table.append(str, _value_to_string_array(t[i], depth, max_depth, skip_private))
+
+		str[#str + 1] = ",\n"
 	end
 
 	for key, value in pairs(t) do
-		if type(key) ~= "number" then
-			str = _add_tabs(str, tabs + 1)
-			local value_type = type(value)
+		local is_number = type(key) == "number"
 
-			if value_type == "table" then
-				str = str .. key .. "=" .. table.tostring(value, tabs + 1) .. ",\n"
-			elseif value_type == "string" then
-				str = str .. key .. "=" .. "\"" .. value .. "\",\n"
+		if (is_number or not skip_private or key:sub(1, 1) ~= "_") and (not is_number or key < 1 or len < key) then
+			local key_str = nil
+
+			if is_number then
+				key_str = string.format("[%i]", key)
 			else
-				str = str .. key .. "=" .. tostring(value) .. ",\n"
+				key_str = tostring(key)
 			end
+
+			str[#str + 1] = tabs
+			str[#str + 1] = key_str
+			str[#str + 1] = " = "
+
+			table.append(str, _value_to_string_array(value, depth, max_depth, skip_private))
+
+			str[#str + 1] = ",\n"
 		end
 	end
 
-	return _add_tabs(str, tabs) .. "}"
+	str[#str + 1] = last_tabs
+	str[#str + 1] = "}"
+
+	return str
+end
+
+table.tostring = function (t, max_depth, skip_private)
+	return table.concat(_table_tostring_array(t, 1, max_depth or 1, skip_private))
 end
 
 table.set = function (list)
@@ -645,6 +706,12 @@ table.remove_if = function (t, predicate)
 	end
 end
 
+local _enum_index_metatable = {
+	__index = function (_, k)
+		return error("Don't know `" .. tostring(k) .. "` for enum.")
+	end
+}
+
 table.enum = function (...)
 	local t = {}
 
@@ -663,6 +730,17 @@ table.ordered_enum = function (...)
 		local v = select(i, ...)
 		t[v] = v
 		t[i] = v
+	end
+
+	return t
+end
+
+table.enum_safe = function (...)
+	local t = {}
+
+	for i = 1, select("#", ...) do
+		local v = select(i, ...)
+		t[v] = v
 	end
 
 	return t
@@ -809,4 +887,78 @@ table.select_array = function (t, selector)
 	end
 
 	return new_t
+end
+
+table.remove_empty_values = function (t)
+	if table.is_empty(t) then
+		return nil
+	end
+
+	local result = {}
+
+	for k, v in pairs(t) do
+		if k ~= StrictNil then
+			local value_type = type(v)
+
+			if value_type == "table" then
+				if not table.is_empty(v) then
+					result[k] = table.remove_empty_values(v)
+				end
+			elseif value_type == "string" and v ~= "" then
+				result[k] = v
+			elseif value_type ~= "nil" then
+				result[k] = v
+			end
+		end
+	end
+
+	if table.is_empty(result) then
+		return nil
+	else
+		return result
+	end
+end
+
+local function _qs_partition(arr, low, high, f)
+	local pivot = arr[high]
+	local i = low - 1
+
+	for j = low, high - 1 do
+		local less = nil
+		less = f and f(arr[j], pivot) or arr[j] <= pivot
+
+		if less then
+			i = i + 1
+			arr[j] = arr[i]
+			arr[i] = arr[j]
+		end
+	end
+
+	arr[high] = arr[i + 1]
+	arr[i + 1] = arr[high]
+
+	return i + 1
+end
+
+local function _quicksort(arr, low, high, f)
+	if low < high then
+		local pivot = _qs_partition(arr, low, high, f)
+
+		_quicksort(arr, low, pivot - 1, f)
+		_quicksort(arr, pivot + 1, high, f)
+	end
+end
+
+table.sort_span = function (t, start_index, end_index, sort_func)
+	_quicksort(t, start_index, end_index, sort_func)
+end
+
+table.enum_lookup = function (...)
+	local arr = {
+		...
+	}
+	local lookup = table.mirror_array(arr)
+	local enum = table.ordered_enum(unpack(lookup))
+
+	return enum, lookup
 end

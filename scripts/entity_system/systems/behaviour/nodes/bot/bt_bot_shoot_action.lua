@@ -234,9 +234,9 @@ BTBotShootAction._wanted_aim_rotation = function (self, self_unit, target_unit, 
 	local target_current_velocity = target_locomotion_extension and target_locomotion_extension:current_velocity() or Vector3.zero()
 	local target_rotation, target_position = nil
 	local prediction_function = projectile_info and ProjectileTemplates.trajectory_templates[projectile_info.trajectory_template_name].prediction_function
+	local gravity_setting = projectile_info and ProjectileGravitySettings[projectile_info.gravity_settings]
 
-	if prediction_function then
-		local gravity_setting = ProjectileGravitySettings[projectile_info.gravity_settings]
+	if prediction_function and gravity_setting and gravity_setting > 0 then
 		local angle = nil
 		angle, target_position = prediction_function(projectile_speed / 100, -gravity_setting, current_position, target_pos, target_current_velocity)
 

@@ -100,6 +100,7 @@ ScriptBackendPlayFab.login_request_cb = function (self, result)
 	local playfab_id = result.PlayFabId
 
 	Crashify.print_property("playfab_id", playfab_id)
+	Managers.telemetry_events:player_authenticated(playfab_id)
 	self:_update_telemetry_settings()
 
 	local account_set_up = read_only_data.account_set_up
@@ -167,6 +168,14 @@ ScriptBackendPlayFab._set_up_initial_account = function (self)
 end
 
 ScriptBackendPlayFab.initial_setup_request_cb = function (self, result)
+	local characters_data = result.FunctionResult.characters_data
+
+	if characters_data then
+		self._signin_result.InfoResultPayload.UserReadOnlyData.characters_data = {
+			Value = characters_data
+		}
+	end
+
 	self:_set_up_initial_inventory()
 
 	self._setting_up_initial_account = false

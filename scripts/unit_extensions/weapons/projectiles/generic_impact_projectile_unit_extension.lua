@@ -38,7 +38,7 @@ GenericImpactProjectileUnitExtension.update = function (self, unit, input, _, co
 		return
 	end
 
-	self:impact(recent_impacts, num_impacts)
+	self:_execute_impact(recent_impacts, num_impacts)
 
 	if self.impact_template_name == "vfx_impact" then
 		return
@@ -81,7 +81,7 @@ GenericImpactProjectileUnitExtension.update = function (self, unit, input, _, co
 	end
 end
 
-GenericImpactProjectileUnitExtension.impact = function (self, recent_impacts, num_impacts)
+GenericImpactProjectileUnitExtension._execute_impact = function (self, recent_impacts, num_impacts)
 	local impact = ProjectileTemplates.impact_templates[self.impact_template_name]
 	local explosion_template = ExplosionTemplates[self.explosion_template_name]
 	local server_stop = false
@@ -97,16 +97,22 @@ GenericImpactProjectileUnitExtension.impact = function (self, recent_impacts, nu
 	end
 end
 
-local rpc_dummy_impact = {}
+local rpc_dummy_impact = {
+	[ProjectileImpactDataIndex.POSITION] = Vector3Box(),
+	[ProjectileImpactDataIndex.DIRECTION] = Vector3Box(),
+	[ProjectileImpactDataIndex.NORMAL] = Vector3Box()
+}
 
-GenericImpactProjectileUnitExtension.rpc_impact = function (self, unit, position, direction, normal, actor_index)
+GenericImpactProjectileUnitExtension.impact = function (self, unit, position, direction, normal, actor_index)
 	rpc_dummy_impact[ProjectileImpactDataIndex.UNIT] = unit
-	rpc_dummy_impact[ProjectileImpactDataIndex.POSITION] = position
-	rpc_dummy_impact[ProjectileImpactDataIndex.DIRECTION] = direction
-	rpc_dummy_impact[ProjectileImpactDataIndex.NORMAL] = normal
+
+	rpc_dummy_impact[ProjectileImpactDataIndex.POSITION]:store(position)
+	rpc_dummy_impact[ProjectileImpactDataIndex.DIRECTION]:store(direction)
+	rpc_dummy_impact[ProjectileImpactDataIndex.NORMAL]:store(normal)
+
 	rpc_dummy_impact[ProjectileImpactDataIndex.ACTOR_INDEX] = actor_index
 
-	self:impact(rpc_dummy_impact, ProjectileImpactDataIndex.STRIDE)
+	self:_execute_impact(rpc_dummy_impact, ProjectileImpactDataIndex.STRIDE)
 end
 
 local dummy_impact = {}

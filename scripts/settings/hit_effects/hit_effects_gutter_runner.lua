@@ -1716,6 +1716,22 @@ HitEffectsGutterRunner = {
 			"gutter_death"
 		}
 	},
+	burn_death_force_fire = {
+		extra_conditions = {
+			death = true,
+			damage_type = {
+				"burn_force_fire",
+				"burninating_force_fire"
+			}
+		},
+		animations = {
+			"ragdoll"
+		},
+		flow_event = {
+			"burn_force_fire",
+			"gutter_death"
+		}
+	},
 	burn_sniper_death = {
 		extra_conditions = {
 			death = true,

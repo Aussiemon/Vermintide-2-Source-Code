@@ -4618,6 +4618,8 @@ DamageProfileTemplates.burning_dot_firegrenade.default_target.power_distribution
 	attack = 0.3,
 	impact = 0.3
 }
+DamageProfileTemplates.burning_dot_firegrenade_force_fire = table.clone(DamageProfileTemplates.burning_dot_firegrenade)
+DamageProfileTemplates.burning_dot_firegrenade_force_fire.default_target.damage_type = "burninating_force_fire"
 DamageProfileTemplates.beam_burning_dot = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.beam_burning_dot.no_stagger = true
 DamageProfileTemplates.beam_burning_dot.is_dot = true
@@ -4966,7 +4968,7 @@ DamageProfileTemplates.ratling_gunner_backdrop = {
 }
 
 DLCUtils.map_list("damage_profile_template_files_names", function (file_name)
-	table.merge(DamageProfileTemplates, require(file_name))
+	table.merge(DamageProfileTemplates, local_require(file_name))
 end)
 
 for name, damage_profile in pairs(DamageProfileTemplates) do

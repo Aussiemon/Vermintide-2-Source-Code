@@ -20487,3 +20487,122 @@ UIWidgets.create_weapon_diagram_widget = function (scenegraph_id, size, nodes_pr
 
 	return widget
 end
+
+UIWidgets.create_level_widget = function (scenegraph_id)
+	return {
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		},
+		element = {
+			passes = {
+				{
+					pass_type = "texture",
+					style_id = "icon",
+					texture_id = "icon"
+				},
+				{
+					pass_type = "texture",
+					style_id = "frame",
+					texture_id = "frame"
+				},
+				{
+					pass_type = "texture",
+					style_id = "glass",
+					texture_id = "glass"
+				},
+				{
+					pass_type = "texture",
+					style_id = "frame_glow",
+					texture_id = "frame_glow"
+				}
+			}
+		},
+		content = {
+			glass = "act_presentation_fg_glass",
+			icon = "level_icon_01",
+			frame = "map_frame_00",
+			frame_glow = "map_frame_glow_02"
+		},
+		style = {
+			frame_glow = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					270,
+					270
+				},
+				offset = {
+					0,
+					0,
+					4
+				},
+				color = {
+					0,
+					255,
+					255,
+					255
+				}
+			},
+			glass = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					216,
+					216
+				},
+				offset = {
+					0,
+					0,
+					3
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			frame = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				offset = {
+					0,
+					0,
+					2
+				},
+				texture_size = {
+					180,
+					180
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					168,
+					168
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			}
+		}
+	}
+end

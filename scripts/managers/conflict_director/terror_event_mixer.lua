@@ -1132,7 +1132,7 @@ TerrorEventMixer.run_functions = {
 		end
 
 		local conflict_director = Managers.state.conflict
-		local spawned_units = conflict_director:spawned_units()
+		local spawned_units = conflict_director:spawned_enemies()
 		local amount = #spawned_units
 
 		if amount < element.amount then
@@ -1348,7 +1348,7 @@ TerrorEventMixer.debug_functions = {
 		return string.format(": max enemies %d", event.max_active_enemies)
 	end,
 	debug_horde = function (event, element, t, dt)
-		local spawned_units = Managers.state.conflict:spawned_units()
+		local spawned_units = Managers.state.conflict:spawned_enemies()
 		local amount = #spawned_units
 
 		return string.format(" alive: %d, max-amount: %d", amount, element.amount)
@@ -1720,7 +1720,7 @@ TerrorEventMixer.start_event = function (event_name, data, id)
 		TerrorEventMixer.init_functions[func_name](new_event, element, t)
 	end
 
-	Managers.telemetry.events:terror_event_started(event_name)
+	Managers.telemetry_events:terror_event_started(event_name)
 end
 
 TerrorEventMixer.stop_event = function (event_name)

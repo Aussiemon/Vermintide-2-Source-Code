@@ -372,7 +372,7 @@ WeaveManager._report_telemetry = function (self)
 	local wind = self:get_active_wind()
 	local tier = self:get_weave_tier()
 
-	Managers.telemetry.events:weave_activated(wind, tier)
+	Managers.telemetry_events:weave_activated(wind, tier)
 end
 
 WeaveManager._set_active_objective = function (self, objective_index)

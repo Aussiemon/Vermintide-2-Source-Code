@@ -1,4 +1,4 @@
-local adventure_settings = require("scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure")
+local adventure_settings = local_require("scripts/ui/hud_ui/component_list_definitions/hud_component_list_adventure")
 local common_settings = require("scripts/ui/hud_ui/component_list_definitions/hud_component_list_deus_common")
 local components = {
 	{

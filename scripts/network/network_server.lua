@@ -217,13 +217,13 @@ end
 
 NetworkServer.is_in_post_game = function (self)
 	if DEDICATED_SERVER then
-		local leader_peer_id = Managers.party:leader()
-
-		if not leader_peer_id then
-			return false
-		else
-			return self.peer_state_machines[leader_peer_id].current_state == PeerStates.InPostGame
+		for peer_id, peer_state_machine in pairs(self.peer_state_machines) do
+			if peer_state_machine.current_state ~= PeerStates.InPostGame then
+				return false
+			end
 		end
+
+		return true
 	else
 		return self.peer_state_machines[self.my_peer_id].current_state == PeerStates.InPostGame
 	end
@@ -820,7 +820,7 @@ NetworkServer.update = function (self, dt)
 			local eac_authorized_string = eac_authorized and "true" or "false"
 
 			if self._eac_authorized_written_to_lobby_data ~= eac_authorized_string then
-				cprintf("Server is " .. (eac_authorized and "trusted" or "untrusted"))
+				cprintf("[NetworkServer] Server is " .. (eac_authorized and "trusted" or "untrusted"))
 
 				local lobby_data = self.lobby_host:get_stored_lobby_data()
 				lobby_data.eac_authorized = eac_authorized_string
@@ -861,7 +861,7 @@ NetworkServer.update = function (self, dt)
 
 			if lobby_data and num_members ~= lobby_data.num_players then
 				printf("[NetworkServer] Changing num_players from %s to %s", tostring(lobby_data.num_players), tostring(num_members))
-				cprintf("Players: %d", num_members)
+				cprintf("[NetworkServer] Players: %d", num_members)
 
 				lobby_data.num_players = num_members
 

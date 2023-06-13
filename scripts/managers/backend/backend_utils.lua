@@ -29,14 +29,17 @@ BackendUtils.get_loadout_item = function (career_name, slot)
 	local backend_id = BackendUtils.get_loadout_item_id(career_name, slot)
 
 	if not backend_id and CosmeticUtils.is_cosmetic_slot(slot) then
-		Crashify.print_exception("[BackendUtils] Failed to find loadout item in slot %q for career %q", slot, career_name)
+		local profile = PROFILES_BY_CAREER_NAMES[career_name]
+		local career_settings = CareerSettings[career_name]
+
+		if career_settings.required_dlc and Managers.unlock:is_dlc_unlocked(career_settings.required_dlc) then
+			Crashify.print_exception("[BackendUtils] Failed to find loadout item in slot %q for career %q", slot, career_name)
+		end
 
 		return
 	end
 
-	local item = backend_items:get_item_from_id(backend_id)
-
-	return item
+	return backend_items:get_item_from_id(backend_id)
 end
 
 BackendUtils.try_set_loadout_item = function (career_name, slot_name, item_key)
@@ -134,7 +137,7 @@ BackendUtils.get_item_template = function (item_data, backend_id)
 	return template
 end
 
-BackendUtils.get_item_units = function (item_data, backend_id, skin)
+BackendUtils.get_item_units = function (item_data, backend_id, skin, career_name)
 	local left_hand_unit = item_data.left_hand_unit
 	local right_hand_unit = item_data.right_hand_unit
 	local ammo_unit = item_data.ammo_unit
@@ -148,6 +151,16 @@ BackendUtils.get_item_units = function (item_data, backend_id, skin)
 	local icon = item_data.hud_icon
 	local backend_id = item_data.backend_id or backend_id
 	local skin_name, material_settings = nil
+
+	if career_name then
+		if item_data.left_hand_unit_override then
+			left_hand_unit = item_data.left_hand_unit_override[career_name] or left_hand_unit
+		end
+
+		if item_data.right_hand_unit_override then
+			right_hand_unit = item_data.right_hand_unit_override[career_name] or right_hand_unit
+		end
+	end
 
 	if backend_id or skin then
 		if not skin then
@@ -167,6 +180,16 @@ BackendUtils.get_item_units = function (item_data, backend_id, skin)
 			icon = skin_template.hud_icon
 			skin_name = skin
 			material_settings = skin_template.material_settings
+
+			if career_name then
+				if skin_template.left_hand_unit_override then
+					left_hand_unit = skin_template.left_hand_unit_override[career_name] or left_hand_unit
+				end
+
+				if skin_template.right_hand_unit_override then
+					right_hand_unit = skin_template.right_hand_unit_override[career_name] or right_hand_unit
+				end
+			end
 		end
 	end
 

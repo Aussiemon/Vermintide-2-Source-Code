@@ -138,5 +138,5 @@ ActionPotion.finish = function (self, reason)
 	local player = Managers.player:unit_owner(owner_unit)
 	local position = POSITION_LOOKUP[owner_unit]
 
-	Managers.telemetry.events:player_used_item(player, self.item_name, position)
+	Managers.telemetry_events:player_used_item(player, self.item_name, position)
 end

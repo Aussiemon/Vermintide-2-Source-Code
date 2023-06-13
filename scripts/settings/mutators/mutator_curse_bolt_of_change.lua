@@ -145,6 +145,7 @@ bolt_of_change.server_start_function = function (context, data)
 		skaven = {},
 		chaos = {},
 		beastmen = {},
+		undead = {},
 		critter = {}
 	}
 	data.difficulty_rank = Managers.state.difficulty:get_difficulty_rank()

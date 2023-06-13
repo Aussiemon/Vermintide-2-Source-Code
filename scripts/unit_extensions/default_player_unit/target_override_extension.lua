@@ -13,6 +13,7 @@ TargetOverrideExtension.init = function (self, extension_init_context, unit, ext
 		stagger_types.none,
 		stagger_types.medium
 	}
+	self._side = extension_init_data.side
 end
 
 TargetOverrideExtension.destroy = function (self)

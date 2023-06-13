@@ -31,7 +31,28 @@ ClientHuskTalentExtension.get_talent_names = function (self, talent_names)
 end
 
 ClientHuskTalentExtension.has_talent = function (self, talent_name)
-	return nil
+	local wanted_talent_lookup = TalentIDLookup[talent_name]
+
+	if not wanted_talent_lookup then
+		return false
+	end
+
+	if wanted_talent_lookup.hero_name ~= self._hero_name then
+		return false
+	end
+
+	local talent_ids = self._talent_ids
+	local wanted_talent_id = wanted_talent_lookup.talent_id
+
+	for i = 1, #talent_ids do
+		local talent_id = talent_ids[i]
+
+		if wanted_talent_id == talent_id then
+			return true
+		end
+	end
+
+	return false
 end
 
 ClientHuskTalentExtension.apply_buffs_from_talents = function (self)

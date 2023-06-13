@@ -212,6 +212,41 @@ end
 PlayFabMirrorBase.verify_account_data_cb = function (self, result)
 	self._num_items_to_load = self._num_items_to_load - 1
 
+	self:_migrate_characters()
+end
+
+PlayFabMirrorBase._migrate_characters = function (self)
+	local characters_data = self._read_only_data.characters_data
+
+	if not characters_data or characters_data == "{}" or characters_data == "" or type(characters_data) == "table" and table.is_empty(characters_data) then
+		local request = {
+			FunctionName = "migrateCharacters",
+			FunctionParameter = {}
+		}
+		local success_callback = callback(self, "migrate_characters_cb")
+
+		self._request_queue:enqueue(request, success_callback)
+
+		self._num_items_to_load = self._num_items_to_load + 1
+
+		return
+	end
+
+	self:_migrate_cosmetics()
+end
+
+PlayFabMirrorBase.migrate_characters_cb = function (self, result)
+	local function_result = result.FunctionResult
+	local success = function_result.success
+	local characters_data = function_result.characters_data
+
+	if characters_data then
+		self._read_only_data.characters_data = characters_data
+		self._read_only_data_mirror.characters_data = characters_data
+	end
+
+	self._num_items_to_load = self._num_items_to_load - 1
+
 	self:_migrate_cosmetics()
 end
 
@@ -1104,16 +1139,7 @@ PlayFabMirrorBase.inventory_request_cb = function (self, result)
 				local required_dlc = ItemMasterList[item.ItemId].required_dlc
 
 				if required_dlc and not unlock_manager:is_dlc_unlocked(required_dlc) then
-					if DEDICATED_SERVER then
-						self._owned_dlcs[#self._owned_dlcs + 1] = required_dlc
-						local dlc = unlock_manager:get_dlc(required_dlc)
-
-						if dlc and dlc.set_owned then
-							dlc:set_owned(true)
-						end
-					else
-						filter = true
-					end
+					filter = true
 				end
 
 				if not filter then
@@ -1131,12 +1157,10 @@ PlayFabMirrorBase.inventory_request_cb = function (self, result)
 	self:_create_fake_inventory_items(unlocked_weapon_skins, "weapon_skins")
 	self:_create_fake_inventory_items(unlocked_cosmetics, "cosmetics")
 
-	if DEDICATED_SERVER then
-		self:request_characters()
-	elseif HAS_STEAM then
+	if HAS_STEAM then
 		self:_request_steam_user_inventory()
 	else
-		self:_migrate_characters()
+		self:request_characters()
 	end
 end
 
@@ -1152,48 +1176,13 @@ PlayFabMirrorBase._request_steam_user_inventory = function (self)
 			debug_printf("_request_steam_user_inventory got no results")
 		end
 
-		local migrate_and_request_characters = true
+		local request_characters = true
 		local skip_mark_as_new = true
 
-		self:_cb_steam_user_inventory(result, item_list, migrate_and_request_characters, skip_mark_as_new)
+		self:_cb_steam_user_inventory(result, item_list, request_characters, skip_mark_as_new)
 	end
 
 	Managers.steam:request_user_inventory(callback)
-end
-
-PlayFabMirrorBase._migrate_characters = function (self)
-	local characters_data = self._read_only_data.characters_data
-
-	if not characters_data or characters_data == "{}" or characters_data == "" or type(characters_data) == "table" and table.is_empty(characters_data) then
-		local request = {
-			FunctionName = "migrateCharacters",
-			FunctionParameter = {}
-		}
-		local success_callback = callback(self, "migrate_characters_cb")
-
-		self._request_queue:enqueue(request, success_callback)
-
-		self._num_items_to_load = self._num_items_to_load + 1
-
-		return
-	end
-
-	self:request_characters()
-end
-
-PlayFabMirrorBase.migrate_characters_cb = function (self, result)
-	local function_result = result.FunctionResult
-	local success = function_result.success
-	local characters_data = function_result.characters_data
-
-	if characters_data then
-		self._read_only_data.characters_data = characters_data
-		self._read_only_data_mirror.characters_data = characters_data
-	end
-
-	self._num_items_to_load = self._num_items_to_load - 1
-
-	self:request_characters()
 end
 
 PlayFabMirrorBase.delete_playfab_characters_cb = function (self, result)
@@ -1210,7 +1199,7 @@ PlayFabMirrorBase.add_steam_items = function (self, item_list)
 	self:_cb_steam_user_inventory(result_success, item_list, false, skip_mark_as_new)
 end
 
-PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list, migrate_and_request_characters, skip_mark_as_new)
+PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list, request_characters, skip_mark_as_new)
 	self._num_items_to_load = self._num_items_to_load - 1
 
 	if result == 1 then
@@ -1238,8 +1227,8 @@ PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list, 
 		debug_printf("ERROR could not retrieve get steam user inventory. result-code: %q", result)
 	end
 
-	if migrate_and_request_characters then
-		self:_migrate_characters()
+	if request_characters then
+		self:request_characters()
 	end
 end
 
@@ -1895,6 +1884,8 @@ PlayFabMirrorBase.add_item = function (self, backend_id, item, skip_autosave, sk
 		local skin_name = item.CustomData and item.CustomData.skin
 
 		if skin_name and WeaponSkins.skins[skin_name] then
+			local unlocked_weapon_skins = self:get_unlocked_weapon_skins()
+
 			self:_add_new_weapon_skin(item, true, skin_name)
 		end
 	end
@@ -1932,6 +1923,14 @@ end
 
 PlayFabMirrorBase.add_unlocked_weapon_skin = function (self, weapon_skin, offline_backend_id)
 	if self._unlocked_weapon_skins then
+		local existing_weapon_skin = self._unlocked_weapon_skins[weapon_skin]
+
+		if existing_weapon_skin then
+			return {
+				existing_weapon_skin
+			}
+		end
+
 		self._unlocked_weapon_skins[weapon_skin] = true
 
 		return self:_create_fake_inventory_items({
@@ -2417,8 +2416,6 @@ PlayFabMirrorBase.fix_career_data_request_cb = function (self, result)
 
 	if function_result.num_items_granted > 0 then
 		self:_request_user_inventory()
-
-		return
 	elseif Managers.mechanism:current_mechanism_name() == "adventure" then
 		self:_check_weaves_loadout()
 	end

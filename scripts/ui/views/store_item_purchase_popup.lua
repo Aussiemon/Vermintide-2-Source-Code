@@ -1514,7 +1514,7 @@ StoreItemPurchasePopup._backend_result_callback = function (self, success, items
 	print("_backend_result_callback", success)
 
 	if success then
-		Managers.telemetry.events:store_product_purchased(self._product)
+		Managers.telemetry_events:store_product_purchased(self._product)
 		self:_change_state("approved")
 	else
 		self:_change_state("exit")

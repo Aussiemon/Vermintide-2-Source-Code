@@ -35,7 +35,6 @@ ContractLogUI.init = function (self, parent, ingame_ui_context)
 	self.quest_manager = quest_manager
 
 	self:_align_widgets()
-	rawset(_G, "contract_log_ui", self)
 end
 
 ContractLogUI._create_ui_elements = function (self)
@@ -80,7 +79,6 @@ end
 
 ContractLogUI.destroy = function (self)
 	self:set_visible(false)
-	rawset(_G, "contract_log_ui", nil)
 end
 
 ContractLogUI.set_visible = function (self, visible)

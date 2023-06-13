@@ -627,10 +627,6 @@ BTConditions.is_disabled = function (blackboard)
 	return blackboard.is_knocked_down or blackboard.is_grabbed_by_pack_master or blackboard.is_pounced_down or blackboard.is_hanging_from_hook or blackboard.is_ledge_hanging or blackboard.is_grabbed_by_chaos_spawn
 end
 
-BTConditions.is_transported = function (blackboard)
-	return blackboard.is_transported
-end
-
 local PUSHED_COOLDOWN = 2
 local BLOCK_BROKEN_COOLDOWN = 4
 local BOT_INTERACT_DIST = 2.4

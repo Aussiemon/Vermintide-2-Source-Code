@@ -1,5 +1,5 @@
 local function num_spawned_enemies()
-	local spawned_enemies = Managers.state.conflict:spawned_during_event()
+	local spawned_enemies = Managers.state.conflict:enemies_spawned_during_event()
 
 	return spawned_enemies
 end

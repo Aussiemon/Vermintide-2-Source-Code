@@ -1,8 +1,6 @@
 local settings = DLCSettings.wizards_part_2
 settings.network_sound_events = {
-	"Play_enemy_undead_ethereal_skeleton_attack_vce",
-	"Play_enemy_undead_ethereal_skeleton_shield_impact",
-	"Play_enemy_undead_ethereal_skeleton_attack_vce_husk"
+	"Play_enemy_undead_ethereal_skeleton_shield_impact"
 }
 settings.dialogue_lookup = {
 	"dialogues/generated/lookup_wood_elf_dlc_wizards_tower",

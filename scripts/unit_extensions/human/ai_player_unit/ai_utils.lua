@@ -184,17 +184,17 @@ AiUtils.stagger_target = function (unit, hit_unit, distance, impact, direction, 
 	end
 end
 
-AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_triplett, damage_source)
-	local damage = DamageUtils.calculate_damage(damage_triplett, target_unit, attacker_unit)
+AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, damage_source)
+	damage = DamageUtils.calculate_damage(damage, target_unit, attacker_unit)
 	local attacker_pos = POSITION_LOOKUP[attacker_unit] or Unit.world_position(attacker_unit, 0)
-	local target_pos = POSITION_LOOKUP[target_unit] or Unit.local_position(target_unit, 0)
+	local target_pos = POSITION_LOOKUP[target_unit] or Unit.world_position(target_unit, 0)
 	local damage_direction = Vector3.normalize(target_pos - attacker_pos)
 	local _, is_level_unit = Managers.state.network:game_object_or_level_id(target_unit)
 	damage_source = damage_source or AiUtils.breed_name(attacker_unit)
-	local inflicted_damage = nil
+	local inflicted_damage, source_attacker_unit = nil
 
 	if is_level_unit then
-		inflicted_damage = DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, nil, nil, action.hit_react_type)
+		inflicted_damage = DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, source_attacker_unit, nil, action.hit_react_type)
 	else
 		local difficulty_manager = Managers.state.difficulty
 		local difficulty_settings = difficulty_manager:get_difficulty_settings()
@@ -246,7 +246,7 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 			end
 		end
 
-		inflicted_damage = DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, nil, nil, action.hit_react_type)
+		inflicted_damage = DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, source_attacker_unit, nil, action.hit_react_type)
 		local push_speed = action.player_push_speed
 
 		if is_player_unit and push_speed then
@@ -498,12 +498,12 @@ AiUtils.spawn_overpowering_blob = function (network_manager, target_unit, blob_h
 	return overpowering_blob_unit
 end
 
-AiUtils.broadphase_query = function (position, radius, result_table)
+AiUtils.broadphase_query = function (position, radius, result_table, broadphase_categories)
 	fassert(result_table, "No result_table given to AiUtils,broadphase_query")
 
 	local ai_system = Managers.state.entity:system("ai_system")
 	local broadphase = ai_system.group_blackboard.broadphase
-	local num_hits = Broadphase.query(broadphase, position, radius, result_table)
+	local num_hits = Broadphase.query(broadphase, position, radius, result_table, broadphase_categories)
 
 	return num_hits
 end

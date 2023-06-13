@@ -474,7 +474,6 @@ StartMenuView.on_exit = function (self)
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
 	self.input_manager:device_unblock_all_services("gamepad", 1)
-	ShowCursorStack.pop()
 
 	self.exiting = nil
 
@@ -484,6 +483,7 @@ StartMenuView.on_exit = function (self)
 		self._machine = nil
 	end
 
+	ShowCursorStack.pop()
 	self:hide_hero_world()
 	Managers.music:unduck_sounds()
 	self:play_sound("play_gui_amb_hero_screen_loop_end")

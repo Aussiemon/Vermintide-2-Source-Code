@@ -40,13 +40,6 @@ GameServerManager.server_name = function (self)
 end
 
 GameServerManager.set_leader_peer_id = function (self, leader_peer_id)
-	local current_leader = Managers.party:leader()
-
-	if leader_peer_id ~= nil and current_leader == nil then
-		print(string.format("Start loading leader %s's characters and gear in the backend", leader_peer_id))
-		Managers.backend:update_items(leader_peer_id)
-	end
-
 	Managers.party:set_leader(leader_peer_id)
 
 	local non_nil_leader = leader_peer_id == nil and "0" or leader_peer_id
@@ -74,6 +67,12 @@ GameServerManager.get_transition = function (self)
 end
 
 GameServerManager.hot_join_sync = function (self, peer_id)
+	local matchmaking_manager = Managers.matchmaking
+
+	if matchmaking_manager and matchmaking_manager:on_dedicated_server() then
+		return
+	end
+
 	local leader = Managers.party:leader()
 	local non_nil_leader = leader == nil and "0" or leader
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]

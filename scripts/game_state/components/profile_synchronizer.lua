@@ -34,6 +34,33 @@ local function split_lobby_entry(entry)
 	return peer_id, local_player_index
 end
 
+local function _add_slot_item_packages(packages_list, slot, item_data, optional_backend_id, career_name, is_first_person)
+	local item_template = BackendUtils.get_item_template(item_data, optional_backend_id)
+	local item_units = BackendUtils.get_item_units(item_data, optional_backend_id, nil, career_name)
+	local slot_category = slot.category
+
+	if slot_category == "weapon" or slot_category == "career_skill_weapon" then
+		local weapon_packages = WeaponUtils.get_weapon_packages(item_template, item_units, is_first_person)
+
+		for j = 1, #weapon_packages do
+			local package_name = weapon_packages[j]
+			packages_list[package_name] = false
+		end
+	elseif slot_category == "attachment" then
+		if item_units.unit then
+			packages_list[item_units.unit] = false
+		end
+
+		local material_changes = item_template.character_material_changes
+
+		if material_changes then
+			packages_list[material_changes.package_name] = false
+		end
+	elseif slot_category ~= "cosmetic" then
+		error("ProfileSynchronizer unknown slot_category: " .. slot_category)
+	end
+end
+
 local function profile_packages(profile_index, career_index, is_first_person)
 	local profile = SPProfiles[profile_index]
 	local careers = profile.careers
@@ -46,7 +73,6 @@ local function profile_packages(profile_index, career_index, is_first_person)
 		repeat
 			local slot = InventorySettings.slots[i]
 			local slot_name = slot.name
-			local slot_category = slot.category
 			local item = BackendUtils.get_loadout_item(career_name, slot_name)
 
 			if not item then
@@ -55,37 +81,8 @@ local function profile_packages(profile_index, career_index, is_first_person)
 
 			local item_data = item.data
 			local backend_id = item.backend_id
-			local item_template = BackendUtils.get_item_template(item_data, backend_id)
-			local item_units = BackendUtils.get_item_units(item_data, backend_id)
 
-			if slot_category == "weapon" then
-				local weapon_packages = WeaponUtils.get_weapon_packages(item_template, item_units, is_first_person)
-
-				for j = 1, #weapon_packages do
-					local package_name = weapon_packages[j]
-					packages_list[package_name] = false
-				end
-			else
-				if slot_category == "attachment" then
-					if item_units.unit then
-						packages_list[item_units.unit] = false
-					end
-
-					local material_changes = item_template.character_material_changes
-
-					if material_changes then
-						packages_list[material_changes.package_name] = false
-					end
-
-					break
-				end
-
-				if slot_category == "cosmetic" then
-					break
-				end
-
-				error("ProfileSynchronizer unknown slot_category: " .. slot_category)
-			end
+			_add_slot_item_packages(packages_list, slot, item_data, backend_id, career_name, is_first_person)
 		until true
 	end
 
@@ -354,6 +351,10 @@ end
 ProfileSynchronizer.clear_profile_index_reservation = function (self, peer_id)
 	self:_clear_profile_index_reservation(peer_id)
 	self:_sync_lobby_data()
+end
+
+ProfileSynchronizer.reset_profile_index_reservation = function (self, profile_index)
+	self._state:set_profile_index_reservation(profile_index, "")
 end
 
 ProfileSynchronizer.profile_by_peer = function (self, peer_id, local_player_id)

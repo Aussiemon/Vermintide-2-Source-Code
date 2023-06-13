@@ -211,7 +211,7 @@ CosmeticUtils.sync_local_player_cosmetics = function (player, profile_index, car
 		if item then
 			local item_data = item.data
 			local backend_id = item.backend_id
-			local item_units = BackendUtils.get_item_units(item_data, backend_id)
+			local item_units = BackendUtils.get_item_units(item_data, backend_id, nil, career_name)
 			local item_name = item_data and item_data.name
 			local item_skin = item_units and item_units.skin
 

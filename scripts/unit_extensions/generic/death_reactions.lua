@@ -390,7 +390,7 @@ local function ai_default_unit_update(unit, dt, context, t, data, is_server)
 		return DeathReactions.IS_NOT_DONE
 	end
 
-	Managers.state.conflict:register_unit_destroyed(unit, "death_done")
+	Managers.state.conflict:register_unit_destroyed(unit, BLACKBOARDS[unit], "death_done")
 
 	return DeathReactions.IS_DONE
 end
@@ -1419,7 +1419,7 @@ DeathReactions.templates = {
 				local damage_source = killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME]
 				local position = POSITION_LOOKUP[unit]
 
-				Managers.telemetry.events:player_died(player, damage_type, damage_source, position)
+				Managers.telemetry_events:player_died(player, damage_type, damage_source, position)
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
 				trigger_player_killing_blow_ai_buffs(unit, killing_blow, true)
@@ -1436,7 +1436,7 @@ DeathReactions.templates = {
 				local damage_source = killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME]
 				local position = POSITION_LOOKUP[unit]
 
-				Managers.telemetry.events:player_died(player, damage_type, damage_source, position)
+				Managers.telemetry_events:player_died(player, damage_type, damage_source, position)
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
 				if not is_hot_join_sync(killing_blow) then
@@ -2294,5 +2294,5 @@ DeathReactions._add_ai_killed_by_player_telemetry = function (victim_unit, breed
 	local player_position = POSITION_LOOKUP[player_unit]
 	local victim_position = POSITION_LOOKUP[victim_unit]
 
-	Managers.telemetry.events:player_killed_ai(player, player_position, victim_position, breed_name, weapon_name, damage_type, death_hit_zone)
+	Managers.telemetry_events:player_killed_ai(player, player_position, victim_position, breed_name, weapon_name, damage_type, death_hit_zone)
 end

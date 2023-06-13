@@ -981,7 +981,7 @@ ConflictDirectorTests.start_test = function (conflict_director, t, dt, test)
 			}
 		}
 
-		TerrorEventMixer.start_event("encampment", event_data)
+		TerrorEventMixer.start_event("encampment4", event_data)
 
 		local event_data = {
 			side_id = 1,
@@ -992,7 +992,7 @@ ConflictDirectorTests.start_test = function (conflict_director, t, dt, test)
 			}
 		}
 
-		TerrorEventMixer.start_event("encampment", event_data)
+		TerrorEventMixer.start_event("encampment4", event_data)
 
 		return
 	elseif test == "hull_test" then

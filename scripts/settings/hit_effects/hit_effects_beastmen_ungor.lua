@@ -2148,6 +2148,23 @@ HitEffectsBeastmenUngor = {
 			"death_burn_5"
 		}
 	},
+	burn_death_force_fire = {
+		flow_event = "burn_death_force_fire",
+		extra_conditions = {
+			death = true,
+			damage_type = {
+				"burn_force_fire",
+				"burninating_force_fire"
+			}
+		},
+		animations = {
+			"death_burn",
+			"death_burn_2",
+			"death_burn_3",
+			"death_burn_4",
+			"death_burn_5"
+		}
+	},
 	burn_sniper_death = {
 		flow_event = "burn_death",
 		extra_conditions = {

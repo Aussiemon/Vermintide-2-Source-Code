@@ -174,12 +174,6 @@ PeerStates.Loading = {
 	on_enter = function (self, previous_state)
 		Network.write_dump_tag(string.format("%s loading", self.peer_id))
 
-		local party = Managers.party
-
-		if DEDICATED_SERVER and party:leader() == nil then
-			Managers.game_server:set_leader_peer_id(self.peer_id)
-		end
-
 		self.game_started = false
 		self.is_ingame = nil
 	end,

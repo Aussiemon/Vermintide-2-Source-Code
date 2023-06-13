@@ -349,16 +349,15 @@ local action_data = {
 		end
 	},
 	cast_missile = {
-		create_nav_tag_volume = true,
-		damage_type = "poison",
+		volley_delay = 0.3,
+		volleys = 2,
 		cast_anim = "attack_shoot_hand",
 		nav_tag_volume_layer = "bot_poison_wind",
+		create_nav_tag_volume = true,
 		launch_angle = 1,
+		damage_type = "poison",
 		duration = 8,
 		face_target_while_casting = true,
-		volleys = 2,
-		volley_delay = 0.3,
-		aoe_dot_damage_interval = 1,
 		ignore_staggers = {
 			true,
 			true,
@@ -367,92 +366,6 @@ local action_data = {
 			true,
 			true
 		},
-		aoe_init_damage = {
-			{
-				0,
-				1,
-				0
-			},
-			{
-				0,
-				1,
-				0
-			},
-			{
-				5,
-				1,
-				0
-			},
-			{
-				7,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			},
-			{
-				12,
-				1,
-				0
-			},
-			{
-				15,
-				1,
-				0
-			},
-			{
-				15,
-				1,
-				0
-			}
-		},
-		aoe_dot_damage = {
-			{
-				2,
-				0,
-				0
-			},
-			{
-				4,
-				0,
-				0
-			},
-			{
-				6,
-				0,
-				0
-			},
-			{
-				8,
-				0,
-				0
-			},
-			{
-				15,
-				0,
-				0
-			},
-			{
-				18,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			}
-		},
-		radius = MISSILE_RADIUS,
-		initial_radius = MISSILE_RADIUS * 0.6,
 		missile_spawn_offset = {
 			0.1281,
 			1.1719,
@@ -471,15 +384,14 @@ local action_data = {
 		end
 	},
 	cast_seeking_bomb_missile = {
-		volleys = 1,
-		damage_type = "poison",
-		create_nav_tag_volume = true,
-		volley_delay = 0.3,
-		nav_tag_volume_layer = "bot_poison_wind",
-		face_target_while_casting = true,
 		cast_anim = "attack_shoot_staff",
+		volleys = 1,
+		create_nav_tag_volume = true,
+		nav_tag_volume_layer = "bot_poison_wind",
+		volley_delay = 0.3,
+		damage_type = "poison",
 		duration = 8,
-		aoe_dot_damage_interval = 1,
+		face_target_while_casting = true,
 		ignore_staggers = {
 			true,
 			true,
@@ -487,90 +399,6 @@ local action_data = {
 			true,
 			true,
 			true
-		},
-		aoe_init_damage = {
-			{
-				0,
-				1,
-				0
-			},
-			{
-				0,
-				1,
-				0
-			},
-			{
-				5,
-				1,
-				0
-			},
-			{
-				7,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			},
-			{
-				12,
-				1,
-				0
-			},
-			{
-				15,
-				1,
-				0
-			},
-			{
-				15,
-				1,
-				0
-			}
-		},
-		aoe_dot_damage = {
-			{
-				2,
-				0,
-				0
-			},
-			{
-				4,
-				0,
-				0
-			},
-			{
-				6,
-				0,
-				0
-			},
-			{
-				8,
-				0,
-				0
-			},
-			{
-				15,
-				0,
-				0
-			},
-			{
-				18,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			}
 		},
 		radius = MISSILE_RADIUS,
 		initial_radius = MISSILE_RADIUS * 0.6,
@@ -601,101 +429,16 @@ local action_data = {
 	},
 	defensive_magic_missile = {
 		create_nav_tag_volume = true,
-		damage_type = "poison",
+		cast_anim = "attack_shoot_hand",
 		nav_tag_volume_layer = "bot_poison_wind",
 		launch_angle = 1,
-		cast_anim = "attack_shoot_hand",
+		damage_type = "poison",
 		duration = 8,
 		face_target_while_casting = true,
 		volleys = 2,
 		volley_delay = 0.3,
 		action_weight = 1,
-		aoe_dot_damage_interval = 1,
 		considerations = UtilityConsiderations.defensive_magic_missile,
-		aoe_init_damage = {
-			{
-				0,
-				1,
-				0
-			},
-			{
-				0,
-				1,
-				0
-			},
-			{
-				5,
-				1,
-				0
-			},
-			{
-				7,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			},
-			{
-				12,
-				1,
-				0
-			},
-			{
-				15,
-				1,
-				0
-			},
-			{
-				15,
-				1,
-				0
-			}
-		},
-		aoe_dot_damage = {
-			{
-				2,
-				0,
-				0
-			},
-			{
-				4,
-				0,
-				0
-			},
-			{
-				6,
-				0,
-				0
-			},
-			{
-				8,
-				0,
-				0
-			},
-			{
-				15,
-				0,
-				0
-			},
-			{
-				18,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			}
-		},
 		radius = MISSILE_RADIUS,
 		initial_radius = MISSILE_RADIUS * 0.6,
 		missile_spawn_offset = {
@@ -725,102 +468,15 @@ local action_data = {
 	},
 	defensive_seeking_bomb = {
 		create_nav_tag_volume = true,
+		volleys = 1,
 		damage_type = "poison",
 		nav_tag_volume_layer = "bot_poison_wind",
+		volley_delay = 0.3,
+		action_weight = 1,
 		cast_anim = "attack_shoot_staff",
 		duration = 8,
 		face_target_while_casting = true,
-		volleys = 1,
-		volley_delay = 0.3,
-		action_weight = 1,
-		aoe_dot_damage_interval = 1,
 		considerations = UtilityConsiderations.defensive_seeking_bomb,
-		aoe_init_damage = {
-			{
-				0,
-				1,
-				0
-			},
-			{
-				0,
-				1,
-				0
-			},
-			{
-				5,
-				1,
-				0
-			},
-			{
-				7,
-				1,
-				0
-			},
-			{
-				10,
-				1,
-				0
-			},
-			{
-				12,
-				1,
-				0
-			},
-			{
-				15,
-				1,
-				0
-			},
-			{
-				15,
-				1,
-				0
-			}
-		},
-		aoe_dot_damage = {
-			{
-				2,
-				0,
-				0
-			},
-			{
-				4,
-				0,
-				0
-			},
-			{
-				6,
-				0,
-				0
-			},
-			{
-				8,
-				0,
-				0
-			},
-			{
-				15,
-				0,
-				0
-			},
-			{
-				18,
-				0,
-				0
-			},
-			{
-				20,
-				0,
-				0
-			},
-			{
-				20,
-				1,
-				0
-			}
-		},
-		radius = MISSILE_RADIUS,
-		initial_radius = MISSILE_RADIUS * 0.6,
 		missile_spawn_offset = {
 			0.1281,
 			1.1719,

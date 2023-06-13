@@ -266,8 +266,6 @@ AchievementManager.is_enabled = function (self)
 end
 
 AchievementManager.update = function (self, dt, t)
-	self:debug_draw()
-
 	if not self._enabled or not self:_check_version_number() or not self:_check_initialized_achievements() or not self:_verify_platform_achievements() or script_data["eac-untrusted"] then
 		return
 	end
@@ -376,7 +374,6 @@ AchievementManager.update = function (self, dt, t)
 
 	self._curr_template_idx = template_idx
 
-	self:_update_reward_polling()
 	self:_check_for_completed_achievements()
 	self:_update_timed_events(dt, t)
 end
@@ -479,7 +476,7 @@ AchievementManager.can_claim_achievement_rewards = function (self, achievement_i
 		return nil, "Achievement already claimed."
 	end
 
-	if self._reward_poll_id then
+	if backend_interface_loot:polling_reward() then
 		return nil, "Achievement reward polling in progress."
 	end
 
@@ -511,22 +508,26 @@ end
 
 AchievementManager.claim_reward = function (self, achievement_id)
 	local backend_interface_loot = self._backend_interface_loot
-	local reward_poll_id = backend_interface_loot:claim_achievement_rewards(achievement_id)
-	self._reward_poll_id = reward_poll_id
+	local reward_poll_id = backend_interface_loot:generate_reward_loot_id()
+
+	backend_interface_loot:claim_achievement_rewards(achievement_id, reward_poll_id)
 
 	return reward_poll_id
 end
 
 AchievementManager.claim_multiple_rewards = function (self, achievement_ids)
 	local backend_interface_loot = self._backend_interface_loot
-	local reward_poll_id = backend_interface_loot:claim_multiple_achievement_rewards(achievement_ids)
-	self._reward_poll_id = reward_poll_id
+	local reward_poll_id = backend_interface_loot:generate_reward_loot_id()
+
+	backend_interface_loot:claim_multiple_achievement_rewards(achievement_ids, reward_poll_id)
 
 	return reward_poll_id
 end
 
 AchievementManager.polling_reward = function (self)
-	return self._reward_poll_id and true or false
+	local backend_interface_loot = self._backend_interface_loot
+
+	return backend_interface_loot:polling_reward()
 end
 
 AchievementManager.has_any_unclaimed_achievement = function (self)
@@ -562,19 +563,6 @@ AchievementManager.evaluate_end_of_level_achievements = function (self, statisti
 
 				statistics_db:increment_stat(stats_id, stat_to_increment)
 			end
-		end
-	end
-end
-
-AchievementManager._update_reward_polling = function (self)
-	local reward_poll_id = self._reward_poll_id
-
-	if reward_poll_id then
-		local backend_interface_loot = self._backend_interface_loot
-		local poll_completed = backend_interface_loot:is_loot_generated(reward_poll_id)
-
-		if poll_completed then
-			self._reward_poll_id = nil
 		end
 	end
 end

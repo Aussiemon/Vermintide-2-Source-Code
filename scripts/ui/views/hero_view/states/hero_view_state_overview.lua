@@ -139,6 +139,26 @@ HeroViewStateOverview._setup_menu_layout = function (self, params)
 	return use_gamepad_layout
 end
 
+HeroViewStateOverview.can_add = function (self, window_layout_name)
+	local window_layouts = self._window_layouts
+
+	for i = 1, #window_layouts do
+		local window_layout = window_layouts[i]
+
+		if window_layout.name == window_layout_name then
+			local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+			if window_layout.can_add_function then
+				return window_layout.can_add_function(mechanism_name)
+			else
+				return true
+			end
+		end
+	end
+
+	return true
+end
+
 HeroViewStateOverview.create_ui_elements = function (self, params)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}

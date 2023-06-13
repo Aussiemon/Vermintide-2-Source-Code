@@ -1133,7 +1133,7 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 			local damage_type = biggest_hit[DamageDataIndex.DAMAGE_TYPE]
 			local position = POSITION_LOOKUP[unit]
 
-			Managers.telemetry.events:player_knocked_down(player, damage_type, position)
+			Managers.telemetry_events:player_knocked_down(player, damage_type, position)
 		end
 
 		Managers.state.achievement:trigger_event("player_knocked_down", player)
@@ -2249,8 +2249,10 @@ end
 GenericStatusExtension.set_falling_height = function (self, override, override_height)
 	fassert(not self.is_husk, "Trying to set falling height on non-owned unit")
 
-	self.fall_height = override_height or self.fall_height and not override and POSITION_LOOKUP[self.unit].z < self.fall_height and self.fall_height or POSITION_LOOKUP[self.unit].z
-	self.update_funcs.falling = GenericStatusExtension.update_falling
+	if ALIVE[self.unit] then
+		self.fall_height = override_height or self.fall_height and not override and POSITION_LOOKUP[self.unit].z < self.fall_height and self.fall_height or POSITION_LOOKUP[self.unit].z
+		self.update_funcs.falling = GenericStatusExtension.update_falling
+	end
 end
 
 GenericStatusExtension.max_wounds_network_safe = function (self)

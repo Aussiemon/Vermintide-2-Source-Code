@@ -442,9 +442,8 @@ StateInGameTestify.make_player_and_two_bots_invicible = function ()
 	make_invincible(Managers.player:local_player().player_unit)
 end
 
-StateInGameTestify.set_telemetry_settings = function (settings)
-	table.merge(TelemetrySettings, settings)
-	Managers.telemetry:reload_settings()
+StateInGameTestify.post_telemetry_events = function ()
+	Managers.telemetry:post_batch()
 end
 
 StateInGameTestify.get_main_path_points = function (nb_points)

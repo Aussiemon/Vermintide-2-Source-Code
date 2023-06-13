@@ -21,7 +21,6 @@ DifficultyUnlockUI.init = function (self, parent, ingame_ui_context)
 	self:create_ui_elements()
 	self:difficulty_set()
 	Managers.state.event:register(self, "difficulty_synced", "difficulty_set")
-	rawset(_G, "difficulty_unlock_ui", self)
 end
 
 DifficultyUnlockUI.create_ui_elements = function (self)
@@ -108,7 +107,6 @@ DifficultyUnlockUI.destroy = function (self)
 	self.ui_animator = nil
 
 	self:set_visible(false)
-	rawset(_G, "difficulty_unlock_ui", nil)
 end
 
 DifficultyUnlockUI.set_visible = function (self, visible)

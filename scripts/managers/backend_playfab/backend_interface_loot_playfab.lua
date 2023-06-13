@@ -5,6 +5,7 @@ BackendInterfaceLootPlayfab.init = function (self, backend_mirror)
 	self._backend_mirror = backend_mirror
 	self._last_id = 0
 	self._loot_requests = {}
+	self._reward_poll_id = false
 end
 
 BackendInterfaceLootPlayfab.ready = function (self)
@@ -149,7 +150,7 @@ BackendInterfaceLootPlayfab.generate_end_of_level_loot = function (self, game_wo
 end
 
 BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data, result)
-	Managers.telemetry.events:end_of_game_rewards(result.FunctionResult)
+	Managers.telemetry_events:end_of_game_rewards(result.FunctionResult)
 
 	local function_result = result.FunctionResult
 	local id = data.id
@@ -347,11 +348,11 @@ BackendInterfaceLootPlayfab.can_claim_achievement_rewards = function (self, achi
 	return false
 end
 
-BackendInterfaceLootPlayfab.claim_achievement_rewards = function (self, achievement_id)
-	local id = self:_new_id()
+BackendInterfaceLootPlayfab.claim_achievement_rewards = function (self, achievement_id, poll_id)
+	self._reward_poll_id = true
 	local data = {
 		achievement_id = achievement_id,
-		id = id
+		id = poll_id
 	}
 	local generate_achievement_rewards_request = {
 		FunctionName = "generateAchievementRewards",
@@ -361,8 +362,6 @@ BackendInterfaceLootPlayfab.claim_achievement_rewards = function (self, achievem
 	local request_queue = self._backend_mirror:request_queue()
 
 	request_queue:enqueue(generate_achievement_rewards_request, success_callback, true)
-
-	return id
 end
 
 BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, data, result)
@@ -482,6 +481,7 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 	backend_mirror:set_achievement_claimed(achievement_id)
 
 	self._loot_requests[id] = loot
+	self._reward_poll_id = nil
 
 	Managers.backend:dirtify_interfaces()
 end
@@ -509,12 +509,30 @@ BackendInterfaceLootPlayfab.can_claim_all_achievement_rewards = function (self, 
 	end
 end
 
-BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards = function (self, achievement_ids)
-	local challenge_data = {}
-	local id = self:_new_id()
+local ACH_CHUNK_LIMIT = 150
 
-	for i = 1, #achievement_ids do
-		local achievement_id = achievement_ids[i]
+BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards = function (self, achievement_ids, poll_id, start_index, end_index)
+	self._reward_poll_id = true
+	start_index = start_index or 1
+	end_index = end_index or ACH_CHUNK_LIMIT
+	local challenge_data = {}
+	local num_elements = #achievement_ids
+	local id = poll_id
+	local temp_achievement_ids = nil
+	local chunk_size = ACH_CHUNK_LIMIT
+
+	if start_index > 1 then
+		temp_achievement_ids = table.slice(achievement_ids, start_index, num_elements)
+	else
+		temp_achievement_ids = achievement_ids
+	end
+
+	if #temp_achievement_ids <= ACH_CHUNK_LIMIT then
+		chunk_size = #temp_achievement_ids
+	end
+
+	for i = 1, chunk_size do
+		local achievement_id = temp_achievement_ids[i]
 		local data = {
 			achievement_id = achievement_id
 		}
@@ -528,19 +546,18 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards = function (self,
 			id = id
 		}
 	}
-	local success_callback = callback(self, "claim_multiple_achievement_rewards_request_cb", challenge_data, id)
+	local success_callback = callback(self, "claim_multiple_achievement_rewards_request_cb", challenge_data, id, start_index, end_index, achievement_ids)
 	local request_queue = self._backend_mirror:request_queue()
 
 	request_queue:enqueue(generate_achievement_rewards_request, success_callback, true)
-
-	return id
 end
 
-BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = function (self, data, id, result)
+BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = function (self, data, id, start_index, end_index, achievement_ids, result)
 	print("[BackendInterfaceLootPlayfab]:claim_all_achievement_rewards_request_cb: Firing!")
 
 	local function_result = result.FunctionResult
 	local id = id
+	local achievement_ids = achievement_ids
 
 	if not function_result then
 		Managers.backend:playfab_api_error(result)
@@ -554,8 +571,12 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 		return
 	end
 
+	if self._loot_requests[id] == nil then
+		self._loot_requests[id] = {}
+	end
+
 	local items = function_result.items
-	local achievement_ids = function_result.achievement_id
+	local awarded_achievement_ids = function_result.achievement_id
 	local currency_added = function_result.currency_added
 	local chips = function_result.chips
 	local backend_mirror = self._backend_mirror
@@ -652,14 +673,16 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 		end
 	end
 
-	if achievement_ids then
-		for i = 1, #achievement_ids do
-			local achievement_id = achievement_ids[i].achievement_id
+	if awarded_achievement_ids then
+		for i = 1, #awarded_achievement_ids do
+			local achievement_id = awarded_achievement_ids[i].achievement_id
 
 			backend_mirror:set_achievement_claimed(achievement_id)
 		end
 
-		self._loot_requests[id] = loot
+		for i = 1, #loot do
+			table.insert(self._loot_requests[id], loot[i])
+		end
 	else
 		local requested_achievement_ids = function_result.requested_achievement_ids or {}
 
@@ -667,7 +690,22 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 		Crashify.print_exception("Failed to claim multiple challenges")
 	end
 
-	Managers.backend:dirtify_interfaces()
+	local num_elements = #achievement_ids
+
+	if end_index < num_elements then
+		local next_start_index = start_index + ACH_CHUNK_LIMIT
+		local next_end_index = end_index + ACH_CHUNK_LIMIT
+
+		self:claim_multiple_achievement_rewards(achievement_ids, id, next_start_index, next_end_index)
+	else
+		self._reward_poll_id = nil
+
+		Managers.backend:dirtify_interfaces()
+	end
+end
+
+BackendInterfaceLootPlayfab.polling_reward = function (self)
+	return self._reward_poll_id
 end
 
 BackendInterfaceLootPlayfab.is_loot_generated = function (self, id)
@@ -682,4 +720,8 @@ end
 
 BackendInterfaceLootPlayfab.get_loot = function (self, id)
 	return self._loot_requests[id]
+end
+
+BackendInterfaceLootPlayfab.generate_reward_loot_id = function (self)
+	return self:_new_id()
 end

@@ -69,7 +69,7 @@ PingReporter._take_measure = function (self)
 	local game_object_id = player.game_object_id
 	local game_session = Managers.state.network:game()
 
-	if not player.is_server and not player.is_bot_player and game_session and game_object_id then
+	if not player.is_server and not player.bot_player and game_session and game_object_id then
 		local ping = GameSession.game_object_field(game_session, game_object_id, "ping")
 		self._measures[#self._measures + 1] = ping
 	end
@@ -104,5 +104,5 @@ PingReporter.report = function (self)
 	local p25 = percentile(self._measures, 25)
 	local observations = #self._measures
 
-	Managers.telemetry.events:network_ping(avg, std_dev, p99, p95, p90, p75, p50, p25, observations)
+	Managers.telemetry_events:network_ping(avg, std_dev, p99, p95, p90, p75, p50, p25, observations)
 end

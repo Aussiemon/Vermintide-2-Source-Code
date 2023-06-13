@@ -1108,9 +1108,9 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_attack_speed_on_enemy_pinged = {
 		buffs = {
 			{
-				event = "on_enemy_pinged",
+				event = "on_pinged",
 				buff_to_add = "victor_witchhunter_attack_speed_on_enemy_pinged_buff",
-				buff_func = "add_buff"
+				buff_func = "victor_witchhunter_ping_enemy_attack_speed"
 			}
 		}
 	},
@@ -2020,7 +2020,7 @@ Talents.witch_hunter = {
 	{
 		description = "victor_witchhunter_attack_speed_on_enemy_pinged_desc",
 		name = "victor_witchhunter_attack_speed_on_enemy_pinged",
-		buffer = "both",
+		buffer = "client",
 		num_ranks = 1,
 		icon = "victor_witchhunter_attack_speed_on_enemy_pinged",
 		description_values = {

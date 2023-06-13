@@ -9,6 +9,8 @@ local bless_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_o
 local wom_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_wom_intro")
 local belakor_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_belakor_intro")
 local trails_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_trails_intro")
+local tower_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_tower_intro")
+local karak_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_karak_intro")
 CinematicsViewSettings = {
 	{
 		{
@@ -201,6 +203,32 @@ CinematicsViewSettings = {
 				sound_start = "Play_vermintide_2_trails_intro",
 				resource = "video/vermintide_2_trails_intro",
 				subtitle_template_settings = trails_intro_video_subtitle_settings
+			}
+		},
+		{
+			description = "In Tower of Treachery, you must re-tread familiar ground with reignited purpose. Sofia Fuegonasus has taken over Olesya's old hideout, and is attempting to spread her corruption throughout the Grey Mountains, Bretonnia and the Reikland. It's up to you to put a stop to her deathly plans... Navigate both Olesya's and Sophia's traps and illusions and take on the toughest foe you've encountered in Vermintide.. so far! Will you make it to the top of the tower?",
+			release_date = "2023/03/28",
+			time = "01:27",
+			header = "menu_cinematics_tower_title",
+			thumbnail = "tower_thumbnail",
+			video_data = {
+				sound_stop = "Stop_all_cinematics",
+				sound_start = "Play_vermintide_2_tower_intro",
+				resource = "video/vermintide_2_tower_intro",
+				subtitle_template_settings = tower_intro_video_subtitle_settings
+			}
+		},
+		{
+			description = "menu_cinematics_karak_description",
+			release_date = "2023/06/13",
+			time = "01:33",
+			header = "menu_cinematics_karak_title",
+			thumbnail = "karak_thumbnail",
+			video_data = {
+				sound_stop = "Stop_all_cinematics",
+				sound_start = "Play_vermintide_2_karak_intro",
+				resource = "video/vermintide_2_karak_intro",
+				subtitle_template_settings = karak_intro_video_subtitle_settings
 			}
 		},
 		category_name = "all"

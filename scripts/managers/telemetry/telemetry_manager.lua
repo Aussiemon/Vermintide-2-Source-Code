@@ -1,8 +1,13 @@
-require("scripts/managers/telemetry/telemetry_settings")
 require("scripts/managers/telemetry/telemetry_manager_dummy")
 require("scripts/managers/telemetry/telemetry_events")
-require("scripts/managers/telemetry/telemetry_rpc_listener")
-require("scripts/managers/telemetry/telemetry_heartbeat")
+require("scripts/managers/telemetry/telemetry_settings")
+
+local ENABLED = TelemetrySettings.enabled
+local ENDPOINT = TelemetrySettings.endpoint
+local POST_INTERVAL = TelemetrySettings.batch.post_interval
+local FULL_POST_INTERVAL = TelemetrySettings.batch.full_post_interval
+local MAX_BATCH_SIZE = TelemetrySettings.batch.max_size
+local BATCH_SIZE = TelemetrySettings.batch.size
 
 local function dprintf(...)
 	if Development.parameter("debug_telemetry") then
@@ -11,6 +16,7 @@ local function dprintf(...)
 end
 
 TelemetryManager = class(TelemetryManager)
+TelemetryManager.NAME = "TelemetryManager"
 
 TelemetryManager.create = function ()
 	if IS_WINDOWS and rawget(_G, "lcurl") == nil then
@@ -39,92 +45,132 @@ TelemetryManager.create = function ()
 end
 
 TelemetryManager.init = function (self)
-	self.events = TelemetryEvents:new(self)
-	self.rpc_listener = TelemetryRPCListener:new(self.events)
-	self._heartbeat = TelemetryHeartbeat:new()
+	self._events = {}
+	self._batch_post_time = 0
+	self._t = 0
 
-	self:reset()
 	self:reload_settings()
-end
-
-TelemetryManager.reset = function (self)
-	self._events_json = {}
-	self._current_tick = 0
 end
 
 TelemetryManager.reload_settings = function (self)
 	dprintf("[TelemetryManager] Refreshing settings")
 
-	self._title_id = TelemetrySettings.title_id
-	self._endpoint = TelemetrySettings.endpoint
 	self._blacklisted_events = table.set(TelemetrySettings.blacklist or {})
 end
 
 TelemetryManager.update = function (self, dt, t)
-	self._current_tick = self._current_tick + dt
+	self._t = t
 
-	self._heartbeat:update(dt, t)
+	if self:_ready_to_post_batch(t) then
+		self:post_batch()
+	end
 end
 
-local event_entry = {}
+TelemetryManager.register_event = function (self, event)
+	if not ENABLED then
+		return
+	end
 
-TelemetryManager.register_event = function (self, event_type, event_params)
-	if self._blacklisted_events[event_type] then
-		dprintf("[TelemetryManager] Skipping blacklisted event '%s'", event_type)
+	local raw_event = event:raw()
+
+	if self._blacklisted_events[raw_event.type] then
+		dprintf("[TelemetryManager] Skipping blacklisted event '%s'", raw_event.type)
 
 		return
 	end
 
-	for k, param in pairs(event_params) do
-		if Script.type_name(param) == "Vector3" then
-			event_params[k] = {
-				x = param.x,
-				y = param.y,
-				z = param.z
-			}
-		elseif type(param) == "userdata" then
-			event_params[k] = tostring(param)
+	raw_event.time = self._t
+	raw_event.data = self:_convert_userdata(raw_event.data)
+
+	if #self._events < MAX_BATCH_SIZE then
+		dprintf("[TelemetryManager] Registered event '%s'", event)
+		table.insert(self._events, table.remove_empty_values(raw_event))
+	else
+		dprintf("[TelemetryManager] Discarding event '%s', buffer is full!", event)
+	end
+end
+
+TelemetryManager._convert_userdata = function (self, data)
+	local new_data = {}
+
+	if type(data) == "table" then
+		for key, value in pairs(data) do
+			if Script.type_name(value) == "Vector3" then
+				new_data[key] = {
+					x = value.x,
+					y = value.y,
+					z = value.z
+				}
+			elseif type(value) == "function" then
+				new_data[key] = nil
+			elseif type(value) == "userdata" then
+				new_data[key] = tostring(value)
+			elseif type(value) == "table" then
+				new_data[key] = self:_convert_userdata(value)
+			else
+				new_data[key] = value
+			end
 		end
 	end
 
-	event_entry.tick = self._current_tick
-	event_entry.type = event_type
-	event_entry.params = event_params
-	local encoded_event = cjson.encode(event_entry)
-
-	table.insert(self._events_json, encoded_event)
-	dprintf("[TelemetryManager] Registering event '%s' %s", event_type, encoded_event)
+	return new_data
 end
 
-TelemetryManager.send = function (self, cb)
-	dprintf("[TelemetryManager] Sending session data")
+TelemetryManager._ready_to_post_batch = function (self, t)
+	if self._batch_in_flight then
+		return false
+	end
 
-	local payload = "[" .. table.concat(self._events_json, ", \n") .. "]"
+	if POST_INTERVAL < t - self._batch_post_time then
+		return true
+	elseif FULL_POST_INTERVAL < t - self._batch_post_time and BATCH_SIZE <= #self._events then
+		return true
+	end
+end
+
+TelemetryManager.post_batch = function (self)
+	if not ENABLED or table.is_empty(self._events) then
+		return
+	end
+
+	dprintf("[TelemetryManager] Posting batch of %d events", #self._events)
+
+	self._batch_in_flight = true
+	self._batch_post_time = math.floor(self._t)
+	local payload = cjson.encode(self._events)
 
 	if IS_WINDOWS then
 		local headers = {
-			string.format("title_id: %s", self._title_id)
+			"Content-Type: application/json",
+			string.format("x-reference-time: %s", self._t)
 		}
 
-		Managers.curl:post(self._endpoint, payload, headers, callback(self, "cb_send", cb))
+		Managers.curl:post(ENDPOINT, payload, headers, callback(self, "cb_post_batch"))
 	else
 		local headers = {
-			"title_id",
-			self._title_id
+			"Content-Type",
+			"application/json",
+			"x-reference-time",
+			tostring(self._t)
 		}
 
-		Managers.rest_transport:post(self._endpoint, payload, headers, callback(self, "cb_send", cb))
+		Managers.rest_transport:post(ENDPOINT, payload, headers, callback(self, "cb_post_batch"))
 	end
 end
 
-TelemetryManager.cb_send = function (self, cb, success, _, _, error)
+TelemetryManager.cb_post_batch = function (self, success, _, _, error)
 	if success then
-		dprintf("[TelemetryManager] Data sent successfully")
-	else
-		dprintf("[TelemetryManager] Error during transmission", error)
-	end
+		dprintf("[TelemetryManager] Batch sent successfully")
+		table.clear(self._events)
 
-	if cb then
-		cb(success)
+		self._batch_in_flight = nil
+	else
+		dprintf("[TelemetryManager] Error sending batch: %s", error)
+
+		self._batch_in_flight = nil
 	end
+end
+
+TelemetryManager.destroy = function (self)
+	self:post_batch()
 end

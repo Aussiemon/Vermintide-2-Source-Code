@@ -9,12 +9,12 @@ local package_exclusion_list = {
 	["units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_magic_3p"] = true
 }
 
-local function get_weapon_packages(stored_purchase)
+local function get_weapon_packages(stored_purchase, career_name)
 	local item_data = stored_purchase.data
 	local backend_id = stored_purchase.backend_id
 	local skin = stored_purchase.skin
 	local item_template = BackendUtils.get_item_template(item_data, backend_id)
-	local item_units = BackendUtils.get_item_units(item_data, backend_id, skin)
+	local item_units = BackendUtils.get_item_units(item_data, backend_id, skin, career_name)
 	local packages = WeaponUtils.get_weapon_packages(item_template, item_units, false)
 	local filtered_packages = {}
 
@@ -57,7 +57,11 @@ DeusChestPreloadExtension.update = function (self, unit, input, dt, context, t)
 		local is_weapon_chest = server_chest_type == DEUS_CHEST_TYPES.swap_ranged or server_chest_type == DEUS_CHEST_TYPES.swap_melee
 
 		if player_changed and is_weapon_chest then
-			self:_generate_stored_weapon_packages()
+			local profile = SPProfiles[profile_index]
+			local career = profile.careers[career_index]
+			local career_name = career.name
+
+			self:_generate_stored_weapon_packages(career_name)
 		end
 
 		if server_chest_type == DEUS_CHEST_TYPES.upgrade then
@@ -79,11 +83,11 @@ DeusChestPreloadExtension.get_chest_type = function (self)
 	return self._chest_type
 end
 
-DeusChestPreloadExtension._generate_stored_weapon_packages = function (self)
+DeusChestPreloadExtension._generate_stored_weapon_packages = function (self, career_name)
 	table.clear(self._weapon_preload_packages)
 
 	local stored_purchase = self._pickup_extension:get_stored_purchase()
-	local preload_packages = get_weapon_packages(stored_purchase)
+	local preload_packages = get_weapon_packages(stored_purchase, career_name)
 
 	table.append(self._weapon_preload_packages, preload_packages)
 end

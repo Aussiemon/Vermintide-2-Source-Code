@@ -5,7 +5,7 @@ ActionCatch.init = function (self, world, item_name, is_server, owner_unit, dama
 end
 
 ActionCatch.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
-	ActionSweep.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
+	ActionCatch.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 
 	local owner_unit = self.owner_unit
 	self._inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")

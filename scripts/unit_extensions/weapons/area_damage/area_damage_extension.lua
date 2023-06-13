@@ -50,6 +50,10 @@ AreaDamageExtension.init = function (self, extension_init_context, unit, extensi
 	if self.invisible_unit then
 		Unit.set_unit_visibility(unit, false)
 	end
+
+	self._custom_data_table = {
+		parent = self
+	}
 end
 
 AreaDamageExtension.destroy = function (self)
@@ -73,11 +77,11 @@ AreaDamageExtension.destroy = function (self)
 	local area_damage = AreaDamageTemplates.get_template(self.area_damage_template)
 
 	if self.is_server and area_damage.server.destroy then
-		area_damage.server.destroy()
+		area_damage.server.destroy(self._custom_data_table)
 	end
 
 	if area_damage.client.destroy then
-		area_damage.client.destroy()
+		area_damage.client.destroy(self._custom_data_table)
 	end
 
 	if self.effect_id then
@@ -291,7 +295,7 @@ AreaDamageExtension.update = function (self, unit, input, dt, context, t)
 	local area_damage = AreaDamageTemplates.get_template(self.area_damage_template)
 
 	if self.is_server then
-		local updated, damage_buffer = area_damage.server.update(self.damage_source, self.unit, self.radius, self.aoe_dot_damage, self.life_time, self.life_timer, self.aoe_dot_damage_interval, self.damage_timer, self.damage_players, self.explosion_template_name, self.slow_modifier, self._side)
+		local updated, damage_buffer = area_damage.server.update(self.damage_source, self.unit, self.radius, self.aoe_dot_damage, self.life_time, self.life_timer, self.aoe_dot_damage_interval, self.damage_timer, self.damage_players, self.explosion_template_name, self.slow_modifier, self._side, self._custom_data_table)
 
 		if updated then
 			self:_add_to_damage_buffer(damage_buffer)
@@ -311,7 +315,7 @@ AreaDamageExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
-	area_damage.client.update(self.world, self.radius, self.unit, self.player_screen_effect_name, self.player_unit_particles, self.damage_players, self.explosion_template_name, self.slow_modifier, self._side)
+	area_damage.client.update(self.world, self.radius, self.unit, self.player_screen_effect_name, self.player_unit_particles, self.damage_players, self.explosion_template_name, self.slow_modifier, self._side, self._custom_data_table)
 
 	self.damage_timer = self.damage_timer + dt
 	self.life_timer = self.life_timer + dt
@@ -354,7 +358,7 @@ AreaDamageExtension._update_damage_buffer = function (self)
 			num_hits = num_hits + 1
 			local area_damage = AreaDamageTemplates.get_template(damage_data.area_damage_template)
 
-			area_damage.server.do_damage(damage_data, self.unit, self.source_attacker_unit)
+			area_damage.server.do_damage(damage_data, self.unit, self.source_attacker_unit, self._custom_data_table)
 		end
 	end
 

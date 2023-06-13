@@ -147,6 +147,13 @@ Development.init_application_parameters = function (args, do_pretty_print_args)
 	script_data["eac-untrusted"] = application_parameters["eac-untrusted"] ~= nil or application_parameters.eac_untrusted ~= nil
 
 	if DEDICATED_SERVER or BUILD ~= "release" then
+		if application_parameters["use-clean-settings"] then
+			script_data = {
+				build_identifier = script_data.build_identifier,
+				settings = script_data.settings or {}
+			}
+		end
+
 		for param, value in pairs(application_parameters) do
 			if type(value) == "string" then
 				local fixedparam = string.gsub(param, "-", "_")
