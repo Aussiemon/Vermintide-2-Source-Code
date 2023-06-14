@@ -1,5 +1,246 @@
 StoreDlcSettings = {
 	{
+		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_q2_2023_hat_collection",
+		name = "display_name_q2_2023_hat_collection",
+		slideshow_texture = "store_slideshow_bundle_five_career_bundle_0004",
+		show_in_slideshow = true,
+		information_text = "description_q2_2023_hat_collection",
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_q2_2023_hat_collection",
+		optional_dlc_display_name = "display_name_q2_2023_hat_collection",
+		dlc_name = "q2_2023_hat_collection",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_q2_2023_hat_collection",
+		optional_dlc_subtitle = "five_career_bundle_0001_subtitle",
+		slideshow_text = "description_q2_2023_hat_collection",
+		is_bundle = true,
+		bundle_contains = {
+			"adept_hat_1003",
+			"ironbreaker_hat_1005",
+			"huntsman_hat_1003",
+			"shade_hat_1004",
+			"bountyhunter_hat_1004"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		},
+		layout_console = {
+			{
+				id = "dlc_logo",
+				type = "big_image",
+				settings = {
+					text = "",
+					texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_q2_2023_hat_collection",
+					localize = false,
+					show_frame = true,
+					texture_package = "resource_packages/store/bundle_icons/store_item_icon_q2_2023_hat_collection",
+					image_size = {
+						800.4,
+						591.6
+					},
+					size = {
+						800.4,
+						591.6
+					}
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						260,
+						0
+					}
+				}
+			},
+			{
+				id = "adept_hat_1003",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_adept_hat_1003",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_adept_hat_1003",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						260,
+						0
+					}
+				}
+			},
+			{
+				id = "ironbreaker_hat_1005",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_ironbreaker_hat_1005",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_ironbreaker_hat_1005",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						260,
+						0
+					}
+				}
+			},
+			{
+				id = "huntsman_hat_1003",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_huntsman_hat_1003",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_huntsman_hat_1003",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						260,
+						0
+					}
+				}
+			},
+			{
+				id = "shade_hat_1004",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_shade_hat_1004",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_shade_hat_1004",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						260,
+						0
+					}
+				}
+			},
+			{
+				id = "bountyhunter_hat_1004",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_bountyhunter_hat_1004",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_bountyhunter_hat_1004",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			}
+		}
+	},
+	{
 		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_adept_bundle_0002",
 		name = "display_name_adept_bundle_0002",
 		slideshow_texture = "store_slideshow_bundle_adept_bundle_0002",

@@ -59,7 +59,14 @@ achievements.dwarf_valaya_emote = {
 			return
 		end
 
-		local character_state_machine_ext = ScriptUnit.extension(Managers.player:local_player().player_unit, "character_state_machine_system")
+		local player = Managers.player:local_player()
+		local unit = player and player.player_unit
+
+		if not unit then
+			return
+		end
+
+		local character_state_machine_ext = ScriptUnit.extension(unit, "character_state_machine_system")
 		local state_machine = character_state_machine_ext.state_machine
 		local current_state = state_machine and state_machine.state_current
 		local is_emoting = current_state and current_state.name == "emote" and current_state.current_emote == "anim_pose_unarmed_05"
@@ -74,12 +81,23 @@ achievements.dwarf_valaya_emote = {
 
 		if not template_data.end_t then
 			template_data.end_t = t + 5
+			template_data.completed = false
 
 			return
 		end
 
-		if template_data.end_t < t then
+		if template_data.end_t < t and not template_data.completed then
+			local audio_system_extension = Managers.state.entity:system("audio_system")
+
+			audio_system_extension:_play_event("hud_pickup_loot_die", unit)
+
+			local health_extension = ScriptUnit.extension(unit, "health_system")
+			local amount_to_heal = health_extension:get_max_health() / 2
+
+			health_extension:add_heal(unit, amount_to_heal, nil, "bandage")
 			statistics_db:increment_stat(stats_id, "dwarf_valaya_emote")
+
+			template_data.completed = true
 		end
 	end
 }

@@ -1147,21 +1147,27 @@ InteractionDefinitions.pickup_object = {
 						if slot_full then
 							local has_droppable, is_stored, drop_item_data = inventory_extension:has_droppable_item(slot_name, _replaceable_item_filter(item_name))
 
-							fassert(has_droppable, "Can't pickup item '%s'. Nothing to replace. Should be caught in 'can_interact'", item_name)
-							_drop_pickup_position_rotation(drop_item_data, pickup_position, pickup_rotation)
+							if has_droppable then
+								_drop_pickup_position_rotation(drop_item_data, pickup_position, pickup_rotation)
 
-							if is_stored then
-								if should_wield then
-									inventory_extension:swap_equipment_from_storage(slot_name, SwapFromStorageType.Same, drop_item_data)
+								if is_stored then
+									if should_wield then
+										inventory_extension:swap_equipment_from_storage(slot_name, SwapFromStorageType.Same, drop_item_data)
+										inventory_extension:destroy_slot(slot_name)
+										inventory_extension:add_equipment(slot_name, pickup_item_data, unit_template, extra_extension_init_data)
+									else
+										inventory_extension:remove_additional_item(slot_name, drop_item_data)
+										inventory_extension:store_additional_item(slot_name, pickup_item_data)
+									end
+								else
 									inventory_extension:destroy_slot(slot_name)
 									inventory_extension:add_equipment(slot_name, pickup_item_data, unit_template, extra_extension_init_data)
-								else
-									inventory_extension:remove_additional_item(slot_name, drop_item_data)
-									inventory_extension:store_additional_item(slot_name, pickup_item_data)
 								end
-							else
-								inventory_extension:destroy_slot(slot_name)
-								inventory_extension:add_equipment(slot_name, pickup_item_data, unit_template, extra_extension_init_data)
+							elseif pickup_name then
+								local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
+								local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types.dropped
+
+								network_manager.network_transmit:send_rpc_server("rpc_spawn_pickup", pickup_name_id, pickup_position, pickup_rotation, pickup_spawn_type_id)
 							end
 						elseif current_item_data then
 							if should_wield then

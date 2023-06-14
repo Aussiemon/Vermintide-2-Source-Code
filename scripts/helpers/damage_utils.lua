@@ -354,15 +354,13 @@ local function do_damage_calculation(attacker_unit, damage_source, original_powe
 	end
 
 	if is_friendly_fire then
-		local friendly_fire_multiplier = difficulty_settings.friendly_fire_multiplier
+		local friendly_fire_multiplier = difficulty_settings.friendly_fire_multiplier or 0
 
 		if damage_profile and damage_profile.friendly_fire_multiplier then
 			friendly_fire_multiplier = friendly_fire_multiplier * damage_profile.friendly_fire_multiplier
 		end
 
-		if friendly_fire_multiplier then
-			damage = damage * friendly_fire_multiplier
-		end
+		damage = damage * friendly_fire_multiplier
 	end
 
 	local heavy_armor_damage = false
