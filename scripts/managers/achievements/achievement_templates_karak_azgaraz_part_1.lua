@@ -89,12 +89,22 @@ achievements.dwarf_valaya_emote = {
 		if template_data.end_t < t and not template_data.completed then
 			local audio_system_extension = Managers.state.entity:system("audio_system")
 
-			audio_system_extension:_play_event("hud_pickup_loot_die", unit)
+			audio_system_extension:_play_event("Play_hud_small_puzzle_cue", unit)
 
 			local health_extension = ScriptUnit.extension(unit, "health_system")
 			local amount_to_heal = health_extension:get_max_health() / 2
 
-			health_extension:add_heal(unit, amount_to_heal, nil, "bandage")
+			if Managers.player.is_server then
+				DamageUtils.heal_network(unit, unit, amount_to_heal, "healing_draught")
+			else
+				local network_manager = Managers.state.network
+				local network_transmit = network_manager.network_transmit
+				local unit_id = network_manager:unit_game_object_id(unit)
+				local heal_type_id = NetworkLookup.heal_types.healing_draught
+
+				network_transmit:send_rpc_server("rpc_request_heal", unit_id, amount_to_heal, heal_type_id)
+			end
+
 			statistics_db:increment_stat(stats_id, "dwarf_valaya_emote")
 
 			template_data.completed = true
@@ -129,13 +139,19 @@ achievements.dwarf_barrel_carry = {
 		return statistics_db:get_persistent_stat(stats_id, "dwarf_barrel_carry") >= 1
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
+		local level_key = Managers.state.game_mode:level_key()
+
+		if not level_key or level_key ~= "dlc_dwarf_interior" then
+			return
+		end
+
 		if template_data.failed then
 			return
 		end
 
-		local unit = event_data[2]
+		local is_limited = event_data[2]
 
-		if unit and ScriptUnit.has_extension(unit, "limited_item_track_system") then
+		if is_limited then
 			template_data.failed = true
 
 			return

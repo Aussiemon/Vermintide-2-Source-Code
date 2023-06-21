@@ -446,22 +446,33 @@ AccountManager._verify_user_integrity = function (self)
 	end
 end
 
+local KEYBOARD_DEVICES = {
+	xb1_mouse = true,
+	xb1_keyboard = true
+}
+
 AccountManager._verify_user_profile = function (self)
 	if self._popup_id or self._signout_popup_id then
 		return
 	end
 
+	local most_recent_device = Managers.input:get_most_recent_device()
+	local current_device_type = most_recent_device.type()
+	local using_keyboard = KEYBOARD_DEVICES[current_device_type] or false
+	local active_controller = self._active_controller
 	local controller_changed = false
 
-	if self._active_controller then
-		local controller_id = self._active_controller.controller_id()
+	if active_controller and not using_keyboard then
+		local controller_id = active_controller.controller_id()
 		controller_changed = controller_id ~= self._controller_id
 	end
 
-	local user_id = self._active_controller and self._active_controller.user_id()
+	local user_id = active_controller and (not using_keyboard and active_controller.user_id() or self._user_id)
 	local user_info = user_id and self:_user_id_in_cache(user_id) and XboxLive.user_info(user_id)
+	local controller_disconnected = not using_keyboard and active_controller.disconnected() or false
+	local controller_user_id = not using_keyboard and active_controller.user_id() or self._user_id
 
-	if not self._active_controller or not self._active_controller.user_id() or self._active_controller.disconnected() or not user_info or self._user_info.xbox_user_id ~= user_info.xbox_user_id or not user_info.signed_in or controller_changed then
+	if not active_controller or not controller_user_id or controller_disconnected or not user_info or self._user_info.xbox_user_id ~= user_info.xbox_user_id or not user_info.signed_in or controller_changed then
 		local wanted_profile_id = self._user_info.xbox_user_id
 		local wanted_profile = self._gamertags[wanted_profile_id]
 		local cropped_profile = wanted_profile and Managers.popup:fit_text_width_to_popup(wanted_profile) or "?"

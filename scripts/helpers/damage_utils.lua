@@ -1338,6 +1338,7 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 			end)
 		end
 
+		local side_manager = Managers.state.side
 		local area_damage_system = Managers.state.entity:system("area_damage_system")
 		local target_number = 0
 		local hit_sound_cap = explosion_data.hit_sound_event_cap or num_hits
@@ -1349,11 +1350,11 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 			local blackboard = BLACKBOARDS[hit_unit]
 			local breed = blackboard and blackboard.breed
 			local is_player = breed and breed.is_player
-			local is_enemy = DamageUtils.is_enemy(attacker_unit, hit_unit)
-			local damage_unit = is_enemy or friendly_fire_enabled
+			local is_ally = side_manager:is_ally(attacker_unit, hit_unit)
+			local damage_unit = not is_ally or friendly_fire_enabled
 
 			if is_player then
-				if not is_enemy then
+				if is_ally then
 					damage_unit = damage_unit or forced_friendly_player_damage
 				elseif damage_unit then
 					local ghost_mode_extension = ScriptUnit.has_extension(hit_unit, "ghost_mode_system")
@@ -1923,7 +1924,7 @@ DamageUtils.buff_on_attack = function (unit, hit_unit, attack_type, is_critical,
 	end
 
 	local side_manager = Managers.state.side
-	local hostile_unit = side_manager:is_enemy(unit, hit_unit)
+	local hostile_unit = side_manager:is_enemy(unit, hit_unit) or Unit.get_data(hit_unit, "is_dummy")
 
 	if hostile_unit and attack_type ~= "wind_mutator" then
 		local ranged_attack = RangedAttackTypes[attack_type]

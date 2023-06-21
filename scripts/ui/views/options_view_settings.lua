@@ -1002,22 +1002,12 @@ local gameplay_settings_definition = {
 		widget_type = "drop_down"
 	},
 	{
-		setting_name = "twitch_spawn_amount",
-		widget_type = "stepper",
-		options = {
-			{
-				value = 1,
-				text = Localize("percent_100")
-			},
-			{
-				value = 1.5,
-				text = Localize("percent_150")
-			},
-			{
-				value = 2,
-				text = Localize("percent_200")
-			}
-		}
+		setup = "cb_twitch_spawn_amount_setup",
+		callback_on_release = true,
+		saved_value = "cb_twitch_spawn_amount_saved_value",
+		callback = "cb_twitch_spawn_amount",
+		tooltip_text = "tooltip_twitch_spawn_amount",
+		widget_type = "slider"
 	},
 	{
 		setting_name = "twitch_disable_positive_votes",

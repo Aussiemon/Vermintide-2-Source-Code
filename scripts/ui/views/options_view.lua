@@ -10602,4 +10602,38 @@ OptionsView.cb_twitch_difficulty = function (self, content)
 	self.changed_user_settings.twitch_difficulty = value
 end
 
+OptionsView.cb_twitch_spawn_amount_setup = function (self)
+	local min = 100
+	local max = 300
+	local default = DefaultUserSettings.get("user_settings", "twitch_spawn_amount")
+
+	if not Application.user_setting("twitch_spawn_amount") then
+		slot4 = default
+	end
+
+	local twitch_spawn_amount = 100 * slot4
+	local value = get_slider_value(min, max, twitch_spawn_amount)
+
+	return value, min, max, 0, "menu_settings_twitch_spawn_amount", 100 * default
+end
+
+OptionsView.cb_twitch_spawn_amount_saved_value = function (self, widget)
+	local content = widget.content
+	local min = content.min
+	local max = content.max
+
+	if not self:_get_current_user_setting("twitch_spawn_amount") then
+		slot5 = content.default_value
+	end
+
+	local twitch_spawn_amount = 100 * slot5
+	twitch_spawn_amount = math.clamp(twitch_spawn_amount, min, max)
+	content.internal_value = get_slider_value(min, max, twitch_spawn_amount)
+	content.value = twitch_spawn_amount
+end
+
+OptionsView.cb_twitch_spawn_amount = function (self, content, style, called_from_graphics_quality)
+	self.changed_user_settings.twitch_spawn_amount = 0.01 * content.value
+end
+
 return

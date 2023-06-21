@@ -486,11 +486,14 @@ ChatGui.block_input = function (self)
 end
 
 ChatGui.unblock_input = function (self)
-	self.input_manager:release_input({
-		"keyboard",
-		"gamepad",
-		"mouse"
-	}, 1, "chat_input", "ChatGui")
+	if self.input_manager then
+		self.input_manager:release_input({
+			"keyboard",
+			"gamepad",
+			"mouse"
+		}, 1, "chat_input", "ChatGui")
+	end
+
 	self:_hide_cursor()
 end
 

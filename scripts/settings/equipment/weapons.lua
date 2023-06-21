@@ -170,20 +170,22 @@ Dots = {
 	end
 }
 DotTypeLookup = {
-	burning_flamethrower_dot = "burning_dot",
-	burning_3W_dot = "burning_dot",
-	burning_dot = "burning_dot",
-	arrow_poison_dot = "poison_dot",
 	weapon_bleed_dot_whc = "poison_dot",
-	weapon_bleed_dot_maidenguard = "poison_dot",
-	corpse_explosion_default = "poison_dot",
-	beam_burning_dot = "burning_dot",
-	weapon_bleed_dot_dagger = "poison_dot",
 	burning_dot_fire_grenade = "burning_dot",
+	weapon_bleed_dot_dagger = "poison_dot",
+	weapon_bleed_dot_maidenguard = "poison_dot",
+	burning_3W_dot_force_fire = "burning_dot",
+	arrow_poison_dot = "poison_dot",
+	burning_dot = "burning_dot",
+	beam_burning_dot = "burning_dot",
+	burning_1W_dot_force_fire = "burning_dot",
+	burning_flamethrower_dot = "burning_dot",
 	burning_1W_dot = "burning_dot",
 	burning_1W_dot_unchained_push = "burning_dot",
 	aoe_poison_dot = "poison_dot",
 	burning_dot_fire_grenade_force_fire = "burning_dot",
+	burning_3W_dot = "burning_dot",
+	corpse_explosion_default = "poison_dot",
 	chaos_zombie_explosion = "poison_dot"
 }
 

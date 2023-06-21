@@ -381,7 +381,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 10
+			duration = 5
 		},
 		{
 			"continue_when",
@@ -553,7 +553,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 10
+			duration = 5
 		},
 		{
 			"spawn_at_raw",
@@ -657,6 +657,17 @@ local terror_event_blueprints = {
 			max_active_enemies = 100
 		},
 		{
+			"spawn_at_raw",
+			spawner_id = "dwarf_interior_brewery_specials_03",
+			amount = 1,
+			breed_name = {
+				"skaven_poison_wind_globadier",
+				"skaven_warpfire_thrower",
+				"skaven_ratling_gunner",
+				"skaven_gutter_runner"
+			}
+		},
+		{
 			"event_horde",
 			limit_spawners = 8,
 			spawner_id = "brewery_event_hard_c",
@@ -672,17 +683,6 @@ local terror_event_blueprints = {
 			condition = function (t)
 				return count_event_breed("skaven_clan_rat") < 5 and count_event_breed("skaven_slave") < 7
 			end
-		},
-		{
-			"spawn_at_raw",
-			spawner_id = "dwarf_interior_brewery_specials_03",
-			amount = 1,
-			breed_name = {
-				"skaven_poison_wind_globadier",
-				"skaven_warpfire_thrower",
-				"skaven_ratling_gunner",
-				"skaven_gutter_runner"
-			}
 		},
 		{
 			"event_horde",
@@ -727,7 +727,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 10
+			duration = 5
 		},
 		{
 			"event_horde",
@@ -767,7 +767,7 @@ local terror_event_blueprints = {
 	dwarf_interior_brewery_pre_pause = {
 		{
 			"delay",
-			duration = 5
+			duration = 3
 		},
 		{
 			"flow_event",
@@ -777,7 +777,7 @@ local terror_event_blueprints = {
 	dwarf_interior_brewery_post_pause = {
 		{
 			"delay",
-			duration = 5
+			duration = 3
 		},
 		{
 			"flow_event",
@@ -795,7 +795,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 10
+			duration = 5
 		},
 		{
 			"play_stinger",
@@ -976,7 +976,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 3
+			duration = 5
 		},
 		{
 			"spawn_at_raw",
@@ -988,7 +988,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 3
+			duration = 5
 		},
 		{
 			"event_horde",
@@ -1004,7 +1004,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 60,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat", "skaven_clan_rat_with_shield", "skaven_storm_vermin_commander") < 5
+				return count_event_breed("skaven_clan_rat", "skaven_clan_rat_with_shield", "skaven_storm_vermin_commander") < 5 and count_event_breed("skaven_gutter_runner", "skaven_ratling_gunner") < 1
 			end
 		},
 		{
@@ -1060,6 +1060,10 @@ local terror_event_blueprints = {
 			limit_spawners = 8,
 			spawner_id = "great_hall_air_vent_spawners",
 			composition_type = "event_extra_spice_medium"
+		},
+		{
+			"delay",
+			duration = 5
 		},
 		{
 			"spawn_special",

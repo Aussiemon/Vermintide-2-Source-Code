@@ -44,8 +44,8 @@ TwitchManager.init = function (self)
 
 	debug_print(Application.settings("twitch"))
 
-	TwitchSettings.default_downtime = Application.user_setting("twitch_time_between_votes")
-	TwitchSettings.default_vote_time = Application.user_setting("twitch_vote_time")
+	TwitchSettings.default_downtime = math.max(1, Application.user_setting("twitch_time_between_votes"))
+	TwitchSettings.default_vote_time = math.max(1, Application.user_setting("twitch_vote_time"))
 	TwitchSettings.difficulty = Application.user_setting("twitch_difficulty")
 	local disable_positive_votes_setting = Application.user_setting("twitch_disable_positive_votes")
 	TwitchSettings.disable_giving_items = disable_positive_votes_setting == TwitchSettings.positive_vote_options.disable_giving_items or disable_positive_votes_setting == TwitchSettings.positive_vote_options.disable_positive_votes
@@ -53,6 +53,12 @@ TwitchManager.init = function (self)
 	TwitchSettings.disable_mutators = Application.user_setting("twitch_disable_mutators")
 	TwitchSettings.spawn_amount_multiplier = math.clamp(Application.user_setting("twitch_spawn_amount"), 1, 3)
 	TwitchSettings.mutator_duration_multiplier = math.clamp(Application.user_setting("twitch_mutator_duration"), 1, 3)
+
+	if TwitchSettings.default_downtime + TwitchSettings.default_vote_time < 5 then
+		TwitchSettings.default_downtime = 1
+		TwitchSettings.default_vote_time = 5
+	end
+
 	self._debug_vote_timer = 0.25
 end
 

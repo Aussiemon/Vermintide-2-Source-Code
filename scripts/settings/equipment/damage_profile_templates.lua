@@ -3867,7 +3867,7 @@ DamageProfileTemplates.fire_grenade_aoe = {
 		}
 	},
 	default_target = {
-		dot_template_name = "burning_3W_dot",
+		dot_template_name = "burning_3W_dot_force_fire",
 		damage_type = "grenade",
 		attack_template = "fire_grenade_dot",
 		power_distribution = {
@@ -4591,6 +4591,8 @@ DamageProfileTemplates.burning_dot.default_target.power_distribution = {
 	attack = 0.07,
 	impact = 0.05
 }
+DamageProfileTemplates.burning_dot_force_fire = table.clone(DamageProfileTemplates.burning_dot)
+DamageProfileTemplates.burning_dot_force_fire.default_target.damage_type = "burninating_force_fire"
 DamageProfileTemplates.burning_dot_firegrenade = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.burning_dot_firegrenade.no_stagger = true
 DamageProfileTemplates.burning_dot_firegrenade.is_dot = true

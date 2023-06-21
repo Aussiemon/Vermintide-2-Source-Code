@@ -52,15 +52,13 @@ local mt = {
 }
 local SFX_EVENTS = {
 	default = {
-		CLOSE = "",
-		HOVER = "Play_hud_socialwheel_hover",
 		OPEN = "Play_hud_socialwheel_open",
+		HOVER = "Play_hud_socialwheel_hover",
 		SELECT = "Play_hud_socialwheel_select"
 	},
 	heroes = {
-		CLOSE = "",
-		HOVER = "Play_hud_socialwheel_hover",
 		OPEN = "Play_hud_socialwheel_open",
+		HOVER = "Play_hud_socialwheel_hover",
 		SELECT = "Play_hud_socialwheel_select"
 	}
 }
@@ -543,6 +541,10 @@ SocialWheelUI._local_ping_attempt = function (self, social_wheel_event_id, targe
 end
 
 SocialWheelUI._play_sound = function (self, sound_event)
+	if not sound_event then
+		return
+	end
+
 	WwiseWorld.trigger_event(self._wwise_world, sound_event)
 end
 

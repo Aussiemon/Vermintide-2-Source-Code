@@ -133,6 +133,7 @@ PlayFabMirrorBase._parse_unlocked_weapon_skins = function (self, read_only_data_
 	local unlocked_weapon_skins = {}
 	local unlocked_weapon_skins_string = read_only_data_values.unlocked_weapon_skins
 	local unlock_manager = Managers.unlock
+	local existing_weapon_skins = self._unlocked_weapon_skins or {}
 
 	if unlocked_weapon_skins_string then
 		local decoded = cjson.decode(unlocked_weapon_skins_string)
@@ -144,7 +145,7 @@ PlayFabMirrorBase._parse_unlocked_weapon_skins = function (self, read_only_data_
 				local required_dlc = item_data and item_data.required_dlc
 
 				if not required_dlc or unlock_manager:is_dlc_unlocked(required_dlc) then
-					unlocked_weapon_skins[skin_name] = true
+					unlocked_weapon_skins[skin_name] = existing_weapon_skins[skin_name] or true
 				end
 			end
 		end
@@ -157,6 +158,7 @@ PlayFabMirrorBase._parse_unlocked_cosmetics = function (self, read_only_data_val
 	local unlocked_cosmetics = {}
 	local unlocked_cosmetics_string = read_only_data_values.unlocked_cosmetics
 	local unlock_manager = Managers.unlock
+	local existing_cosmetics = self._unlocked_cosmetics or {}
 
 	if unlocked_cosmetics_string then
 		local decoded = cjson.decode(unlocked_cosmetics_string)
@@ -169,7 +171,7 @@ PlayFabMirrorBase._parse_unlocked_cosmetics = function (self, read_only_data_val
 					local required_dlc = item_data and item_data.required_dlc
 
 					if not required_dlc or unlock_manager:is_dlc_unlocked(required_dlc) then
-						unlocked_cosmetics[cosmetic_name] = true
+						unlocked_cosmetics[cosmetic_name] = existing_cosmetics[cosmetic_name] or true
 					end
 				end
 			end

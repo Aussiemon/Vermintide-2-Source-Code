@@ -4988,7 +4988,7 @@ BuffTemplates = {
 		buffs = {
 			{
 				duration = 3,
-				name = "burning_dot_force_fire",
+				name = "burning_dot",
 				end_flow_event = "smoke",
 				start_flow_event = "burn_force_fire",
 				death_flow_event = "burn_death_force_fire",
@@ -4997,7 +4997,7 @@ BuffTemplates = {
 				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
 				damage_type = "burninating_force_fire",
-				damage_profile = "burning_dot",
+				damage_profile = "burning_dot_force_fire",
 				update_func = "apply_dot_damage",
 				perk = buff_perks.burning
 			}
@@ -5007,7 +5007,7 @@ BuffTemplates = {
 		buffs = {
 			{
 				end_flow_event = "smoke",
-				name = "infinite burning dot",
+				name = "infinite_burning_dot",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
 				on_max_stacks_overflow_func = "reapply_infinite_burn",
@@ -5017,26 +5017,6 @@ BuffTemplates = {
 				time_between_dot_damages = 0.75,
 				max_stacks = 1,
 				damage_type = "burninating",
-				damage_profile = "burning_dot",
-				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
-			}
-		}
-	},
-	burning_dot_infinite_force_fire = {
-		buffs = {
-			{
-				end_flow_event = "smoke",
-				name = "infinite_burning_dot_force fire",
-				start_flow_event = "burn_infinity_force_fire",
-				death_flow_event = "burn_death_force_fire",
-				on_max_stacks_overflow_func = "reapply_infinite_burn",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.75,
-				time_between_dot_damages = 0.75,
-				max_stacks = 1,
-				damage_type = "burninating_force_fire",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
 				perk = buff_perks.burning
@@ -5066,7 +5046,7 @@ BuffTemplates = {
 		buffs = {
 			{
 				end_flow_event = "smoke",
-				name = "infinite burning dot",
+				name = "infinite_burning_dot",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
 				on_max_stacks_overflow_func = "reapply_infinite_burn",
@@ -5107,7 +5087,7 @@ BuffTemplates = {
 		buffs = {
 			{
 				end_flow_event = "smoke",
-				name = "infinite burning dot",
+				name = "infinite_burning_dot",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
 				on_max_stacks_overflow_func = "reapply_infinite_burn",
@@ -5167,7 +5147,7 @@ BuffTemplates = {
 		buffs = {
 			{
 				duration = 6,
-				name = "burning_dot_fire_grenade_force_fire",
+				name = "burning_dot_fire_grenade",
 				end_flow_event = "smoke",
 				start_flow_event = "burn_force_fire",
 				death_flow_event = "burn_death_force_fire",
@@ -5196,6 +5176,25 @@ BuffTemplates = {
 				time_between_dot_damages = 1.5,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
+				update_func = "apply_dot_damage",
+				perk = buff_perks.burning
+			}
+		}
+	},
+	burning_1W_dot_force_fire = {
+		buffs = {
+			{
+				duration = 2,
+				name = "burning_1W_dot",
+				end_flow_event = "smoke",
+				start_flow_event = "burn_force_fire",
+				death_flow_event = "burn_death_force_fire",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1.5,
+				time_between_dot_damages = 1.5,
+				damage_type = "burninating_force_fire",
+				damage_profile = "burning_dot_force_fire",
 				update_func = "apply_dot_damage",
 				perk = buff_perks.burning
 			}
@@ -5247,7 +5246,7 @@ BuffTemplates = {
 		buffs = {
 			{
 				end_flow_event = "smoke",
-				name = "infinite burning dot",
+				name = "infinite_burning_dot",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
 				on_max_stacks_overflow_func = "reapply_infinite_burn",
@@ -5282,11 +5281,30 @@ BuffTemplates = {
 			}
 		}
 	},
+	burning_3W_dot_force_fire = {
+		buffs = {
+			{
+				duration = 3,
+				name = "burning_3W_dot",
+				end_flow_event = "smoke",
+				start_flow_event = "burn_force_fire",
+				death_flow_event = "burn_death_force_fire",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1,
+				time_between_dot_damages = 1,
+				damage_type = "burninating_force_fire",
+				damage_profile = "burning_dot_force_fire",
+				update_func = "apply_dot_damage",
+				perk = buff_perks.burning
+			}
+		}
+	},
 	burning_3W_dot_infinite = {
 		buffs = {
 			{
 				end_flow_event = "smoke",
-				name = "infinite burning dot",
+				name = "infinite_burning_dot",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
 				on_max_stacks_overflow_func = "reapply_infinite_burn",

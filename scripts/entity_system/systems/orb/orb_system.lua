@@ -23,6 +23,23 @@ local function spawn_orb(nav_world, orb_name, owner_peer_id, orb_starting_positi
 			Vector3.set_z(position_found, z)
 
 			orb_flight_target_position = Vector3Box(position_found)
+
+			break
+		end
+	end
+
+	if not orb_flight_target_position then
+		local success, z = GwNavQueries.triangle_from_position(nav_world, orb_starting_position, 5, 5)
+
+		if success then
+			local pos = Vector3(orb_starting_position[1], orb_starting_position[2], z)
+			orb_flight_target_position = Vector3Box(pos)
+		else
+			local pos = GwNavQueries.inside_position_from_outside_position(nav_world, orb_starting_position, 4, 4, 5)
+
+			if pos then
+				orb_flight_target_position = Vector3Box(pos)
+			end
 		end
 	end
 
@@ -66,8 +83,16 @@ OrbSystem.rpc_spawn_orb = function (self, channel_id, orb_name, owner_peer_id, o
 	end
 
 	orb_name = NetworkLookup.pickup_names[orb_name]
+	local start_pos = Vector3Box(orb_starting_position)
+	local slice_dir = Vector3Box(cake_slice_dir)
 
-	spawn_orb(nav_world, orb_name, owner_peer_id, orb_starting_position, cake_slice_dir, cake_slice_angle_radians)
+	local function nav_callback()
+		spawn_orb(nav_world, orb_name, owner_peer_id, start_pos:unbox(), slice_dir:unbox(), cake_slice_angle_radians)
+	end
+
+	local ai_navigation_system = Managers.state.entity:system("ai_navigation_system")
+
+	ai_navigation_system:add_safe_navigation_callback(nav_callback)
 end
 
 OrbSystem.spawn_orb = function (self, orb_name, owner_peer_id, orb_starting_position, cake_slice_dir, cake_slice_angle_radians)
@@ -77,7 +102,16 @@ OrbSystem.spawn_orb = function (self, orb_name, owner_peer_id, orb_starting_posi
 		return
 	end
 
-	return spawn_orb(nav_world, orb_name, owner_peer_id, orb_starting_position, cake_slice_dir, cake_slice_angle_radians)
+	local start_pos = Vector3Box(orb_starting_position)
+	local slice_dir = Vector3Box(cake_slice_dir)
+
+	local function nav_callback()
+		spawn_orb(nav_world, orb_name, owner_peer_id, start_pos:unbox(), slice_dir:unbox(), cake_slice_angle_radians)
+	end
+
+	local ai_navigation_system = Managers.state.entity:system("ai_navigation_system")
+
+	ai_navigation_system:add_safe_navigation_callback(nav_callback)
 end
 
 OrbSystem.destroy = function (self)

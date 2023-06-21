@@ -221,7 +221,7 @@ ExplosionTemplates = {
 	lamp_oil = {
 		explosion = {
 			radius = 3,
-			dot_template_name = "burning_dot_fire_grenade_force_fire",
+			dot_template_name = "burning_3W_dot_force_fire",
 			max_damage_radius = 1.5,
 			alert_enemies = true,
 			damage_type_glance = "fire_grenade_glance",
@@ -268,7 +268,7 @@ ExplosionTemplates = {
 			}
 		},
 		aoe = {
-			dot_template_name = "burning_dot_fire_grenade_force_fire",
+			dot_template_name = "burning_1W_dot_force_fire",
 			radius = 6,
 			nav_tag_volume_layer = "fire_grenade",
 			create_nav_tag_volume = true,
@@ -452,7 +452,7 @@ ExplosionTemplates = {
 			alert_enemies_radius = 15,
 			damage_type_glance = "fire_grenade_glance",
 			dont_rotate_fx = true,
-			dot_template_name = "burning_dot_fire_grenade_force_fire",
+			dot_template_name = "burning_1W_dot_force_fire",
 			sound_event_name = "fireball_big_hit",
 			alert_enemies = true,
 			damage_profile = "explosive_barrel",

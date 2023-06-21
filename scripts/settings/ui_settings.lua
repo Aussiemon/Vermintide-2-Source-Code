@@ -1407,6 +1407,30 @@ UISettings.dlc_order_data = {
 	{
 		dlc = "five_career_bundle_0006",
 		display_name = "display_name_five_career_bundle_0006"
+	},
+	{
+		dlc = "adept_hat_1003",
+		display_name = "display_name_adept_hat_1003"
+	},
+	{
+		dlc = "ironbreaker_hat_1005",
+		display_name = "display_name_ironbreaker_hat_1005"
+	},
+	{
+		dlc = "huntsman_hat_1003",
+		display_name = "display_name_huntsman_hat_1003"
+	},
+	{
+		dlc = "shade_hat_1004",
+		display_name = "display_name_shade_hat_1004"
+	},
+	{
+		dlc = "bountyhunter_hat_1004",
+		display_name = "display_name_bountyhunter_hat_1004"
+	},
+	{
+		dlc = "q2_2023_hat_collection",
+		display_name = "display_name_q2_2023_hat_collection"
 	}
 }
 local pc_button_icon = {

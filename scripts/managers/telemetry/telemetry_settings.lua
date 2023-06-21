@@ -34,3 +34,9 @@ TelemetrySettings = {
 	collect_memory = BUILD ~= "release" and Development.parameter("telemetry-collect-memory"),
 	use_session_survey = Development.parameter("use-session-survey")
 }
+
+if PLATFORM == "ps4" and BUILD == "release" then
+	print("#### TEMPORARILY TURNING OFF TELEMETRY FOR PS4 ####")
+
+	TelemetrySettings.enabled = false
+end

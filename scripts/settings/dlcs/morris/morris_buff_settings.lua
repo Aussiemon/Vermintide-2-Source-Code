@@ -3840,13 +3840,7 @@ dlc_settings.proc_functions = {
 			if is_server() then
 				local orb_system = Managers.state.entity:system("orb_system")
 
-				local function nav_callback()
-					orb_system:spawn_orb(orb_name, owner_peer_id, orb_starting_position, cake_slice_dir, cake_slice_angle_radians)
-				end
-
-				local ai_navigation_system = Managers.state.entity:system("ai_navigation_system")
-
-				ai_navigation_system:add_safe_navigation_callback(nav_callback)
+				orb_system:spawn_orb(orb_name, owner_peer_id, orb_starting_position, cake_slice_dir, cake_slice_angle_radians)
 			else
 				local network_manager = Managers.state.network
 				local orb_name_lookup = NetworkLookup.pickup_names[orb_name]
@@ -5358,7 +5352,7 @@ dlc_settings.buff_templates = {
 		buffs = {
 			{
 				end_flow_event = "smoke",
-				name = "infinite burning dot",
+				name = "infinite_burning_dot",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
 				on_max_stacks_overflow_func = "reapply_infinite_burn",

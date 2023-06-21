@@ -148,6 +148,12 @@ achievements.dwarf_push = {
 		return DWARF_PUSH_AMOUNT <= statistics_db:get_persistent_stat(stats_id, "dwarf_push")
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
+		local level_key = Managers.state.game_mode:level_key()
+
+		if not level_key or level_key ~= "dlc_dwarf_exterior" then
+			return
+		end
+
 		local damage_data = event_data[3]
 		local damage_type = damage_data[DamageDataIndex.DAMAGE_TYPE]
 

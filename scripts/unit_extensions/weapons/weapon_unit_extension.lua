@@ -209,6 +209,15 @@ WeaponUnitExtension.init = function (self, extension_init_context, unit, extensi
 		self._weapon_unwield = template and template.on_unwield
 		self._weapon_template = template
 	end
+
+	Managers.state.event:register(self, "on_game_options_changed", "update_game_options")
+	self:update_game_options()
+end
+
+WeaponUnitExtension.update_game_options = function (self)
+	local weapon_trails = Application.user_setting("weapon_trails")
+
+	Unit.set_data(self.unit, "trails_enabled", weapon_trails ~= "none")
 end
 
 WeaponUnitExtension.cb_game_session_disconnect = function (self)
@@ -224,6 +233,8 @@ WeaponUnitExtension.extensions_ready = function (self, world, unit)
 end
 
 WeaponUnitExtension.destroy = function (self)
+	Managers.state.event:unregister("on_game_options_changed", self)
+
 	if self.current_action_settings then
 		local buff_data = self.current_action_settings.buff_data
 

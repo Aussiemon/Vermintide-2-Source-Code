@@ -31,10 +31,10 @@ ObjectiveSocketSystem.init = function (self, entity_system_creation_context, sys
 		if self.is_server then
 			local network_manager = self.network_manager
 			local unit_id = network_manager:game_object_or_level_id(extension.unit)
-
-			self.network_manager.network_transmit:send_rpc_clients("rpc_objective_entered_socket_zone", unit_id, socket_id, extension.use_game_object_id or false)
-
 			local limited_item_track_extension = ScriptUnit.has_extension(unit, "limited_item_track_system")
+			local is_limited_objective_unit = limited_item_track_extension and true or false
+
+			self.network_manager.network_transmit:send_rpc_clients("rpc_objective_entered_socket_zone", unit_id, socket_id, extension.use_game_object_id or false, is_limited_objective_unit)
 
 			if limited_item_track_extension then
 				local spawner_unit = limited_item_track_extension.spawner_unit
@@ -46,6 +46,7 @@ ObjectiveSocketSystem.init = function (self, entity_system_creation_context, sys
 			local unit_spawner = Managers.state.unit_spawner
 
 			unit_spawner:mark_for_deletion(unit)
+			Managers.state.achievement:trigger_event("objective_entered_socket_zone", false, is_limited_objective_unit)
 		end
 	end
 
@@ -111,17 +112,22 @@ ObjectiveSocketSystem.hot_join_sync = function (self, peer_id)
 			if not socket.open then
 				local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-				RPC.rpc_objective_entered_socket_zone(channel_id, unit_id, socket_id, extension.use_game_object_id or false)
+				RPC.rpc_objective_entered_socket_zone(channel_id, unit_id, socket_id, extension.use_game_object_id or false, false)
 			end
 		end
 	end
 end
 
-ObjectiveSocketSystem.rpc_objective_entered_socket_zone = function (self, channel_id, unit_id, socket_id, is_game_object)
+ObjectiveSocketSystem.rpc_objective_entered_socket_zone = function (self, channel_id, unit_id, socket_id, is_game_object, is_limited_objective_unit)
 	fassert(not self.is_server, "Should only be called on the client")
 
 	local level = LevelHelper:current_level(self.world)
 	local unit = self.network_manager:game_object_or_level_unit(unit_id, not is_game_object)
+
+	if is_limited_objective_unit then
+		Managers.state.achievement:trigger_event("objective_entered_socket_zone", false, is_limited_objective_unit)
+	end
+
 	local objective_socket_extension = ScriptUnit.extension(unit, "objective_socket_system")
 
 	objective_socket_extension:objective_entered_zone_client(socket_id)

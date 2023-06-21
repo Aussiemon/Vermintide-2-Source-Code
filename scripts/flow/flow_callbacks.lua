@@ -1535,10 +1535,6 @@ function flow_callback_objective_entered_socket_zone(params)
 			print("[flow_callback_objective_entered_socket_zone] Socket type doesn't match", params.socket_unit, params.objective_unit)
 		end
 	end
-
-	if params.objective_unit then
-		Managers.state.achievement:trigger_event("objective_entered_socket_zone", false, params.objective_unit)
-	end
 end
 
 function flow_callback_ussingen_barrel_challenge(params)
