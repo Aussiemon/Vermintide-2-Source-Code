@@ -101,6 +101,10 @@ LevelSettings.dlc_dwarf_beacons = {
 		wh_priest = {
 			"pwh_wp_dwarf_beacons_loading_screen_01",
 			"pwh_wp_dwarf_beacons_loading_screen_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_dwarf_beacons_loading_screen_01",
+			"pbw_nm_dwarf_beacons_loading_screen_02"
 		}
 	}
 }

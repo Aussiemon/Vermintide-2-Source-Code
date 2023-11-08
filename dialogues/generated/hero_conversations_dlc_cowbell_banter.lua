@@ -1,7 +1,7 @@
 return function ()
 	define_rule({
-		name = "pdr_shadow_curse_conversation_one",
-		response = "pdr_shadow_curse_conversation_one",
+		name = "pbw_shadow_curse_conversation_eight",
+		response = "pbw_shadow_curse_conversation_eight",
 		criterias = {
 			{
 				"query_context",
@@ -19,226 +19,29 @@ return function ()
 				"user_context",
 				"enemies_distant",
 				OP.LT,
-				15
+				8
 			},
 			{
 				"user_context",
 				"friends_close",
 				OP.GT,
-				1
+				2
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
+				"bright_wizard"
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"dwarf_ranger"
+				"bright_wizard"
 			},
 			{
 				"global_context",
-				"empire_soldier",
-				OP.EQ,
-				1
-			},
-			{
-				"global_context",
-				"wood_elf",
-				OP.EQ,
-				1
-			},
-			{
-				"global_context",
-				"current_theme",
-				OP.EQ,
-				"belakor"
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMEDIFF,
-				OP.GT,
-				180
-			},
-			{
-				"faction_memory",
-				"shadow_curse_conversation_one",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"shadow_curse_conversation_one",
-				OP.ADD,
-				1
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pes_shadow_curse_conversation_one_b_01",
-		response = "pes_shadow_curse_conversation_one_b_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pdr_shadow_curse_conversation_one_a_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwe_shadow_curse_conversation_one_c_01",
-		response = "pwe_shadow_curse_conversation_one_c_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pes_shadow_curse_conversation_one_b_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"wood_elf"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pes_shadow_curse_conversation_one_d_01",
-		response = "pes_shadow_curse_conversation_one_d_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwe_shadow_curse_conversation_one_c_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwe_shadow_curse_conversation_two",
-		response = "pwe_shadow_curse_conversation_two",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"story_trigger"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"enemies_distant",
-				OP.LT,
-				15
-			},
-			{
-				"user_context",
-				"friends_close",
-				OP.GT,
-				1
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"wood_elf"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"wood_elf"
-			},
-			{
-				"global_context",
-				"bright_wizard",
+				"dwarf_ranger",
 				OP.EQ,
 				1
 			},
@@ -263,7 +66,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"shadow_curse_conversation_two",
+				"shadow_curse_conversation_eight",
 				OP.EQ,
 				0
 			}
@@ -271,7 +74,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"shadow_curse_conversation_two",
+				"shadow_curse_conversation_eight",
 				OP.ADD,
 				1
 			},
@@ -283,8 +86,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwh_shadow_curse_conversation_two_b_01",
-		response = "pwh_shadow_curse_conversation_two_b_01",
+		name = "pbw_shadow_curse_conversation_eight_e_01",
+		response = "pbw_shadow_curse_conversation_eight_e_01",
 		criterias = {
 			{
 				"query_context",
@@ -296,44 +99,7 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_shadow_curse_conversation_two_a_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pbw_shadow_curse_conversation_two_c_01",
-		response = "pbw_shadow_curse_conversation_two_c_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwh_shadow_curse_conversation_two_b_01"
+				"pwh_shadow_curse_conversation_eight_d_01"
 			},
 			{
 				"user_context",
@@ -357,8 +123,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwh_shadow_curse_conversation_two_d_01",
-		response = "pwh_shadow_curse_conversation_two_d_01",
+		name = "pbw_shadow_curse_conversation_eleven_e_01",
+		response = "pbw_shadow_curse_conversation_eleven_e_01",
 		criterias = {
 			{
 				"query_context",
@@ -370,7 +136,7 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_shadow_curse_conversation_two_c_01"
+				"pwe_shadow_curse_conversation_eleven_d_01"
 			},
 			{
 				"user_context",
@@ -382,7 +148,7 @@ return function ()
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"bright_wizard"
 			}
 		},
 		on_done = {
@@ -394,8 +160,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwe_shadow_curse_conversation_two_e_01",
-		response = "pwe_shadow_curse_conversation_two_e_01",
+		name = "pbw_shadow_curse_conversation_four_c_01",
+		response = "pbw_shadow_curse_conversation_four_c_01",
 		criterias = {
 			{
 				"query_context",
@@ -407,7 +173,81 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shadow_curse_conversation_two_d_01"
+				"pwh_shadow_curse_conversation_four_b_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pbw_shadow_curse_conversation_seven_e_01",
+		response = "pbw_shadow_curse_conversation_seven_e_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_shadow_curse_conversation_seven_d_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pbw_shadow_curse_conversation_ten_c_01",
+		response = "pbw_shadow_curse_conversation_ten_c_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_shadow_curse_conversation_ten_b_01"
 			},
 			{
 				"user_context",
@@ -517,8 +357,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwh_shadow_curse_conversation_three_b_01",
-		response = "pwh_shadow_curse_conversation_three_b_01",
+		name = "pbw_shadow_curse_conversation_twelve_e_01",
+		response = "pbw_shadow_curse_conversation_twelve_e_01",
 		criterias = {
 			{
 				"query_context",
@@ -530,7 +370,7 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_shadow_curse_conversation_three_a_01"
+				"pwh_shadow_curse_conversation_twelve_d_01"
 			},
 			{
 				"user_context",
@@ -542,7 +382,7 @@ return function ()
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"bright_wizard"
 			}
 		},
 		on_done = {
@@ -554,8 +394,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pes_shadow_curse_conversation_three_c_01",
-		response = "pes_shadow_curse_conversation_three_c_01",
+		name = "pbw_shadow_curse_conversation_two_c_01",
+		response = "pbw_shadow_curse_conversation_two_c_01",
 		criterias = {
 			{
 				"query_context",
@@ -567,7 +407,327 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shadow_curse_conversation_three_b_01"
+				"pwh_shadow_curse_conversation_two_b_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_shadow_curse_conversation_eight_c_01",
+		response = "pdr_shadow_curse_conversation_eight_c_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_shadow_curse_conversation_eight_b_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_shadow_curse_conversation_five_b_01",
+		response = "pdr_shadow_curse_conversation_five_b_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_shadow_curse_conversation_five_a_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_shadow_curse_conversation_one",
+		response = "pdr_shadow_curse_conversation_one",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"story_trigger"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
+				"user_context",
+				"enemies_distant",
+				OP.LT,
+				15
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GT,
+				1
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"global_context",
+				"empire_soldier",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"wood_elf",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"current_theme",
+				OP.EQ,
+				"belakor"
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMEDIFF,
+				OP.GT,
+				180
+			},
+			{
+				"faction_memory",
+				"shadow_curse_conversation_one",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"shadow_curse_conversation_one",
+				OP.ADD,
+				1
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_shadow_curse_conversation_six",
+		response = "pdr_shadow_curse_conversation_six",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"story_trigger"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
+				"user_context",
+				"enemies_distant",
+				OP.LT,
+				15
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GT,
+				1
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"global_context",
+				"empire_soldier",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"wood_elf",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"current_theme",
+				OP.EQ,
+				"belakor"
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMEDIFF,
+				OP.GT,
+				180
+			},
+			{
+				"faction_memory",
+				"shadow_curse_conversation_six",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"shadow_curse_conversation_six",
+				OP.ADD,
+				1
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_shadow_curse_conversation_ten_e_01",
+		response = "pdr_shadow_curse_conversation_ten_e_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_shadow_curse_conversation_ten_d_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pes_shadow_curse_conversation_eleven_b_01",
+		response = "pes_shadow_curse_conversation_eleven_b_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_shadow_curse_conversation_eleven_a_01"
 			},
 			{
 				"user_context",
@@ -591,8 +751,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwe_shadow_curse_conversation_three_d_01",
-		response = "pwe_shadow_curse_conversation_three_d_01",
+		name = "pes_shadow_curse_conversation_five_d_01",
+		response = "pes_shadow_curse_conversation_five_d_01",
 		criterias = {
 			{
 				"query_context",
@@ -604,7 +764,7 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shadow_curse_conversation_three_c_01"
+				"pwh_shadow_curse_conversation_five_c_01"
 			},
 			{
 				"user_context",
@@ -616,7 +776,7 @@ return function ()
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"wood_elf"
+				"empire_soldier"
 			}
 		},
 		on_done = {
@@ -714,8 +874,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwh_shadow_curse_conversation_four_b_01",
-		response = "pwh_shadow_curse_conversation_four_b_01",
+		name = "pes_shadow_curse_conversation_nine_b_01",
+		response = "pes_shadow_curse_conversation_nine_b_01",
 		criterias = {
 			{
 				"query_context",
@@ -727,278 +887,7 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shadow_curse_conversation_four_a_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pbw_shadow_curse_conversation_four_c_01",
-		response = "pbw_shadow_curse_conversation_four_c_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwh_shadow_curse_conversation_four_b_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_shadow_curse_conversation_four_d_01",
-		response = "pwh_shadow_curse_conversation_four_d_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pbw_shadow_curse_conversation_four_c_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_shadow_curse_conversation_five",
-		response = "pwh_shadow_curse_conversation_five",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"story_trigger"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"enemies_distant",
-				OP.LT,
-				15
-			},
-			{
-				"user_context",
-				"friends_close",
-				OP.GT,
-				1
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"global_context",
-				"empire_soldier",
-				OP.EQ,
-				1
-			},
-			{
-				"global_context",
-				"dwarf_ranger",
-				OP.EQ,
-				1
-			},
-			{
-				"global_context",
-				"current_theme",
-				OP.EQ,
-				"belakor"
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMEDIFF,
-				OP.GT,
-				180
-			},
-			{
-				"faction_memory",
-				"shadow_curse_conversation_five",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"shadow_curse_conversation_five",
-				OP.ADD,
-				1
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pdr_shadow_curse_conversation_five_b_01",
-		response = "pdr_shadow_curse_conversation_five_b_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwh_shadow_curse_conversation_five_a_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_shadow_curse_conversation_five_c_01",
-		response = "pwh_shadow_curse_conversation_five_c_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pdr_shadow_curse_conversation_five_b_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pes_shadow_curse_conversation_five_d_01",
-		response = "pes_shadow_curse_conversation_five_d_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwh_shadow_curse_conversation_five_c_01"
+				"pwe_shadow_curse_conversation_nine_a_01"
 			},
 			{
 				"user_context",
@@ -1022,94 +911,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pdr_shadow_curse_conversation_six",
-		response = "pdr_shadow_curse_conversation_six",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"story_trigger"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"enemies_distant",
-				OP.LT,
-				15
-			},
-			{
-				"user_context",
-				"friends_close",
-				OP.GT,
-				1
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"global_context",
-				"empire_soldier",
-				OP.EQ,
-				1
-			},
-			{
-				"global_context",
-				"wood_elf",
-				OP.EQ,
-				1
-			},
-			{
-				"global_context",
-				"current_theme",
-				OP.EQ,
-				"belakor"
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMEDIFF,
-				OP.GT,
-				180
-			},
-			{
-				"faction_memory",
-				"shadow_curse_conversation_six",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"shadow_curse_conversation_six",
-				OP.ADD,
-				1
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pes_shadow_curse_conversation_six_b_01",
-		response = "pes_shadow_curse_conversation_six_b_01",
+		name = "pes_shadow_curse_conversation_nine_d_01",
+		response = "pes_shadow_curse_conversation_nine_d_01",
 		criterias = {
 			{
 				"query_context",
@@ -1121,7 +924,7 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pdr_shadow_curse_conversation_six_a_01"
+				"pwe_shadow_curse_conversation_nine_c_01"
 			},
 			{
 				"user_context",
@@ -1145,8 +948,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwe_shadow_curse_conversation_six_c_01",
-		response = "pwe_shadow_curse_conversation_six_c_01",
+		name = "pes_shadow_curse_conversation_one_b_01",
+		response = "pes_shadow_curse_conversation_one_b_01",
 		criterias = {
 			{
 				"query_context",
@@ -1158,44 +961,7 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shadow_curse_conversation_six_b_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"wood_elf"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pes_shadow_curse_conversation_six_d_01",
-		response = "pes_shadow_curse_conversation_six_d_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwe_shadow_curse_conversation_six_c_01"
+				"pdr_shadow_curse_conversation_one_a_01"
 			},
 			{
 				"user_context",
@@ -1219,84 +985,35 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwh_shadow_curse_conversation_seven",
-		response = "pwh_shadow_curse_conversation_seven",
+		name = "pes_shadow_curse_conversation_one_d_01",
+		response = "pes_shadow_curse_conversation_one_d_01",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"story_trigger"
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_shadow_curse_conversation_one_c_01"
 			},
 			{
 				"user_context",
 				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"enemies_distant",
 				OP.LT,
-				8
-			},
-			{
-				"user_context",
-				"friends_close",
-				OP.GT,
-				2
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"witch_hunter"
+				6
 			},
 			{
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"global_context",
-				"empire_soldier",
-				OP.EQ,
-				1
-			},
-			{
-				"global_context",
-				"bright_wizard",
-				OP.EQ,
-				1
-			},
-			{
-				"global_context",
-				"current_theme",
-				OP.EQ,
-				"belakor"
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMEDIFF,
-				OP.GT,
-				180
-			},
-			{
-				"faction_memory",
-				"shadow_curse_conversation_seven",
-				OP.EQ,
-				0
+				"empire_soldier"
 			}
 		},
 		on_done = {
-			{
-				"faction_memory",
-				"shadow_curse_conversation_seven",
-				OP.ADD,
-				1
-			},
 			{
 				"faction_memory",
 				"time_since_conversation",
@@ -1331,43 +1048,6 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"empire_soldier"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_shadow_curse_conversation_seven_c_01",
-		response = "pwh_shadow_curse_conversation_seven_c_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pes_shadow_curse_conversation_seven_b_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
 			}
 		},
 		on_done = {
@@ -1416,43 +1096,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pbw_shadow_curse_conversation_seven_e_01",
-		response = "pbw_shadow_curse_conversation_seven_e_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pes_shadow_curse_conversation_seven_d_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
 		name = "pes_shadow_curse_conversation_seven_f_01",
 		response = "pes_shadow_curse_conversation_seven_f_01",
 		criterias = {
@@ -1490,94 +1133,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pbw_shadow_curse_conversation_eight",
-		response = "pbw_shadow_curse_conversation_eight",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"story_trigger"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"enemies_distant",
-				OP.LT,
-				8
-			},
-			{
-				"user_context",
-				"friends_close",
-				OP.GT,
-				2
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			},
-			{
-				"global_context",
-				"dwarf_ranger",
-				OP.EQ,
-				1
-			},
-			{
-				"global_context",
-				"witch_hunter",
-				OP.EQ,
-				1
-			},
-			{
-				"global_context",
-				"current_theme",
-				OP.EQ,
-				"belakor"
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMEDIFF,
-				OP.GT,
-				180
-			},
-			{
-				"faction_memory",
-				"shadow_curse_conversation_eight",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"shadow_curse_conversation_eight",
-				OP.ADD,
-				1
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_shadow_curse_conversation_eight_b_01",
-		response = "pwh_shadow_curse_conversation_eight_b_01",
+		name = "pes_shadow_curse_conversation_six_b_01",
+		response = "pes_shadow_curse_conversation_six_b_01",
 		criterias = {
 			{
 				"query_context",
@@ -1589,278 +1146,7 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_shadow_curse_conversation_eight_a_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pdr_shadow_curse_conversation_eight_c_01",
-		response = "pdr_shadow_curse_conversation_eight_c_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwh_shadow_curse_conversation_eight_b_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_shadow_curse_conversation_eight_d_01",
-		response = "pwh_shadow_curse_conversation_eight_d_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pdr_shadow_curse_conversation_eight_c_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pbw_shadow_curse_conversation_eight_e_01",
-		response = "pbw_shadow_curse_conversation_eight_e_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwh_shadow_curse_conversation_eight_d_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_shadow_curse_conversation_eight_f_01",
-		response = "pwh_shadow_curse_conversation_eight_f_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pbw_shadow_curse_conversation_eight_e_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwe_shadow_curse_conversation_nine",
-		response = "pwe_shadow_curse_conversation_nine",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"story_trigger"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"enemies_distant",
-				OP.LT,
-				15
-			},
-			{
-				"user_context",
-				"friends_distant",
-				OP.GT,
-				1
-			},
-			{
-				"user_context",
-				"friends_close",
-				OP.GT,
-				1
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"wood_elf"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"wood_elf"
-			},
-			{
-				"global_context",
-				"empire_soldier",
-				OP.EQ,
-				1
-			},
-			{
-				"global_context",
-				"current_theme",
-				OP.EQ,
-				"belakor"
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMEDIFF,
-				OP.GT,
-				180
-			},
-			{
-				"faction_memory",
-				"shadow_curse_conversation_nine",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"shadow_curse_conversation_nine",
-				OP.ADD,
-				1
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pes_shadow_curse_conversation_nine_b_01",
-		response = "pes_shadow_curse_conversation_nine_b_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwe_shadow_curse_conversation_nine_a_01"
+				"pdr_shadow_curse_conversation_six_a_01"
 			},
 			{
 				"user_context",
@@ -1884,8 +1170,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwe_shadow_curse_conversation_nine_c_01",
-		response = "pwe_shadow_curse_conversation_nine_c_01",
+		name = "pes_shadow_curse_conversation_six_d_01",
+		response = "pes_shadow_curse_conversation_six_d_01",
 		criterias = {
 			{
 				"query_context",
@@ -1897,44 +1183,7 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shadow_curse_conversation_nine_b_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"wood_elf"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pes_shadow_curse_conversation_nine_d_01",
-		response = "pes_shadow_curse_conversation_nine_d_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwe_shadow_curse_conversation_nine_c_01"
+				"pwe_shadow_curse_conversation_six_c_01"
 			},
 			{
 				"user_context",
@@ -2044,8 +1293,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwe_shadow_curse_conversation_ten_b_01",
-		response = "pwe_shadow_curse_conversation_ten_b_01",
+		name = "pes_shadow_curse_conversation_three_c_01",
+		response = "pes_shadow_curse_conversation_three_c_01",
 		criterias = {
 			{
 				"query_context",
@@ -2057,241 +1306,7 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pes_shadow_curse_conversation_ten_a_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"wood_elf"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pbw_shadow_curse_conversation_ten_c_01",
-		response = "pbw_shadow_curse_conversation_ten_c_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwe_shadow_curse_conversation_ten_b_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"bright_wizard"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwe_shadow_curse_conversation_ten_d_01",
-		response = "pwe_shadow_curse_conversation_ten_d_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pbw_shadow_curse_conversation_ten_c_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"wood_elf"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pdr_shadow_curse_conversation_ten_e_01",
-		response = "pdr_shadow_curse_conversation_ten_e_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwe_shadow_curse_conversation_ten_d_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_shadow_curse_conversation_eleven",
-		response = "pwh_shadow_curse_conversation_eleven",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"story_trigger"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.EQ,
-				0
-			},
-			{
-				"user_context",
-				"friends_close",
-				OP.GT,
-				2
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"global_context",
-				"bright_wizard",
-				OP.EQ,
-				1
-			},
-			{
-				"global_context",
-				"empire_soldier",
-				OP.EQ,
-				1
-			},
-			{
-				"global_context",
-				"wood_elf",
-				OP.EQ,
-				1
-			},
-			{
-				"global_context",
-				"current_theme",
-				OP.EQ,
-				"belakor"
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMEDIFF,
-				OP.GT,
-				180
-			},
-			{
-				"faction_memory",
-				"shadow_curse_conversation_eleven",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"shadow_curse_conversation_eleven",
-				OP.ADD,
-				1
-			},
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pes_shadow_curse_conversation_eleven_b_01",
-		response = "pes_shadow_curse_conversation_eleven_b_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwh_shadow_curse_conversation_eleven_a_01"
+				"pwh_shadow_curse_conversation_three_b_01"
 			},
 			{
 				"user_context",
@@ -2304,43 +1319,6 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"empire_soldier"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_shadow_curse_conversation_eleven_c_01",
-		response = "pwh_shadow_curse_conversation_eleven_c_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pes_shadow_curse_conversation_eleven_b_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
 			}
 		},
 		on_done = {
@@ -2389,8 +1367,94 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pbw_shadow_curse_conversation_eleven_e_01",
-		response = "pbw_shadow_curse_conversation_eleven_e_01",
+		name = "pwe_shadow_curse_conversation_nine",
+		response = "pwe_shadow_curse_conversation_nine",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"story_trigger"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
+				"user_context",
+				"enemies_distant",
+				OP.LT,
+				15
+			},
+			{
+				"user_context",
+				"friends_distant",
+				OP.GT,
+				1
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GT,
+				1
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"global_context",
+				"empire_soldier",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"current_theme",
+				OP.EQ,
+				"belakor"
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMEDIFF,
+				OP.GT,
+				180
+			},
+			{
+				"faction_memory",
+				"shadow_curse_conversation_nine",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"shadow_curse_conversation_nine",
+				OP.ADD,
+				1
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwe_shadow_curse_conversation_nine_c_01",
+		response = "pwe_shadow_curse_conversation_nine_c_01",
 		criterias = {
 			{
 				"query_context",
@@ -2402,7 +1466,7 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwe_shadow_curse_conversation_eleven_d_01"
+				"pes_shadow_curse_conversation_nine_b_01"
 			},
 			{
 				"user_context",
@@ -2414,7 +1478,7 @@ return function ()
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"wood_elf"
 			}
 		},
 		on_done = {
@@ -2426,8 +1490,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwh_shadow_curse_conversation_eleven_f_01",
-		response = "pwh_shadow_curse_conversation_eleven_f_01",
+		name = "pwe_shadow_curse_conversation_one_c_01",
+		response = "pwe_shadow_curse_conversation_one_c_01",
 		criterias = {
 			{
 				"query_context",
@@ -2439,7 +1503,7 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pbw_shadow_curse_conversation_eleven_e_01"
+				"pes_shadow_curse_conversation_one_b_01"
 			},
 			{
 				"user_context",
@@ -2451,7 +1515,155 @@ return function ()
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"witch_hunter"
+				"wood_elf"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwe_shadow_curse_conversation_six_c_01",
+		response = "pwe_shadow_curse_conversation_six_c_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_shadow_curse_conversation_six_b_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwe_shadow_curse_conversation_ten_b_01",
+		response = "pwe_shadow_curse_conversation_ten_b_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_shadow_curse_conversation_ten_a_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwe_shadow_curse_conversation_ten_d_01",
+		response = "pwe_shadow_curse_conversation_ten_d_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_shadow_curse_conversation_ten_c_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwe_shadow_curse_conversation_three_d_01",
+		response = "pwe_shadow_curse_conversation_three_d_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_shadow_curse_conversation_three_c_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
 			}
 		},
 		on_done = {
@@ -2549,43 +1761,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwh_shadow_curse_conversation_twelve_b_01",
-		response = "pwh_shadow_curse_conversation_twelve_b_01",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"sound_event",
-				OP.EQ,
-				"pwe_shadow_curse_conversation_twelve_a_01"
-			},
-			{
-				"user_context",
-				"enemies_close",
-				OP.LT,
-				6
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"time_since_conversation",
-				OP.TIMESET
-			}
-		}
-	})
-	define_rule({
 		name = "pwe_shadow_curse_conversation_twelve_c_01",
 		response = "pwe_shadow_curse_conversation_twelve_c_01",
 		criterias = {
@@ -2612,6 +1787,794 @@ return function ()
 				"player_profile",
 				OP.EQ,
 				"wood_elf"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwe_shadow_curse_conversation_two",
+		response = "pwe_shadow_curse_conversation_two",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"story_trigger"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
+				"user_context",
+				"enemies_distant",
+				OP.LT,
+				15
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GT,
+				1
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"global_context",
+				"bright_wizard",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"witch_hunter",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"current_theme",
+				OP.EQ,
+				"belakor"
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMEDIFF,
+				OP.GT,
+				180
+			},
+			{
+				"faction_memory",
+				"shadow_curse_conversation_two",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"shadow_curse_conversation_two",
+				OP.ADD,
+				1
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwe_shadow_curse_conversation_two_e_01",
+		response = "pwe_shadow_curse_conversation_two_e_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwh_shadow_curse_conversation_two_d_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"bright_wizard"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_eight_b_01",
+		response = "pwh_shadow_curse_conversation_eight_b_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_shadow_curse_conversation_eight_a_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_eight_d_01",
+		response = "pwh_shadow_curse_conversation_eight_d_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_shadow_curse_conversation_eight_c_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_eight_f_01",
+		response = "pwh_shadow_curse_conversation_eight_f_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_shadow_curse_conversation_eight_e_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_eleven",
+		response = "pwh_shadow_curse_conversation_eleven",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"story_trigger"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GT,
+				2
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"global_context",
+				"bright_wizard",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"empire_soldier",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"wood_elf",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"current_theme",
+				OP.EQ,
+				"belakor"
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMEDIFF,
+				OP.GT,
+				180
+			},
+			{
+				"faction_memory",
+				"shadow_curse_conversation_eleven",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"shadow_curse_conversation_eleven",
+				OP.ADD,
+				1
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_eleven_c_01",
+		response = "pwh_shadow_curse_conversation_eleven_c_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_shadow_curse_conversation_eleven_b_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_eleven_f_01",
+		response = "pwh_shadow_curse_conversation_eleven_f_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_shadow_curse_conversation_eleven_e_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_five",
+		response = "pwh_shadow_curse_conversation_five",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"story_trigger"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
+				"user_context",
+				"enemies_distant",
+				OP.LT,
+				15
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GT,
+				1
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"global_context",
+				"empire_soldier",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"dwarf_ranger",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"current_theme",
+				OP.EQ,
+				"belakor"
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMEDIFF,
+				OP.GT,
+				180
+			},
+			{
+				"faction_memory",
+				"shadow_curse_conversation_five",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"shadow_curse_conversation_five",
+				OP.ADD,
+				1
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_five_c_01",
+		response = "pwh_shadow_curse_conversation_five_c_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pdr_shadow_curse_conversation_five_b_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_four_b_01",
+		response = "pwh_shadow_curse_conversation_four_b_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_shadow_curse_conversation_four_a_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_four_d_01",
+		response = "pwh_shadow_curse_conversation_four_d_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_shadow_curse_conversation_four_c_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_seven",
+		response = "pwh_shadow_curse_conversation_seven",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"story_trigger"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.EQ,
+				0
+			},
+			{
+				"user_context",
+				"enemies_distant",
+				OP.LT,
+				8
+			},
+			{
+				"user_context",
+				"friends_close",
+				OP.GT,
+				2
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"global_context",
+				"empire_soldier",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"bright_wizard",
+				OP.EQ,
+				1
+			},
+			{
+				"global_context",
+				"current_theme",
+				OP.EQ,
+				"belakor"
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMEDIFF,
+				OP.GT,
+				180
+			},
+			{
+				"faction_memory",
+				"shadow_curse_conversation_seven",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"shadow_curse_conversation_seven",
+				OP.ADD,
+				1
+			},
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_seven_c_01",
+		response = "pwh_shadow_curse_conversation_seven_c_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pes_shadow_curse_conversation_seven_b_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_three_b_01",
+		response = "pwh_shadow_curse_conversation_three_b_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_shadow_curse_conversation_three_a_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_twelve_b_01",
+		response = "pwh_shadow_curse_conversation_twelve_b_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pwe_shadow_curse_conversation_twelve_a_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
 			}
 		},
 		on_done = {
@@ -2660,8 +2623,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pbw_shadow_curse_conversation_twelve_e_01",
-		response = "pbw_shadow_curse_conversation_twelve_e_01",
+		name = "pwh_shadow_curse_conversation_two_b_01",
+		response = "pwh_shadow_curse_conversation_two_b_01",
 		criterias = {
 			{
 				"query_context",
@@ -2673,7 +2636,7 @@ return function ()
 				"query_context",
 				"sound_event",
 				OP.EQ,
-				"pwh_shadow_curse_conversation_twelve_d_01"
+				"pwe_shadow_curse_conversation_two_a_01"
 			},
 			{
 				"user_context",
@@ -2685,7 +2648,44 @@ return function ()
 				"user_context",
 				"player_profile",
 				OP.EQ,
-				"bright_wizard"
+				"witch_hunter"
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"time_since_conversation",
+				OP.TIMESET
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_shadow_curse_conversation_two_d_01",
+		response = "pwh_shadow_curse_conversation_two_d_01",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"sound_event",
+				OP.EQ,
+				"pbw_shadow_curse_conversation_two_c_01"
+			},
+			{
+				"user_context",
+				"enemies_close",
+				OP.LT,
+				6
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
 			}
 		},
 		on_done = {
@@ -2697,818 +2697,26 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pwe_shadow_curse_conversation_one_c_01 = {
+		pbw_shadow_curse_conversation_eight = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_cowbell_banter",
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_shadow_curse_conversation_one_c_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.4179792404175
-			},
-			localization_strings = {
-				[1.0] = "pwe_shadow_curse_conversation_one_c_01"
-			}
-		},
-		pbw_shadow_curse_conversation_eleven_e_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_shadow_curse_conversation_eleven_e_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.6979789733887
-			},
-			localization_strings = {
-				[1.0] = "pbw_shadow_curse_conversation_eleven_e_01"
-			}
-		},
-		pwh_shadow_curse_conversation_five_c_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_five_c_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.4319791793823
-			},
-			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_five_c_01"
-			}
-		},
-		pes_shadow_curse_conversation_three_c_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_shadow_curse_conversation_three_c_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.7309999465942
-			},
-			localization_strings = {
-				[1.0] = "pes_shadow_curse_conversation_three_c_01"
-			}
-		},
-		pwe_shadow_curse_conversation_six_c_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_shadow_curse_conversation_six_c_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.7969999313355
-			},
-			localization_strings = {
-				[1.0] = "pwe_shadow_curse_conversation_six_c_01"
-			}
-		},
-		pwh_shadow_curse_conversation_eleven = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_eleven_a_01"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
-			sound_events_duration = {
-				[1.0] = 10.60297870636
-			},
 			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_eleven_a_01"
-			}
-		},
-		pwe_shadow_curse_conversation_nine_c_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
+				[1.0] = "pbw_shadow_curse_conversation_eight_a_01"
+			},
 			sound_events = {
-				[1.0] = "pwe_shadow_curse_conversation_nine_c_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
+				[1.0] = "pbw_shadow_curse_conversation_eight_a_01"
 			},
 			sound_events_duration = {
-				[1.0] = 2.716979265213
-			},
-			localization_strings = {
-				[1.0] = "pwe_shadow_curse_conversation_nine_c_01"
-			}
-		},
-		pwh_shadow_curse_conversation_eight_f_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_eight_f_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.7429790496826
-			},
-			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_eight_f_01"
-			}
-		},
-		pwh_shadow_curse_conversation_seven = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_seven_a_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 7.6039791107178
-			},
-			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_seven_a_01"
-			}
-		},
-		pes_shadow_curse_conversation_four = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_shadow_curse_conversation_four_a_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 2.6619999408722
-			},
-			localization_strings = {
-				[1.0] = "pes_shadow_curse_conversation_four_a_01"
-			}
-		},
-		pwh_shadow_curse_conversation_twelve_d_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_twelve_d_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.6869790554047
-			},
-			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_twelve_d_01"
-			}
-		},
-		pwh_shadow_curse_conversation_eleven_c_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_eleven_c_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.0740003585815
-			},
-			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_eleven_c_01"
-			}
-		},
-		pwe_shadow_curse_conversation_eleven_d_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_shadow_curse_conversation_eleven_d_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.4567
-			},
-			localization_strings = {
-				[1.0] = "pwe_shadow_curse_conversation_eleven_d_01"
-			}
-		},
-		pwh_shadow_curse_conversation_twelve_b_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_twelve_b_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.2009792327881
-			},
-			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_twelve_b_01"
-			}
-		},
-		pes_shadow_curse_conversation_seven_b_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_shadow_curse_conversation_seven_b_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.4289793968201
-			},
-			localization_strings = {
-				[1.0] = "pes_shadow_curse_conversation_seven_b_01"
-			}
-		},
-		pbw_shadow_curse_conversation_four_c_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_shadow_curse_conversation_four_c_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.2039999961853
-			},
-			localization_strings = {
-				[1.0] = "pbw_shadow_curse_conversation_four_c_01"
-			}
-		},
-		pwe_shadow_curse_conversation_twelve = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_shadow_curse_conversation_twelve_a_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.7989997863769
-			},
-			localization_strings = {
-				[1.0] = "pwe_shadow_curse_conversation_twelve_a_01"
-			}
-		},
-		pbw_shadow_curse_conversation_two_c_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_shadow_curse_conversation_two_c_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.8839793205261
-			},
-			localization_strings = {
-				[1.0] = "pbw_shadow_curse_conversation_two_c_01"
-			}
-		},
-		pdr_shadow_curse_conversation_five_b_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_shadow_curse_conversation_five_b_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.2889790534973
-			},
-			localization_strings = {
-				[1.0] = "pdr_shadow_curse_conversation_five_b_01"
-			}
-		},
-		pes_shadow_curse_conversation_five_d_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_shadow_curse_conversation_five_d_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.6609791517258
-			},
-			localization_strings = {
-				[1.0] = "pes_shadow_curse_conversation_five_d_01"
-			}
-		},
-		pdr_shadow_curse_conversation_six = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_shadow_curse_conversation_six_a_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 5.3449997901917
-			},
-			localization_strings = {
-				[1.0] = "pdr_shadow_curse_conversation_six_a_01"
-			}
-		},
-		pwh_shadow_curse_conversation_eleven_f_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_eleven_f_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.7259998321533
-			},
-			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_eleven_f_01"
-			}
-		},
-		pwe_shadow_curse_conversation_twelve_c_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_shadow_curse_conversation_twelve_c_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.1309790611267
-			},
-			localization_strings = {
-				[1.0] = "pwe_shadow_curse_conversation_twelve_c_01"
-			}
-		},
-		pwh_shadow_curse_conversation_eight_b_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_eight_b_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.4359793663025
-			},
-			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_eight_b_01"
-			}
-		},
-		pes_shadow_curse_conversation_eleven_b_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_shadow_curse_conversation_eleven_b_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.8470001220703
-			},
-			localization_strings = {
-				[1.0] = "pes_shadow_curse_conversation_eleven_b_01"
-			}
-		},
-		pes_shadow_curse_conversation_one_d_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_shadow_curse_conversation_one_d_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.9279999732971
-			},
-			localization_strings = {
-				[1.0] = "pes_shadow_curse_conversation_one_d_01"
-			}
-		},
-		pwe_shadow_curse_conversation_ten_d_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_shadow_curse_conversation_ten_d_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.9359999895096
-			},
-			localization_strings = {
-				[1.0] = "pwe_shadow_curse_conversation_ten_d_01"
-			}
-		},
-		pbw_shadow_curse_conversation_ten_c_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_shadow_curse_conversation_ten_c_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.3199999332428
-			},
-			localization_strings = {
-				[1.0] = "pbw_shadow_curse_conversation_ten_c_01"
-			}
-		},
-		pbw_shadow_curse_conversation_twelve_e_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_shadow_curse_conversation_twelve_e_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.6729793548584
-			},
-			localization_strings = {
-				[1.0] = "pbw_shadow_curse_conversation_twelve_e_01"
-			}
-		},
-		pdr_shadow_curse_conversation_eight_c_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_shadow_curse_conversation_eight_c_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.7469792366028
-			},
-			localization_strings = {
-				[1.0] = "pdr_shadow_curse_conversation_eight_c_01"
-			}
-		},
-		pwh_shadow_curse_conversation_four_d_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_four_d_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.0609793663025
-			},
-			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_four_d_01"
-			}
-		},
-		pes_shadow_curse_conversation_nine_d_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_shadow_curse_conversation_nine_d_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.4869792461395
-			},
-			localization_strings = {
-				[1.0] = "pes_shadow_curse_conversation_nine_d_01"
-			}
-		},
-		pes_shadow_curse_conversation_six_b_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_shadow_curse_conversation_six_b_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.9289793968201
-			},
-			localization_strings = {
-				[1.0] = "pes_shadow_curse_conversation_six_b_01"
-			}
-		},
-		pes_shadow_curse_conversation_nine_b_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_shadow_curse_conversation_nine_b_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.3219790458679
-			},
-			localization_strings = {
-				[1.0] = "pes_shadow_curse_conversation_nine_b_01"
-			}
-		},
-		pwe_shadow_curse_conversation_nine = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_shadow_curse_conversation_nine_a_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 6.5489792823792
-			},
-			localization_strings = {
-				[1.0] = "pwe_shadow_curse_conversation_nine_a_01"
-			}
-		},
-		pwe_shadow_curse_conversation_ten_b_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_shadow_curse_conversation_ten_b_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.5559787750244
-			},
-			localization_strings = {
-				[1.0] = "pwe_shadow_curse_conversation_ten_b_01"
-			}
-		},
-		pdr_shadow_curse_conversation_one = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_shadow_curse_conversation_one_a_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 3.5379791259766
-			},
-			localization_strings = {
-				[1.0] = "pdr_shadow_curse_conversation_one_a_01"
+				[1.0] = 4.4649791717529
 			}
 		},
 		pbw_shadow_curse_conversation_eight_e_01 = {
@@ -3517,130 +2725,64 @@ return function ()
 			database = "hero_conversations_dlc_cowbell_banter",
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_shadow_curse_conversation_eight_e_01"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pbw_shadow_curse_conversation_eight_e_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_shadow_curse_conversation_eight_e_01"
 			},
 			sound_events_duration = {
 				[1.0] = 1.8159999847412
-			},
-			localization_strings = {
-				[1.0] = "pbw_shadow_curse_conversation_eight_e_01"
 			}
 		},
-		pwh_shadow_curse_conversation_eight_d_01 = {
+		pbw_shadow_curse_conversation_eleven_e_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_cowbell_banter",
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_eight_d_01"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 3.9539792537689
-			},
 			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_eight_d_01"
+				[1.0] = "pbw_shadow_curse_conversation_eleven_e_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_shadow_curse_conversation_eleven_e_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.6979789733887
 			}
 		},
-		pes_shadow_curse_conversation_ten = {
+		pbw_shadow_curse_conversation_four_c_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_cowbell_banter",
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_shadow_curse_conversation_ten_a_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.0939998626709
-			},
-			localization_strings = {
-				[1.0] = "pes_shadow_curse_conversation_ten_a_01"
-			}
-		},
-		pbw_shadow_curse_conversation_eight = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_shadow_curse_conversation_eight_a_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.4649791717529
-			},
-			localization_strings = {
-				[1.0] = "pbw_shadow_curse_conversation_eight_a_01"
-			}
-		},
-		pes_shadow_curse_conversation_seven_f_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_shadow_curse_conversation_seven_f_01"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 3.8710000514984
-			},
 			localization_strings = {
-				[1.0] = "pes_shadow_curse_conversation_seven_f_01"
-			}
-		},
-		pwe_shadow_curse_conversation_two = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
+				[1.0] = "pbw_shadow_curse_conversation_four_c_01"
+			},
 			sound_events = {
-				[1.0] = "pwe_shadow_curse_conversation_two_a_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
+				[1.0] = "pbw_shadow_curse_conversation_four_c_01"
 			},
 			sound_events_duration = {
-				[1.0] = 4.9069790840149
-			},
-			localization_strings = {
-				[1.0] = "pwe_shadow_curse_conversation_two_a_01"
+				[1.0] = 4.2039999961853
 			}
 		},
 		pbw_shadow_curse_conversation_seven_e_01 = {
@@ -3649,240 +2791,42 @@ return function ()
 			database = "hero_conversations_dlc_cowbell_banter",
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_shadow_curse_conversation_seven_e_01"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pbw_shadow_curse_conversation_seven_e_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_shadow_curse_conversation_seven_e_01"
 			},
 			sound_events_duration = {
 				[1.0] = 2.7249791622162
-			},
-			localization_strings = {
-				[1.0] = "pbw_shadow_curse_conversation_seven_e_01"
 			}
 		},
-		pwe_shadow_curse_conversation_two_e_01 = {
+		pbw_shadow_curse_conversation_ten_c_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_cowbell_banter",
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_shadow_curse_conversation_two_e_01"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 2.4929790496826
-			},
 			localization_strings = {
-				[1.0] = "pwe_shadow_curse_conversation_two_e_01"
-			}
-		},
-		pes_shadow_curse_conversation_seven_d_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
+				[1.0] = "pbw_shadow_curse_conversation_ten_c_01"
+			},
 			sound_events = {
-				[1.0] = "pes_shadow_curse_conversation_seven_d_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
+				[1.0] = "pbw_shadow_curse_conversation_ten_c_01"
 			},
 			sound_events_duration = {
-				[1.0] = 5.8809790611267
-			},
-			localization_strings = {
-				[1.0] = "pes_shadow_curse_conversation_seven_d_01"
-			}
-		},
-		pwh_shadow_curse_conversation_five = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_five_a_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 11.683979034424
-			},
-			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_five_a_01"
-			}
-		},
-		pwh_shadow_curse_conversation_four_b_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_four_b_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 9.4759788513184
-			},
-			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_four_b_01"
-			}
-		},
-		pwh_shadow_curse_conversation_two_d_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_two_d_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.8159790039063
-			},
-			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_two_d_01"
-			}
-		},
-		pwe_shadow_curse_conversation_three_d_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_shadow_curse_conversation_three_d_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.8299791812897
-			},
-			localization_strings = {
-				[1.0] = "pwe_shadow_curse_conversation_three_d_01"
-			}
-		},
-		pes_shadow_curse_conversation_six_d_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_shadow_curse_conversation_six_d_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.0420000553131
-			},
-			localization_strings = {
-				[1.0] = "pes_shadow_curse_conversation_six_d_01"
-			}
-		},
-		pwh_shadow_curse_conversation_three_b_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_three_b_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.7159790992737
-			},
-			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_three_b_01"
-			}
-		},
-		pwh_shadow_curse_conversation_seven_c_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_seven_c_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.9809789657593
-			},
-			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_seven_c_01"
-			}
-		},
-		pes_shadow_curse_conversation_one_b_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_cowbell_banter",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_shadow_curse_conversation_one_b_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.3409790992737
-			},
-			localization_strings = {
-				[1.0] = "pes_shadow_curse_conversation_one_b_01"
+				[1.0] = 2.3199999332428
 			}
 		},
 		pbw_shadow_curse_conversation_three = {
@@ -3891,42 +2835,152 @@ return function ()
 			database = "hero_conversations_dlc_cowbell_banter",
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_shadow_curse_conversation_three_a_01"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
-			sound_events_duration = {
-				[1.0] = 4.0609793663025
-			},
 			localization_strings = {
 				[1.0] = "pbw_shadow_curse_conversation_three_a_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_shadow_curse_conversation_three_a_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.0609793663025
 			}
 		},
-		pwh_shadow_curse_conversation_two_b_01 = {
+		pbw_shadow_curse_conversation_twelve_e_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_cowbell_banter",
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_shadow_curse_conversation_two_b_01"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			localization_strings = {
+				[1.0] = "pbw_shadow_curse_conversation_twelve_e_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_shadow_curse_conversation_twelve_e_01"
+			},
 			sound_events_duration = {
-				[1.0] = 6.4679789543152
+				[1.0] = 5.6729793548584
+			}
+		},
+		pbw_shadow_curse_conversation_two_c_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwh_shadow_curse_conversation_two_b_01"
+				[1.0] = "pbw_shadow_curse_conversation_two_c_01"
+			},
+			sound_events = {
+				[1.0] = "pbw_shadow_curse_conversation_two_c_01"
+			},
+			sound_events_duration = {
+				[1.0] = 7.8839793205261
+			}
+		},
+		pdr_shadow_curse_conversation_eight_c_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_shadow_curse_conversation_eight_c_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_shadow_curse_conversation_eight_c_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7469792366028
+			}
+		},
+		pdr_shadow_curse_conversation_five_b_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_shadow_curse_conversation_five_b_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_shadow_curse_conversation_five_b_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2889790534973
+			}
+		},
+		pdr_shadow_curse_conversation_one = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_shadow_curse_conversation_one_a_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_shadow_curse_conversation_one_a_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.5379791259766
+			}
+		},
+		pdr_shadow_curse_conversation_six = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_shadow_curse_conversation_six_a_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_shadow_curse_conversation_six_a_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3449997901917
 			}
 		},
 		pdr_shadow_curse_conversation_ten_e_01 = {
@@ -3935,20 +2989,966 @@ return function ()
 			database = "hero_conversations_dlc_cowbell_banter",
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_shadow_curse_conversation_ten_e_01"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 3.9909791946411
-			},
 			localization_strings = {
 				[1.0] = "pdr_shadow_curse_conversation_ten_e_01"
+			},
+			sound_events = {
+				[1.0] = "pdr_shadow_curse_conversation_ten_e_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.9909791946411
+			}
+		},
+		pes_shadow_curse_conversation_eleven_b_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_shadow_curse_conversation_eleven_b_01"
+			},
+			sound_events = {
+				[1.0] = "pes_shadow_curse_conversation_eleven_b_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.8470001220703
+			}
+		},
+		pes_shadow_curse_conversation_five_d_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_shadow_curse_conversation_five_d_01"
+			},
+			sound_events = {
+				[1.0] = "pes_shadow_curse_conversation_five_d_01"
+			},
+			sound_events_duration = {
+				[1.0] = 1.6609791517258
+			}
+		},
+		pes_shadow_curse_conversation_four = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_shadow_curse_conversation_four_a_01"
+			},
+			sound_events = {
+				[1.0] = "pes_shadow_curse_conversation_four_a_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6619999408722
+			}
+		},
+		pes_shadow_curse_conversation_nine_b_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_shadow_curse_conversation_nine_b_01"
+			},
+			sound_events = {
+				[1.0] = "pes_shadow_curse_conversation_nine_b_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.3219790458679
+			}
+		},
+		pes_shadow_curse_conversation_nine_d_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_shadow_curse_conversation_nine_d_01"
+			},
+			sound_events = {
+				[1.0] = "pes_shadow_curse_conversation_nine_d_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4869792461395
+			}
+		},
+		pes_shadow_curse_conversation_one_b_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_shadow_curse_conversation_one_b_01"
+			},
+			sound_events = {
+				[1.0] = "pes_shadow_curse_conversation_one_b_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.3409790992737
+			}
+		},
+		pes_shadow_curse_conversation_one_d_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_shadow_curse_conversation_one_d_01"
+			},
+			sound_events = {
+				[1.0] = "pes_shadow_curse_conversation_one_d_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9279999732971
+			}
+		},
+		pes_shadow_curse_conversation_seven_b_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_shadow_curse_conversation_seven_b_01"
+			},
+			sound_events = {
+				[1.0] = "pes_shadow_curse_conversation_seven_b_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4289793968201
+			}
+		},
+		pes_shadow_curse_conversation_seven_d_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_shadow_curse_conversation_seven_d_01"
+			},
+			sound_events = {
+				[1.0] = "pes_shadow_curse_conversation_seven_d_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8809790611267
+			}
+		},
+		pes_shadow_curse_conversation_seven_f_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_shadow_curse_conversation_seven_f_01"
+			},
+			sound_events = {
+				[1.0] = "pes_shadow_curse_conversation_seven_f_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.8710000514984
+			}
+		},
+		pes_shadow_curse_conversation_six_b_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_shadow_curse_conversation_six_b_01"
+			},
+			sound_events = {
+				[1.0] = "pes_shadow_curse_conversation_six_b_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.9289793968201
+			}
+		},
+		pes_shadow_curse_conversation_six_d_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_shadow_curse_conversation_six_d_01"
+			},
+			sound_events = {
+				[1.0] = "pes_shadow_curse_conversation_six_d_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.0420000553131
+			}
+		},
+		pes_shadow_curse_conversation_ten = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_shadow_curse_conversation_ten_a_01"
+			},
+			sound_events = {
+				[1.0] = "pes_shadow_curse_conversation_ten_a_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.0939998626709
+			}
+		},
+		pes_shadow_curse_conversation_three_c_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_shadow_curse_conversation_three_c_01"
+			},
+			sound_events = {
+				[1.0] = "pes_shadow_curse_conversation_three_c_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7309999465942
+			}
+		},
+		pwe_shadow_curse_conversation_eleven_d_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_shadow_curse_conversation_eleven_d_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_shadow_curse_conversation_eleven_d_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4567
+			}
+		},
+		pwe_shadow_curse_conversation_nine = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_shadow_curse_conversation_nine_a_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_shadow_curse_conversation_nine_a_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.5489792823792
+			}
+		},
+		pwe_shadow_curse_conversation_nine_c_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_shadow_curse_conversation_nine_c_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_shadow_curse_conversation_nine_c_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.716979265213
+			}
+		},
+		pwe_shadow_curse_conversation_one_c_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_shadow_curse_conversation_one_c_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_shadow_curse_conversation_one_c_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.4179792404175
+			}
+		},
+		pwe_shadow_curse_conversation_six_c_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_shadow_curse_conversation_six_c_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_shadow_curse_conversation_six_c_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7969999313355
+			}
+		},
+		pwe_shadow_curse_conversation_ten_b_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_shadow_curse_conversation_ten_b_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_shadow_curse_conversation_ten_b_01"
+			},
+			sound_events_duration = {
+				[1.0] = 8.5559787750244
+			}
+		},
+		pwe_shadow_curse_conversation_ten_d_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_shadow_curse_conversation_ten_d_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_shadow_curse_conversation_ten_d_01"
+			},
+			sound_events_duration = {
+				[1.0] = 1.9359999895096
+			}
+		},
+		pwe_shadow_curse_conversation_three_d_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_shadow_curse_conversation_three_d_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_shadow_curse_conversation_three_d_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.8299791812897
+			}
+		},
+		pwe_shadow_curse_conversation_twelve = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_shadow_curse_conversation_twelve_a_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_shadow_curse_conversation_twelve_a_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.7989997863769
+			}
+		},
+		pwe_shadow_curse_conversation_twelve_c_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_shadow_curse_conversation_twelve_c_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_shadow_curse_conversation_twelve_c_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.1309790611267
+			}
+		},
+		pwe_shadow_curse_conversation_two = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_shadow_curse_conversation_two_a_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_shadow_curse_conversation_two_a_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.9069790840149
+			}
+		},
+		pwe_shadow_curse_conversation_two_e_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_shadow_curse_conversation_two_e_01"
+			},
+			sound_events = {
+				[1.0] = "pwe_shadow_curse_conversation_two_e_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4929790496826
+			}
+		},
+		pwh_shadow_curse_conversation_eight_b_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_eight_b_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_eight_b_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.4359793663025
+			}
+		},
+		pwh_shadow_curse_conversation_eight_d_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_eight_d_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_eight_d_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.9539792537689
+			}
+		},
+		pwh_shadow_curse_conversation_eight_f_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_eight_f_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_eight_f_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7429790496826
+			}
+		},
+		pwh_shadow_curse_conversation_eleven = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_eleven_a_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_eleven_a_01"
+			},
+			sound_events_duration = {
+				[1.0] = 10.60297870636
+			}
+		},
+		pwh_shadow_curse_conversation_eleven_c_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_eleven_c_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_eleven_c_01"
+			},
+			sound_events_duration = {
+				[1.0] = 8.0740003585815
+			}
+		},
+		pwh_shadow_curse_conversation_eleven_f_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_eleven_f_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_eleven_f_01"
+			},
+			sound_events_duration = {
+				[1.0] = 8.7259998321533
+			}
+		},
+		pwh_shadow_curse_conversation_five = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_five_a_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_five_a_01"
+			},
+			sound_events_duration = {
+				[1.0] = 11.683979034424
+			}
+		},
+		pwh_shadow_curse_conversation_five_c_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_five_c_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_five_c_01"
+			},
+			sound_events_duration = {
+				[1.0] = 8.4319791793823
+			}
+		},
+		pwh_shadow_curse_conversation_four_b_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_four_b_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_four_b_01"
+			},
+			sound_events_duration = {
+				[1.0] = 9.4759788513184
+			}
+		},
+		pwh_shadow_curse_conversation_four_d_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_four_d_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_four_d_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.0609793663025
+			}
+		},
+		pwh_shadow_curse_conversation_seven = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_seven_a_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_seven_a_01"
+			},
+			sound_events_duration = {
+				[1.0] = 7.6039791107178
+			}
+		},
+		pwh_shadow_curse_conversation_seven_c_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_seven_c_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_seven_c_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.9809789657593
+			}
+		},
+		pwh_shadow_curse_conversation_three_b_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_three_b_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_three_b_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.7159790992737
+			}
+		},
+		pwh_shadow_curse_conversation_twelve_b_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_twelve_b_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_twelve_b_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.2009792327881
+			}
+		},
+		pwh_shadow_curse_conversation_twelve_d_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_twelve_d_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_twelve_d_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.6869790554047
+			}
+		},
+		pwh_shadow_curse_conversation_two_b_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_two_b_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_two_b_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.4679789543152
+			}
+		},
+		pwh_shadow_curse_conversation_two_d_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_cowbell_banter",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_shadow_curse_conversation_two_d_01"
+			},
+			sound_events = {
+				[1.0] = "pwh_shadow_curse_conversation_two_d_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8159790039063
 			}
 		}
 	})

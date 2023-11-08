@@ -105,6 +105,10 @@ LevelSettings.dlc_bogenhafen_slum = {
 		wh_priest = {
 			"pwh_wp_loading_screen_dlc_pit_01",
 			"pwh_wp_loading_screen_dlc_pit_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_dlc_pit_01",
+			"pbw_nm_loading_screen_dlc_pit_02"
 		}
 	}
 }
@@ -229,6 +233,10 @@ LevelSettings.dlc_bogenhafen_city = {
 		wh_priest = {
 			"pwh_wp_loading_screen_dlc_bogenhafen_01",
 			"pwh_wp_loading_screen_dlc_bogenhafen_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_dlc_bogenhafen_01",
+			"pbw_nm_loading_screen_dlc_bogenhafen_02"
 		}
 	}
 }

@@ -87,6 +87,10 @@ LevelSettings.crater = {
 		wh_priest = {
 			"pwh_wp_crater_loading_screen_01",
 			"pwh_wp_crater_loading_screen_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_crater_loading_screen_01",
+			"pbw_nm_crater_loading_screen_02"
 		}
 	},
 	locations = {

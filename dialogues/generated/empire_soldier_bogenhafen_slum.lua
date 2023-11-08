@@ -1,325 +1,5 @@
 return function ()
 	define_rule({
-		name = "pes_level_bogenhafen_slum_slum",
-		response = "pes_level_bogenhafen_slum_slum",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_slum"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_slum",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_slum",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_bogenhafen_slum_the_58",
-		response = "pes_level_bogenhafen_slum_the_58",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_the_58"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_the_58",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_the_58",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_hu_level_bogenhafen_slum_the_58",
-		response = "pes_hu_level_bogenhafen_slum_the_58",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_the_58"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_career",
-				OP.EQ,
-				"es_huntsman"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_the_58",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_the_58",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_bogenhafen_slum_river",
-		response = "pes_level_bogenhafen_slum_river",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_river"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_river",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_river",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_bogenhafen_slum_squalor",
-		response = "pes_level_bogenhafen_slum_squalor",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_squalor"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_squalor",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_squalor",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_hu_level_bogenhafen_slum_squalor",
-		response = "pes_hu_level_bogenhafen_slum_squalor",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_squalor"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_career",
-				OP.EQ,
-				"es_huntsman"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_squalor",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_squalor",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_bogenhafen_slum_blackfire",
-		response = "pes_level_bogenhafen_slum_blackfire",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"pit_blackfire"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"pit_blackfire",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"pit_blackfire",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pes_hu_level_bogenhafen_slum_blackfire",
 		response = "pes_hu_level_bogenhafen_slum_blackfire",
 		criterias = {
@@ -364,194 +44,6 @@ return function ()
 			{
 				"faction_memory",
 				"pit_blackfire",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_kn_level_bogenhafen_slum_blackfire",
-		response = "pes_kn_level_bogenhafen_slum_blackfire",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"pit_blackfire"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_career",
-				OP.EQ,
-				"es_knight"
-			},
-			{
-				"faction_memory",
-				"pit_blackfire",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"pit_blackfire",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_bogenhafen_slum_gang",
-		response = "pes_level_bogenhafen_slum_gang",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_gang"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_gang",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_gang",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_hu_level_bogenhafen_slum_gang",
-		response = "pes_hu_level_bogenhafen_slum_gang",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_gang"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_career",
-				OP.EQ,
-				"es_huntsman"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_gang",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_gang",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_bogenhafen_slum_find_hideout",
-		response = "pes_level_bogenhafen_slum_find_hideout",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_find_hideout"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_find_hideout",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_find_hideout",
 				OP.ADD,
 				1
 			}
@@ -608,8 +100,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pes_level_bogenhafen_slum_too_quiet",
-		response = "pes_level_bogenhafen_slum_too_quiet",
+		name = "pes_hu_level_bogenhafen_slum_gang",
+		response = "pes_hu_level_bogenhafen_slum_gang",
 		criterias = {
 			{
 				"query_context",
@@ -621,51 +113,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_bogenhafen_slum_too_quiet"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_too_quiet",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_too_quiet",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_kn_level_bogenhafen_slum_too_quiet",
-		response = "pes_kn_level_bogenhafen_slum_too_quiet",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_too_quiet"
+				"level_bogenhafen_slum_gang"
 			},
 			{
 				"query_context",
@@ -683,11 +131,11 @@ return function ()
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"es_knight"
+				"es_huntsman"
 			},
 			{
 				"faction_memory",
-				"level_bogenhafen_slum_too_quiet",
+				"level_bogenhafen_slum_gang",
 				OP.EQ,
 				0
 			}
@@ -695,15 +143,15 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_bogenhafen_slum_too_quiet",
+				"level_bogenhafen_slum_gang",
 				OP.ADD,
 				1
 			}
 		}
 	})
 	define_rule({
-		name = "pes_level_bogenhafen_slum_stolen_goods",
-		response = "pes_level_bogenhafen_slum_stolen_goods",
+		name = "pes_hu_level_bogenhafen_slum_noble_food",
+		response = "pes_hu_level_bogenhafen_slum_noble_food",
 		criterias = {
 			{
 				"query_context",
@@ -715,51 +163,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_bogenhafen_slum_stolen_goods"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_stolen_goods",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_stolen_goods",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_kn_level_bogenhafen_slum_stolen_goods",
-		response = "pes_kn_level_bogenhafen_slum_stolen_goods",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_stolen_goods"
+				"level_bogenhafen_slum_noble_food"
 			},
 			{
 				"query_context",
@@ -777,11 +181,11 @@ return function ()
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"es_knight"
+				"es_huntsman"
 			},
 			{
 				"faction_memory",
-				"level_bogenhafen_slum_stolen_goods",
+				"level_bogenhafen_slum_noble_food",
 				OP.EQ,
 				0
 			}
@@ -789,15 +193,15 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_bogenhafen_slum_stolen_goods",
+				"level_bogenhafen_slum_noble_food",
 				OP.ADD,
 				1
 			}
 		}
 	})
 	define_rule({
-		name = "pes_level_bogenhafen_slum_foul_air",
-		response = "pes_level_bogenhafen_slum_foul_air",
+		name = "pes_hu_level_bogenhafen_slum_noisy_exit",
+		response = "pes_hu_level_bogenhafen_slum_noisy_exit",
 		criterias = {
 			{
 				"query_context",
@@ -809,7 +213,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_bogenhafen_slum_foul_air"
+				"level_bogenhafen_slum_noisy_exit"
 			},
 			{
 				"query_context",
@@ -825,7 +229,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_bogenhafen_slum_foul_air",
+				"level_bogenhafen_slum_noisy_exit",
 				OP.EQ,
 				0
 			}
@@ -833,15 +237,15 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_bogenhafen_slum_foul_air",
+				"level_bogenhafen_slum_noisy_exit",
 				OP.ADD,
 				1
 			}
 		}
 	})
 	define_rule({
-		name = "pes_level_bogenhafen_slum_ambush",
-		response = "pes_level_bogenhafen_slum_ambush",
+		name = "pes_hu_level_bogenhafen_slum_squalor",
+		response = "pes_hu_level_bogenhafen_slum_squalor",
 		criterias = {
 			{
 				"query_context",
@@ -853,7 +257,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_bogenhafen_slum_ambush"
+				"level_bogenhafen_slum_squalor"
 			},
 			{
 				"query_context",
@@ -868,8 +272,14 @@ return function ()
 				"empire_soldier"
 			},
 			{
+				"user_context",
+				"player_career",
+				OP.EQ,
+				"es_huntsman"
+			},
+			{
 				"faction_memory",
-				"level_bogenhafen_slum_ambush",
+				"level_bogenhafen_slum_squalor",
 				OP.EQ,
 				0
 			}
@@ -877,7 +287,107 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_bogenhafen_slum_ambush",
+				"level_bogenhafen_slum_squalor",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_hu_level_bogenhafen_slum_the_58",
+		response = "pes_hu_level_bogenhafen_slum_the_58",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_the_58"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_career",
+				OP.EQ,
+				"es_huntsman"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_the_58",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_the_58",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_hu_level_bogenhafen_slum_the_wall",
+		response = "pes_hu_level_bogenhafen_slum_the_wall",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"pes_level_bogenhafen_slum_the_wall"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_career",
+				OP.EQ,
+				"es_huntsman"
+			},
+			{
+				"faction_memory",
+				"pes_level_bogenhafen_slum_the_wall",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"pes_level_bogenhafen_slum_the_wall",
 				OP.ADD,
 				1
 			}
@@ -934,8 +444,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pes_level_bogenhafen_slum_fortify_prep",
-		response = "pes_level_bogenhafen_slum_fortify_prep",
+		name = "pes_kn_level_bogenhafen_slum_blackfire",
+		response = "pes_kn_level_bogenhafen_slum_blackfire",
 		criterias = {
 			{
 				"query_context",
@@ -947,227 +457,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_bogenhafen_slum_fortify_prep"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_fortify_prep",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_fortify_prep",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_bogenhafen_slum_fortify",
-		response = "pes_level_bogenhafen_slum_fortify",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_fortify"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_fortify",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_fortify",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_bogenhafen_slum_search",
-		response = "pes_level_bogenhafen_slum_search",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_search"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_search",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_search",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_bogenhafen_slum_tainted_food",
-		response = "pes_level_bogenhafen_slum_tainted_food",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_tainted_food"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_tainted_food",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_tainted_food",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_bogenhafen_slum_noble_food",
-		response = "pes_level_bogenhafen_slum_noble_food",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_noble_food"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_noble_food",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_noble_food",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_hu_level_bogenhafen_slum_noble_food",
-		response = "pes_hu_level_bogenhafen_slum_noble_food",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_noble_food"
+				"pit_blackfire"
 			},
 			{
 				"query_context",
@@ -1185,11 +475,11 @@ return function ()
 				"user_context",
 				"player_career",
 				OP.EQ,
-				"es_huntsman"
+				"es_knight"
 			},
 			{
 				"faction_memory",
-				"level_bogenhafen_slum_noble_food",
+				"pit_blackfire",
 				OP.EQ,
 				0
 			}
@@ -1197,7 +487,245 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_bogenhafen_slum_noble_food",
+				"pit_blackfire",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_kn_level_bogenhafen_slum_escape",
+		response = "pes_kn_level_bogenhafen_slum_escape",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_escape"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_career",
+				OP.EQ,
+				"es_knight"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_escape",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_escape",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_kn_level_bogenhafen_slum_stolen_goods",
+		response = "pes_kn_level_bogenhafen_slum_stolen_goods",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_stolen_goods"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_career",
+				OP.EQ,
+				"es_knight"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_stolen_goods",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_stolen_goods",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_kn_level_bogenhafen_slum_too_quiet",
+		response = "pes_kn_level_bogenhafen_slum_too_quiet",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_too_quiet"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_career",
+				OP.EQ,
+				"es_knight"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_too_quiet",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_too_quiet",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_bogenhafen_slum_ambush",
+		response = "pes_level_bogenhafen_slum_ambush",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_ambush"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_ambush",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_ambush",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_bogenhafen_slum_blackfire",
+		response = "pes_level_bogenhafen_slum_blackfire",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"pit_blackfire"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"pit_blackfire",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"pit_blackfire",
 				OP.ADD,
 				1
 			}
@@ -1292,8 +820,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pes_level_bogenhafen_slum_noisy_exit",
-		response = "pes_level_bogenhafen_slum_noisy_exit",
+		name = "pes_level_bogenhafen_slum_end",
+		response = "pes_level_bogenhafen_slum_end",
 		criterias = {
 			{
 				"query_context",
@@ -1305,7 +833,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_bogenhafen_slum_noisy_exit"
+				"level_bogenhafen_slum_end"
 			},
 			{
 				"query_context",
@@ -1321,7 +849,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_bogenhafen_slum_noisy_exit",
+				"level_bogenhafen_slum_end",
 				OP.EQ,
 				0
 			}
@@ -1329,51 +857,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_bogenhafen_slum_noisy_exit",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_hu_level_bogenhafen_slum_noisy_exit",
-		response = "pes_hu_level_bogenhafen_slum_noisy_exit",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"level_bogenhafen_slum_noisy_exit"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_noisy_exit",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_bogenhafen_slum_noisy_exit",
+				"level_bogenhafen_slum_end",
 				OP.ADD,
 				1
 			}
@@ -1424,8 +908,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pes_kn_level_bogenhafen_slum_escape",
-		response = "pes_kn_level_bogenhafen_slum_escape",
+		name = "pes_level_bogenhafen_slum_find_hideout",
+		response = "pes_level_bogenhafen_slum_find_hideout",
 		criterias = {
 			{
 				"query_context",
@@ -1437,7 +921,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_bogenhafen_slum_escape"
+				"level_bogenhafen_slum_find_hideout"
 			},
 			{
 				"query_context",
@@ -1452,14 +936,8 @@ return function ()
 				"empire_soldier"
 			},
 			{
-				"user_context",
-				"player_career",
-				OP.EQ,
-				"es_knight"
-			},
-			{
 				"faction_memory",
-				"level_bogenhafen_slum_escape",
+				"level_bogenhafen_slum_find_hideout",
 				OP.EQ,
 				0
 			}
@@ -1467,15 +945,15 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_bogenhafen_slum_escape",
+				"level_bogenhafen_slum_find_hideout",
 				OP.ADD,
 				1
 			}
 		}
 	})
 	define_rule({
-		name = "pes_level_bogenhafen_slum_the_wall",
-		response = "pes_level_bogenhafen_slum_the_wall",
+		name = "pes_level_bogenhafen_slum_fortify",
+		response = "pes_level_bogenhafen_slum_fortify",
 		criterias = {
 			{
 				"query_context",
@@ -1487,7 +965,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"pes_level_bogenhafen_slum_the_wall"
+				"level_bogenhafen_slum_fortify"
 			},
 			{
 				"query_context",
@@ -1503,7 +981,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"pes_level_bogenhafen_slum_the_wall",
+				"level_bogenhafen_slum_fortify",
 				OP.EQ,
 				0
 			}
@@ -1511,15 +989,15 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"pes_level_bogenhafen_slum_the_wall",
+				"level_bogenhafen_slum_fortify",
 				OP.ADD,
 				1
 			}
 		}
 	})
 	define_rule({
-		name = "pes_hu_level_bogenhafen_slum_the_wall",
-		response = "pes_hu_level_bogenhafen_slum_the_wall",
+		name = "pes_level_bogenhafen_slum_fortify_prep",
+		response = "pes_level_bogenhafen_slum_fortify_prep",
 		criterias = {
 			{
 				"query_context",
@@ -1531,7 +1009,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"pes_level_bogenhafen_slum_the_wall"
+				"level_bogenhafen_slum_fortify_prep"
 			},
 			{
 				"query_context",
@@ -1546,14 +1024,8 @@ return function ()
 				"empire_soldier"
 			},
 			{
-				"user_context",
-				"player_career",
-				OP.EQ,
-				"es_huntsman"
-			},
-			{
 				"faction_memory",
-				"pes_level_bogenhafen_slum_the_wall",
+				"level_bogenhafen_slum_fortify_prep",
 				OP.EQ,
 				0
 			}
@@ -1561,15 +1033,15 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"pes_level_bogenhafen_slum_the_wall",
+				"level_bogenhafen_slum_fortify_prep",
 				OP.ADD,
 				1
 			}
 		}
 	})
 	define_rule({
-		name = "pes_level_bogenhafen_slum_end",
-		response = "pes_level_bogenhafen_slum_end",
+		name = "pes_level_bogenhafen_slum_foul_air",
+		response = "pes_level_bogenhafen_slum_foul_air",
 		criterias = {
 			{
 				"query_context",
@@ -1581,7 +1053,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_bogenhafen_slum_end"
+				"level_bogenhafen_slum_foul_air"
 			},
 			{
 				"query_context",
@@ -1597,7 +1069,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_bogenhafen_slum_end",
+				"level_bogenhafen_slum_foul_air",
 				OP.EQ,
 				0
 			}
@@ -1605,7 +1077,51 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_bogenhafen_slum_end",
+				"level_bogenhafen_slum_foul_air",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_bogenhafen_slum_gang",
+		response = "pes_level_bogenhafen_slum_gang",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_gang"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_gang",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_gang",
 				OP.ADD,
 				1
 			}
@@ -1731,445 +1247,789 @@ return function ()
 			}
 		}
 	})
+	define_rule({
+		name = "pes_level_bogenhafen_slum_noble_food",
+		response = "pes_level_bogenhafen_slum_noble_food",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_noble_food"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_noble_food",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_noble_food",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_bogenhafen_slum_noisy_exit",
+		response = "pes_level_bogenhafen_slum_noisy_exit",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_noisy_exit"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_noisy_exit",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_noisy_exit",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_bogenhafen_slum_river",
+		response = "pes_level_bogenhafen_slum_river",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_river"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_river",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_river",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_bogenhafen_slum_search",
+		response = "pes_level_bogenhafen_slum_search",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_search"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_search",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_search",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_bogenhafen_slum_slum",
+		response = "pes_level_bogenhafen_slum_slum",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_slum"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_slum",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_slum",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_bogenhafen_slum_squalor",
+		response = "pes_level_bogenhafen_slum_squalor",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_squalor"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_squalor",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_squalor",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_bogenhafen_slum_stolen_goods",
+		response = "pes_level_bogenhafen_slum_stolen_goods",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_stolen_goods"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_stolen_goods",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_stolen_goods",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_bogenhafen_slum_tainted_food",
+		response = "pes_level_bogenhafen_slum_tainted_food",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_tainted_food"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_tainted_food",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_tainted_food",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_bogenhafen_slum_the_58",
+		response = "pes_level_bogenhafen_slum_the_58",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_the_58"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_the_58",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_the_58",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_bogenhafen_slum_the_wall",
+		response = "pes_level_bogenhafen_slum_the_wall",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"pes_level_bogenhafen_slum_the_wall"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"pes_level_bogenhafen_slum_the_wall",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"pes_level_bogenhafen_slum_the_wall",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_bogenhafen_slum_too_quiet",
+		response = "pes_level_bogenhafen_slum_too_quiet",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"level_bogenhafen_slum_too_quiet"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_too_quiet",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_bogenhafen_slum_too_quiet",
+				OP.ADD,
+				1
+			}
+		}
+	})
 	add_dialogues({
-		pes_level_bogenhafen_slum_intro_c = {
-			face_animations_n = 2,
+		pes_hu_level_bogenhafen_slum_blackfire = {
+			sound_events_n = 1,
+			face_animations_n = 1,
 			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_level_bogenhafen_slum_intro_c_01",
-				[2.0] = "pes_level_bogenhafen_slum_intro_c_02"
-			},
-			sound_events = {
-				[1.0] = "pes_level_bogenhafen_slum_intro_c_01",
-				[2.0] = "pes_level_bogenhafen_slum_intro_c_02"
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
 			},
 			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
+				[1.0] = "face_concerned"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.8639686107635,
-				[2.0] = 8.357458114624
-			}
-		},
-		pes_level_bogenhafen_slum_foul_air = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
 			localization_strings = {
-				"pes_level_bogenhafen_slum_foul_air_01",
-				"pes_level_bogenhafen_slum_foul_air_02",
-				"pes_level_bogenhafen_slum_foul_air_03",
-				"pes_level_bogenhafen_slum_foul_air_04"
+				[1.0] = "pes_hu_level_bogenhafen_slum_blackfire_01"
 			},
 			sound_events = {
-				"pes_level_bogenhafen_slum_foul_air_01",
-				"pes_level_bogenhafen_slum_foul_air_02",
-				"pes_level_bogenhafen_slum_foul_air_03",
-				"pes_level_bogenhafen_slum_foul_air_04"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "pes_hu_level_bogenhafen_slum_blackfire_01"
 			},
 			sound_events_duration = {
-				4.375041604042,
-				4.6494793891907,
-				4.2101459503174,
-				3.9336874485016
-			}
-		},
-		pes_level_bogenhafen_slum_intro_a = {
-			face_animations_n = 2,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_level_bogenhafen_slum_intro_a_01",
-				[2.0] = "pes_level_bogenhafen_slum_intro_a_02"
-			},
-			sound_events = {
-				[1.0] = "pes_level_bogenhafen_slum_intro_a_01",
-				[2.0] = "pes_level_bogenhafen_slum_intro_a_02"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 6.5507497787476,
-				[2.0] = 4.4496874809265
+				[1.0] = 3.4567
 			}
 		},
 		pes_hu_level_bogenhafen_slum_find_hideout = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 1,
 			category = "level_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_find_hideout_01"
-			},
-			sound_events = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_find_hideout_01"
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+			localization_strings = {
+				[1.0] = "pes_hu_level_bogenhafen_slum_find_hideout_01"
+			},
+			sound_events = {
+				[1.0] = "pes_hu_level_bogenhafen_slum_find_hideout_01"
 			},
 			sound_events_duration = {
 				[1.0] = 4.4726667404175
 			}
 		},
-		pes_kn_level_bogenhafen_slum_escape = {
+		pes_hu_level_bogenhafen_slum_gang = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 1,
 			category = "level_talk",
 			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_concerned"
+			},
+			localization_strings = {
+				[1.0] = "pes_hu_level_bogenhafen_slum_gang_01"
+			},
+			sound_events = {
+				[1.0] = "pes_hu_level_bogenhafen_slum_gang_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.3713960647583
+			}
+		},
+		pes_hu_level_bogenhafen_slum_noble_food = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "empire_soldier_bogenhafen_slum",
+			category = "level_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_hu_level_bogenhafen_slum_noble_food_01"
+			},
+			sound_events = {
+				[1.0] = "pes_hu_level_bogenhafen_slum_noble_food_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.0021457672119
+			}
+		},
+		pes_hu_level_bogenhafen_slum_noisy_exit = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "empire_soldier_bogenhafen_slum",
+			category = "level_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_hu_level_bogenhafen_slum_noisy_exit_01"
+			},
+			sound_events = {
+				[1.0] = "pes_hu_level_bogenhafen_slum_noisy_exit_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.8087916374206
+			}
+		},
+		pes_hu_level_bogenhafen_slum_squalor = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "empire_soldier_bogenhafen_slum",
+			category = "level_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_angry"
+			},
+			localization_strings = {
+				[1.0] = "pes_hu_level_bogenhafen_slum_squalor_01"
+			},
+			sound_events = {
+				[1.0] = "pes_hu_level_bogenhafen_slum_squalor_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.7791252136231
+			}
+		},
+		pes_hu_level_bogenhafen_slum_the_58 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "empire_soldier_bogenhafen_slum",
+			category = "level_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_hu_level_bogenhafen_slum_the_58_01"
+			},
+			sound_events = {
+				[1.0] = "pes_hu_level_bogenhafen_slum_the_58_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2184166908264
+			}
+		},
+		pes_hu_level_bogenhafen_slum_the_wall = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "empire_soldier_bogenhafen_slum",
+			category = "level_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_hu_level_bogenhafen_slum_the_wall_01"
+			},
+			sound_events = {
+				[1.0] = "pes_hu_level_bogenhafen_slum_the_wall_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.1270833015442
+			}
+		},
+		pes_kn_level_bogenhafen_slum_ambush = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "empire_soldier_bogenhafen_slum",
+			category = "level_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_kn_level_bogenhafen_slum_ambush_01"
+			},
+			sound_events = {
+				[1.0] = "pes_kn_level_bogenhafen_slum_ambush_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.6008541584015
+			}
+		},
+		pes_kn_level_bogenhafen_slum_blackfire = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "empire_soldier_bogenhafen_slum",
+			category = "level_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_concerned"
+			},
+			localization_strings = {
+				[1.0] = "pes_kn_level_bogenhafen_slum_blackfire_01"
+			},
+			sound_events = {
+				[1.0] = "pes_kn_level_bogenhafen_slum_blackfire_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.4567
+			}
+		},
+		pes_kn_level_bogenhafen_slum_escape = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "empire_soldier_bogenhafen_slum",
+			category = "level_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
 			localization_strings = {
 				[1.0] = "pes_kn_level_bogenhafen_slum_escape_01"
 			},
 			sound_events = {
 				[1.0] = "pes_kn_level_bogenhafen_slum_escape_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
 			},
 			sound_events_duration = {
 				[1.0] = 3.1252915859222
 			}
 		},
-		pes_level_bogenhafen_slum_blackfire = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_blackfire_01",
-				"pes_level_bogenhafen_slum_blackfire_02",
-				"pes_level_bogenhafen_slum_blackfire_03",
-				"pes_level_bogenhafen_slum_blackfire_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_blackfire_01",
-				"pes_level_bogenhafen_slum_blackfire_02",
-				"pes_level_bogenhafen_slum_blackfire_03",
-				"pes_level_bogenhafen_slum_blackfire_04"
-			},
-			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				3.4567,
-				3.4567,
-				3.4567,
-				3.4567
-			}
-		},
-		pes_kn_level_bogenhafen_slum_blackfire = {
+		pes_kn_level_bogenhafen_slum_stolen_goods = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 1,
 			category = "level_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_kn_level_bogenhafen_slum_blackfire_01"
-			},
-			sound_events = {
-				[1.0] = "pes_kn_level_bogenhafen_slum_blackfire_01"
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
-				[1.0] = "face_concerned"
+				[1.0] = "face_calm"
 			},
+			localization_strings = {
+				[1.0] = "pes_kn_level_bogenhafen_slum_stolen_goods_01"
+			},
+			sound_events = {
+				[1.0] = "pes_kn_level_bogenhafen_slum_stolen_goods_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.7427706718445
+			}
+		},
+		pes_kn_level_bogenhafen_slum_too_quiet = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "empire_soldier_bogenhafen_slum",
+			category = "level_talk",
+			dialogue_animations_n = 1,
 			dialogue_animations = {
 				[1.0] = "dialogue_shout"
 			},
-			sound_events_duration = {
-				[1.0] = 3.4567
-			}
-		},
-		pes_level_bogenhafen_slum_fortify = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
+			face_animations = {
+				[1.0] = "face_fear"
+			},
 			localization_strings = {
-				"pes_level_bogenhafen_slum_fortify_01",
-				"pes_level_bogenhafen_slum_fortify_02",
-				"pes_level_bogenhafen_slum_fortify_03",
-				"pes_level_bogenhafen_slum_fortify_04"
+				[1.0] = "pes_kn_level_bogenhafen_slum_too_quiet_01"
 			},
 			sound_events = {
-				"pes_level_bogenhafen_slum_fortify_01",
-				"pes_level_bogenhafen_slum_fortify_02",
-				"pes_level_bogenhafen_slum_fortify_03",
-				"pes_level_bogenhafen_slum_fortify_04"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				[1.0] = "pes_kn_level_bogenhafen_slum_too_quiet_01"
 			},
 			sound_events_duration = {
-				2.2024791240692,
-				1.5487500429153,
-				4.0462083816528,
-				2.5072500705719
-			}
-		},
-		pes_hu_level_bogenhafen_slum_blackfire = {
-			face_animations_n = 1,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 1,
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_blackfire_01"
-			},
-			sound_events = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_blackfire_01"
-			},
-			face_animations = {
-				[1.0] = "face_concerned"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 3.4567
-			}
-		},
-		pes_level_bogenhafen_slum_tainted_food = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "cut_scene",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_tainted_food_01",
-				"pes_level_bogenhafen_slum_tainted_food_02",
-				"pes_level_bogenhafen_slum_tainted_food_03",
-				"pes_level_bogenhafen_slum_tainted_food_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_tainted_food_01",
-				"pes_level_bogenhafen_slum_tainted_food_02",
-				"pes_level_bogenhafen_slum_tainted_food_03",
-				"pes_level_bogenhafen_slum_tainted_food_04"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			sound_events_duration = {
-				5.1007916927338,
-				4.6849167346954,
-				4.0833539962769,
-				5.3445835113525
-			}
-		},
-		pes_level_bogenhafen_slum_gang = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_gang_01",
-				"pes_level_bogenhafen_slum_gang_02",
-				"pes_level_bogenhafen_slum_gang_03",
-				"pes_level_bogenhafen_slum_gang_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_gang_01",
-				"pes_level_bogenhafen_slum_gang_02",
-				"pes_level_bogenhafen_slum_gang_03",
-				"pes_level_bogenhafen_slum_gang_04"
-			},
-			face_animations = {
-				"face_concerned",
-				"face_neutral",
-				"face_neutral",
-				"face_curious"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				3.9172084331513,
-				4.5212497711182,
-				4.9097499847412,
-				6.8916668891907
-			}
-		},
-		pes_level_bogenhafen_slum_search = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_search_01",
-				"pes_level_bogenhafen_slum_search_02",
-				"pes_level_bogenhafen_slum_search_03",
-				"pes_level_bogenhafen_slum_search_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_search_01",
-				"pes_level_bogenhafen_slum_search_02",
-				"pes_level_bogenhafen_slum_search_03",
-				"pes_level_bogenhafen_slum_search_04"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			sound_events_duration = {
-				3.3684582710266,
-				2.5360832214356,
-				2.8272082805634,
-				1.7828749418259
-			}
-		},
-		pes_level_bogenhafen_slum_the_58 = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_the_58_01",
-				"pes_level_bogenhafen_slum_the_58_02",
-				"pes_level_bogenhafen_slum_the_58_03",
-				"pes_level_bogenhafen_slum_the_58_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_the_58_01",
-				"pes_level_bogenhafen_slum_the_58_02",
-				"pes_level_bogenhafen_slum_the_58_03",
-				"pes_level_bogenhafen_slum_the_58_04"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				3.5743958950043,
-				5.1438331604004,
-				4.5657081604004,
-				4.4989790916443
+				[1.0] = 3.9776458740234
 			}
 		},
 		pes_level_bogenhafen_slum_ambush = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_bogenhafen_slum",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_ambush_01",
-				"pes_level_bogenhafen_slum_ambush_02",
-				"pes_level_bogenhafen_slum_ambush_03",
-				"pes_level_bogenhafen_slum_ambush_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_ambush_01",
-				"pes_level_bogenhafen_slum_ambush_02",
-				"pes_level_bogenhafen_slum_ambush_03",
-				"pes_level_bogenhafen_slum_ambush_04"
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
 				"face_calm",
@@ -2177,11 +2037,18 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			localization_strings = {
+				"pes_level_bogenhafen_slum_ambush_01",
+				"pes_level_bogenhafen_slum_ambush_02",
+				"pes_level_bogenhafen_slum_ambush_03",
+				"pes_level_bogenhafen_slum_ambush_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_ambush_01",
+				"pes_level_bogenhafen_slum_ambush_02",
+				"pes_level_bogenhafen_slum_ambush_03",
+				"pes_level_bogenhafen_slum_ambush_04"
 			},
 			sound_events_duration = {
 				3.8836874961853,
@@ -2190,620 +2057,57 @@ return function ()
 				2.1955416202545
 			}
 		},
-		pes_hu_level_bogenhafen_slum_squalor = {
-			face_animations_n = 1,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 1,
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_squalor_01"
-			},
-			sound_events = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_squalor_01"
-			},
-			face_animations = {
-				[1.0] = "face_angry"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 6.7791252136231
-			}
-		},
-		pes_kn_level_bogenhafen_slum_too_quiet = {
-			face_animations_n = 1,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 1,
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_kn_level_bogenhafen_slum_too_quiet_01"
-			},
-			sound_events = {
-				[1.0] = "pes_kn_level_bogenhafen_slum_too_quiet_01"
-			},
-			face_animations = {
-				[1.0] = "face_fear"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 3.9776458740234
-			}
-		},
-		pes_level_bogenhafen_slum_intro_b = {
-			face_animations_n = 2,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 2,
+		pes_level_bogenhafen_slum_blackfire = {
 			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_level_bogenhafen_slum_intro_b_01",
-				[2.0] = "pes_level_bogenhafen_slum_intro_b_02"
-			},
-			sound_events = {
-				[1.0] = "pes_level_bogenhafen_slum_intro_b_01",
-				[2.0] = "pes_level_bogenhafen_slum_intro_b_02"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.8460834026337,
-				[2.0] = 4.6342082023621
-			}
-		},
-		pes_hu_level_bogenhafen_slum_noble_food = {
-			face_animations_n = 1,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 1,
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_noble_food_01"
-			},
-			sound_events = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_noble_food_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 6.0021457672119
-			}
-		},
-		pes_kn_level_bogenhafen_slum_ambush = {
-			face_animations_n = 1,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 1,
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_kn_level_bogenhafen_slum_ambush_01"
-			},
-			sound_events = {
-				[1.0] = "pes_kn_level_bogenhafen_slum_ambush_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.6008541584015
-			}
-		},
-		pes_level_bogenhafen_slum_end = {
 			face_animations_n = 4,
 			database = "empire_soldier_bogenhafen_slum",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_end_01",
-				"pes_level_bogenhafen_slum_end_02",
-				"pes_level_bogenhafen_slum_end_03",
-				"pes_level_bogenhafen_slum_end_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_end_01",
-				"pes_level_bogenhafen_slum_end_02",
-				"pes_level_bogenhafen_slum_end_03",
-				"pes_level_bogenhafen_slum_end_04"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			sound_events_duration = {
-				4.0604376792908,
-				4.074583530426,
-				4.870041847229,
-				4.8436250686645
-			}
-		},
-		pes_level_bogenhafen_slum_noble_food = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_noble_food_01",
-				"pes_level_bogenhafen_slum_noble_food_02",
-				"pes_level_bogenhafen_slum_noble_food_03",
-				"pes_level_bogenhafen_slum_noble_food_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_noble_food_01",
-				"pes_level_bogenhafen_slum_noble_food_02",
-				"pes_level_bogenhafen_slum_noble_food_03",
-				"pes_level_bogenhafen_slum_noble_food_04"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			sound_events_duration = {
-				4.1488752365112,
-				5.7858333587647,
-				5.1601247787476,
-				5.9686040878296
-			}
-		},
-		pes_hu_level_bogenhafen_slum_the_58 = {
-			face_animations_n = 1,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 1,
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_the_58_01"
-			},
-			sound_events = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_the_58_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 5.2184166908264
-			}
-		},
-		pes_hu_level_bogenhafen_slum_noisy_exit = {
-			face_animations_n = 1,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 1,
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_noisy_exit_01"
-			},
-			sound_events = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_noisy_exit_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.8087916374206
-			}
-		},
-		pes_level_bogenhafen_slum_the_wall = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_the_wall_01",
-				"pes_level_bogenhafen_slum_the_wall_02",
-				"pes_level_bogenhafen_slum_the_wall_03",
-				"pes_level_bogenhafen_slum_the_wall_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_the_wall_01",
-				"pes_level_bogenhafen_slum_the_wall_02",
-				"pes_level_bogenhafen_slum_the_wall_03",
-				"pes_level_bogenhafen_slum_the_wall_04"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			sound_events_duration = {
-				2.5269062519074,
-				3.2197499275208,
-				2.0765416622162,
-				2.8485417366028
-			}
-		},
-		pes_kn_level_bogenhafen_slum_stolen_goods = {
-			face_animations_n = 1,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 1,
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_kn_level_bogenhafen_slum_stolen_goods_01"
-			},
-			sound_events = {
-				[1.0] = "pes_kn_level_bogenhafen_slum_stolen_goods_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 6.7427706718445
-			}
-		},
-		pes_level_bogenhafen_slum_fortify_prep = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_fortify_prep_01",
-				"pes_level_bogenhafen_slum_fortify_prep_02",
-				"pes_level_bogenhafen_slum_fortify_prep_03",
-				"pes_level_bogenhafen_slum_fortify_prep_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_fortify_prep_01",
-				"pes_level_bogenhafen_slum_fortify_prep_02",
-				"pes_level_bogenhafen_slum_fortify_prep_03",
-				"pes_level_bogenhafen_slum_fortify_prep_04"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			sound_events_duration = {
-				1.9961041212082,
-				3.3158957958221,
-				1.8525832891464,
-				3.9502084255219
-			}
-		},
-		pes_level_bogenhafen_slum_cannon = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_cannon_01",
-				"pes_level_bogenhafen_slum_cannon_02",
-				"pes_level_bogenhafen_slum_cannon_03",
-				"pes_level_bogenhafen_slum_cannon_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_cannon_01",
-				"pes_level_bogenhafen_slum_cannon_02",
-				"pes_level_bogenhafen_slum_cannon_03",
-				"pes_level_bogenhafen_slum_cannon_04"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			sound_events_duration = {
-				5.5001873970032,
-				2.7146875858307,
-				5.8371667861939,
-				3.631854057312
-			}
-		},
-		pes_level_bogenhafen_slum_escape = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_escape_01",
-				"pes_level_bogenhafen_slum_escape_02",
-				"pes_level_bogenhafen_slum_escape_03",
-				"pes_level_bogenhafen_slum_escape_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_escape_01",
-				"pes_level_bogenhafen_slum_escape_02",
-				"pes_level_bogenhafen_slum_escape_03",
-				"pes_level_bogenhafen_slum_escape_04"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			sound_events_duration = {
-				1.835520863533,
-				2.0077083110809,
-				2.0608749389648,
-				3.2111666202545
-			}
-		},
-		pes_level_bogenhafen_slum_stolen_goods = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_stolen_goods_01",
-				"pes_level_bogenhafen_slum_stolen_goods_02",
-				"pes_level_bogenhafen_slum_stolen_goods_03",
-				"pes_level_bogenhafen_slum_stolen_goods_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_stolen_goods_01",
-				"pes_level_bogenhafen_slum_stolen_goods_02",
-				"pes_level_bogenhafen_slum_stolen_goods_03",
-				"pes_level_bogenhafen_slum_stolen_goods_04"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			sound_events_duration = {
-				3.2962708473206,
-				2.6640625,
-				3.3651041984558,
-				4.5013542175293
-			}
-		},
-		pes_hu_level_bogenhafen_slum_the_wall = {
-			face_animations_n = 1,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 1,
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_the_wall_01"
-			},
-			sound_events = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_the_wall_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.1270833015442
-			}
-		},
-		pes_level_bogenhafen_slum_river = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_river_01",
-				"pes_level_bogenhafen_slum_river_02",
-				"pes_level_bogenhafen_slum_river_03",
-				"pes_level_bogenhafen_slum_river_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_river_01",
-				"pes_level_bogenhafen_slum_river_02",
-				"pes_level_bogenhafen_slum_river_03",
-				"pes_level_bogenhafen_slum_river_04"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
 			dialogue_animations = {
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout"
 			},
-			sound_events_duration = {
-				4.6078333854675,
-				3.449937582016,
-				4.6112499237061,
-				4.6145625114441
-			}
-		},
-		pes_level_bogenhafen_slum_squalor = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_squalor_01",
-				"pes_level_bogenhafen_slum_squalor_02",
-				"pes_level_bogenhafen_slum_squalor_03",
-				"pes_level_bogenhafen_slum_squalor_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_squalor_01",
-				"pes_level_bogenhafen_slum_squalor_02",
-				"pes_level_bogenhafen_slum_squalor_03",
-				"pes_level_bogenhafen_slum_squalor_04"
-			},
 			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				2.2117917537689,
-				4.153395652771,
-				3.5759478807449,
-				4.2679790258408
-			}
-		},
-		pes_level_bogenhafen_slum_noisy_exit = {
-			face_animations_n = 4,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
 			localization_strings = {
-				"pes_level_bogenhafen_slum_noisy_exit_01",
-				"pes_level_bogenhafen_slum_noisy_exit_02",
-				"pes_level_bogenhafen_slum_noisy_exit_03",
-				"pes_level_bogenhafen_slum_noisy_exit_04"
+				"pes_level_bogenhafen_slum_blackfire_01",
+				"pes_level_bogenhafen_slum_blackfire_02",
+				"pes_level_bogenhafen_slum_blackfire_03",
+				"pes_level_bogenhafen_slum_blackfire_04"
 			},
+			randomize_indexes = {},
 			sound_events = {
-				"pes_level_bogenhafen_slum_noisy_exit_01",
-				"pes_level_bogenhafen_slum_noisy_exit_02",
-				"pes_level_bogenhafen_slum_noisy_exit_03",
-				"pes_level_bogenhafen_slum_noisy_exit_04"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+				"pes_level_bogenhafen_slum_blackfire_01",
+				"pes_level_bogenhafen_slum_blackfire_02",
+				"pes_level_bogenhafen_slum_blackfire_03",
+				"pes_level_bogenhafen_slum_blackfire_04"
 			},
 			sound_events_duration = {
-				3.0401666164398,
-				6.6315627098083,
-				3.0163750648499,
-				1.7475625276566
+				3.4567,
+				3.4567,
+				3.4567,
+				3.4567
 			}
 		},
 		pes_level_bogenhafen_slum_burn_food = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_bogenhafen_slum",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_burn_food_01",
-				"pes_level_bogenhafen_slum_burn_food_02",
-				"pes_level_bogenhafen_slum_burn_food_03",
-				"pes_level_bogenhafen_slum_burn_food_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_burn_food_01",
-				"pes_level_bogenhafen_slum_burn_food_02",
-				"pes_level_bogenhafen_slum_burn_food_03",
-				"pes_level_bogenhafen_slum_burn_food_04"
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
 				"face_calm",
@@ -2811,11 +2115,18 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			localization_strings = {
+				"pes_level_bogenhafen_slum_burn_food_01",
+				"pes_level_bogenhafen_slum_burn_food_02",
+				"pes_level_bogenhafen_slum_burn_food_03",
+				"pes_level_bogenhafen_slum_burn_food_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_burn_food_01",
+				"pes_level_bogenhafen_slum_burn_food_02",
+				"pes_level_bogenhafen_slum_burn_food_03",
+				"pes_level_bogenhafen_slum_burn_food_04"
 			},
 			sound_events_duration = {
 				3.930520772934,
@@ -2824,25 +2135,18 @@ return function ()
 				3.5218541622162
 			}
 		},
-		pes_level_bogenhafen_slum_slum = {
+		pes_level_bogenhafen_slum_cannon = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_bogenhafen_slum",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_slum_01",
-				"pes_level_bogenhafen_slum_slum_02",
-				"pes_level_bogenhafen_slum_slum_03",
-				"pes_level_bogenhafen_slum_slum_04"
-			},
-			sound_events = {
-				"pes_level_bogenhafen_slum_slum_01",
-				"pes_level_bogenhafen_slum_slum_02",
-				"pes_level_bogenhafen_slum_slum_03",
-				"pes_level_bogenhafen_slum_slum_04"
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
 				"face_calm",
@@ -2850,60 +2154,116 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_cannon_01",
+				"pes_level_bogenhafen_slum_cannon_02",
+				"pes_level_bogenhafen_slum_cannon_03",
+				"pes_level_bogenhafen_slum_cannon_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_cannon_01",
+				"pes_level_bogenhafen_slum_cannon_02",
+				"pes_level_bogenhafen_slum_cannon_03",
+				"pes_level_bogenhafen_slum_cannon_04"
+			},
+			sound_events_duration = {
+				5.5001873970032,
+				2.7146875858307,
+				5.8371667861939,
+				3.631854057312
+			}
+		},
+		pes_level_bogenhafen_slum_end = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
 			},
-			sound_events_duration = {
-				4.7087707519531,
-				3.5232501029968,
-				4.3982706069946,
-				6.3656044006348
-			}
-		},
-		pes_hu_level_bogenhafen_slum_gang = {
-			face_animations_n = 1,
-			database = "empire_soldier_bogenhafen_slum",
-			sound_events_n = 1,
-			category = "level_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_gang_01"
-			},
-			sound_events = {
-				[1.0] = "pes_hu_level_bogenhafen_slum_gang_01"
-			},
 			face_animations = {
-				[1.0] = "face_concerned"
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+			localization_strings = {
+				"pes_level_bogenhafen_slum_end_01",
+				"pes_level_bogenhafen_slum_end_02",
+				"pes_level_bogenhafen_slum_end_03",
+				"pes_level_bogenhafen_slum_end_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_end_01",
+				"pes_level_bogenhafen_slum_end_02",
+				"pes_level_bogenhafen_slum_end_03",
+				"pes_level_bogenhafen_slum_end_04"
 			},
 			sound_events_duration = {
-				[1.0] = 6.3713960647583
+				4.0604376792908,
+				4.074583530426,
+				4.870041847229,
+				4.8436250686645
 			}
 		},
-		pes_level_bogenhafen_slum_find_hideout = {
+		pes_level_bogenhafen_slum_escape = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_bogenhafen_slum",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_find_hideout_01",
-				"pes_level_bogenhafen_slum_find_hideout_02",
-				"pes_level_bogenhafen_slum_find_hideout_03",
-				"pes_level_bogenhafen_slum_find_hideout_04"
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_escape_01",
+				"pes_level_bogenhafen_slum_escape_02",
+				"pes_level_bogenhafen_slum_escape_03",
+				"pes_level_bogenhafen_slum_escape_04"
+			},
+			randomize_indexes = {},
 			sound_events = {
-				"pes_level_bogenhafen_slum_find_hideout_01",
-				"pes_level_bogenhafen_slum_find_hideout_02",
-				"pes_level_bogenhafen_slum_find_hideout_03",
-				"pes_level_bogenhafen_slum_find_hideout_04"
+				"pes_level_bogenhafen_slum_escape_01",
+				"pes_level_bogenhafen_slum_escape_02",
+				"pes_level_bogenhafen_slum_escape_03",
+				"pes_level_bogenhafen_slum_escape_04"
+			},
+			sound_events_duration = {
+				1.835520863533,
+				2.0077083110809,
+				2.0608749389648,
+				3.2111666202545
+			}
+		},
+		pes_level_bogenhafen_slum_find_hideout = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
 				"face_neutral",
@@ -2911,11 +2271,18 @@ return function ()
 				"face_neutral",
 				"face_neutral"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			localization_strings = {
+				"pes_level_bogenhafen_slum_find_hideout_01",
+				"pes_level_bogenhafen_slum_find_hideout_02",
+				"pes_level_bogenhafen_slum_find_hideout_03",
+				"pes_level_bogenhafen_slum_find_hideout_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_find_hideout_01",
+				"pes_level_bogenhafen_slum_find_hideout_02",
+				"pes_level_bogenhafen_slum_find_hideout_03",
+				"pes_level_bogenhafen_slum_find_hideout_04"
 			},
 			sound_events_duration = {
 				3.8923332691193,
@@ -2924,25 +2291,651 @@ return function ()
 				7.6091041564941
 			}
 		},
-		pes_level_bogenhafen_slum_too_quiet = {
+		pes_level_bogenhafen_slum_fortify = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_bogenhafen_slum",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_bogenhafen_slum_too_quiet_01",
-				"pes_level_bogenhafen_slum_too_quiet_02",
-				"pes_level_bogenhafen_slum_too_quiet_03",
-				"pes_level_bogenhafen_slum_too_quiet_04"
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_fortify_01",
+				"pes_level_bogenhafen_slum_fortify_02",
+				"pes_level_bogenhafen_slum_fortify_03",
+				"pes_level_bogenhafen_slum_fortify_04"
+			},
+			randomize_indexes = {},
 			sound_events = {
-				"pes_level_bogenhafen_slum_too_quiet_01",
-				"pes_level_bogenhafen_slum_too_quiet_02",
-				"pes_level_bogenhafen_slum_too_quiet_03",
-				"pes_level_bogenhafen_slum_too_quiet_04"
+				"pes_level_bogenhafen_slum_fortify_01",
+				"pes_level_bogenhafen_slum_fortify_02",
+				"pes_level_bogenhafen_slum_fortify_03",
+				"pes_level_bogenhafen_slum_fortify_04"
+			},
+			sound_events_duration = {
+				2.2024791240692,
+				1.5487500429153,
+				4.0462083816528,
+				2.5072500705719
+			}
+		},
+		pes_level_bogenhafen_slum_fortify_prep = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_fortify_prep_01",
+				"pes_level_bogenhafen_slum_fortify_prep_02",
+				"pes_level_bogenhafen_slum_fortify_prep_03",
+				"pes_level_bogenhafen_slum_fortify_prep_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_fortify_prep_01",
+				"pes_level_bogenhafen_slum_fortify_prep_02",
+				"pes_level_bogenhafen_slum_fortify_prep_03",
+				"pes_level_bogenhafen_slum_fortify_prep_04"
+			},
+			sound_events_duration = {
+				1.9961041212082,
+				3.3158957958221,
+				1.8525832891464,
+				3.9502084255219
+			}
+		},
+		pes_level_bogenhafen_slum_foul_air = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_foul_air_01",
+				"pes_level_bogenhafen_slum_foul_air_02",
+				"pes_level_bogenhafen_slum_foul_air_03",
+				"pes_level_bogenhafen_slum_foul_air_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_foul_air_01",
+				"pes_level_bogenhafen_slum_foul_air_02",
+				"pes_level_bogenhafen_slum_foul_air_03",
+				"pes_level_bogenhafen_slum_foul_air_04"
+			},
+			sound_events_duration = {
+				4.375041604042,
+				4.6494793891907,
+				4.2101459503174,
+				3.9336874485016
+			}
+		},
+		pes_level_bogenhafen_slum_gang = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_concerned",
+				"face_neutral",
+				"face_neutral",
+				"face_curious"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_gang_01",
+				"pes_level_bogenhafen_slum_gang_02",
+				"pes_level_bogenhafen_slum_gang_03",
+				"pes_level_bogenhafen_slum_gang_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_gang_01",
+				"pes_level_bogenhafen_slum_gang_02",
+				"pes_level_bogenhafen_slum_gang_03",
+				"pes_level_bogenhafen_slum_gang_04"
+			},
+			sound_events_duration = {
+				3.9172084331513,
+				4.5212497711182,
+				4.9097499847412,
+				6.8916668891907
+			}
+		},
+		pes_level_bogenhafen_slum_intro_a = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_level_bogenhafen_slum_intro_a_01",
+				[2.0] = "pes_level_bogenhafen_slum_intro_a_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pes_level_bogenhafen_slum_intro_a_01",
+				[2.0] = "pes_level_bogenhafen_slum_intro_a_02"
+			},
+			sound_events_duration = {
+				[1.0] = 6.5507497787476,
+				[2.0] = 4.4496874809265
+			}
+		},
+		pes_level_bogenhafen_slum_intro_b = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_level_bogenhafen_slum_intro_b_01",
+				[2.0] = "pes_level_bogenhafen_slum_intro_b_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pes_level_bogenhafen_slum_intro_b_01",
+				[2.0] = "pes_level_bogenhafen_slum_intro_b_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.8460834026337,
+				[2.0] = 4.6342082023621
+			}
+		},
+		pes_level_bogenhafen_slum_intro_c = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_level_bogenhafen_slum_intro_c_01",
+				[2.0] = "pes_level_bogenhafen_slum_intro_c_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pes_level_bogenhafen_slum_intro_c_01",
+				[2.0] = "pes_level_bogenhafen_slum_intro_c_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.8639686107635,
+				[2.0] = 8.357458114624
+			}
+		},
+		pes_level_bogenhafen_slum_noble_food = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_noble_food_01",
+				"pes_level_bogenhafen_slum_noble_food_02",
+				"pes_level_bogenhafen_slum_noble_food_03",
+				"pes_level_bogenhafen_slum_noble_food_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_noble_food_01",
+				"pes_level_bogenhafen_slum_noble_food_02",
+				"pes_level_bogenhafen_slum_noble_food_03",
+				"pes_level_bogenhafen_slum_noble_food_04"
+			},
+			sound_events_duration = {
+				4.1488752365112,
+				5.7858333587647,
+				5.1601247787476,
+				5.9686040878296
+			}
+		},
+		pes_level_bogenhafen_slum_noisy_exit = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_noisy_exit_01",
+				"pes_level_bogenhafen_slum_noisy_exit_02",
+				"pes_level_bogenhafen_slum_noisy_exit_03",
+				"pes_level_bogenhafen_slum_noisy_exit_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_noisy_exit_01",
+				"pes_level_bogenhafen_slum_noisy_exit_02",
+				"pes_level_bogenhafen_slum_noisy_exit_03",
+				"pes_level_bogenhafen_slum_noisy_exit_04"
+			},
+			sound_events_duration = {
+				3.0401666164398,
+				6.6315627098083,
+				3.0163750648499,
+				1.7475625276566
+			}
+		},
+		pes_level_bogenhafen_slum_river = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_river_01",
+				"pes_level_bogenhafen_slum_river_02",
+				"pes_level_bogenhafen_slum_river_03",
+				"pes_level_bogenhafen_slum_river_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_river_01",
+				"pes_level_bogenhafen_slum_river_02",
+				"pes_level_bogenhafen_slum_river_03",
+				"pes_level_bogenhafen_slum_river_04"
+			},
+			sound_events_duration = {
+				4.6078333854675,
+				3.449937582016,
+				4.6112499237061,
+				4.6145625114441
+			}
+		},
+		pes_level_bogenhafen_slum_search = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_search_01",
+				"pes_level_bogenhafen_slum_search_02",
+				"pes_level_bogenhafen_slum_search_03",
+				"pes_level_bogenhafen_slum_search_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_search_01",
+				"pes_level_bogenhafen_slum_search_02",
+				"pes_level_bogenhafen_slum_search_03",
+				"pes_level_bogenhafen_slum_search_04"
+			},
+			sound_events_duration = {
+				3.3684582710266,
+				2.5360832214356,
+				2.8272082805634,
+				1.7828749418259
+			}
+		},
+		pes_level_bogenhafen_slum_slum = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_slum_01",
+				"pes_level_bogenhafen_slum_slum_02",
+				"pes_level_bogenhafen_slum_slum_03",
+				"pes_level_bogenhafen_slum_slum_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_slum_01",
+				"pes_level_bogenhafen_slum_slum_02",
+				"pes_level_bogenhafen_slum_slum_03",
+				"pes_level_bogenhafen_slum_slum_04"
+			},
+			sound_events_duration = {
+				4.7087707519531,
+				3.5232501029968,
+				4.3982706069946,
+				6.3656044006348
+			}
+		},
+		pes_level_bogenhafen_slum_squalor = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_squalor_01",
+				"pes_level_bogenhafen_slum_squalor_02",
+				"pes_level_bogenhafen_slum_squalor_03",
+				"pes_level_bogenhafen_slum_squalor_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_squalor_01",
+				"pes_level_bogenhafen_slum_squalor_02",
+				"pes_level_bogenhafen_slum_squalor_03",
+				"pes_level_bogenhafen_slum_squalor_04"
+			},
+			sound_events_duration = {
+				2.2117917537689,
+				4.153395652771,
+				3.5759478807449,
+				4.2679790258408
+			}
+		},
+		pes_level_bogenhafen_slum_stolen_goods = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_stolen_goods_01",
+				"pes_level_bogenhafen_slum_stolen_goods_02",
+				"pes_level_bogenhafen_slum_stolen_goods_03",
+				"pes_level_bogenhafen_slum_stolen_goods_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_stolen_goods_01",
+				"pes_level_bogenhafen_slum_stolen_goods_02",
+				"pes_level_bogenhafen_slum_stolen_goods_03",
+				"pes_level_bogenhafen_slum_stolen_goods_04"
+			},
+			sound_events_duration = {
+				3.2962708473206,
+				2.6640625,
+				3.3651041984558,
+				4.5013542175293
+			}
+		},
+		pes_level_bogenhafen_slum_tainted_food = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "cut_scene",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_tainted_food_01",
+				"pes_level_bogenhafen_slum_tainted_food_02",
+				"pes_level_bogenhafen_slum_tainted_food_03",
+				"pes_level_bogenhafen_slum_tainted_food_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_tainted_food_01",
+				"pes_level_bogenhafen_slum_tainted_food_02",
+				"pes_level_bogenhafen_slum_tainted_food_03",
+				"pes_level_bogenhafen_slum_tainted_food_04"
+			},
+			sound_events_duration = {
+				5.1007916927338,
+				4.6849167346954,
+				4.0833539962769,
+				5.3445835113525
+			}
+		},
+		pes_level_bogenhafen_slum_the_58 = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_the_58_01",
+				"pes_level_bogenhafen_slum_the_58_02",
+				"pes_level_bogenhafen_slum_the_58_03",
+				"pes_level_bogenhafen_slum_the_58_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_the_58_01",
+				"pes_level_bogenhafen_slum_the_58_02",
+				"pes_level_bogenhafen_slum_the_58_03",
+				"pes_level_bogenhafen_slum_the_58_04"
+			},
+			sound_events_duration = {
+				3.5743958950043,
+				5.1438331604004,
+				4.5657081604004,
+				4.4989790916443
+			}
+		},
+		pes_level_bogenhafen_slum_the_wall = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pes_level_bogenhafen_slum_the_wall_01",
+				"pes_level_bogenhafen_slum_the_wall_02",
+				"pes_level_bogenhafen_slum_the_wall_03",
+				"pes_level_bogenhafen_slum_the_wall_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_the_wall_01",
+				"pes_level_bogenhafen_slum_the_wall_02",
+				"pes_level_bogenhafen_slum_the_wall_03",
+				"pes_level_bogenhafen_slum_the_wall_04"
+			},
+			sound_events_duration = {
+				2.5269062519074,
+				3.2197499275208,
+				2.0765416622162,
+				2.8485417366028
+			}
+		},
+		pes_level_bogenhafen_slum_too_quiet = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_bogenhafen_slum",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
 				"face_fear",
@@ -2950,11 +2943,18 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			localization_strings = {
+				"pes_level_bogenhafen_slum_too_quiet_01",
+				"pes_level_bogenhafen_slum_too_quiet_02",
+				"pes_level_bogenhafen_slum_too_quiet_03",
+				"pes_level_bogenhafen_slum_too_quiet_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_bogenhafen_slum_too_quiet_01",
+				"pes_level_bogenhafen_slum_too_quiet_02",
+				"pes_level_bogenhafen_slum_too_quiet_03",
+				"pes_level_bogenhafen_slum_too_quiet_04"
 			},
 			sound_events_duration = {
 				3.5705626010895,

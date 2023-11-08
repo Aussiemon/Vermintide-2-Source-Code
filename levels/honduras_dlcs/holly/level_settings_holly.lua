@@ -88,6 +88,10 @@ LevelSettings.magnus = {
 		wh_priest = {
 			"pwh_wp_loading_screen_magnus_tower_01",
 			"pwh_wp_loading_screen_magnus_tower_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_magnus_tower_01",
+			"pbw_nm_loading_screen_magnus_tower_02"
 		}
 	},
 	locations = {
@@ -198,6 +202,10 @@ LevelSettings.cemetery = {
 		wh_priest = {
 			"pwh_wp_loading_screen_cemetary_01",
 			"pwh_wp_loading_screen_cemetary_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_cemetary_01",
+			"pbw_nm_loading_screen_cemetary_02"
 		}
 	},
 	locations = {
@@ -311,6 +319,10 @@ LevelSettings.forest_ambush = {
 		wh_priest = {
 			"pwh_wp_loading_screen_forest_ambush_01",
 			"pwh_wp_loading_screen_forest_ambush_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_forest_ambush_01",
+			"pbw_nm_loading_screen_forest_ambush_02"
 		}
 	},
 	locations = {

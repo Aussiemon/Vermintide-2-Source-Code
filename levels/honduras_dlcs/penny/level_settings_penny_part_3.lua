@@ -85,6 +85,10 @@ LevelSettings.dlc_castle = {
 		wh_priest = {
 			"pwh_wp_castle_briefing_01",
 			"pwh_wp_castle_briefing_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_castle_briefing_01",
+			"pbw_nm_castle_briefing_02"
 		}
 	},
 	locations = {

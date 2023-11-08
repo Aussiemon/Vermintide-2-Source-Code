@@ -1,485 +1,91 @@
 return function ()
 	define_rule({
-		name = "pdr_level_ground_zero_canals",
-		response = "pdr_level_ground_zero_canals",
+		response = "ebh_level_ground_zero_lord_banter",
+		name = "ebh_level_ground_zero_lord_banter",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_canals"
+				"ebh_taunt"
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_canals",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_canals",
-				OP.ADD,
-				1
+				"chaos_exalted_sorcerer"
 			}
 		}
 	})
 	define_rule({
-		name = "pdr_level_ground_zero_corruption_everywhere",
-		response = "pdr_level_ground_zero_corruption_everywhere",
+		response = "ebh_level_ground_zero_lord_insect_spell",
+		name = "ebh_level_ground_zero_lord_insect_spell",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_corruption_everywhere"
+				"ebh_insect_spell"
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_corruption_everywhere",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_corruption_everywhere",
-				OP.ADD,
-				1
+				"chaos_exalted_sorcerer"
 			}
 		}
 	})
 	define_rule({
-		name = "pdr_level_ground_zero_crumbling",
-		response = "pdr_level_ground_zero_crumbling",
+		response = "ebh_level_ground_zero_lord_intro",
+		name = "ebh_level_ground_zero_lord_intro",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_crumbling"
+				"ebh_intro"
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_crumbling",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_crumbling",
-				OP.ADD,
-				1
+				"chaos_exalted_sorcerer"
 			}
 		}
 	})
 	define_rule({
-		name = "pdr_level_ground_zero_looking_for_elevator",
-		response = "pdr_level_ground_zero_looking_for_elevator",
+		response = "ebh_level_ground_zero_lord_retaliation_missile",
+		name = "ebh_level_ground_zero_lord_retaliation_missile",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_looking_for_elevator"
+				"ebh_retaliation_missile"
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_looking_for_elevator",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_looking_for_elevator",
-				OP.ADD,
-				1
+				"chaos_exalted_sorcerer"
 			}
 		}
 	})
 	define_rule({
-		name = "pdr_level_ground_zero_smell",
-		response = "pdr_level_ground_zero_smell",
+		response = "ebh_level_ground_zero_lord_spawn_enemies",
+		name = "ebh_level_ground_zero_lord_spawn_enemies",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_smell"
+				"ebh_summon"
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_smell",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_smell",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pdr_level_ground_zero_the_hole",
-		response = "pdr_level_ground_zero_the_hole",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_the_hole"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_the_hole",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_the_hole",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pdr_level_ground_zero_welcoming_committee",
-		response = "pdr_level_ground_zero_welcoming_committee",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_welcoming_committee"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_welcoming_committee",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_welcoming_committee",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pdr_level_ground_zero_precarious",
-		response = "pdr_level_ground_zero_precarious",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_precarious"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_precarious",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_precarious",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pdr_level_ground_zero_landslide",
-		response = "pdr_level_ground_zero_landslide",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_landslide"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_landslide",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_landslide",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pdr_level_ground_zero_the_hole_second_view",
-		response = "pdr_level_ground_zero_the_hole_second_view",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_the_hole_second_view"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_the_hole_second_view",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_the_hole_second_view",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pdr_level_ground_zero_boss_near",
-		response = "pdr_level_ground_zero_boss_near",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_boss_near"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"dwarf_ranger"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_boss_near",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_boss_near",
-				OP.ADD,
-				1
+				"chaos_exalted_sorcerer"
 			}
 		}
 	})
@@ -579,7 +185,7 @@ return function ()
 				"query_context",
 				"dialogue_name_nopre",
 				OP.EQ,
-				"ground_zero_intro_c"
+				"ground_zero_intro_b"
 			},
 			{
 				"user_context",
@@ -604,92 +210,46 @@ return function ()
 		}
 	})
 	define_rule({
-		response = "ebh_level_ground_zero_lord_intro",
-		name = "ebh_level_ground_zero_lord_intro",
+		name = "pdr_level_ground_zero_boss_near",
+		response = "pdr_level_ground_zero_boss_near",
 		criterias = {
 			{
 				"query_context",
 				"concept",
 				OP.EQ,
-				"ebh_intro"
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_boss_near"
 			},
 			{
 				"query_context",
 				"source_name",
 				OP.EQ,
-				"chaos_exalted_sorcerer"
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_boss_near",
+				OP.EQ,
+				0
 			}
-		}
-	})
-	define_rule({
-		response = "ebh_level_ground_zero_lord_spawn_enemies",
-		name = "ebh_level_ground_zero_lord_spawn_enemies",
-		criterias = {
+		},
+		on_done = {
 			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"ebh_summon"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"chaos_exalted_sorcerer"
-			}
-		}
-	})
-	define_rule({
-		response = "ebh_level_ground_zero_lord_banter",
-		name = "ebh_level_ground_zero_lord_banter",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"ebh_taunt"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"chaos_exalted_sorcerer"
-			}
-		}
-	})
-	define_rule({
-		response = "ebh_level_ground_zero_lord_insect_spell",
-		name = "ebh_level_ground_zero_lord_insect_spell",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"ebh_insect_spell"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"chaos_exalted_sorcerer"
-			}
-		}
-	})
-	define_rule({
-		response = "ebh_level_ground_zero_lord_retaliation_missile",
-		name = "ebh_level_ground_zero_lord_retaliation_missile",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"ebh_retaliation_missile"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"chaos_exalted_sorcerer"
+				"faction_memory",
+				"level_ground_zero_boss_near",
+				OP.ADD,
+				1
 			}
 		}
 	})
@@ -770,6 +330,94 @@ return function ()
 		}
 	})
 	define_rule({
+		name = "pdr_level_ground_zero_canal_crossing",
+		response = "pdr_level_ground_zero_canal_crossing",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_canal_crossing"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_canal_crossing",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_canal_crossing",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_level_ground_zero_canals",
+		response = "pdr_level_ground_zero_canals",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_canals"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_canals",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_canals",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
 		name = "pdr_level_ground_zero_complete",
 		response = "pdr_level_ground_zero_complete",
 		criterias = {
@@ -814,8 +462,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pdr_level_ground_zero_canal_crossing",
-		response = "pdr_level_ground_zero_canal_crossing",
+		name = "pdr_level_ground_zero_corruption_everywhere",
+		response = "pdr_level_ground_zero_corruption_everywhere",
 		criterias = {
 			{
 				"query_context",
@@ -827,7 +475,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"ground_zero_canal_crossing"
+				"ground_zero_corruption_everywhere"
 			},
 			{
 				"query_context",
@@ -843,7 +491,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_ground_zero_canal_crossing",
+				"level_ground_zero_corruption_everywhere",
 				OP.EQ,
 				0
 			}
@@ -851,547 +499,378 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_ground_zero_canal_crossing",
+				"level_ground_zero_corruption_everywhere",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_level_ground_zero_crumbling",
+		response = "pdr_level_ground_zero_crumbling",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_crumbling"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_crumbling",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_crumbling",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_level_ground_zero_landslide",
+		response = "pdr_level_ground_zero_landslide",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_landslide"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_level_ground_zero_looking_for_elevator",
+		response = "pdr_level_ground_zero_looking_for_elevator",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_looking_for_elevator"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_looking_for_elevator",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_looking_for_elevator",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_level_ground_zero_precarious",
+		response = "pdr_level_ground_zero_precarious",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_precarious"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_precarious",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_precarious",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_level_ground_zero_smell",
+		response = "pdr_level_ground_zero_smell",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_smell"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_smell",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_smell",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_level_ground_zero_the_hole",
+		response = "pdr_level_ground_zero_the_hole",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_the_hole"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_the_hole",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_the_hole",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_level_ground_zero_the_hole_second_view",
+		response = "pdr_level_ground_zero_the_hole_second_view",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_the_hole_second_view"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_the_hole_second_view",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_the_hole_second_view",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pdr_level_ground_zero_welcoming_committee",
+		response = "pdr_level_ground_zero_welcoming_committee",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_welcoming_committee"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"dwarf_ranger"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_welcoming_committee",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_welcoming_committee",
 				OP.ADD,
 				1
 			}
 		}
 	})
 	add_dialogues({
-		pdr_level_ground_zero_landslide = {
-			face_animations_n = 4,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "cut_scene",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pdr_level_ground_zero_landslide_01",
-				"pdr_level_ground_zero_landslide_02",
-				"pdr_level_ground_zero_landslide_03",
-				"pdr_level_ground_zero_landslide_04"
-			},
-			sound_events = {
-				"pdr_level_ground_zero_landslide_01",
-				"pdr_level_ground_zero_landslide_02",
-				"pdr_level_ground_zero_landslide_03",
-				"pdr_level_ground_zero_landslide_04"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				2.1670000553131,
-				4.6198539733887,
-				1.7452708482742,
-				4.1464581489563
-			}
-		},
-		pdr_level_ground_zero_smell = {
-			face_animations_n = 4,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pdr_level_ground_zero_smell_01",
-				"pdr_level_ground_zero_smell_02",
-				"pdr_level_ground_zero_smell_03",
-				"pdr_level_ground_zero_smell_04"
-			},
-			sound_events = {
-				"pdr_level_ground_zero_smell_01",
-				"pdr_level_ground_zero_smell_02",
-				"pdr_level_ground_zero_smell_03",
-				"pdr_level_ground_zero_smell_04"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				3.4332292079926,
-				1.9591457843781,
-				7.6341457366943,
-				3.321270942688
-			}
-		},
-		pdr_level_ground_zero_the_hole_second_view = {
-			face_animations_n = 4,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "story_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pdr_level_ground_zero_the_hole_second_view_01",
-				"pdr_level_ground_zero_the_hole_second_view_02",
-				"pdr_level_ground_zero_the_hole_second_view_03",
-				"pdr_level_ground_zero_the_hole_second_view_04"
-			},
-			sound_events = {
-				"pdr_level_ground_zero_the_hole_second_view_01",
-				"pdr_level_ground_zero_the_hole_second_view_02",
-				"pdr_level_ground_zero_the_hole_second_view_03",
-				"pdr_level_ground_zero_the_hole_second_view_04"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				4.1652498245239,
-				4.5418124198914,
-				5.9802293777466,
-				5.4425206184387
-			}
-		},
-		pdr_level_ground_zero_complete = {
-			face_animations_n = 3,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 3,
-			randomize_indexes_n = 0,
-			category = "player_alerts_boss",
-			dialogue_animations_n = 3,
-			randomize_indexes = {},
-			localization_strings = {
-				"pdr_level_ground_zero_complete_01",
-				"pdr_level_ground_zero_complete_02",
-				"pdr_level_ground_zero_complete_03"
-			},
-			sound_events = {
-				"pdr_level_ground_zero_complete_01",
-				"pdr_level_ground_zero_complete_02",
-				"pdr_level_ground_zero_complete_03"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			sound_events_duration = {
-				4.2249999046326,
-				2.9873542785645,
-				1.6727499961853
-			}
-		},
-		ebh_level_ground_zero_lord_spawn_enemies = {
-			face_animations_n = 4,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			sound_distance = 50,
-			category = "boss_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"ebh_level_ground_zero_lord_spawn_enemies_01",
-				"ebh_level_ground_zero_lord_spawn_enemies_02",
-				"ebh_level_ground_zero_lord_spawn_enemies_03",
-				"ebh_level_ground_zero_lord_spawn_enemies_04"
-			},
-			sound_events = {
-				"ebh_level_ground_zero_lord_spawn_enemies_01",
-				"ebh_level_ground_zero_lord_spawn_enemies_02",
-				"ebh_level_ground_zero_lord_spawn_enemies_03",
-				"ebh_level_ground_zero_lord_spawn_enemies_04"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				4.180645942688,
-				13.026000022888,
-				8.7754373550415,
-				3.8321459293366
-			}
-		},
-		ebh_level_ground_zero_lord_insect_spell = {
-			face_animations_n = 4,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			sound_distance = 50,
-			category = "boss_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"ebh_level_ground_zero_lord_insect_spell_01",
-				"ebh_level_ground_zero_lord_insect_spell_02",
-				"ebh_level_ground_zero_lord_insect_spell_03",
-				"ebh_level_ground_zero_lord_insect_spell_04"
-			},
-			sound_events = {
-				"ebh_level_ground_zero_lord_insect_spell_01",
-				"ebh_level_ground_zero_lord_insect_spell_02",
-				"ebh_level_ground_zero_lord_insect_spell_03",
-				"ebh_level_ground_zero_lord_insect_spell_04"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				3.4226040840149,
-				3.0002708435059,
-				3.7621250152588,
-				5.1398539543152
-			}
-		},
-		pdr_level_ground_zero_crumbling = {
-			face_animations_n = 4,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pdr_level_ground_zero_crumbling_01",
-				"pdr_level_ground_zero_crumbling_02",
-				"pdr_level_ground_zero_crumbling_03",
-				"pdr_level_ground_zero_crumbling_04"
-			},
-			sound_events = {
-				"pdr_level_ground_zero_crumbling_01",
-				"pdr_level_ground_zero_crumbling_02",
-				"pdr_level_ground_zero_crumbling_03",
-				"pdr_level_ground_zero_crumbling_04"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				3.0456874370575,
-				2.3270416259766,
-				2.5764582157135,
-				4.5998749732971
-			}
-		},
-		ebh_level_ground_zero_lord_intro = {
-			face_animations_n = 2,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			sound_distance = 50,
-			category = "boss_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "ebh_level_ground_zero_lord_intro_01",
-				[2.0] = "ebh_level_ground_zero_lord_intro_02"
-			},
-			sound_events = {
-				[1.0] = "ebh_level_ground_zero_lord_intro_01",
-				[2.0] = "ebh_level_ground_zero_lord_intro_02"
-			},
-			face_animations = {
-				[1.0] = "face_angry",
-				[2.0] = "face_angry"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 19.150812149048,
-				[2.0] = 17.64560508728
-			}
-		},
-		pdr_ground_zero_intro_b = {
-			face_animations_n = 2,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pdr_ground_zero_intro_b_01",
-				[2.0] = "pdr_ground_zero_intro_b_02"
-			},
-			sound_events = {
-				[1.0] = "pdr_ground_zero_intro_b_01",
-				[2.0] = "pdr_ground_zero_intro_b_02"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.7427499294281,
-				[2.0] = 5.2160210609436
-			}
-		},
-		pdr_level_ground_zero_canal_crossing = {
-			face_animations_n = 4,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pdr_level_ground_zero_canal_crossing_01",
-				"pdr_level_ground_zero_canal_crossing_02",
-				"pdr_level_ground_zero_canal_crossing_03",
-				"pdr_level_ground_zero_canal_crossing_04"
-			},
-			sound_events = {
-				"pdr_level_ground_zero_canal_crossing_01",
-				"pdr_level_ground_zero_canal_crossing_02",
-				"pdr_level_ground_zero_canal_crossing_03",
-				"pdr_level_ground_zero_canal_crossing_04"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				3.5679166316986,
-				4.7077293395996,
-				4.5354166030884,
-				7.0530414581299
-			}
-		},
-		pdr_level_ground_zero_looking_for_elevator = {
-			face_animations_n = 4,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pdr_level_ground_zero_looking_for_elevator_01",
-				"pdr_level_ground_zero_looking_for_elevator_02",
-				"pdr_level_ground_zero_looking_for_elevator_03",
-				"pdr_level_ground_zero_looking_for_elevator_04"
-			},
-			sound_events = {
-				"pdr_level_ground_zero_looking_for_elevator_01",
-				"pdr_level_ground_zero_looking_for_elevator_02",
-				"pdr_level_ground_zero_looking_for_elevator_03",
-				"pdr_level_ground_zero_looking_for_elevator_04"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				4.6757497787476,
-				2.7618124485016,
-				3.0985624790192,
-				4.6270208358765
-			}
-		},
-		pdr_level_ground_zero_the_hole = {
-			face_animations_n = 4,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "story_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pdr_level_ground_zero_the_hole_01",
-				"pdr_level_ground_zero_the_hole_02",
-				"pdr_level_ground_zero_the_hole_03",
-				"pdr_level_ground_zero_the_hole_04"
-			},
-			sound_events = {
-				"pdr_level_ground_zero_the_hole_01",
-				"pdr_level_ground_zero_the_hole_02",
-				"pdr_level_ground_zero_the_hole_03",
-				"pdr_level_ground_zero_the_hole_04"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				4.2102293968201,
-				3.8172917366028,
-				4.2842707633972,
-				5.1893539428711
-			}
-		},
-		pdr_ground_zero_intro_c = {
-			face_animations_n = 2,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pdr_ground_zero_intro_c_01",
-				[2.0] = "pdr_ground_zero_intro_c_02"
-			},
-			sound_events = {
-				[1.0] = "pdr_ground_zero_intro_c_01",
-				[2.0] = "pdr_ground_zero_intro_c_02"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 6.5770626068115,
-				[2.0] = 10.54829120636
-			}
-		},
-		pdr_level_ground_zero_boss_near = {
-			face_animations_n = 4,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "cut_scene",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pdr_level_ground_zero_boss_near_01",
-				"pdr_level_ground_zero_boss_near_02",
-				"pdr_level_ground_zero_boss_near_03",
-				"pdr_level_ground_zero_boss_near_04"
-			},
-			sound_events = {
-				"pdr_level_ground_zero_boss_near_01",
-				"pdr_level_ground_zero_boss_near_02",
-				"pdr_level_ground_zero_boss_near_03",
-				"pdr_level_ground_zero_boss_near_04"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				5.1434373855591,
-				4.8993539810181,
-				3.5315208435059,
-				5.2607498168945
-			}
-		},
 		ebh_level_ground_zero_lord_banter = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "boss_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"ebh_level_ground_zero_lord_banter_02",
-				"ebh_level_ground_zero_lord_banter_03",
-				"ebh_level_ground_zero_lord_banter_04",
-				"ebh_level_ground_zero_lord_banter_05"
-			},
-			sound_events = {
-				"ebh_level_ground_zero_lord_banter_02",
-				"ebh_level_ground_zero_lord_banter_03",
-				"ebh_level_ground_zero_lord_banter_04",
-				"ebh_level_ground_zero_lord_banter_05"
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
 				"face_angry",
@@ -1399,11 +878,18 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			localization_strings = {
+				"ebh_level_ground_zero_lord_banter_02",
+				"ebh_level_ground_zero_lord_banter_03",
+				"ebh_level_ground_zero_lord_banter_04",
+				"ebh_level_ground_zero_lord_banter_05"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"ebh_level_ground_zero_lord_banter_02",
+				"ebh_level_ground_zero_lord_banter_03",
+				"ebh_level_ground_zero_lord_banter_04",
+				"ebh_level_ground_zero_lord_banter_05"
 			},
 			sound_events_duration = {
 				8.340916633606,
@@ -1412,25 +898,19 @@ return function ()
 				4.8926248550415
 			}
 		},
-		pdr_level_ground_zero_corruption_everywhere = {
+		ebh_level_ground_zero_lord_insect_spell = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
+			sound_distance = 50,
+			category = "boss_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pdr_level_ground_zero_corruption_everywhere_01",
-				"pdr_level_ground_zero_corruption_everywhere_02",
-				"pdr_level_ground_zero_corruption_everywhere_03",
-				"pdr_level_ground_zero_corruption_everywhere_04"
-			},
-			sound_events = {
-				"pdr_level_ground_zero_corruption_everywhere_01",
-				"pdr_level_ground_zero_corruption_everywhere_02",
-				"pdr_level_ground_zero_corruption_everywhere_03",
-				"pdr_level_ground_zero_corruption_everywhere_04"
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
 				"face_angry",
@@ -1438,146 +918,69 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				4.1829376220703,
-				4.500020980835,
-				3.9161458015442,
-				2.8967916965485
-			}
-		},
-		pdr_level_ground_zero_precarious = {
-			face_animations_n = 4,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "story_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
 			localization_strings = {
-				"pdr_level_ground_zero_precarious_01",
-				"pdr_level_ground_zero_precarious_02",
-				"pdr_level_ground_zero_precarious_03",
-				"pdr_level_ground_zero_precarious_04"
+				"ebh_level_ground_zero_lord_insect_spell_01",
+				"ebh_level_ground_zero_lord_insect_spell_02",
+				"ebh_level_ground_zero_lord_insect_spell_03",
+				"ebh_level_ground_zero_lord_insect_spell_04"
 			},
+			randomize_indexes = {},
 			sound_events = {
-				"pdr_level_ground_zero_precarious_01",
-				"pdr_level_ground_zero_precarious_02",
-				"pdr_level_ground_zero_precarious_03",
-				"pdr_level_ground_zero_precarious_04"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+				"ebh_level_ground_zero_lord_insect_spell_01",
+				"ebh_level_ground_zero_lord_insect_spell_02",
+				"ebh_level_ground_zero_lord_insect_spell_03",
+				"ebh_level_ground_zero_lord_insect_spell_04"
 			},
 			sound_events_duration = {
-				2.6556458473206,
-				1.610270857811,
-				2.3396666049957,
-				3.0833125114441
+				3.4226040840149,
+				3.0002708435059,
+				3.7621250152588,
+				5.1398539543152
 			}
 		},
-		pdr_level_ground_zero_boss_spotted = {
+		ebh_level_ground_zero_lord_intro = {
+			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "dwarf_ranger_ground_zero",
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "player_alerts_boss",
+			sound_distance = 50,
+			category = "boss_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pdr_level_ground_zero_boss_spotted_03",
-				[2.0] = "pdr_level_ground_zero_boss_spotted_04"
-			},
-			sound_events = {
-				[1.0] = "pdr_level_ground_zero_boss_spotted_03",
-				[2.0] = "pdr_level_ground_zero_boss_spotted_04"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
 			},
-			sound_events_duration = {
-				[1.0] = 4.927791595459,
-				[2.0] = 7.1275415420532
-			}
-		},
-		pdr_level_ground_zero_canals = {
-			face_animations_n = 4,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pdr_level_ground_zero_canals_01",
-				"pdr_level_ground_zero_canals_02",
-				"pdr_level_ground_zero_canals_03",
-				"pdr_level_ground_zero_canals_04"
-			},
-			sound_events = {
-				"pdr_level_ground_zero_canals_01",
-				"pdr_level_ground_zero_canals_02",
-				"pdr_level_ground_zero_canals_03",
-				"pdr_level_ground_zero_canals_04"
-			},
 			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
+				[1.0] = "face_angry",
+				[2.0] = "face_angry"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			localization_strings = {
+				[1.0] = "ebh_level_ground_zero_lord_intro_01",
+				[2.0] = "ebh_level_ground_zero_lord_intro_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "ebh_level_ground_zero_lord_intro_01",
+				[2.0] = "ebh_level_ground_zero_lord_intro_02"
 			},
 			sound_events_duration = {
-				4.1667289733887,
-				4.6100831031799,
-				3.9645416736603,
-				3.8008542060852
+				[1.0] = 19.150812149048,
+				[2.0] = 17.64560508728
 			}
 		},
 		ebh_level_ground_zero_lord_retaliation_missile = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			sound_distance = 50,
 			category = "boss_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"ebh_level_ground_zero_lord_retaliation_missile_01",
-				"ebh_level_ground_zero_lord_retaliation_missile_02",
-				"ebh_level_ground_zero_lord_retaliation_missile_03",
-				"ebh_level_ground_zero_lord_retaliation_missile_04"
-			},
-			sound_events = {
-				"ebh_level_ground_zero_lord_retaliation_missile_01",
-				"ebh_level_ground_zero_lord_retaliation_missile_02",
-				"ebh_level_ground_zero_lord_retaliation_missile_03",
-				"ebh_level_ground_zero_lord_retaliation_missile_04"
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
 				"face_angry",
@@ -1585,11 +988,18 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			localization_strings = {
+				"ebh_level_ground_zero_lord_retaliation_missile_01",
+				"ebh_level_ground_zero_lord_retaliation_missile_02",
+				"ebh_level_ground_zero_lord_retaliation_missile_03",
+				"ebh_level_ground_zero_lord_retaliation_missile_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"ebh_level_ground_zero_lord_retaliation_missile_01",
+				"ebh_level_ground_zero_lord_retaliation_missile_02",
+				"ebh_level_ground_zero_lord_retaliation_missile_03",
+				"ebh_level_ground_zero_lord_retaliation_missile_04"
 			},
 			sound_events_duration = {
 				5.7061457633972,
@@ -1598,25 +1008,145 @@ return function ()
 				4.9964165687561
 			}
 		},
-		pdr_level_ground_zero_welcoming_committee = {
+		ebh_level_ground_zero_lord_spawn_enemies = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "dwarf_ranger_ground_zero",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "story_talk",
+			sound_distance = 50,
+			category = "boss_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pdr_level_ground_zero_welcoming_committee_01",
-				"pdr_level_ground_zero_welcoming_committee_02",
-				"pdr_level_ground_zero_welcoming_committee_03",
-				"pdr_level_ground_zero_welcoming_committee_04"
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry"
+			},
+			localization_strings = {
+				"ebh_level_ground_zero_lord_spawn_enemies_01",
+				"ebh_level_ground_zero_lord_spawn_enemies_02",
+				"ebh_level_ground_zero_lord_spawn_enemies_03",
+				"ebh_level_ground_zero_lord_spawn_enemies_04"
+			},
+			randomize_indexes = {},
 			sound_events = {
-				"pdr_level_ground_zero_welcoming_committee_01",
-				"pdr_level_ground_zero_welcoming_committee_02",
-				"pdr_level_ground_zero_welcoming_committee_03",
-				"pdr_level_ground_zero_welcoming_committee_04"
+				"ebh_level_ground_zero_lord_spawn_enemies_01",
+				"ebh_level_ground_zero_lord_spawn_enemies_02",
+				"ebh_level_ground_zero_lord_spawn_enemies_03",
+				"ebh_level_ground_zero_lord_spawn_enemies_04"
+			},
+			sound_events_duration = {
+				4.180645942688,
+				13.026000022888,
+				8.7754373550415,
+				3.8321459293366
+			}
+		},
+		pdr_ground_zero_intro_a = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_ground_zero_intro_a_01",
+				[2.0] = "pdr_ground_zero_intro_a_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pdr_ground_zero_intro_a_01",
+				[2.0] = "pdr_ground_zero_intro_a_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.5831875801086,
+				[2.0] = 5.8600625991821
+			}
+		},
+		pdr_ground_zero_intro_b = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_ground_zero_intro_b_01",
+				[2.0] = "pdr_ground_zero_intro_b_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pdr_ground_zero_intro_b_01",
+				[2.0] = "pdr_ground_zero_intro_b_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7427499294281,
+				[2.0] = 5.2160210609436
+			}
+		},
+		pdr_ground_zero_intro_c = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_ground_zero_intro_c_01",
+				[2.0] = "pdr_ground_zero_intro_c_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pdr_ground_zero_intro_c_01",
+				[2.0] = "pdr_ground_zero_intro_c_02"
+			},
+			sound_events_duration = {
+				[1.0] = 6.5770626068115,
+				[2.0] = 10.54829120636
+			}
+		},
+		pdr_level_ground_zero_boss_near = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 4,
+			category = "cut_scene",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
 				"face_fear",
@@ -1624,46 +1154,82 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			localization_strings = {
+				"pdr_level_ground_zero_boss_near_01",
+				"pdr_level_ground_zero_boss_near_02",
+				"pdr_level_ground_zero_boss_near_03",
+				"pdr_level_ground_zero_boss_near_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_level_ground_zero_boss_near_01",
+				"pdr_level_ground_zero_boss_near_02",
+				"pdr_level_ground_zero_boss_near_03",
+				"pdr_level_ground_zero_boss_near_04"
 			},
 			sound_events_duration = {
-				6.5436458587647,
-				3.8663125038147,
-				2.8951041698456,
-				5.0999999046326
+				5.1434373855591,
+				4.8993539810181,
+				3.5315208435059,
+				5.2607498168945
+			}
+		},
+		pdr_level_ground_zero_boss_spotted = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 2,
+			category = "player_alerts_boss",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_ground_zero_boss_spotted_03",
+				[2.0] = "pdr_level_ground_zero_boss_spotted_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pdr_level_ground_zero_boss_spotted_03",
+				[2.0] = "pdr_level_ground_zero_boss_spotted_04"
+			},
+			sound_events_duration = {
+				[1.0] = 4.927791595459,
+				[2.0] = 7.1275415420532
 			}
 		},
 		pdr_level_ground_zero_boss_taunt_reply = {
+			randomize_indexes_n = 0,
 			face_animations_n = 3,
 			database = "dwarf_ranger_ground_zero",
 			sound_events_n = 3,
-			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 3,
-			randomize_indexes = {},
-			localization_strings = {
-				"pdr_level_ground_zero_boss_taunt_reply_01",
-				"pdr_level_ground_zero_boss_taunt_reply_02",
-				"pdr_level_ground_zero_boss_taunt_reply_03"
-			},
-			sound_events = {
-				"pdr_level_ground_zero_boss_taunt_reply_01",
-				"pdr_level_ground_zero_boss_taunt_reply_02",
-				"pdr_level_ground_zero_boss_taunt_reply_03"
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			localization_strings = {
+				"pdr_level_ground_zero_boss_taunt_reply_01",
+				"pdr_level_ground_zero_boss_taunt_reply_02",
+				"pdr_level_ground_zero_boss_taunt_reply_03"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_level_ground_zero_boss_taunt_reply_01",
+				"pdr_level_ground_zero_boss_taunt_reply_02",
+				"pdr_level_ground_zero_boss_taunt_reply_03"
 			},
 			sound_events_duration = {
 				1.6952083110809,
@@ -1671,33 +1237,467 @@ return function ()
 				8.596583366394
 			}
 		},
-		pdr_ground_zero_intro_a = {
-			face_animations_n = 2,
-			database = "dwarf_ranger_ground_zero",
-			sound_events_n = 2,
+		pdr_level_ground_zero_canal_crossing = {
 			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 4,
 			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pdr_ground_zero_intro_a_01",
-				[2.0] = "pdr_ground_zero_intro_a_02"
-			},
-			sound_events = {
-				[1.0] = "pdr_ground_zero_intro_a_01",
-				[2.0] = "pdr_ground_zero_intro_a_02"
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+			localization_strings = {
+				"pdr_level_ground_zero_canal_crossing_01",
+				"pdr_level_ground_zero_canal_crossing_02",
+				"pdr_level_ground_zero_canal_crossing_03",
+				"pdr_level_ground_zero_canal_crossing_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_level_ground_zero_canal_crossing_01",
+				"pdr_level_ground_zero_canal_crossing_02",
+				"pdr_level_ground_zero_canal_crossing_03",
+				"pdr_level_ground_zero_canal_crossing_04"
 			},
 			sound_events_duration = {
-				[1.0] = 4.5831875801086,
-				[2.0] = 5.8600625991821
+				3.5679166316986,
+				4.7077293395996,
+				4.5354166030884,
+				7.0530414581299
+			}
+		},
+		pdr_level_ground_zero_canals = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pdr_level_ground_zero_canals_01",
+				"pdr_level_ground_zero_canals_02",
+				"pdr_level_ground_zero_canals_03",
+				"pdr_level_ground_zero_canals_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_level_ground_zero_canals_01",
+				"pdr_level_ground_zero_canals_02",
+				"pdr_level_ground_zero_canals_03",
+				"pdr_level_ground_zero_canals_04"
+			},
+			sound_events_duration = {
+				4.1667289733887,
+				4.6100831031799,
+				3.9645416736603,
+				3.8008542060852
+			}
+		},
+		pdr_level_ground_zero_complete = {
+			randomize_indexes_n = 0,
+			face_animations_n = 3,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 3,
+			category = "player_alerts_boss",
+			dialogue_animations_n = 3,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pdr_level_ground_zero_complete_01",
+				"pdr_level_ground_zero_complete_02",
+				"pdr_level_ground_zero_complete_03"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_level_ground_zero_complete_01",
+				"pdr_level_ground_zero_complete_02",
+				"pdr_level_ground_zero_complete_03"
+			},
+			sound_events_duration = {
+				4.2249999046326,
+				2.9873542785645,
+				1.6727499961853
+			}
+		},
+		pdr_level_ground_zero_corruption_everywhere = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry"
+			},
+			localization_strings = {
+				"pdr_level_ground_zero_corruption_everywhere_01",
+				"pdr_level_ground_zero_corruption_everywhere_02",
+				"pdr_level_ground_zero_corruption_everywhere_03",
+				"pdr_level_ground_zero_corruption_everywhere_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_level_ground_zero_corruption_everywhere_01",
+				"pdr_level_ground_zero_corruption_everywhere_02",
+				"pdr_level_ground_zero_corruption_everywhere_03",
+				"pdr_level_ground_zero_corruption_everywhere_04"
+			},
+			sound_events_duration = {
+				4.1829376220703,
+				4.500020980835,
+				3.9161458015442,
+				2.8967916965485
+			}
+		},
+		pdr_level_ground_zero_crumbling = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pdr_level_ground_zero_crumbling_01",
+				"pdr_level_ground_zero_crumbling_02",
+				"pdr_level_ground_zero_crumbling_03",
+				"pdr_level_ground_zero_crumbling_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_level_ground_zero_crumbling_01",
+				"pdr_level_ground_zero_crumbling_02",
+				"pdr_level_ground_zero_crumbling_03",
+				"pdr_level_ground_zero_crumbling_04"
+			},
+			sound_events_duration = {
+				3.0456874370575,
+				2.3270416259766,
+				2.5764582157135,
+				4.5998749732971
+			}
+		},
+		pdr_level_ground_zero_landslide = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 4,
+			category = "cut_scene",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pdr_level_ground_zero_landslide_01",
+				"pdr_level_ground_zero_landslide_02",
+				"pdr_level_ground_zero_landslide_03",
+				"pdr_level_ground_zero_landslide_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_level_ground_zero_landslide_01",
+				"pdr_level_ground_zero_landslide_02",
+				"pdr_level_ground_zero_landslide_03",
+				"pdr_level_ground_zero_landslide_04"
+			},
+			sound_events_duration = {
+				2.1670000553131,
+				4.6198539733887,
+				1.7452708482742,
+				4.1464581489563
+			}
+		},
+		pdr_level_ground_zero_looking_for_elevator = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pdr_level_ground_zero_looking_for_elevator_01",
+				"pdr_level_ground_zero_looking_for_elevator_02",
+				"pdr_level_ground_zero_looking_for_elevator_03",
+				"pdr_level_ground_zero_looking_for_elevator_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_level_ground_zero_looking_for_elevator_01",
+				"pdr_level_ground_zero_looking_for_elevator_02",
+				"pdr_level_ground_zero_looking_for_elevator_03",
+				"pdr_level_ground_zero_looking_for_elevator_04"
+			},
+			sound_events_duration = {
+				4.6757497787476,
+				2.7618124485016,
+				3.0985624790192,
+				4.6270208358765
+			}
+		},
+		pdr_level_ground_zero_precarious = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 4,
+			category = "story_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pdr_level_ground_zero_precarious_01",
+				"pdr_level_ground_zero_precarious_02",
+				"pdr_level_ground_zero_precarious_03",
+				"pdr_level_ground_zero_precarious_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_level_ground_zero_precarious_01",
+				"pdr_level_ground_zero_precarious_02",
+				"pdr_level_ground_zero_precarious_03",
+				"pdr_level_ground_zero_precarious_04"
+			},
+			sound_events_duration = {
+				2.6556458473206,
+				1.610270857811,
+				2.3396666049957,
+				3.0833125114441
+			}
+		},
+		pdr_level_ground_zero_smell = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pdr_level_ground_zero_smell_01",
+				"pdr_level_ground_zero_smell_02",
+				"pdr_level_ground_zero_smell_03",
+				"pdr_level_ground_zero_smell_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_level_ground_zero_smell_01",
+				"pdr_level_ground_zero_smell_02",
+				"pdr_level_ground_zero_smell_03",
+				"pdr_level_ground_zero_smell_04"
+			},
+			sound_events_duration = {
+				3.4332292079926,
+				1.9591457843781,
+				7.6341457366943,
+				3.321270942688
+			}
+		},
+		pdr_level_ground_zero_the_hole = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 4,
+			category = "story_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pdr_level_ground_zero_the_hole_01",
+				"pdr_level_ground_zero_the_hole_02",
+				"pdr_level_ground_zero_the_hole_03",
+				"pdr_level_ground_zero_the_hole_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_level_ground_zero_the_hole_01",
+				"pdr_level_ground_zero_the_hole_02",
+				"pdr_level_ground_zero_the_hole_03",
+				"pdr_level_ground_zero_the_hole_04"
+			},
+			sound_events_duration = {
+				4.2102293968201,
+				3.8172917366028,
+				4.2842707633972,
+				5.1893539428711
+			}
+		},
+		pdr_level_ground_zero_the_hole_second_view = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 4,
+			category = "story_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pdr_level_ground_zero_the_hole_second_view_01",
+				"pdr_level_ground_zero_the_hole_second_view_02",
+				"pdr_level_ground_zero_the_hole_second_view_03",
+				"pdr_level_ground_zero_the_hole_second_view_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_level_ground_zero_the_hole_second_view_01",
+				"pdr_level_ground_zero_the_hole_second_view_02",
+				"pdr_level_ground_zero_the_hole_second_view_03",
+				"pdr_level_ground_zero_the_hole_second_view_04"
+			},
+			sound_events_duration = {
+				4.1652498245239,
+				4.5418124198914,
+				5.9802293777466,
+				5.4425206184387
+			}
+		},
+		pdr_level_ground_zero_welcoming_committee = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "dwarf_ranger_ground_zero",
+			sound_events_n = 4,
+			category = "story_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pdr_level_ground_zero_welcoming_committee_01",
+				"pdr_level_ground_zero_welcoming_committee_02",
+				"pdr_level_ground_zero_welcoming_committee_03",
+				"pdr_level_ground_zero_welcoming_committee_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pdr_level_ground_zero_welcoming_committee_01",
+				"pdr_level_ground_zero_welcoming_committee_02",
+				"pdr_level_ground_zero_welcoming_committee_03",
+				"pdr_level_ground_zero_welcoming_committee_04"
+			},
+			sound_events_duration = {
+				6.5436458587647,
+				3.8663125038147,
+				2.8951041698456,
+				5.0999999046326
 			}
 		}
 	})

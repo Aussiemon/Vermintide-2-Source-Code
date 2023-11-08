@@ -1,35 +1,5 @@
 return function ()
 	define_rule({
-		response = "pwe_st_activate_ability",
-		name = "pwe_st_activate_ability",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"activate_ability"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"wood_elf"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"wood_elf"
-			},
-			{
-				"user_context",
-				"player_career",
-				OP.EQ,
-				"we_thornsister"
-			}
-		}
-	})
-	define_rule({
 		response = "pwe_overcharge_explode",
 		name = "pwe_overcharge_explode",
 		criterias = {
@@ -91,28 +61,94 @@ return function ()
 			}
 		}
 	})
+	define_rule({
+		response = "pwe_st_activate_ability",
+		name = "pwe_st_activate_ability",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"activate_ability"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"wood_elf"
+			},
+			{
+				"user_context",
+				"player_career",
+				OP.EQ,
+				"we_thornsister"
+			}
+		}
+	})
 	add_dialogues({
+		pwe_overcharge_explode = {
+			randomize_indexes_n = 0,
+			face_animations_n = 6,
+			database = "wood_elf_woods",
+			sound_events_n = 6,
+			category = "player_alerts_overcharge_explode",
+			dialogue_animations_n = 6,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_pain",
+				"face_pain",
+				"face_pain",
+				"face_pain",
+				"face_pain",
+				"face_pain"
+			},
+			localization_strings = {
+				"pwe_overcharge_explode_01",
+				"pwe_overcharge_explode_03",
+				"pwe_overcharge_explode_04",
+				"pwe_overcharge_explode_05",
+				"pwe_overcharge_explode_06",
+				"pwe_overcharge_explode_07"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_overcharge_explode_01",
+				"pwe_overcharge_explode_03",
+				"pwe_overcharge_explode_04",
+				"pwe_overcharge_explode_05",
+				"pwe_overcharge_explode_06",
+				"pwe_overcharge_explode_07"
+			},
+			sound_events_duration = {
+				3.0994999408722,
+				2.6880834102631,
+				2.0361459255219,
+				2.2689166069031,
+				3.5851249694824,
+				2.9406459331513
+			}
+		},
 		pwe_overcharge_warning = {
 			intended_player_profile = "wood_elf",
-			sound_events_n = 11,
+			randomize_indexes_n = 0,
 			face_animations_n = 11,
 			database = "wood_elf_woods",
-			randomize_indexes_n = 0,
+			sound_events_n = 11,
 			category = "player_alerts_overcharge_warning",
 			dialogue_animations_n = 11,
-			sound_events = {
-				"pwe_overcharge_warning_01",
-				"pwe_overcharge_warning_02",
-				"pwe_overcharge_warning_03",
-				"pwe_overcharge_warning_04",
-				"pwe_overcharge_warning_05",
-				"pwe_overcharge_warning_06",
-				"pwe_overcharge_warning_07",
-				"pwe_overcharge_warning_08",
-				"pwe_overcharge_warning_09",
-				"pwe_overcharge_warning_10",
-				"pwe_overcharge_warning_11"
-			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -152,6 +188,20 @@ return function ()
 				"pwe_overcharge_warning_10",
 				"pwe_overcharge_warning_11"
 			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_overcharge_warning_01",
+				"pwe_overcharge_warning_02",
+				"pwe_overcharge_warning_03",
+				"pwe_overcharge_warning_04",
+				"pwe_overcharge_warning_05",
+				"pwe_overcharge_warning_06",
+				"pwe_overcharge_warning_07",
+				"pwe_overcharge_warning_08",
+				"pwe_overcharge_warning_09",
+				"pwe_overcharge_warning_10",
+				"pwe_overcharge_warning_11"
+			},
 			sound_events_duration = {
 				3.462729215622,
 				2.6421875953674,
@@ -164,77 +214,15 @@ return function ()
 				3.3894374370575,
 				3.0748958587647,
 				5.0133543014526
-			},
-			randomize_indexes = {}
-		},
-		pwe_overcharge_explode = {
-			randomize_indexes_n = 0,
-			sound_events_n = 6,
-			face_animations_n = 6,
-			database = "wood_elf_woods",
-			category = "player_alerts_overcharge_explode",
-			dialogue_animations_n = 6,
-			sound_events = {
-				"pwe_overcharge_explode_01",
-				"pwe_overcharge_explode_03",
-				"pwe_overcharge_explode_04",
-				"pwe_overcharge_explode_05",
-				"pwe_overcharge_explode_06",
-				"pwe_overcharge_explode_07"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			face_animations = {
-				"face_pain",
-				"face_pain",
-				"face_pain",
-				"face_pain",
-				"face_pain",
-				"face_pain"
-			},
-			localization_strings = {
-				"pwe_overcharge_explode_01",
-				"pwe_overcharge_explode_03",
-				"pwe_overcharge_explode_04",
-				"pwe_overcharge_explode_05",
-				"pwe_overcharge_explode_06",
-				"pwe_overcharge_explode_07"
-			},
-			sound_events_duration = {
-				3.0994999408722,
-				2.6880834102631,
-				2.0361459255219,
-				2.2689166069031,
-				3.5851249694824,
-				2.9406459331513
-			},
-			randomize_indexes = {}
+			}
 		},
 		pwe_st_activate_ability = {
 			randomize_indexes_n = 0,
-			sound_events_n = 10,
 			face_animations_n = 10,
 			database = "wood_elf_woods",
+			sound_events_n = 10,
 			category = "activate_ability",
 			dialogue_animations_n = 10,
-			sound_events = {
-				"pwe_st_activate_ability_01",
-				"pwe_st_activate_ability_02",
-				"pwe_st_activate_ability_03",
-				"pwe_st_activate_ability_04",
-				"pwe_st_activate_ability_05",
-				"pwe_st_activate_ability_06",
-				"pwe_st_activate_ability_07",
-				"pwe_st_activate_ability_08",
-				"pwe_st_activate_ability_09",
-				"pwe_st_activate_ability_10"
-			},
 			dialogue_animations = {
 				"dialogue_shout",
 				"dialogue_shout",
@@ -271,6 +259,19 @@ return function ()
 				"pwe_st_activate_ability_09",
 				"pwe_st_activate_ability_10"
 			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_st_activate_ability_01",
+				"pwe_st_activate_ability_02",
+				"pwe_st_activate_ability_03",
+				"pwe_st_activate_ability_04",
+				"pwe_st_activate_ability_05",
+				"pwe_st_activate_ability_06",
+				"pwe_st_activate_ability_07",
+				"pwe_st_activate_ability_08",
+				"pwe_st_activate_ability_09",
+				"pwe_st_activate_ability_10"
+			},
 			sound_events_duration = {
 				3.2428123950958,
 				2.003666639328,
@@ -282,8 +283,7 @@ return function ()
 				1.9291458129883,
 				2.1959373950958,
 				1.8790625333786
-			},
-			randomize_indexes = {}
+			}
 		}
 	})
 end

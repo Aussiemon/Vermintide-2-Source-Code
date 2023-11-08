@@ -89,6 +89,10 @@ LevelSettings.dlc_wizards_trail = {
 		wh_priest = {
 			"pwh_wp_wizard_trail_loading_screen_01",
 			"pwh_wp_wizard_trail_loading_screen_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_wizard_trail_loading_screen_01",
+			"pbw_nm_wizard_trail_loading_screen_02"
 		}
 	},
 	locations = {

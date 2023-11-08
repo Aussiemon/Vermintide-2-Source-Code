@@ -104,6 +104,10 @@ LevelSettings.dlc_celebrate_crawl = {
 		wh_priest = {
 			"pwh_wp_loading_screen_crawl_01",
 			"pwh_wp_loading_screen_crawl_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_crawl_01",
+			"pbw_nm_loading_screen_crawl_02"
 		}
 	},
 	override_dialogue_settings = {

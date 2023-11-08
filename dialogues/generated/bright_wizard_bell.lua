@@ -121,28 +121,28 @@ return function ()
 	})
 	add_dialogues({
 		pbw_bell_intro_a = {
+			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_bell",
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pbw_bell_intro_a_01",
-				[2.0] = "pbw_bell_intro_a_02"
-			},
-			sound_events = {
-				[1.0] = "pbw_bell_intro_a_01",
-				[2.0] = "pbw_bell_intro_a_02"
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+			localization_strings = {
+				[1.0] = "pbw_bell_intro_a_01",
+				[2.0] = "pbw_bell_intro_a_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pbw_bell_intro_a_01",
+				[2.0] = "pbw_bell_intro_a_02"
 			},
 			sound_events_duration = {
 				[1.0] = 5.9901251792908,
@@ -150,28 +150,28 @@ return function ()
 			}
 		},
 		pbw_bell_intro_b = {
+			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_bell",
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pbw_bell_intro_b_01",
-				[2.0] = "pbw_bell_intro_b_02"
-			},
-			sound_events = {
-				[1.0] = "pbw_bell_intro_b_01",
-				[2.0] = "pbw_bell_intro_b_02"
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+			localization_strings = {
+				[1.0] = "pbw_bell_intro_b_01",
+				[2.0] = "pbw_bell_intro_b_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pbw_bell_intro_b_01",
+				[2.0] = "pbw_bell_intro_b_02"
 			},
 			sound_events_duration = {
 				[1.0] = 6.2526249885559,
@@ -179,28 +179,28 @@ return function ()
 			}
 		},
 		pbw_bell_intro_c = {
+			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "bright_wizard_bell",
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pbw_bell_intro_c_01",
-				[2.0] = "pbw_bell_intro_c_02"
-			},
-			sound_events = {
-				[1.0] = "pbw_bell_intro_c_01",
-				[2.0] = "pbw_bell_intro_c_02"
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+			localization_strings = {
+				[1.0] = "pbw_bell_intro_c_01",
+				[2.0] = "pbw_bell_intro_c_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pbw_bell_intro_c_01",
+				[2.0] = "pbw_bell_intro_c_02"
 			},
 			sound_events_duration = {
 				[1.0] = 6.9385209083557,

@@ -1,193 +1,5 @@
 return function ()
 	define_rule({
-		name = "pwh_wind_life_intro_banter_a",
-		response = "pwh_wind_life_intro_banter_a",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"wind_intro_banter_a"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"global_context",
-				"current_level",
-				OP.EQ,
-				"life"
-			},
-			{
-				"faction_memory",
-				"wind_life_intro_banter_a",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"wind_life_intro_banter_a",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_wind_life_intro_banter_b",
-		response = "pwh_wind_life_intro_banter_b",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"dialogue_name_nopre",
-				OP.EQ,
-				"wind_life_intro_banter_a"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"faction_memory",
-				"wind_life_intro_banter_b",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"wind_life_intro_banter_b",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_wind_metal_intro_banter_a",
-		response = "pwh_wind_metal_intro_banter_a",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"wind_intro_banter_a"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"global_context",
-				"current_wind",
-				OP.EQ,
-				3
-			},
-			{
-				"faction_memory",
-				"wind_metal_intro_banter_a",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"wind_metal_intro_banter_a",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_wind_metal_intro_banter_b",
-		response = "pwh_wind_metal_intro_banter_b",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"dialogue_name_nopre",
-				OP.EQ,
-				"wind_metal_intro_banter_a"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"faction_memory",
-				"wind_metal_intro_banter_b",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"wind_metal_intro_banter_b",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pwh_wind_beast_intro_banter_a",
 		response = "pwh_wind_beast_intro_banter_a",
 		criterias = {
@@ -270,6 +82,94 @@ return function ()
 			{
 				"faction_memory",
 				"wind_beast_intro_banter_b",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_wind_death_intro_banter_a",
+		response = "pwh_wind_death_intro_banter_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"wind_intro_banter_a"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"faction_memory",
+				"wind_death_intro_banter_a",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"wind_death_intro_banter_a",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_wind_death_intro_banter_b",
+		response = "pwh_wind_death_intro_banter_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"wind_death_intro_banter_a"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"faction_memory",
+				"wind_death_intro_banter_b",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"wind_death_intro_banter_b",
 				OP.ADD,
 				1
 			}
@@ -370,94 +270,6 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwh_wind_death_intro_banter_a",
-		response = "pwh_wind_death_intro_banter_a",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"wind_intro_banter_a"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"faction_memory",
-				"wind_death_intro_banter_a",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"wind_death_intro_banter_a",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pwh_wind_death_intro_banter_b",
-		response = "pwh_wind_death_intro_banter_b",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"heard_speak"
-			},
-			{
-				"query_context",
-				"dialogue_name_nopre",
-				OP.EQ,
-				"wind_death_intro_banter_a"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"witch_hunter"
-			},
-			{
-				"faction_memory",
-				"wind_death_intro_banter_b",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"wind_death_intro_banter_b",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pwh_wind_heavens_intro_banter_a",
 		response = "pwh_wind_heavens_intro_banter_a",
 		criterias = {
@@ -540,6 +352,100 @@ return function ()
 			{
 				"faction_memory",
 				"wind_heavens_intro_banter_b",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_wind_life_intro_banter_a",
+		response = "pwh_wind_life_intro_banter_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"wind_intro_banter_a"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"global_context",
+				"current_level",
+				OP.EQ,
+				"life"
+			},
+			{
+				"faction_memory",
+				"wind_life_intro_banter_a",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"wind_life_intro_banter_a",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_wind_life_intro_banter_b",
+		response = "pwh_wind_life_intro_banter_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"wind_life_intro_banter_a"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"faction_memory",
+				"wind_life_intro_banter_b",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"wind_life_intro_banter_b",
 				OP.ADD,
 				1
 			}
@@ -634,6 +540,100 @@ return function ()
 		}
 	})
 	define_rule({
+		name = "pwh_wind_metal_intro_banter_a",
+		response = "pwh_wind_metal_intro_banter_a",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"wind_intro_banter_a"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"global_context",
+				"current_wind",
+				OP.EQ,
+				3
+			},
+			{
+				"faction_memory",
+				"wind_metal_intro_banter_a",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"wind_metal_intro_banter_a",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pwh_wind_metal_intro_banter_b",
+		response = "pwh_wind_metal_intro_banter_b",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"heard_speak"
+			},
+			{
+				"query_context",
+				"dialogue_name_nopre",
+				OP.EQ,
+				"wind_metal_intro_banter_a"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"witch_hunter"
+			},
+			{
+				"faction_memory",
+				"wind_metal_intro_banter_b",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"wind_metal_intro_banter_b",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
 		name = "pwh_wind_shadow_intro_banter_a",
 		response = "pwh_wind_shadow_intro_banter_a",
 		criterias = {
@@ -722,145 +722,319 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pwh_wind_fire_intro_banter_a = {
+		pwh_wind_beast_intro_banter_a = {
+			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_witch_hunter",
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_fire_intro_banter_a_01",
-				[2.0] = "pwh_wind_fire_intro_banter_a_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_wind_fire_intro_banter_a_01",
-				[2.0] = "pwh_wind_fire_intro_banter_a_02"
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			localization_strings = {
+				[1.0] = "pwh_wind_beast_intro_banter_a_01",
+				[2.0] = "pwh_wind_beast_intro_banter_a_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_beast_intro_banter_a_01",
+				[2.0] = "pwh_wind_beast_intro_banter_a_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2530207633972,
+				[2.0] = 3.8821876049042
+			}
+		},
+		pwh_wind_beast_intro_banter_b = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "winds_intro_witch_hunter",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
 			dialogue_animations = {
 				[1.0] = "dialogue_talk",
 				[2.0] = "dialogue_talk"
 			},
+			face_animations = {
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_wind_beast_intro_banter_b_01",
+				[2.0] = "pwh_wind_beast_intro_banter_b_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_beast_intro_banter_b_01",
+				[2.0] = "pwh_wind_beast_intro_banter_b_02"
+			},
 			sound_events_duration = {
-				[1.0] = 2.516562461853,
-				[2.0] = 2.7459166049957
+				[1.0] = 1.6921875476837,
+				[2.0] = 4.3575000762939
 			}
 		},
 		pwh_wind_death_intro_banter_a = {
+			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_witch_hunter",
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_death_intro_banter_a_01",
-				[2.0] = "pwh_wind_death_intro_banter_a_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_wind_death_intro_banter_a_01",
-				[2.0] = "pwh_wind_death_intro_banter_a_02"
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+			localization_strings = {
+				[1.0] = "pwh_wind_death_intro_banter_a_01",
+				[2.0] = "pwh_wind_death_intro_banter_a_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_death_intro_banter_a_01",
+				[2.0] = "pwh_wind_death_intro_banter_a_02"
 			},
 			sound_events_duration = {
 				[1.0] = 2.1928749084473,
 				[2.0] = 3.116229057312
 			}
 		},
-		pwh_wind_shadow_intro_banter_b = {
+		pwh_wind_death_intro_banter_b = {
+			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_witch_hunter",
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_shadow_intro_banter_b_01",
-				[2.0] = "pwh_wind_shadow_intro_banter_b_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_wind_shadow_intro_banter_b_01",
-				[2.0] = "pwh_wind_shadow_intro_banter_b_02"
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			localization_strings = {
+				[1.0] = "pwh_wind_death_intro_banter_b_01",
+				[2.0] = "pwh_wind_death_intro_banter_b_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_death_intro_banter_b_01",
+				[2.0] = "pwh_wind_death_intro_banter_b_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4731874465942,
+				[2.0] = 2.8698959350586
+			}
+		},
+		pwh_wind_fire_intro_banter_a = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "winds_intro_witch_hunter",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
 			dialogue_animations = {
 				[1.0] = "dialogue_talk",
 				[2.0] = "dialogue_talk"
 			},
+			face_animations = {
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_wind_fire_intro_banter_a_01",
+				[2.0] = "pwh_wind_fire_intro_banter_a_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_fire_intro_banter_a_01",
+				[2.0] = "pwh_wind_fire_intro_banter_a_02"
+			},
 			sound_events_duration = {
-				[1.0] = 4.6488332748413,
-				[2.0] = 3.3973124027252
+				[1.0] = 2.516562461853,
+				[2.0] = 2.7459166049957
+			}
+		},
+		pwh_wind_fire_intro_banter_b = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "winds_intro_witch_hunter",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_wind_fire_intro_banter_b_01",
+				[2.0] = "pwh_wind_fire_intro_banter_b_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_fire_intro_banter_b_01",
+				[2.0] = "pwh_wind_fire_intro_banter_b_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1198749542236,
+				[2.0] = 2.5912292003632
+			}
+		},
+		pwh_wind_heavens_intro_banter_a = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "winds_intro_witch_hunter",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_wind_heavens_intro_banter_a_01",
+				[2.0] = "pwh_wind_heavens_intro_banter_a_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_heavens_intro_banter_a_01",
+				[2.0] = "pwh_wind_heavens_intro_banter_a_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.3037707805634,
+				[2.0] = 4.2955207824707
+			}
+		},
+		pwh_wind_heavens_intro_banter_b = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "winds_intro_witch_hunter",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_wind_heavens_intro_banter_b_01",
+				[2.0] = "pwh_wind_heavens_intro_banter_b_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_heavens_intro_banter_b_01",
+				[2.0] = "pwh_wind_heavens_intro_banter_b_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7459166049957,
+				[2.0] = 3.0310416221619
 			}
 		},
 		pwh_wind_life_intro_banter_a = {
+			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_witch_hunter",
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_life_intro_banter_a_01",
-				[2.0] = "pwh_wind_life_intro_banter_a_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_wind_life_intro_banter_a_01",
-				[2.0] = "pwh_wind_life_intro_banter_a_02"
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+			localization_strings = {
+				[1.0] = "pwh_wind_life_intro_banter_a_01",
+				[2.0] = "pwh_wind_life_intro_banter_a_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_life_intro_banter_a_01",
+				[2.0] = "pwh_wind_life_intro_banter_a_02"
 			},
 			sound_events_duration = {
 				[1.0] = 2.5865623950958,
 				[2.0] = 2.6844375133514
 			}
 		},
-		pwh_wind_light_intro_banter_a = {
+		pwh_wind_life_intro_banter_b = {
+			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_witch_hunter",
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_light_intro_banter_a_01",
-				[2.0] = "pwh_wind_light_intro_banter_a_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_wind_light_intro_banter_a_01",
-				[2.0] = "pwh_wind_light_intro_banter_a_02"
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			localization_strings = {
+				[1.0] = "pwh_wind_life_intro_banter_b_01",
+				[2.0] = "pwh_wind_life_intro_banter_b_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_life_intro_banter_b_01",
+				[2.0] = "pwh_wind_life_intro_banter_b_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.8029582500458,
+				[2.0] = 3.3555417060852
+			}
+		},
+		pwh_wind_light_intro_banter_a = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "winds_intro_witch_hunter",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
 			dialogue_animations = {
 				[1.0] = "dialogue_talk",
 				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_wind_light_intro_banter_a_01",
+				[2.0] = "pwh_wind_light_intro_banter_a_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_light_intro_banter_a_01",
+				[2.0] = "pwh_wind_light_intro_banter_a_02"
 			},
 			sound_events_duration = {
 				[1.0] = 3.9979999065399,
@@ -868,322 +1042,148 @@ return function ()
 			}
 		},
 		pwh_wind_light_intro_banter_b = {
+			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_witch_hunter",
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_light_intro_banter_b_01",
-				[2.0] = "pwh_wind_light_intro_banter_b_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_wind_light_intro_banter_b_01",
-				[2.0] = "pwh_wind_light_intro_banter_b_02"
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+			localization_strings = {
+				[1.0] = "pwh_wind_light_intro_banter_b_01",
+				[2.0] = "pwh_wind_light_intro_banter_b_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_light_intro_banter_b_01",
+				[2.0] = "pwh_wind_light_intro_banter_b_02"
 			},
 			sound_events_duration = {
 				[1.0] = 3.266583442688,
 				[2.0] = 3.2108125686645
 			}
 		},
-		pwh_wind_metal_intro_banter_b = {
+		pwh_wind_metal_intro_banter_a = {
+			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_witch_hunter",
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_metal_intro_banter_b_01",
-				[2.0] = "pwh_wind_metal_intro_banter_b_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_wind_metal_intro_banter_b_01",
-				[2.0] = "pwh_wind_metal_intro_banter_b_02"
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
+			localization_strings = {
+				[1.0] = "pwh_wind_metal_intro_banter_a_01",
+				[2.0] = "pwh_wind_metal_intro_banter_a_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_metal_intro_banter_a_01",
+				[2.0] = "pwh_wind_metal_intro_banter_a_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5399792194366,
+				[2.0] = 2.5912292003632
+			}
+		},
+		pwh_wind_metal_intro_banter_b = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "winds_intro_witch_hunter",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
 			dialogue_animations = {
 				[1.0] = "dialogue_talk",
 				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_wind_metal_intro_banter_b_01",
+				[2.0] = "pwh_wind_metal_intro_banter_b_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_metal_intro_banter_b_01",
+				[2.0] = "pwh_wind_metal_intro_banter_b_02"
 			},
 			sound_events_duration = {
 				[1.0] = 4.4414582252502,
 				[2.0] = 3.3229167461395
 			}
 		},
-		pwh_wind_heavens_intro_banter_b = {
-			face_animations_n = 2,
-			database = "winds_intro_witch_hunter",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_heavens_intro_banter_b_01",
-				[2.0] = "pwh_wind_heavens_intro_banter_b_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_wind_heavens_intro_banter_b_01",
-				[2.0] = "pwh_wind_heavens_intro_banter_b_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.7459166049957,
-				[2.0] = 3.0310416221619
-			}
-		},
 		pwh_wind_shadow_intro_banter_a = {
+			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_witch_hunter",
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_shadow_intro_banter_a_01",
-				[2.0] = "pwh_wind_shadow_intro_banter_a_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_wind_shadow_intro_banter_a_01",
-				[2.0] = "pwh_wind_shadow_intro_banter_a_02"
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+			localization_strings = {
+				[1.0] = "pwh_wind_shadow_intro_banter_a_01",
+				[2.0] = "pwh_wind_shadow_intro_banter_a_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwh_wind_shadow_intro_banter_a_01",
+				[2.0] = "pwh_wind_shadow_intro_banter_a_02"
 			},
 			sound_events_duration = {
 				[1.0] = 3.9360208511352,
 				[2.0] = 2.1384582519531
 			}
 		},
-		pwh_wind_life_intro_banter_b = {
+		pwh_wind_shadow_intro_banter_b = {
+			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "winds_intro_witch_hunter",
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_life_intro_banter_b_01",
-				[2.0] = "pwh_wind_life_intro_banter_b_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_wind_life_intro_banter_b_01",
-				[2.0] = "pwh_wind_life_intro_banter_b_02"
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm",
 				[2.0] = "face_calm"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.8029582500458,
-				[2.0] = 3.3555417060852
-			}
-		},
-		pwh_wind_fire_intro_banter_b = {
-			face_animations_n = 2,
-			database = "winds_intro_witch_hunter",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
 			localization_strings = {
-				[1.0] = "pwh_wind_fire_intro_banter_b_01",
-				[2.0] = "pwh_wind_fire_intro_banter_b_02"
+				[1.0] = "pwh_wind_shadow_intro_banter_b_01",
+				[2.0] = "pwh_wind_shadow_intro_banter_b_02"
 			},
-			sound_events = {
-				[1.0] = "pwh_wind_fire_intro_banter_b_01",
-				[2.0] = "pwh_wind_fire_intro_banter_b_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.1198749542236,
-				[2.0] = 2.5912292003632
-			}
-		},
-		pwh_wind_beast_intro_banter_a = {
-			face_animations_n = 2,
-			database = "winds_intro_witch_hunter",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
 			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_beast_intro_banter_a_01",
-				[2.0] = "pwh_wind_beast_intro_banter_a_02"
-			},
 			sound_events = {
-				[1.0] = "pwh_wind_beast_intro_banter_a_01",
-				[2.0] = "pwh_wind_beast_intro_banter_a_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+				[1.0] = "pwh_wind_shadow_intro_banter_b_01",
+				[2.0] = "pwh_wind_shadow_intro_banter_b_02"
 			},
 			sound_events_duration = {
-				[1.0] = 3.2530207633972,
-				[2.0] = 3.8821876049042
-			}
-		},
-		pwh_wind_death_intro_banter_b = {
-			face_animations_n = 2,
-			database = "winds_intro_witch_hunter",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_death_intro_banter_b_01",
-				[2.0] = "pwh_wind_death_intro_banter_b_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_wind_death_intro_banter_b_01",
-				[2.0] = "pwh_wind_death_intro_banter_b_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.4731874465942,
-				[2.0] = 2.8698959350586
-			}
-		},
-		pwh_wind_heavens_intro_banter_a = {
-			face_animations_n = 2,
-			database = "winds_intro_witch_hunter",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_heavens_intro_banter_a_01",
-				[2.0] = "pwh_wind_heavens_intro_banter_a_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_wind_heavens_intro_banter_a_01",
-				[2.0] = "pwh_wind_heavens_intro_banter_a_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.3037707805634,
-				[2.0] = 4.2955207824707
-			}
-		},
-		pwh_wind_beast_intro_banter_b = {
-			face_animations_n = 2,
-			database = "winds_intro_witch_hunter",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_beast_intro_banter_b_01",
-				[2.0] = "pwh_wind_beast_intro_banter_b_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_wind_beast_intro_banter_b_01",
-				[2.0] = "pwh_wind_beast_intro_banter_b_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 1.6921875476837,
-				[2.0] = 4.3575000762939
-			}
-		},
-		pwh_wind_metal_intro_banter_a = {
-			face_animations_n = 2,
-			database = "winds_intro_witch_hunter",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwh_wind_metal_intro_banter_a_01",
-				[2.0] = "pwh_wind_metal_intro_banter_a_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_wind_metal_intro_banter_a_01",
-				[2.0] = "pwh_wind_metal_intro_banter_a_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.5399792194366,
-				[2.0] = 2.5912292003632
+				[1.0] = 4.6488332748413,
+				[2.0] = 3.3973124027252
 			}
 		}
 	})

@@ -1,7 +1,7 @@
 return function ()
 	define_rule({
-		name = "pwe_level_nurgle_swift_river",
-		response = "pwe_level_nurgle_swift_river",
+		name = "pwe_level_nurgle_coming_down",
+		response = "pwe_level_nurgle_coming_down",
 		criterias = {
 			{
 				"query_context",
@@ -13,7 +13,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_nurgle_swift_river"
+				"level_nurgle_coming_down"
 			},
 			{
 				"query_context",
@@ -29,7 +29,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_nurgle_swift_river",
+				"level_nurgle_coming_down",
 				OP.EQ,
 				0
 			}
@@ -37,7 +37,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_nurgle_swift_river",
+				"level_nurgle_coming_down",
 				OP.ADD,
 				1
 			}
@@ -88,8 +88,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwe_level_nurgle_coming_down",
-		response = "pwe_level_nurgle_coming_down",
+		name = "pwe_level_nurgle_swift_river",
+		response = "pwe_level_nurgle_swift_river",
 		criterias = {
 			{
 				"query_context",
@@ -101,7 +101,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_nurgle_coming_down"
+				"level_nurgle_swift_river"
 			},
 			{
 				"query_context",
@@ -117,7 +117,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_nurgle_coming_down",
+				"level_nurgle_swift_river",
 				OP.EQ,
 				0
 			}
@@ -125,7 +125,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_nurgle_coming_down",
+				"level_nurgle_swift_river",
 				OP.ADD,
 				1
 			}
@@ -214,122 +214,18 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pwe_level_nurgle_swift_river = {
+		pwe_level_nurgle_coming_down = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_nurgle",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pwe_level_nurgle_swift_river_01",
-				"pwe_level_nurgle_swift_river_02",
-				"pwe_level_nurgle_swift_river_03",
-				"pwe_level_nurgle_swift_river_04"
-			},
-			sound_events = {
-				"pwe_level_nurgle_swift_river_01",
-				"pwe_level_nurgle_swift_river_02",
-				"pwe_level_nurgle_swift_river_03",
-				"pwe_level_nurgle_swift_river_04"
-			},
-			face_animations = {
-				"face_concerned",
-				"face_concerned",
-				"face_concerned",
-				"face_concerned"
-			},
 			dialogue_animations = {
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout"
-			},
-			sound_events_duration = {
-				4.52889585495,
-				2.8746666908264,
-				3.9763333797455,
-				4.0714793205261
-			}
-		},
-		pwe_nurgle_intro_a = {
-			face_animations_n = 2,
-			database = "wood_elf_nurgle",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwe_nurgle_intro_a_01",
-				[2.0] = "pwe_nurgle_intro_a_02"
-			},
-			sound_events = {
-				[1.0] = "pwe_nurgle_intro_a_01",
-				[2.0] = "pwe_nurgle_intro_a_02"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 7.7614164352417,
-				[2.0] = 8.7651872634888
-			}
-		},
-		pwe_nurgle_intro_b = {
-			face_animations_n = 2,
-			database = "wood_elf_nurgle",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pwe_nurgle_intro_b_01",
-				[2.0] = "pwe_nurgle_intro_b_02"
-			},
-			sound_events = {
-				[1.0] = "pwe_nurgle_intro_b_01",
-				[2.0] = "pwe_nurgle_intro_b_02"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 10.481687545776,
-				[2.0] = 9.5001878738403
-			}
-		},
-		pwe_level_nurgle_spotting_objective = {
-			face_animations_n = 4,
-			database = "wood_elf_nurgle",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pwe_level_nurgle_spotting_objective_01",
-				"pwe_level_nurgle_spotting_objective_02",
-				"pwe_level_nurgle_spotting_objective_03",
-				"pwe_level_nurgle_spotting_objective_04"
-			},
-			sound_events = {
-				"pwe_level_nurgle_spotting_objective_01",
-				"pwe_level_nurgle_spotting_objective_02",
-				"pwe_level_nurgle_spotting_objective_03",
-				"pwe_level_nurgle_spotting_objective_04"
 			},
 			face_animations = {
 				"face_fear",
@@ -337,11 +233,57 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			localization_strings = {
+				"pwe_level_nurgle_coming_down_01",
+				"pwe_level_nurgle_coming_down_02",
+				"pwe_level_nurgle_coming_down_03",
+				"pwe_level_nurgle_coming_down_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_level_nurgle_coming_down_01",
+				"pwe_level_nurgle_coming_down_02",
+				"pwe_level_nurgle_coming_down_03",
+				"pwe_level_nurgle_coming_down_04"
+			},
+			sound_events_duration = {
+				4.6912498474121,
+				5.1840624809265,
+				6.0263748168945,
+				4.5843749046326
+			}
+		},
+		pwe_level_nurgle_spotting_objective = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "wood_elf_nurgle",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
 			dialogue_animations = {
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pwe_level_nurgle_spotting_objective_01",
+				"pwe_level_nurgle_spotting_objective_02",
+				"pwe_level_nurgle_spotting_objective_03",
+				"pwe_level_nurgle_spotting_objective_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_level_nurgle_spotting_objective_01",
+				"pwe_level_nurgle_spotting_objective_02",
+				"pwe_level_nurgle_spotting_objective_03",
+				"pwe_level_nurgle_spotting_objective_04"
 			},
 			sound_events_duration = {
 				3.4518959522247,
@@ -350,43 +292,101 @@ return function ()
 				3.3921458721161
 			}
 		},
-		pwe_level_nurgle_coming_down = {
+		pwe_level_nurgle_swift_river = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "wood_elf_nurgle",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pwe_level_nurgle_coming_down_01",
-				"pwe_level_nurgle_coming_down_02",
-				"pwe_level_nurgle_coming_down_03",
-				"pwe_level_nurgle_coming_down_04"
-			},
-			sound_events = {
-				"pwe_level_nurgle_coming_down_01",
-				"pwe_level_nurgle_coming_down_02",
-				"pwe_level_nurgle_coming_down_03",
-				"pwe_level_nurgle_coming_down_04"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
 			dialogue_animations = {
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout"
 			},
+			face_animations = {
+				"face_concerned",
+				"face_concerned",
+				"face_concerned",
+				"face_concerned"
+			},
+			localization_strings = {
+				"pwe_level_nurgle_swift_river_01",
+				"pwe_level_nurgle_swift_river_02",
+				"pwe_level_nurgle_swift_river_03",
+				"pwe_level_nurgle_swift_river_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pwe_level_nurgle_swift_river_01",
+				"pwe_level_nurgle_swift_river_02",
+				"pwe_level_nurgle_swift_river_03",
+				"pwe_level_nurgle_swift_river_04"
+			},
 			sound_events_duration = {
-				4.6912498474121,
-				5.1840624809265,
-				6.0263748168945,
-				4.5843749046326
+				4.0989271402359,
+				2.8746666908264,
+				3.9763333797455,
+				4.0714793205261
+			}
+		},
+		pwe_nurgle_intro_a = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "wood_elf_nurgle",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_nurgle_intro_a_01",
+				[2.0] = "pwe_nurgle_intro_a_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwe_nurgle_intro_a_01",
+				[2.0] = "pwe_nurgle_intro_a_02"
+			},
+			sound_events_duration = {
+				[1.0] = 7.7614164352417,
+				[2.0] = 8.7651872634888
+			}
+		},
+		pwe_nurgle_intro_b = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "wood_elf_nurgle",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_nurgle_intro_b_01",
+				[2.0] = "pwe_nurgle_intro_b_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pwe_nurgle_intro_b_01",
+				[2.0] = "pwe_nurgle_intro_b_02"
+			},
+			sound_events_duration = {
+				[1.0] = 10.481687545776,
+				[2.0] = 9.5001878738403
 			}
 		}
 	})

@@ -86,6 +86,10 @@ LevelSettings.dlc_portals = {
 		wh_priest = {
 			"pwh_wp_portals_briefing_01",
 			"pwh_wp_portals_briefing_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_portals_briefing_01",
+			"pbw_nm_portals_briefing_02"
 		}
 	},
 	locations = {

@@ -1,445 +1,5 @@
 return function ()
 	define_rule({
-		name = "pes_level_ground_zero_canals",
-		response = "pes_level_ground_zero_canals",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_canals"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_canals",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_canals",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_ground_zero_cargo_elevator",
-		response = "pes_level_ground_zero_cargo_elevator",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_cargo_elevator"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_cargo_elevator",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_cargo_elevator",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_ground_zero_corruption_everywhere",
-		response = "pes_level_ground_zero_corruption_everywhere",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_corruption_everywhere"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_corruption_everywhere",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_corruption_everywhere",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_ground_zero_crumbling",
-		response = "pes_level_ground_zero_crumbling",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_crumbling"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_crumbling",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_crumbling",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_ground_zero_looking_for_elevator",
-		response = "pes_level_ground_zero_looking_for_elevator",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_looking_for_elevator"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_looking_for_elevator",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_looking_for_elevator",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_ground_zero_smell",
-		response = "pes_level_ground_zero_smell",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_smell"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_smell",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_smell",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_ground_zero_the_hole",
-		response = "pes_level_ground_zero_the_hole",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_the_hole"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_the_hole",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_the_hole",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_ground_zero_welcoming_committee",
-		response = "pes_level_ground_zero_welcoming_committee",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_welcoming_committee"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_welcoming_committee",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_welcoming_committee",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_ground_zero_precarious",
-		response = "pes_level_ground_zero_precarious",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_precarious"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_precarious",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_precarious",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
-		name = "pes_level_ground_zero_landslide",
-		response = "pes_level_ground_zero_landslide",
-		criterias = {
-			{
-				"query_context",
-				"concept",
-				OP.EQ,
-				"seen_item"
-			},
-			{
-				"query_context",
-				"item_tag",
-				OP.EQ,
-				"ground_zero_landslide"
-			},
-			{
-				"query_context",
-				"source_name",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"user_context",
-				"player_profile",
-				OP.EQ,
-				"empire_soldier"
-			},
-			{
-				"faction_memory",
-				"level_ground_zero_landslide",
-				OP.EQ,
-				0
-			}
-		},
-		on_done = {
-			{
-				"faction_memory",
-				"level_ground_zero_landslide",
-				OP.ADD,
-				1
-			}
-		}
-	})
-	define_rule({
 		name = "pes_ground_zero_intro_a",
 		response = "pes_ground_zero_intro_a",
 		criterias = {
@@ -636,6 +196,138 @@ return function ()
 		}
 	})
 	define_rule({
+		name = "pes_level_ground_zero_canal_crossing",
+		response = "pes_level_ground_zero_canal_crossing",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_canal_crossing"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_canal_crossing",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_canal_crossing",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_ground_zero_canals",
+		response = "pes_level_ground_zero_canals",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_canals"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_canals",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_canals",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_ground_zero_cargo_elevator",
+		response = "pes_level_ground_zero_cargo_elevator",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_cargo_elevator"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_cargo_elevator",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_cargo_elevator",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
 		name = "pes_level_ground_zero_complete",
 		response = "pes_level_ground_zero_complete",
 		criterias = {
@@ -680,8 +372,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pes_level_ground_zero_canal_crossing",
-		response = "pes_level_ground_zero_canal_crossing",
+		name = "pes_level_ground_zero_corruption_everywhere",
+		response = "pes_level_ground_zero_corruption_everywhere",
 		criterias = {
 			{
 				"query_context",
@@ -693,7 +385,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"ground_zero_canal_crossing"
+				"ground_zero_corruption_everywhere"
 			},
 			{
 				"query_context",
@@ -709,7 +401,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_ground_zero_canal_crossing",
+				"level_ground_zero_corruption_everywhere",
 				OP.EQ,
 				0
 			}
@@ -717,7 +409,271 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_ground_zero_canal_crossing",
+				"level_ground_zero_corruption_everywhere",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_ground_zero_crumbling",
+		response = "pes_level_ground_zero_crumbling",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_crumbling"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_crumbling",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_crumbling",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_ground_zero_landslide",
+		response = "pes_level_ground_zero_landslide",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_landslide"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_landslide",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_ground_zero_looking_for_elevator",
+		response = "pes_level_ground_zero_looking_for_elevator",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_looking_for_elevator"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_looking_for_elevator",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_looking_for_elevator",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_ground_zero_precarious",
+		response = "pes_level_ground_zero_precarious",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_precarious"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_precarious",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_precarious",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_ground_zero_smell",
+		response = "pes_level_ground_zero_smell",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_smell"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_smell",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_smell",
+				OP.ADD,
+				1
+			}
+		}
+	})
+	define_rule({
+		name = "pes_level_ground_zero_the_hole",
+		response = "pes_level_ground_zero_the_hole",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_the_hole"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_the_hole",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_the_hole",
 				OP.ADD,
 				1
 			}
@@ -767,65 +723,213 @@ return function ()
 			}
 		}
 	})
+	define_rule({
+		name = "pes_level_ground_zero_welcoming_committee",
+		response = "pes_level_ground_zero_welcoming_committee",
+		criterias = {
+			{
+				"query_context",
+				"concept",
+				OP.EQ,
+				"seen_item"
+			},
+			{
+				"query_context",
+				"item_tag",
+				OP.EQ,
+				"ground_zero_welcoming_committee"
+			},
+			{
+				"query_context",
+				"source_name",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"user_context",
+				"player_profile",
+				OP.EQ,
+				"empire_soldier"
+			},
+			{
+				"faction_memory",
+				"level_ground_zero_welcoming_committee",
+				OP.EQ,
+				0
+			}
+		},
+		on_done = {
+			{
+				"faction_memory",
+				"level_ground_zero_welcoming_committee",
+				OP.ADD,
+				1
+			}
+		}
+	})
 	add_dialogues({
-		pes_level_ground_zero_cargo_elevator = {
+		pes_ground_zero_intro_a = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "empire_soldier_ground_zero",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_ground_zero_intro_a_01",
+				[2.0] = "pes_ground_zero_intro_a_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pes_ground_zero_intro_a_01",
+				[2.0] = "pes_ground_zero_intro_a_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.9998540878296,
+				[2.0] = 5.8291873931885
+			}
+		},
+		pes_ground_zero_intro_b = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "empire_soldier_ground_zero",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_ground_zero_intro_b_01",
+				[2.0] = "pes_ground_zero_intro_b_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pes_ground_zero_intro_b_01",
+				[2.0] = "pes_ground_zero_intro_b_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4172291755676,
+				[2.0] = 7.4405207633972
+			}
+		},
+		pes_ground_zero_intro_c = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "empire_soldier_ground_zero",
+			sound_events_n = 2,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_ground_zero_intro_c_01",
+				[2.0] = "pes_ground_zero_intro_c_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pes_ground_zero_intro_c_01",
+				[2.0] = "pes_ground_zero_intro_c_02"
+			},
+			sound_events_duration = {
+				[1.0] = 6.7882499694824,
+				[2.0] = 8.435396194458
+			}
+		},
+		pes_level_ground_zero_boss_spotted = {
+			randomize_indexes_n = 0,
+			face_animations_n = 3,
+			database = "empire_soldier_ground_zero",
+			sound_events_n = 3,
+			category = "player_alerts_boss",
+			dialogue_animations_n = 3,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			localization_strings = {
+				"pes_level_ground_zero_boss_spotted_01",
+				"pes_level_ground_zero_boss_spotted_02",
+				"pes_level_ground_zero_boss_spotted_03"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_ground_zero_boss_spotted_01",
+				"pes_level_ground_zero_boss_spotted_02",
+				"pes_level_ground_zero_boss_spotted_03"
+			},
+			sound_events_duration = {
+				6.8886251449585,
+				8.8464164733887,
+				9.1421041488647
+			}
+		},
+		pes_level_ground_zero_boss_taunt_reply = {
+			randomize_indexes_n = 0,
+			face_animations_n = 2,
+			database = "empire_soldier_ground_zero",
+			sound_events_n = 2,
+			category = "player_alerts_boss",
+			dialogue_animations_n = 2,
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_level_ground_zero_boss_taunt_reply_01",
+				[2.0] = "pes_level_ground_zero_boss_taunt_reply_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pes_level_ground_zero_boss_taunt_reply_01",
+				[2.0] = "pes_level_ground_zero_boss_taunt_reply_02"
+			},
+			sound_events_duration = {
+				[1.0] = 7.738395690918,
+				[2.0] = 9.7863750457764
+			}
+		},
+		pes_level_ground_zero_canal_crossing = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_ground_zero_cargo_elevator_01",
-				"pes_level_ground_zero_cargo_elevator_02",
-				"pes_level_ground_zero_cargo_elevator_03",
-				"pes_level_ground_zero_cargo_elevator_04"
-			},
-			sound_events = {
-				"pes_level_ground_zero_cargo_elevator_01",
-				"pes_level_ground_zero_cargo_elevator_02",
-				"pes_level_ground_zero_cargo_elevator_03",
-				"pes_level_ground_zero_cargo_elevator_04"
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
 			dialogue_animations = {
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout"
-			},
-			sound_events_duration = {
-				4.2834167480469,
-				2.4035625457764,
-				3.0251667499542,
-				3.065333366394
-			}
-		},
-		pes_level_ground_zero_the_hole_second_view = {
-			face_animations_n = 4,
-			database = "empire_soldier_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "story_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_ground_zero_the_hole_second_view_01",
-				"pes_level_ground_zero_the_hole_second_view_02",
-				"pes_level_ground_zero_the_hole_second_view_03",
-				"pes_level_ground_zero_the_hole_second_view_04"
-			},
-			sound_events = {
-				"pes_level_ground_zero_the_hole_second_view_01",
-				"pes_level_ground_zero_the_hole_second_view_02",
-				"pes_level_ground_zero_the_hole_second_view_03",
-				"pes_level_ground_zero_the_hole_second_view_04"
 			},
 			face_animations = {
 				"face_fear",
@@ -833,38 +937,38 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			localization_strings = {
+				"pes_level_ground_zero_canal_crossing_01",
+				"pes_level_ground_zero_canal_crossing_02",
+				"pes_level_ground_zero_canal_crossing_03",
+				"pes_level_ground_zero_canal_crossing_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_ground_zero_canal_crossing_01",
+				"pes_level_ground_zero_canal_crossing_02",
+				"pes_level_ground_zero_canal_crossing_03",
+				"pes_level_ground_zero_canal_crossing_04"
 			},
 			sound_events_duration = {
-				6.3555207252502,
-				5.4949584007263,
-				4.907666683197,
-				3.8080415725708
+				2.7639374732971,
+				2.8159375190735,
+				2.6757917404175,
+				3.0418124198914
 			}
 		},
 		pes_level_ground_zero_canals = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_ground_zero_canals_01",
-				"pes_level_ground_zero_canals_02",
-				"pes_level_ground_zero_canals_03",
-				"pes_level_ground_zero_canals_04"
-			},
-			sound_events = {
-				"pes_level_ground_zero_canals_01",
-				"pes_level_ground_zero_canals_02",
-				"pes_level_ground_zero_canals_03",
-				"pes_level_ground_zero_canals_04"
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			face_animations = {
 				"face_calm",
@@ -872,11 +976,18 @@ return function ()
 				"face_calm",
 				"face_calm"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
+			localization_strings = {
+				"pes_level_ground_zero_canals_01",
+				"pes_level_ground_zero_canals_02",
+				"pes_level_ground_zero_canals_03",
+				"pes_level_ground_zero_canals_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_ground_zero_canals_01",
+				"pes_level_ground_zero_canals_02",
+				"pes_level_ground_zero_canals_03",
+				"pes_level_ground_zero_canals_04"
 			},
 			sound_events_duration = {
 				3.5518958568573,
@@ -885,54 +996,125 @@ return function ()
 				4.6565208435059
 			}
 		},
+		pes_level_ground_zero_cargo_elevator = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_ground_zero",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			localization_strings = {
+				"pes_level_ground_zero_cargo_elevator_01",
+				"pes_level_ground_zero_cargo_elevator_02",
+				"pes_level_ground_zero_cargo_elevator_03",
+				"pes_level_ground_zero_cargo_elevator_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_ground_zero_cargo_elevator_01",
+				"pes_level_ground_zero_cargo_elevator_02",
+				"pes_level_ground_zero_cargo_elevator_03",
+				"pes_level_ground_zero_cargo_elevator_04"
+			},
+			sound_events_duration = {
+				4.2834167480469,
+				2.4035625457764,
+				3.0251667499542,
+				3.065333366394
+			}
+		},
 		pes_level_ground_zero_complete = {
+			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "empire_soldier_ground_zero",
 			sound_events_n = 2,
-			randomize_indexes_n = 0,
 			category = "player_alerts_boss",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_level_ground_zero_complete_01",
-				[2.0] = "pes_level_ground_zero_complete_02"
-			},
-			sound_events = {
-				[1.0] = "pes_level_ground_zero_complete_01",
-				[2.0] = "pes_level_ground_zero_complete_02"
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+			localization_strings = {
+				[1.0] = "pes_level_ground_zero_complete_01",
+				[2.0] = "pes_level_ground_zero_complete_02"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				[1.0] = "pes_level_ground_zero_complete_01",
+				[2.0] = "pes_level_ground_zero_complete_02"
 			},
 			sound_events_duration = {
 				[1.0] = 6.8177914619446,
 				[2.0] = 7.0135002136231
 			}
 		},
-		pes_level_ground_zero_landslide = {
+		pes_level_ground_zero_corruption_everywhere = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "cut_scene",
+			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_ground_zero_landslide_01",
-				"pes_level_ground_zero_landslide_02",
-				"pes_level_ground_zero_landslide_03",
-				"pes_level_ground_zero_landslide_04"
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry"
+			},
+			localization_strings = {
+				"pes_level_ground_zero_corruption_everywhere_01",
+				"pes_level_ground_zero_corruption_everywhere_02",
+				"pes_level_ground_zero_corruption_everywhere_03",
+				"pes_level_ground_zero_corruption_everywhere_04"
+			},
+			randomize_indexes = {},
 			sound_events = {
-				"pes_level_ground_zero_landslide_01",
-				"pes_level_ground_zero_landslide_02",
-				"pes_level_ground_zero_landslide_03",
-				"pes_level_ground_zero_landslide_04"
+				"pes_level_ground_zero_corruption_everywhere_01",
+				"pes_level_ground_zero_corruption_everywhere_02",
+				"pes_level_ground_zero_corruption_everywhere_03",
+				"pes_level_ground_zero_corruption_everywhere_04"
+			},
+			sound_events_duration = {
+				3.3790416717529,
+				3.6476666927338,
+				6.5644583702087,
+				4.6164164543152
+			}
+		},
+		pes_level_ground_zero_crumbling = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_ground_zero",
+			sound_events_n = 4,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
 				"face_fear",
@@ -940,11 +1122,57 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			localization_strings = {
+				"pes_level_ground_zero_crumbling_01",
+				"pes_level_ground_zero_crumbling_02",
+				"pes_level_ground_zero_crumbling_03",
+				"pes_level_ground_zero_crumbling_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_ground_zero_crumbling_01",
+				"pes_level_ground_zero_crumbling_02",
+				"pes_level_ground_zero_crumbling_03",
+				"pes_level_ground_zero_crumbling_04"
+			},
+			sound_events_duration = {
+				3.2160832881927,
+				3,
+				5.0997915267944,
+				4.4368958473206
+			}
+		},
+		pes_level_ground_zero_landslide = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_ground_zero",
+			sound_events_n = 4,
+			category = "cut_scene",
+			dialogue_animations_n = 4,
 			dialogue_animations = {
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pes_level_ground_zero_landslide_01",
+				"pes_level_ground_zero_landslide_02",
+				"pes_level_ground_zero_landslide_03",
+				"pes_level_ground_zero_landslide_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_ground_zero_landslide_01",
+				"pes_level_ground_zero_landslide_02",
+				"pes_level_ground_zero_landslide_03",
+				"pes_level_ground_zero_landslide_04"
 			},
 			sound_events_duration = {
 				3.606187582016,
@@ -954,24 +1182,17 @@ return function ()
 			}
 		},
 		pes_level_ground_zero_looking_for_elevator = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_ground_zero_looking_for_elevator_01",
-				"pes_level_ground_zero_looking_for_elevator_02",
-				"pes_level_ground_zero_looking_for_elevator_03",
-				"pes_level_ground_zero_looking_for_elevator_04"
-			},
-			sound_events = {
-				"pes_level_ground_zero_looking_for_elevator_01",
-				"pes_level_ground_zero_looking_for_elevator_02",
-				"pes_level_ground_zero_looking_for_elevator_03",
-				"pes_level_ground_zero_looking_for_elevator_04"
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
 				"face_fear",
@@ -979,11 +1200,18 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			localization_strings = {
+				"pes_level_ground_zero_looking_for_elevator_01",
+				"pes_level_ground_zero_looking_for_elevator_02",
+				"pes_level_ground_zero_looking_for_elevator_03",
+				"pes_level_ground_zero_looking_for_elevator_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_ground_zero_looking_for_elevator_01",
+				"pes_level_ground_zero_looking_for_elevator_02",
+				"pes_level_ground_zero_looking_for_elevator_03",
+				"pes_level_ground_zero_looking_for_elevator_04"
 			},
 			sound_events_duration = {
 				1.9454791545868,
@@ -992,244 +1220,18 @@ return function ()
 				3.5882499217987
 			}
 		},
-		pes_level_ground_zero_canal_crossing = {
-			face_animations_n = 4,
-			database = "empire_soldier_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_ground_zero_canal_crossing_01",
-				"pes_level_ground_zero_canal_crossing_02",
-				"pes_level_ground_zero_canal_crossing_03",
-				"pes_level_ground_zero_canal_crossing_04"
-			},
-			sound_events = {
-				"pes_level_ground_zero_canal_crossing_01",
-				"pes_level_ground_zero_canal_crossing_02",
-				"pes_level_ground_zero_canal_crossing_03",
-				"pes_level_ground_zero_canal_crossing_04"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				2.7639374732971,
-				2.8159375190735,
-				2.6757917404175,
-				3.0418124198914
-			}
-		},
-		pes_level_ground_zero_corruption_everywhere = {
-			face_animations_n = 4,
-			database = "empire_soldier_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_ground_zero_corruption_everywhere_01",
-				"pes_level_ground_zero_corruption_everywhere_02",
-				"pes_level_ground_zero_corruption_everywhere_03",
-				"pes_level_ground_zero_corruption_everywhere_04"
-			},
-			sound_events = {
-				"pes_level_ground_zero_corruption_everywhere_01",
-				"pes_level_ground_zero_corruption_everywhere_02",
-				"pes_level_ground_zero_corruption_everywhere_03",
-				"pes_level_ground_zero_corruption_everywhere_04"
-			},
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				3.3790416717529,
-				3.6476666927338,
-				6.5644583702087,
-				4.6164164543152
-			}
-		},
-		pes_level_ground_zero_boss_spotted = {
-			face_animations_n = 3,
-			database = "empire_soldier_ground_zero",
-			sound_events_n = 3,
-			randomize_indexes_n = 0,
-			category = "player_alerts_boss",
-			dialogue_animations_n = 3,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_ground_zero_boss_spotted_01",
-				"pes_level_ground_zero_boss_spotted_02",
-				"pes_level_ground_zero_boss_spotted_03"
-			},
-			sound_events = {
-				"pes_level_ground_zero_boss_spotted_01",
-				"pes_level_ground_zero_boss_spotted_02",
-				"pes_level_ground_zero_boss_spotted_03"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				6.8886251449585,
-				8.8464164733887,
-				9.1421041488647
-			}
-		},
-		pes_level_ground_zero_crumbling = {
-			face_animations_n = 4,
-			database = "empire_soldier_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_ground_zero_crumbling_01",
-				"pes_level_ground_zero_crumbling_02",
-				"pes_level_ground_zero_crumbling_03",
-				"pes_level_ground_zero_crumbling_04"
-			},
-			sound_events = {
-				"pes_level_ground_zero_crumbling_01",
-				"pes_level_ground_zero_crumbling_02",
-				"pes_level_ground_zero_crumbling_03",
-				"pes_level_ground_zero_crumbling_04"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				3.2160832881927,
-				3,
-				5.0997915267944,
-				4.4368958473206
-			}
-		},
-		pes_ground_zero_intro_c = {
-			face_animations_n = 2,
-			database = "empire_soldier_ground_zero",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_ground_zero_intro_c_01",
-				[2.0] = "pes_ground_zero_intro_c_02"
-			},
-			sound_events = {
-				[1.0] = "pes_ground_zero_intro_c_01",
-				[2.0] = "pes_ground_zero_intro_c_02"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 6.7882499694824,
-				[2.0] = 8.435396194458
-			}
-		},
-		pes_level_ground_zero_the_hole = {
-			face_animations_n = 4,
-			database = "empire_soldier_ground_zero",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "story_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_ground_zero_the_hole_01",
-				"pes_level_ground_zero_the_hole_02",
-				"pes_level_ground_zero_the_hole_03",
-				"pes_level_ground_zero_the_hole_04"
-			},
-			sound_events = {
-				"pes_level_ground_zero_the_hole_01",
-				"pes_level_ground_zero_the_hole_02",
-				"pes_level_ground_zero_the_hole_03",
-				"pes_level_ground_zero_the_hole_04"
-			},
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				5.1390416622162,
-				6.7150418758392,
-				5.1349895000458,
-				6.1933958530426
-			}
-		},
 		pes_level_ground_zero_precarious = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			category = "story_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_ground_zero_precarious_01",
-				"pes_level_ground_zero_precarious_02",
-				"pes_level_ground_zero_precarious_03",
-				"pes_level_ground_zero_precarious_04"
-			},
-			sound_events = {
-				"pes_level_ground_zero_precarious_01",
-				"pes_level_ground_zero_precarious_02",
-				"pes_level_ground_zero_precarious_03",
-				"pes_level_ground_zero_precarious_04"
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
 				"face_fear",
@@ -1237,11 +1239,18 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			localization_strings = {
+				"pes_level_ground_zero_precarious_01",
+				"pes_level_ground_zero_precarious_02",
+				"pes_level_ground_zero_precarious_03",
+				"pes_level_ground_zero_precarious_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_ground_zero_precarious_01",
+				"pes_level_ground_zero_precarious_02",
+				"pes_level_ground_zero_precarious_03",
+				"pes_level_ground_zero_precarious_04"
 			},
 			sound_events_duration = {
 				2.2663958072662,
@@ -1251,24 +1260,17 @@ return function ()
 			}
 		},
 		pes_level_ground_zero_smell = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_ground_zero_smell_01",
-				"pes_level_ground_zero_smell_02",
-				"pes_level_ground_zero_smell_03",
-				"pes_level_ground_zero_smell_04"
-			},
-			sound_events = {
-				"pes_level_ground_zero_smell_01",
-				"pes_level_ground_zero_smell_02",
-				"pes_level_ground_zero_smell_03",
-				"pes_level_ground_zero_smell_04"
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
 				"face_fear",
@@ -1276,11 +1278,18 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
+			localization_strings = {
+				"pes_level_ground_zero_smell_01",
+				"pes_level_ground_zero_smell_02",
+				"pes_level_ground_zero_smell_03",
+				"pes_level_ground_zero_smell_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_ground_zero_smell_01",
+				"pes_level_ground_zero_smell_02",
+				"pes_level_ground_zero_smell_03",
+				"pes_level_ground_zero_smell_04"
 			},
 			sound_events_duration = {
 				5.6272501945496,
@@ -1289,25 +1298,18 @@ return function ()
 				4.6801042556763
 			}
 		},
-		pes_level_ground_zero_welcoming_committee = {
+		pes_level_ground_zero_the_hole = {
+			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "empire_soldier_ground_zero",
 			sound_events_n = 4,
-			randomize_indexes_n = 0,
 			category = "story_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_level_ground_zero_welcoming_committee_01",
-				"pes_level_ground_zero_welcoming_committee_02",
-				"pes_level_ground_zero_welcoming_committee_03",
-				"pes_level_ground_zero_welcoming_committee_04"
-			},
-			sound_events = {
-				"pes_level_ground_zero_welcoming_committee_01",
-				"pes_level_ground_zero_welcoming_committee_02",
-				"pes_level_ground_zero_welcoming_committee_03",
-				"pes_level_ground_zero_welcoming_committee_04"
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
 				"face_fear",
@@ -1315,104 +1317,102 @@ return function ()
 				"face_fear",
 				"face_fear"
 			},
+			localization_strings = {
+				"pes_level_ground_zero_the_hole_01",
+				"pes_level_ground_zero_the_hole_02",
+				"pes_level_ground_zero_the_hole_03",
+				"pes_level_ground_zero_the_hole_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_ground_zero_the_hole_01",
+				"pes_level_ground_zero_the_hole_02",
+				"pes_level_ground_zero_the_hole_03",
+				"pes_level_ground_zero_the_hole_04"
+			},
+			sound_events_duration = {
+				5.1390416622162,
+				6.7150418758392,
+				5.1349895000458,
+				6.1933958530426
+			}
+		},
+		pes_level_ground_zero_the_hole_second_view = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_ground_zero",
+			sound_events_n = 4,
+			category = "story_talk",
+			dialogue_animations_n = 4,
 			dialogue_animations = {
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout"
 			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pes_level_ground_zero_the_hole_second_view_01",
+				"pes_level_ground_zero_the_hole_second_view_02",
+				"pes_level_ground_zero_the_hole_second_view_03",
+				"pes_level_ground_zero_the_hole_second_view_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_ground_zero_the_hole_second_view_01",
+				"pes_level_ground_zero_the_hole_second_view_02",
+				"pes_level_ground_zero_the_hole_second_view_03",
+				"pes_level_ground_zero_the_hole_second_view_04"
+			},
+			sound_events_duration = {
+				6.3555207252502,
+				5.4949584007263,
+				4.907666683197,
+				3.8080415725708
+			}
+		},
+		pes_level_ground_zero_welcoming_committee = {
+			randomize_indexes_n = 0,
+			face_animations_n = 4,
+			database = "empire_soldier_ground_zero",
+			sound_events_n = 4,
+			category = "story_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			},
+			localization_strings = {
+				"pes_level_ground_zero_welcoming_committee_01",
+				"pes_level_ground_zero_welcoming_committee_02",
+				"pes_level_ground_zero_welcoming_committee_03",
+				"pes_level_ground_zero_welcoming_committee_04"
+			},
+			randomize_indexes = {},
+			sound_events = {
+				"pes_level_ground_zero_welcoming_committee_01",
+				"pes_level_ground_zero_welcoming_committee_02",
+				"pes_level_ground_zero_welcoming_committee_03",
+				"pes_level_ground_zero_welcoming_committee_04"
+			},
 			sound_events_duration = {
 				6.9880833625794,
 				3.3226459026337,
 				4.2186665534973,
 				4.5
-			}
-		},
-		pes_level_ground_zero_boss_taunt_reply = {
-			face_animations_n = 2,
-			database = "empire_soldier_ground_zero",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "player_alerts_boss",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_level_ground_zero_boss_taunt_reply_01",
-				[2.0] = "pes_level_ground_zero_boss_taunt_reply_02"
-			},
-			sound_events = {
-				[1.0] = "pes_level_ground_zero_boss_taunt_reply_01",
-				[2.0] = "pes_level_ground_zero_boss_taunt_reply_02"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 7.738395690918,
-				[2.0] = 9.7863750457764
-			}
-		},
-		pes_ground_zero_intro_a = {
-			face_animations_n = 2,
-			database = "empire_soldier_ground_zero",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_ground_zero_intro_a_01",
-				[2.0] = "pes_ground_zero_intro_a_02"
-			},
-			sound_events = {
-				[1.0] = "pes_ground_zero_intro_a_01",
-				[2.0] = "pes_ground_zero_intro_a_02"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.9998540878296,
-				[2.0] = 5.8291873931885
-			}
-		},
-		pes_ground_zero_intro_b = {
-			face_animations_n = 2,
-			database = "empire_soldier_ground_zero",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_ground_zero_intro_b_01",
-				[2.0] = "pes_ground_zero_intro_b_02"
-			},
-			sound_events = {
-				[1.0] = "pes_ground_zero_intro_b_01",
-				[2.0] = "pes_ground_zero_intro_b_02"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.4172291755676,
-				[2.0] = 7.4405207633972
 			}
 		}
 	})
