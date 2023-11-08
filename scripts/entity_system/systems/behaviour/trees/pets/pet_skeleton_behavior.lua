@@ -156,6 +156,7 @@ local ARMORED_COMBAT = {
 	{
 		"BTStormVerminPushAction",
 		name = "push_attack",
+		condition = "has_target",
 		action_data = ACTIONS_ARMORED.push_attack
 	},
 	{
@@ -380,9 +381,9 @@ BreedBehaviors.pet_skeleton = {
 		condition = "has_charge_target",
 		action_data = ACTIONS_ARMORED.ability_charge
 	},
+	COMMAND_COMBAT,
 	{
 		"BTSelector",
-		COMMAND_COMBAT,
 		ARMORED_COMBAT,
 		DUAL_WIELD_COMBAT,
 		SHIELD_COMBAT,

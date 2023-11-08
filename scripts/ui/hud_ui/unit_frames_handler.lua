@@ -836,6 +836,30 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 			local slot_data = equipment.slots[slot_name]
 			local item_data = slot_data and slot_data.item_data
 
+			if item_data and item_data.hide_in_frame_ui then
+				local has_fallback = false
+				local additional_items = inventory_extension:get_additional_items(slot_name)
+
+				if additional_items then
+					for additional_idx = 1, #additional_items do
+						local additional_item_data = additional_items[additional_idx]
+
+						if not additional_item_data.hide_in_frame_ui then
+							item_data = additional_item_data
+							has_fallback = true
+
+							break
+						end
+					end
+				end
+
+				if not has_fallback then
+					item_data = nil
+				end
+
+				slot_data = nil
+			end
+
 			if not inventory_slots_data[slot_name] then
 				inventory_slots_data[slot_name] = {}
 			end
@@ -863,14 +887,19 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 			end
 
 			if update_equipment and allowed_consumable_slots[slot_name] then
-				local slot_visible = slot_data and true or false
+				local slot_visible = item_data and true or false
 				local item_name = item_data and item_data.name
 				local has_additional_item_slots = inventory_extension:has_additional_item_slots(slot_name)
 
 				if stored_slot_data.visible ~= slot_visible or stored_slot_data.item_name ~= item_name then
 					stored_slot_data.visible = slot_visible
 					stored_slot_data.item_name = item_name
-					local item_count = has_additional_item_slots and inventory_extension:get_total_item_count(slot_name)
+					local item_count = has_additional_item_slots and self:_slot_item_count(inventory_extension, slot_name)
+
+					if item_count and item_count <= 1 then
+						has_additional_item_slots, item_count = nil
+					end
+
 					stored_slot_data.has_additional_item_slots = has_additional_item_slots
 					stored_slot_data.item_count = item_count
 
@@ -878,7 +907,11 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 
 					dirty = true
 				elseif stored_slot_data.visible and (stored_slot_data.has_additional_item_slots or has_additional_item_slots) then
-					local item_count = inventory_extension:get_total_item_count(slot_name)
+					local item_count = self:_slot_item_count(inventory_extension, slot_name)
+
+					if item_count and item_count <= 1 then
+						has_additional_item_slots, item_count = nil
+					end
 
 					if stored_slot_data.item_count ~= item_count then
 						if not has_additional_item_slots then
@@ -895,7 +928,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 				end
 			end
 
-			if update_weapons and allowed_weapon_slots[slot_name] and slot_data then
+			if update_weapons and allowed_weapon_slots[slot_name] and item_data then
 				local item_name = item_data.name
 				local hud_icon = item_data.hud_icon
 				local is_wielded = wielded == item_data
@@ -915,7 +948,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 
 				local item_template = BackendUtils.get_item_template(item_data)
 
-				if item_template.ammo_data then
+				if item_template.ammo_data and slot_data then
 					local ammo_count, remaining_ammo, _, using_single_clip = get_ammunition_count(slot_data.left_unit_1p, slot_data.right_unit_1p, item_template)
 
 					if stored_slot_data.ammo_count ~= ammo_count or stored_slot_data.remaining_ammo ~= remaining_ammo or stored_slot_data.no_ammo then
@@ -976,6 +1009,29 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 	end
 
 	self.gamepad_was_active = gamepad_active
+end
+
+UnitFramesHandler._slot_item_count = function (self, inventory_extension, slot_name)
+	local item_count = 0
+	local slot_data = inventory_extension:get_slot_data(slot_name)
+
+	if slot_data and not slot_data.item_data.hide_in_frame_ui then
+		item_count = item_count + 1
+	end
+
+	local additional_items = inventory_extension:get_additional_items(slot_name)
+
+	if additional_items then
+		for i = 1, #additional_items do
+			local item_data = additional_items[i]
+
+			if not item_data.hide_in_frame_ui then
+				item_count = item_count + 1
+			end
+		end
+	end
+
+	return item_count
 end
 
 UnitFramesHandler.destroy = function (self)

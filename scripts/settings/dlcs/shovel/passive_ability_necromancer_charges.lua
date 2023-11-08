@@ -91,9 +91,7 @@ PassiveAbilityNecromancerCharges._on_talents_changed = function (self, unit, tal
 	self._has_dual_wield = talent_extension:has_talent("sienna_necromancer_6_2")
 	local has_mix = talent_extension:has_talent("sienna_necromancer_6_3")
 
-	if self._has_dual_wield then
-		self._army_definition = table.fill({}, 6, "pet_skeleton_dual_wield")
-	elseif has_mix then
+	if has_mix then
 		self._army_definition = {
 			"pet_skeleton_with_shield",
 			"pet_skeleton_with_shield",
@@ -102,6 +100,8 @@ PassiveAbilityNecromancerCharges._on_talents_changed = function (self, unit, tal
 			"pet_skeleton_armored",
 			"pet_skeleton_armored"
 		}
+	elseif self._has_dual_wield then
+		self._army_definition = table.fill({}, 6, "pet_skeleton_dual_wield")
 	else
 		self._army_definition = table.fill({}, 6, "pet_skeleton")
 	end
@@ -442,7 +442,10 @@ PassiveAbilityNecromancerCharges._kill_all_pets_server = function (self, is_dest
 
 	for controlled_unit in pairs(spawned_pets) do
 		self:_remove_unit(controlled_unit)
-		AiUtils.kill_unit(controlled_unit)
+
+		if HEALTH_ALIVE[controlled_unit] then
+			AiUtils.kill_unit(controlled_unit)
+		end
 	end
 
 	self._disable_pet_charges = false

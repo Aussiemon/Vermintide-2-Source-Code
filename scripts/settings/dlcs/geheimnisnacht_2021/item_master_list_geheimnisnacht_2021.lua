@@ -1,11 +1,12 @@
 ItemMasterList.wpn_geheimnisnacht_2021_side_objective = {
 	description = "description_wpn_chaos_artifact",
 	temporary_template = "wpn_geheimnisnacht_2021_side_objective",
-	slot_type = "potion",
+	is_not_droppable = true,
 	is_local = true,
 	inventory_icon = "icons_placeholder",
 	left_hand_unit = "units/weapons/player/pup_ritual_site_01/wpn_ritual_site_01",
 	rarity = "plentiful",
+	slot_type = "potion",
 	gamepad_hud_icon = "hud_icon_geheimnisnacht_2021",
 	hud_icon = "hud_inventory_icon_geheimnisnacht_2021",
 	item_type = "potion",

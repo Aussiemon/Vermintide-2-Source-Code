@@ -359,6 +359,10 @@ PlayerBotUnitFirstPerson.play_remote_unit_sound_event = function (self, event, u
 	self:play_unit_sound_event(event, unit, node_id, true)
 end
 
+PlayerBotUnitFirstPerson.first_person_mode_active = function (self)
+	return self.first_person_debug
+end
+
 PlayerBotUnitFirstPerson.play_camera_effect_sequence = function (self, event, t)
 	return
 end

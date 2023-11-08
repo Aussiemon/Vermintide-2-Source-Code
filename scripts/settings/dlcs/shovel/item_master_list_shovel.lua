@@ -210,13 +210,14 @@ ItemMasterList.bw_necromancer_career_utility_weapon = {
 	rarity = "plentiful",
 	is_not_droppable = true,
 	is_local = true,
-	hud_icon = "hud_inventory_icon_necromancer_utility",
+	template = "bw_necromancer_career_utility_weapon",
 	left_hand_unit = "units/weapons/player/wpn_bw_necromancer_ability/wpn_bw_necromancer_ability",
-	slot_type = "potion",
+	hud_icon = "hud_inventory_icon_necromancer_utility",
 	skip_sync = true,
 	unwield_prio = 10,
 	gamepad_hud_icon = "hud_icon_necromancer_utility",
-	template = "bw_necromancer_career_utility_weapon",
+	hide_in_frame_ui = true,
+	slot_type = "potion",
 	can_wield = {
 		"bw_necromancer"
 	}

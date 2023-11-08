@@ -877,14 +877,14 @@ end
 ImguiWeaponDebug._calculate_damage = function (self, unit, item, damage_profile, difficulty_settings, power_level, difficulty_level, hit_zone_name, breed, target_index, stagger_level, is_critical_strike, backstab_multiplier, has_power_boost)
 	local damage_source = item.name
 	local boost_damage_multiplier = nil
-	local dropoff_scalar = 0
+	local range_scalar_multiplier = 0
 
 	if damage_profile.no_stagger_damage_reduction_ranged then
 		local stagger_number_override = 1
 		stagger_level = math.max(stagger_number_override, stagger_level)
 	end
 
-	local damage = DamageUtils.custom_calculate_damage(unit, damage_source, power_level, damage_profile, target_index, dropoff_scalar, is_critical_strike, backstab_multiplier, has_power_boost, boost_damage_multiplier, breed, hit_zone_name, stagger_level, difficulty_level)
+	local damage = DamageUtils.custom_calculate_damage(unit, damage_source, power_level, damage_profile, target_index, range_scalar_multiplier, is_critical_strike, backstab_multiplier, has_power_boost, boost_damage_multiplier, breed, hit_zone_name, stagger_level, difficulty_level)
 	damage = DamageUtils.networkify_damage(damage)
 
 	return damage
@@ -893,8 +893,8 @@ end
 ImguiWeaponDebug._calculate_ai_stagger = function (self, unit, item, damage_profile, power_level, difficulty_level, hit_zone_name, breed, target_index, is_critical_strike, has_power_boost)
 	local blocked = false
 	local damage_source = item.name
-	local dropoff_scalar = 0
-	local type, duration, distance, value, strength = DamageUtils.calculate_stagger_player_tooltip(breed, unit, hit_zone_name, power_level, is_critical_strike, damage_profile, target_index, blocked, damage_source, difficulty_level, has_power_boost, dropoff_scalar)
+	local range_scalar_multiplier = 0
+	local type, duration, distance, value, strength = DamageUtils.calculate_stagger_player_tooltip(breed, unit, hit_zone_name, power_level, is_critical_strike, damage_profile, target_index, blocked, damage_source, difficulty_level, has_power_boost, range_scalar_multiplier)
 
 	return type, duration, distance, value, strength
 end

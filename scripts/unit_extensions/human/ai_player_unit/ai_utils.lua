@@ -56,12 +56,20 @@ AiUtils.aggro_unit_of_enemy = function (unit, enemy_unit)
 end
 
 AiUtils.activate_unit = function (blackboard)
+	if blackboard.activation_lock then
+		return
+	end
+
 	local breed = blackboard.breed
 
 	if not blackboard.confirmed_player_sighting and not breed.ignore_activate_unit then
 		local unit = blackboard.unit
 
-		Managers.state.event:trigger("ai_unit_activated", unit, breed.name, blackboard.event_spawned)
+		if not HEALTH_ALIVE[unit] then
+			return
+		end
+
+		Managers.state.event:trigger("ai_unit_activated", unit, breed.name, blackboard.master_event_id)
 
 		blackboard.confirmed_player_sighting = true
 		blackboard.activated = true
@@ -73,7 +81,7 @@ AiUtils.deactivate_unit = function (blackboard)
 		local breed = blackboard.breed
 		local unit = blackboard.unit
 
-		Managers.state.event:trigger("ai_unit_deactivated", unit, breed.name)
+		Managers.state.event:trigger("ai_unit_deactivated", unit, breed.name, blackboard.master_event_id)
 
 		blackboard.confirmed_player_sighting = false
 		blackboard.activated = false
@@ -932,7 +940,12 @@ AiUtils.is_of_interest_to_vortex = function (enemy_unit)
 end
 
 AiUtils.is_of_interest_plague_wave_sorcerer = function (enemy_unit)
-	local status_extension = ScriptUnit.extension(enemy_unit, "status_system")
+	local status_extension = ScriptUnit.has_extension(enemy_unit, "status_system")
+
+	if not status_extension then
+		return false
+	end
+
 	local is_knocked_down = status_extension:is_knocked_down()
 	local is_pounced_down = status_extension:is_pounced_down()
 	local grabbed = status_extension:is_grabbed_by_pack_master()
@@ -1206,9 +1219,10 @@ AiUtils.kill_unit = function (victim_unit, attacker_unit, hit_zone_name, damage_
 		damage_source = damage_source or "suicide"
 		damage_direction = damage_direction or Vector3(0, 0, 1)
 		local health = ScriptUnit.extension(victim_unit, "health_system"):current_health()
+		local skip_buffs = true
 
 		for i = 1, math.ceil(health / damage_amount) do
-			DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, damage_source)
+			DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, damage_source, nil, nil, nil, nil, false, false, nil, nil, nil, skip_buffs)
 		end
 	end
 end

@@ -8,16 +8,31 @@ table.merge_recursive(BTConditions.ability_check_categories, {
 })
 
 BTConditions.can_activate.bw_necromancer = function (blackboard)
-	local threat, num_enemies = Managers.state.conflict:get_threat_value()
+	local num_occupied_slots = blackboard.ai_slot_extension.num_occupied_slots
 
-	if threat > 5 then
+	if num_occupied_slots >= 3 then
 		return true
 	end
 
-	local current_health_percent = blackboard.health_extension:current_health_percent()
-	local is_wounded = blackboard.status_extension:is_wounded()
+	if not Managers.state.game_mode:is_round_started() then
+		blackboard._bt_conditions_first_ability = true
 
-	if current_health_percent < 0.3 or is_wounded then
+		return false
+	elseif blackboard._bt_conditions_first_ability then
+		local t = Managers.time:time("game")
+		blackboard._first_ability_t = blackboard._first_ability_t or t + Math.random(1, 4)
+
+		if t < blackboard._first_ability_t then
+			return false
+		end
+
+		blackboard._bt_conditions_first_ability = nil
+		blackboard._first_ability_t = nil
+	end
+
+	local num_skeletons = blackboard.ai_commander_extension:get_controlled_units_count()
+
+	if num_skeletons <= 4 then
 		return true
 	end
 

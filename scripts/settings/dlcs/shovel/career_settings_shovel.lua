@@ -121,6 +121,11 @@ CareerSettings.bw_necromancer = {
 
 		return nil
 	end,
+	requires_packages = {
+		trapped_soul_skull = {
+			"units/beings/player/bright_wizard_necromancer/talents/trapped_soul_skull"
+		}
+	},
 	item_slot_types_by_slot_name = {
 		slot_melee = {
 			"melee"

@@ -127,6 +127,11 @@ AchievementManager.trigger_event = function (self, event_name, ...)
 
 	if template_list then
 		local local_player = Managers.player:local_player()
+
+		if not local_player then
+			return
+		end
+
 		local stats_id = local_player:stats_id()
 		local statistics_db = self._statistics_db
 

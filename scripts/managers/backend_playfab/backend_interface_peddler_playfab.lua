@@ -885,7 +885,7 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 	end
 
 	if rewards_claimed then
-		Managers.telemetry_events:store_calendar_rewards_claimed(result.FunctionResult)
+		Managers.telemetry_events:store_rewards_claimed(result.FunctionResult)
 		Managers.save:auto_save(SaveFileName, SaveData, nil)
 	end
 

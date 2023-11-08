@@ -1277,7 +1277,7 @@ GenericStatusExtension.set_pulled_up = function (self, pulled_up, helper)
 	if self.is_ledge_hanging then
 		self.pulled_up = pulled_up
 
-		if pulled_up then
+		if pulled_up and ALIVE[helper] then
 			local dialogue_input = ScriptUnit.extension_input(self.unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
 			event_data.reviver = helper
@@ -1295,20 +1295,22 @@ GenericStatusExtension.set_revived = function (self, revived, reviver)
 	local unit = self.unit
 
 	if revived then
-		local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
-		local event_data = FrameTable.alloc_table()
-		event_data.reviver = reviver
-		event_data.reviver_name = ScriptUnit.extension(reviver, "dialogue_system").context.player_profile
+		if ALIVE[reviver] then
+			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
+			local event_data = FrameTable.alloc_table()
+			event_data.reviver = reviver
+			event_data.reviver_name = ScriptUnit.extension(reviver, "dialogue_system").context.player_profile
 
-		dialogue_input:trigger_dialogue_event("revive_completed", event_data)
+			dialogue_input:trigger_dialogue_event("revive_completed", event_data)
+
+			local reviver_buff_extension = ScriptUnit.extension(reviver, "buff_system")
+
+			reviver_buff_extension:trigger_procs("on_revived_ally", unit)
+		end
 
 		local revived_buff_extension = ScriptUnit.extension(unit, "buff_system")
 
 		revived_buff_extension:trigger_procs("on_revived", reviver)
-
-		local reviver_buff_extension = ScriptUnit.extension(reviver, "buff_system")
-
-		reviver_buff_extension:trigger_procs("on_revived_ally", unit)
 	end
 end
 

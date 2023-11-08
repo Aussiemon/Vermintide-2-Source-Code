@@ -49,6 +49,12 @@ PlayerProjectileHuskExtension.init = function (self, extension_init_context, uni
 		end
 	end
 
+	if not self._skin_projectile_units_template then
+		local unit_name = Unit.get_data(unit, "unit_name")
+		local projectile_units_template = ProjectileUnitsFromUnitName[unit_name]
+		self._skin_projectile_units_template = projectile_units_template
+	end
+
 	local item_data = ItemMasterList[item_name]
 	local item_template = BackendUtils.get_item_template(item_data)
 	local item_template_name = extension_init_data.item_template_name
@@ -338,7 +344,7 @@ PlayerProjectileHuskExtension.hit_enemy = function (self, impact_data, hit_unit,
 
 	local grenade = impact_data.grenade
 
-	if grenade or aoe_data and self._max_mass <= self._amount_of_mass_hit then
+	if aoe_data and (grenade or self._max_mass <= self._amount_of_mass_hit) then
 		self:do_aoe(aoe_data, hit_position)
 
 		if grenade then

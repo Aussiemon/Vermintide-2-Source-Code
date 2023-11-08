@@ -3598,6 +3598,12 @@ DeusPowerUpExclusionList = DeusPowerUpExclusionList or {
 		talent_3_3 = true,
 		deus_timed_block_free_shot = true,
 		talent_4_3 = true
+	},
+	bw_necromancer = {
+		talent_3_1 = true,
+		talent_3_3 = true,
+		talent_3_2 = true,
+		deus_ammo_pickup_heal = true
 	}
 }
 DeusPowerUpAvailabilityTypes = DeusPowerUpAvailabilityTypes or {

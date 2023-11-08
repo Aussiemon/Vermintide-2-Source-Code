@@ -588,7 +588,7 @@ local function buff_param_damage_source(input)
 end
 
 local function buff_param_pack_unit(input, ctx)
-	return ctx.network_manager:unit_game_object_id(input)
+	return ctx.network_manager:unit_game_object_id(input) or NetworkConstants.invalid_game_object_id
 end
 
 local function buff_param_unpack_unit(input, ctx)
@@ -851,7 +851,12 @@ BuffSystem.rpc_add_buff_synced = function (self, channel_id, target_unit_id, tem
 
 	if buff_extension then
 		local template_name = NetworkLookup.buff_templates[template_name_id]
-		local id = buff_extension:add_buff(template_name)
+		local id, num_sub_buffs = buff_extension:add_buff(template_name)
+
+		if num_sub_buffs <= 0 then
+			remote_sync_id = invalid_buff_sync_id
+		end
+
 		local local_sync_id = remote_sync_id ~= invalid_buff_sync_id and buff_extension:generate_sync_id() or invalid_buff_sync_id
 		local server_sync_id = self.is_server and local_sync_id or remote_sync_id
 		local sync_type = BuffSyncTypeLookup[sync_type_id]

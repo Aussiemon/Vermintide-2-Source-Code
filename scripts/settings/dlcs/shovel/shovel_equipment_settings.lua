@@ -116,7 +116,8 @@ settings.inventory_package_list = {
 	"units/weapons/player/wpn_bw_necromancer_ability/wpn_bw_necromancer_ability_3p",
 	"units/weapons/player/wpn_necromancy_skull/wpn_necromancy_skull",
 	"units/weapons/player/wpn_necromancy_skull/wpn_necromancy_skull_3p",
-	"units/weapons/player/wpn_necromancy_skull/wpn_necromancy_skull_3ps"
+	"units/weapons/player/wpn_necromancy_skull/wpn_necromancy_skull_3ps",
+	"units/beings/player/bright_wizard_necromancer/talents/trapped_soul_skull"
 }
 settings.projectile_units = {
 	necrostaff_skull = {

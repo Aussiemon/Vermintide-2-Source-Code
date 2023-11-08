@@ -157,6 +157,12 @@ SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 		local backend_id = item_data.backend_id
 		local buffs = self:_get_property_and_trait_buffs(backend_id)
 
+		if item_template.server_buffs then
+			for buff_name, buff_data in pairs(item_template.server_buffs) do
+				buffs.server[buff_name] = buff_data
+			end
+		end
+
 		self:apply_buffs(buffs, "wield", item_data.name, default_wielded_slot)
 
 		local equipment = self._equipment
@@ -278,6 +284,14 @@ SimpleInventoryExtension._send_rpc_add_equipment_buffs = function (self, unit_go
 	end
 
 	local property_and_trait_buffs = self:_get_property_and_trait_buffs(backend_id)
+	local item_data = BackendUtils.get_item_from_masterlist(backend_id)
+	local item_template = BackendUtils.get_item_template(item_data)
+
+	if item_template.server_buffs then
+		for buff_name, buff_data in pairs(item_template.server_buffs) do
+			property_and_trait_buffs.server[buff_name] = buff_data
+		end
+	end
 
 	send_equipment_buffs("rpc_add_equipment_buffs", property_and_trait_buffs)
 
@@ -475,29 +489,44 @@ SimpleInventoryExtension.can_wield = function (self)
 	return can_wield
 end
 
-SimpleInventoryExtension.wield_previous_weapon = function (self)
-	local slot_name = self._previously_wielded_weapon_slot
-
-	self:wield(slot_name)
-end
-
 SimpleInventoryExtension.wield_previous_slot = function (self)
 	local slot_name = self._previously_wielded_slot
+	local success = self:wield(slot_name)
 
-	self:wield(slot_name)
+	if not success then
+		return self:wield_previous_non_level_slot()
+	end
+
+	return true
 end
 
 SimpleInventoryExtension.wield_previous_non_level_slot = function (self)
 	local slot_name = self._previously_wielded_non_level_slot
+	local success = self:wield(slot_name)
 
-	self:wield(slot_name)
+	if not success then
+		return self:wield_previous_weapon()
+	end
+
+	return true
+end
+
+SimpleInventoryExtension.wield_previous_weapon = function (self)
+	local slot_name = self._previously_wielded_weapon_slot
+	local success = self:wield(slot_name)
+
+	if not success then
+		return self:rewield_wielded_slot()
+	end
+
+	return true
 end
 
 SimpleInventoryExtension.rewield_wielded_slot = function (self)
 	local equipment = self._equipment
 	local wielded_slot = equipment.wielded_slot
 
-	self:wield(wielded_slot)
+	return self:wield(wielded_slot)
 end
 
 SimpleInventoryExtension.wield = function (self, slot_name)
@@ -505,7 +534,7 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 	local slot_data = equipment.slots[slot_name]
 
 	if slot_data == nil then
-		return
+		return false
 	end
 
 	if equipment.wielded_slot ~= slot_name then
@@ -548,6 +577,12 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 	if item_template.buffs then
 		for buff_name, buff_data in pairs(item_template.buffs) do
 			buffs.client[buff_name] = buff_data
+		end
+	end
+
+	if item_template.server_buffs then
+		for buff_name, buff_data in pairs(item_template.server_buffs) do
+			buffs.server[buff_name] = buff_data
 		end
 	end
 
@@ -600,6 +635,8 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 	if right_weapon then
 		right_weapon:on_wield("right")
 	end
+
+	return true
 end
 
 SimpleInventoryExtension._despawn_attached_units = function (self)
@@ -951,6 +988,28 @@ end
 
 SimpleInventoryExtension.hot_join_sync = function (self, sender)
 	GearUtils.hot_join_sync(sender, self._unit, self._equipment, self._additional_items)
+end
+
+SimpleInventoryExtension.destroy_item_by_name = function (self, slot_name, item_name, allow_destroy_weapon, try_requip_from_storage)
+	local slot_data = self:get_slot_data(slot_name)
+
+	if slot_data and slot_data.item_data.name == item_name then
+		self:destroy_slot(slot_name, allow_destroy_weapon, try_requip_from_storage)
+	else
+		local additional_items = self:get_additional_items(slot_name)
+
+		if additional_items then
+			for i = #additional_items, 1, -1 do
+				local item_data = additional_items[i]
+
+				if item_data.name == item_name then
+					self:remove_additional_item(slot_name, item_data)
+
+					break
+				end
+			end
+		end
+	end
 end
 
 SimpleInventoryExtension.destroy_slot = function (self, slot_name, allow_destroy_weapon, try_requip_from_storage)
@@ -1572,25 +1631,30 @@ SimpleInventoryExtension.check_and_drop_pickups = function (self, drop_reason, o
 					drop_pickup(unit, pickup_data, position, random_direction)
 
 					i = i + 1
-					local additional_items = self:get_additional_items(slot_name)
-
-					if additional_items then
-						for additional_item_idx = 1, #additional_items do
-							local additional_item_data = additional_items[additional_item_idx]
-							local additional_item_template = BackendUtils.get_item_template(additional_item_data)
-							local additional_pickup_data = additional_item_template.pickup_data
-
-							if additional_pickup_data then
-								local position, random_direction = get_pickup_drop_pos_dir(drop_position, override_dir, i)
-
-								drop_pickup(unit, additional_pickup_data, position, random_direction)
-
-								i = i + 1
-							end
-						end
-					end
 				elseif slot_name == "slot_level_event" then
 					self:drop_level_event_item(slot_data)
+				end
+
+				local additional_items = self:get_additional_items(slot_name)
+
+				if additional_items then
+					for additional_item_idx = #additional_items, 1, -1 do
+						local additional_item_data = additional_items[additional_item_idx]
+						local additional_item_template = BackendUtils.get_item_template(additional_item_data)
+						local additional_pickup_data = additional_item_template.pickup_data
+
+						if additional_pickup_data then
+							local position, random_direction = get_pickup_drop_pos_dir(drop_position, override_dir, i)
+
+							drop_pickup(unit, additional_pickup_data, position, random_direction)
+
+							i = i + 1
+						end
+
+						local skip_resync = additional_item_idx > 1
+
+						self:remove_additional_item(slot_name, additional_item_data, skip_resync)
+					end
 				end
 
 				self:destroy_slot(slot_name)

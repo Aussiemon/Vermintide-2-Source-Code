@@ -200,6 +200,7 @@ Projectiles.bw_necromancy_staff = {
 	trajectory_template_name = "throw_trajectory",
 	muzzle_name = "fx_01",
 	radius = 0.15,
+	friendly_fire_grace_period = 0.05,
 	gravity_settings = "bounty_hunter_shot",
 	projectile_unit_template_name = "player_projectile_unit",
 	projectile_units_template = "necromancer_curse_spirit"

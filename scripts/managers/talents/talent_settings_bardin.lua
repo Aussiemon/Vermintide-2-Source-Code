@@ -1056,14 +1056,16 @@ TalentBuffTemplates.dwarf_ranger = {
 				icon = "bardin_ranger_activated_ability",
 				name = "bardin_ranger_activated_ability",
 				buff_area_buff = "bardin_ranger_activated_ability_buff",
-				area_unit_name = "units/hub_elements/empty",
+				area_radius = 8,
 				enter_area_func = "enter_buff_area",
 				apply_buff_func = "play_sound_synced",
 				buff_self = true,
-				area_radius = 8,
+				area_unit_name = "units/hub_elements/empty",
+				shared_area = true,
 				buff_area = true,
 				sound_to_play = "Play_career_ability_bardin_ranger_enter",
-				exit_area_func = "exit_buff_area"
+				exit_area_func = "exit_buff_area",
+				buff_sync_type = BuffSyncType.LocalAndServer
 			}
 		}
 	},
@@ -1211,14 +1213,13 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_smoke_attack = {
 		buffs = {
 			{
-				icon = "bardin_ranger_activated_ability",
-				name = "bardin_ranger_activated_ability",
-				smoke_buff = "bardin_ranger_smoke_attack_buff",
-				update_func = "bardin_ranger_smoke_buff",
+				area_radius = 8,
+				name = "bardin_ranger_activated_ability_attack",
+				buff_area_buff = "bardin_ranger_smoke_attack_buff",
 				enter_area_func = "enter_buff_area",
-				buff_area_buff = "bardin_ranger_activated_ability_buff",
 				buff_self = true,
-				area_radius = 7,
+				shared_area = true,
+				buff_allies = true,
 				buff_area = true,
 				area_unit_name = "units/hub_elements/empty",
 				exit_area_func = "exit_buff_area",
@@ -1229,24 +1230,22 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_smoke_attack_buff = {
 		buffs = {
 			{
-				icon = "bardin_ranger_activated_ability_duration",
 				refresh_durations = true,
-				stat_buff = "attack_speed",
-				max_stacks = 1,
-				duration = 3
+				icon = "bardin_ranger_activated_ability_duration",
+				stat_buff = "attack_speed"
 			}
 		}
 	},
 	bardin_ranger_smoke_heal = {
 		buffs = {
 			{
-				update_func = "bardin_ranger_smoke_buff",
-				name = "bardin_ranger_activated_ability",
-				smoke_buff = "bardin_ranger_smoke_heal_buff",
+				area_radius = 8,
+				name = "bardin_ranger_activated_ability_heal",
+				buff_area_buff = "bardin_ranger_smoke_heal_buff",
 				enter_area_func = "enter_buff_area",
-				buff_area_buff = "bardin_ranger_activated_ability_buff",
 				buff_self = true,
-				area_radius = 7,
+				shared_area = true,
+				buff_allies = true,
 				buff_area = true,
 				area_unit_name = "units/hub_elements/empty",
 				exit_area_func = "exit_buff_area",
@@ -1257,43 +1256,28 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_smoke_heal_buff = {
 		buffs = {
 			{
-				max_stacks = 1,
-				refresh_durations = true,
 				update_func = "bardin_ranger_heal_smoke",
-				duration = 3
+				refresh_durations = true
 			}
 		}
 	},
 	bardin_ranger_activated_ability_stealth_outside_of_smoke = {
 		buffs = {
 			{
-				exit_area_func = "exit_buff_area",
+				buff_to_add = "bardin_ranger_activated_ability_buff",
 				name = "bardin_ranger_activated_ability",
-				buff_area_buff = "bardin_ranger_activated_ability_buff",
-				enter_area_func = "enter_buff_area",
-				remove_buff_func = "remove_buff_local",
-				buff_self = true,
-				area_radius = 7,
-				buff_to_remove = "bardin_ranger_activated_ability_buff",
-				buff_area = true,
-				area_unit_name = "units/hub_elements/empty",
 				icon = "bardin_ranger_activated_ability",
-				unlimited = true
-			}
-		}
-	},
-	bardin_ranger_ability_free_grenade_remove = {
-		buffs = {
-			{
-				event = "on_grenade_use",
-				buff_to_remove = "bardin_ranger_ability_free_grenade_buff",
-				buff_func = "remove_non_stacking_buff"
+				max_stacks = 1,
+				refresh_durations = true,
+				apply_buff_func = "add_buff_local"
 			}
 		}
 	},
 	bardin_ranger_ability_free_grenade_buff = {
 		buffs = {
 			{
+				event = "on_grenade_use",
+				remove_on_proc = true,
 				max_stacks = 1,
 				icon = "bardin_ranger_ability_free_grenade",
 				perks = {
@@ -2212,9 +2196,7 @@ Talents.dwarf_ranger = {
 		num_ranks = 1,
 		icon = "bardin_ranger_ability_free_grenade",
 		description_values = {},
-		buffs = {
-			"bardin_ranger_ability_free_grenade_remove"
-		}
+		buffs = {}
 	},
 	{
 		description = "tank_unbalance_desc",

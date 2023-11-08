@@ -189,13 +189,14 @@ TrueFlightTemplates.necromancer_trapped_soul = {
 	retarget_broadphase_offset = 0,
 	dot_threshold = 0.9999,
 	speed_multiplier = 6.5,
-	broadphase_radius = 7.5,
+	target_node = "c_neck",
 	target_players = false,
 	valid_target_dot = 0.99,
 	time_between_raycasts = 0.1,
+	broadphase_radius = 7.5,
 	max_on_target_time = math.huge,
 	lerp_modifier_func = function (distance, height, t)
-		return 0.5
+		return 0.75
 	end,
 	init_func = function (unit, world, seed, custom_data)
 		custom_data.seed = seed
@@ -210,10 +211,16 @@ TrueFlightTemplates.necromancer_trapped_soul = {
 	update_unit_position = function (unit, position, rotation, custom_data, locomotion_ext)
 		local target_vector = Vector3Box.unbox(locomotion_ext.target_vector_boxed)
 		local time_lived = locomotion_ext.t - locomotion_ext.spawn_time
+		local current_wobble_scale = custom_data.lerped_wobble_scale or 1
+		local dist_from_target = ALIVE[locomotion_ext.target_unit] and Vector3.distance(POSITION_LOOKUP[locomotion_ext.target_unit], position) or 0
+		local wanted_wobble_scale = math.remap(1, 5, 0, 1, math.clamp(dist_from_target, 1, 5))
+		local dt = locomotion_ext.dt
+		local dist_from_enemy_scale = math.clamp01(current_wobble_scale + dt * math.sign(wanted_wobble_scale - current_wobble_scale))
+		custom_data.lerped_wobble_scale = dist_from_enemy_scale
 		local projectile_speed_scaler = locomotion_ext.speed
 		local amount_t = math.easeCubic(math.clamp(time_lived * custom_data.wobble_stabiliztion_speed * projectile_speed_scaler, 0, 1))
 		local transition_scale = math.clamp(amount_t * 100, 0, 1)
-		local amount_mult = math.lerp(custom_data.wobble_max, custom_data.wobble_min, amount_t) * transition_scale
+		local amount_mult = math.lerp(custom_data.wobble_max, custom_data.wobble_min, amount_t) * transition_scale * dist_from_enemy_scale
 		local vertical_wobble_amount = amount_mult * custom_data.wobble_vertical_mult
 		local horizontal_wobble_amount = amount_mult * custom_data.wobble_horizontal_mult
 		local wobble_speed = custom_data.wobble_speed * custom_data.spin_dir

@@ -1716,73 +1716,69 @@ OptionsView._get_current_render_setting = function (self, setting_name)
 end
 
 OptionsView._set_setting_override = function (self, content, style, setting_name, forced_value)
-	local current_selection = content.current_selection
 	local options_values = content.options_values
 	local forced_index = table.find(options_values, forced_value)
 
 	fassert(forced_index, "Could not find the forced value %q for setting: %s", forced_value, setting_name)
 
-	if not content.overriden_setting then
-		local wanted_value = nil
+	if self.overriden_settings[setting_name] == nil then
+		local current_index = content.current_selection
+		self.overriden_settings[setting_name] = options_values[current_index]
 
-		if forced_index ~= current_selection then
-			wanted_value = options_values[current_selection]
-			self.overriden_settings[setting_name] = wanted_value
+		if forced_index ~= current_index then
 			content.current_selection = forced_index
+			local called_from_override = true
 
-			content:callback(style, nil, true)
-		else
-			wanted_value = self.overriden_settings[setting_name]
+			content:callback(style, nil, called_from_override)
 		end
+	end
 
-		if wanted_value then
-			local wanted_index = table.find(options_values, wanted_value)
+	local wanted_value = self.overriden_settings[setting_name]
+	local wanted_index = table.find(options_values, wanted_value)
 
-			fassert(wanted_index, "Could not find the wanted value %q for setting: %s", wanted_value, setting_name)
+	fassert(wanted_index, "Could not find the wanted value %q for setting: %s", wanted_value, setting_name)
 
-			content.overriden_setting = content.options_texts[wanted_index]
-		end
+	if forced_index ~= wanted_index then
+		content.overriden_setting = content.options_texts[wanted_index]
 	end
 end
 
 OptionsView._restore_setting_override = function (self, content, style, setting_name)
 	local wanted_value = self.overriden_settings[setting_name]
 
-	if not wanted_value then
+	if wanted_value == nil then
 		return
 	end
 
 	local wanted_index = table.find(content.options_values, wanted_value)
 
-	if not wanted_index then
-		wanted_index = content.default_value
+	if wanted_index then
+		content.current_selection = wanted_index
+		local called_from_override = true
 
-		printf("[OptionsView] Could not find the wanted value %q for setting %q. Using default value %q instead.", wanted_value, setting_name, content.options_values[wanted_index])
+		content:callback(style, nil, called_from_override)
+	else
+		printf("[OptionsView] Could not find the wanted value %q for setting %q. Ignored.", wanted_value, setting_name)
 	end
 
 	content.overriden_setting = nil
 	content.overriden_reason = nil
 	self.overriden_settings[setting_name] = nil
-
-	if wanted_index ~= content.current_selection then
-		content.current_selection = wanted_index
-
-		content:callback(style, nil, true)
-	end
 end
 
 OptionsView._clear_setting_override = function (self, content, style, setting_name)
-	if content.overriden_setting then
-		content.overriden_setting = nil
-		self.overriden_settings[setting_name] = nil
-	end
-
+	content.overriden_setting = nil
 	content.overriden_reason = nil
+	self.overriden_settings[setting_name] = nil
 end
 
-OptionsView._set_override_reason = function (self, content, reason)
+OptionsView._set_override_reason = function (self, content, reason, skip_setting_text)
 	if not content.overriden_reason then
-		content.overriden_reason = Localize(content.text) .. "\n" .. Localize("tooltip_overriden_by_setting") .. "\n" .. Localize(reason)
+		if skip_setting_text then
+			content.overriden_reason = Localize(content.text) .. "\n" .. Localize(reason)
+		else
+			content.overriden_reason = Localize(content.text) .. "\n" .. Localize("tooltip_overriden_by_setting") .. "\n" .. Localize(reason)
+		end
 	end
 end
 
@@ -5304,6 +5300,7 @@ OptionsView.cb_fsr2_enabled = function (self, content, style, called_from_graphi
 	if value then
 		self.changed_render_settings.upscaling_enabled = true
 		self.changed_render_settings.upscaling_mode = "fsr2"
+		self.changed_render_settings.upscaling_quality = "quality"
 	else
 		self.changed_render_settings.upscaling_enabled = false
 		self.changed_render_settings.upscaling_mode = "none"
@@ -5312,7 +5309,12 @@ OptionsView.cb_fsr2_enabled = function (self, content, style, called_from_graphi
 end
 
 OptionsView.cb_fsr2_enabled_condition = function (self, content, style)
-	if self:_get_current_render_setting("fsr_enabled") then
+	if not Application.render_caps("d3d12") then
+		self:_set_setting_override(content, style, "fsr2_enabled", false)
+		self:_set_override_reason(content, "backend_err_playfab_unsupported_version", true)
+
+		content.disabled = true
+	elseif self:_get_current_render_setting("fsr2_enabled") then
 		self:_set_setting_override(content, style, "fsr2_enabled", false)
 		self:_set_override_reason(content, "settings_view_header_fidelityfx_super_resolution")
 
@@ -5355,19 +5357,35 @@ OptionsView.cb_fsr2_quality_setup = function (self)
 			text = Localize("menu_settings_ultra_performance")
 		}
 	}
-	local selected_option = 1
+	local default_option = FSR2_QUALITY_LOOKUP.quality
+	local selected_option = default_option
 
-	if Application.user_setting("render_settings", "upscaling_enabled") and not FSR2_QUALITY_LOOKUP[Application.user_setting("render_settings", "upscaling_quality")] then
-		selected_option = 1
+	if self:_get_current_render_setting("upscaling_mode") == "fsr2" then
+		local upscaling_quality = self:_get_current_render_setting("upscaling_quality")
+
+		if not FSR2_QUALITY_LOOKUP[upscaling_quality] then
+			selected_option = selected_option
+		end
+	else
+		local upscaling_quality = self.overriden_settings.fsr2_quality
+
+		if not FSR2_QUALITY_LOOKUP[upscaling_quality] then
+			selected_option = selected_option
+		end
 	end
-
-	local default_option = FSR2_QUALITY_LOOKUP[DefaultUserSettings.get("render_settings", "upscaling_quality")]
 
 	return selected_option, options, "menu_settings_fsr2_quality", default_option
 end
 
 OptionsView.cb_fsr2_quality_saved_value = function (self, widget)
-	local upscaling_quality = self:_get_current_render_setting("upscaling_quality")
+	local upscaling_quality = nil
+
+	if self:_get_current_render_setting("upscaling_mode") == "fsr2" then
+		upscaling_quality = self:_get_current_render_setting("upscaling_quality")
+	else
+		upscaling_quality = self.overriden_settings.fsr2_quality
+	end
+
 	slot3 = widget.content
 
 	if not FSR2_QUALITY_LOOKUP[upscaling_quality] then
@@ -5379,7 +5397,10 @@ end
 
 OptionsView.cb_fsr2_quality = function (self, content, style, called_from_graphics_quality)
 	local value = content.options_values[content.current_selection]
-	self.changed_render_settings.upscaling_quality = value
+
+	if self:_get_current_user_setting("fsr2_enabled") then
+		self.changed_render_settings.upscaling_quality = value
+	end
 end
 
 OptionsView.cb_fsr2_quality_condition = function (self, content, style)
@@ -5508,7 +5529,12 @@ OptionsView.cb_dlss_frame_generation = function (self, content, style, called_fr
 end
 
 OptionsView.cb_dlss_frame_generation_condition = function (self, content, style)
-	if not self:_get_current_user_setting("dlss_enabled") then
+	if not Application.render_caps("dlss_g_supported") then
+		self:_set_setting_override(content, style, "dlss_frame_generation", false)
+		self:_set_override_reason(content, "backend_err_playfab_unsupported_version", true)
+
+		content.disabled = true
+	elseif not self:_get_current_user_setting("dlss_enabled") then
 		self:_set_setting_override(content, style, "dlss_frame_generation", false)
 		self:_set_override_reason(content, "menu_settings_dlss_enabled")
 
@@ -5561,19 +5587,31 @@ OptionsView.cb_dlss_super_resolution_setup = function (self)
 			text = Localize("menu_settings_dlaa")
 		}
 	}
-	local selected_option = 1
+	local default_option = DLSS_SR_QUALITY_LOOKUP.none
+	local upscaling_quality = nil
 
-	if Application.user_setting("render_settings", "upscaling_enabled") and not DLSS_SR_QUALITY_LOOKUP[Application.user_setting("render_settings", "upscaling_quality")] then
-		selected_option = 1
+	if self:_get_current_user_setting("dlss_enabled") then
+		upscaling_quality = self:_get_current_render_setting("upscaling_quality")
+	else
+		upscaling_quality = "none"
 	end
 
-	local default_option = DLSS_SR_QUALITY_LOOKUP[DefaultUserSettings.get("render_settings", "upscaling_quality")]
+	if not DLSS_SR_QUALITY_LOOKUP[upscaling_quality] then
+		local selected_option = selected_option
+	end
 
 	return selected_option, options, "menu_settings_dlss_super_resolution", default_option
 end
 
 OptionsView.cb_dlss_super_resolution_saved_value = function (self, widget)
-	local upscaling_quality = self:_get_current_render_setting("upscaling_quality")
+	local upscaling_quality = nil
+
+	if self:_get_current_user_setting("dlss_enabled") then
+		upscaling_quality = self:_get_current_render_setting("upscaling_quality")
+	else
+		upscaling_quality = "none"
+	end
+
 	slot3 = widget.content
 
 	if not DLSS_SR_QUALITY_LOOKUP[upscaling_quality] then
@@ -5673,7 +5711,7 @@ end
 
 OptionsView.cb_reflex_low_latency_condition = function (self, content, style)
 	if self:_get_current_render_setting("dlss_g_enabled") then
-		if content.current_selection == 1 then
+		if content.current_selection == 1 or self.overriden_settings.reflex_low_latency == 1 then
 			self:_set_setting_override(content, style, "reflex_low_latency", 2)
 			self:_set_override_reason(content, "menu_settings_dlss_frame_generation")
 		end
@@ -6475,26 +6513,7 @@ OptionsView.cb_sharpen = function (self, content, style, called_from_graphics_qu
 end
 
 OptionsView.cb_sharpen_condition = function (self, content, style)
-	if self:_get_current_render_setting("fsr_enabled") then
-		self:_set_setting_override(content, style, "sharpen", false)
-		self:_set_override_reason(content, "settings_view_header_fidelityfx_super_resolution")
-
-		content.disabled = true
-	elseif self:_get_current_user_setting("fsr2_enabled") then
-		self:_set_setting_override(content, style, "sharpen", false)
-		self:_set_override_reason(content, "menu_settings_fsr2_enabled")
-
-		content.disabled = true
-	elseif self:_get_current_user_setting("dlss_enabled") then
-		self:_set_setting_override(content, style, "sharpen", false)
-		self:_set_override_reason(content, "menu_settings_dlss_enabled")
-
-		content.disabled = true
-	else
-		self:_restore_setting_override(content, style, "sharpen")
-
-		content.disabled = false
-	end
+	return
 end
 
 OptionsView.cb_lens_quality_setup = function (self)

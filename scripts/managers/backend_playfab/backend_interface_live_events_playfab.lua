@@ -95,3 +95,29 @@ BackendInterfaceLiveEventsPlayfab.get_weekly_events_game_mode_data = function (s
 		end
 	end
 end
+
+BackendInterfaceLiveEventsPlayfab.request_twitch_app_access_token = function (self, cb)
+	local request = {
+		FunctionName = "getTwitchAccessToken",
+		FunctionParameter = {
+			force = true
+		}
+	}
+	local success_callback = callback(self, "_request_twitch_app_access_token_cb", cb)
+	local request_queue = self._backend_mirror:request_queue()
+
+	request_queue:enqueue(request, success_callback, false)
+end
+
+BackendInterfaceLiveEventsPlayfab._request_twitch_app_access_token_cb = function (self, cb, result)
+	local function_result = result.FunctionResult
+	local access_token = function_result.access_token
+
+	if access_token then
+		self._backend_mirror:set_twitch_app_access_token(access_token)
+	end
+
+	if cb then
+		cb(access_token)
+	end
+end

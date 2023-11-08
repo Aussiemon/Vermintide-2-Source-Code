@@ -946,19 +946,22 @@ CharacterSelectionStateCharacter.on_exit = function (self, params)
 	self.parent:set_input_blocked(false)
 
 	local player = Managers.player:local_player()
-	local player_unit = player.player_unit
-	local career_extension = ALIVE[player_unit] and ScriptUnit.has_extension(player_unit, "career_system")
-	local profile_index = self._requested_profile_index or career_extension and career_extension:profile_index()
-	local career_index = self._requested_career_index or career_extension and career_extension:career_index()
-	local profile = profile_index and SPProfiles[profile_index]
-	local profile_name = profile and profile.display_name
 
-	if not DEDICATED_SERVER and profile_name == "bright_wizard" then
-		local careers = profile.careers
-		local career = careers[career_index]
-		local career_name = career.display_name
+	if player then
+		local player_unit = player.player_unit
+		local career_extension = ALIVE[player_unit] and ScriptUnit.has_extension(player_unit, "career_system")
+		local profile_index = self._requested_profile_index or career_extension and career_extension:profile_index()
+		local career_index = self._requested_career_index or career_extension and career_extension:career_index()
+		local profile = profile_index and SPProfiles[profile_index]
+		local profile_name = profile and profile.display_name
 
-		GlobalShaderFlags.set_global_shader_flag("NECROMANCER_CAREER_REMAP", career_name == "bw_necromancer")
+		if not DEDICATED_SERVER and profile_name == "bright_wizard" then
+			local careers = profile.careers
+			local career = careers[career_index]
+			local career_name = career.display_name
+
+			GlobalShaderFlags.set_global_shader_flag("NECROMANCER_CAREER_REMAP", career_name == "bw_necromancer")
+		end
 	end
 
 	print("[HeroViewState] Exit Substate CharacterSelectionStateCharacter")

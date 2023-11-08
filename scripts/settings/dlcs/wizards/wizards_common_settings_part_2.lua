@@ -44,14 +44,17 @@ settings.husk_lookup = {}
 settings.projectile_units = {
 	vfx_scripted_projectile_unit = {
 		dummy_linker_unit_name = "units/weapons/projectile/end_fight_tower/magic_missile_tower",
+		transient_package_loader_ignore = true,
 		projectile_unit_name = "units/weapons/projectile/end_fight_tower/magic_missile_tower"
 	},
 	sofia_vfx_scripted_projectile_unit = {
 		dummy_linker_unit_name = "units/weapons/projectile/end_fight_tower/sofia_magic_missile_tower",
+		transient_package_loader_ignore = true,
 		projectile_unit_name = "units/weapons/projectile/end_fight_tower/sofia_magic_missile_tower"
 	},
 	olesya_vfx_scripted_projectile_unit = {
 		dummy_linker_unit_name = "units/weapons/projectile/end_fight_tower/olesya_magic_missile_tower",
+		transient_package_loader_ignore = true,
 		projectile_unit_name = "units/weapons/projectile/end_fight_tower/olesya_magic_missile_tower"
 	}
 }

@@ -966,9 +966,9 @@ achievements.shovel_skeleton_balefire = {
 		template_data.count[controlled_owner] = (template_data.count[controlled_owner] or 0) + 1
 
 		if template_data.count[controlled_owner] <= SKELETON_BALEFIRE_TARGET then
-			template_data[player:stats_id()] = true
-
 			rpc_increment_stat(controlled_owner, "shovel_skeleton_balefire")
+		else
+			template_data[player:stats_id()] = true
 		end
 	end
 }

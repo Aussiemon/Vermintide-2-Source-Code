@@ -68,6 +68,7 @@ ActionChargedProjectile.client_owner_start_action = function (self, new_action, 
 		self._extra_grenades = self.owner_buff_extension:apply_buffs_to_value(0, "grenade_extra_shot")
 		self._grenade_thrown = false
 		self._free_grenade = false
+		self._rewield_grenade = false
 	end
 
 	self._is_grenade = is_grenade
@@ -134,26 +135,28 @@ ActionChargedProjectile._shoot = function (self, t)
 		local ammo_usage = self.current_action.ammo_usage
 
 		if not self._grenade_thrown then
+			self._grenade_thrown = true
 			local _, free_grenade_proc = self.owner_buff_extension:apply_buffs_to_value(0, "not_consume_grenade")
 			local free_grenade_perk = self.owner_buff_extension:has_buff_perk("free_grenade")
 			self._free_grenade = free_grenade_proc or free_grenade_perk
+
+			self.owner_buff_extension:trigger_procs("on_grenade_use")
+
+			self._rewield_grenade = self.owner_buff_extension:has_buff_perk("rewield_grenade_on_throw")
+
+			Managers.state.achievement:trigger_event("on_grenade_thrown", owner_unit, current_action)
 		end
 
 		if not self.extra_buff_shot then
 			if not self._free_grenade then
 				self.ammo_extension:use_ammo(ammo_usage)
-
-				swap_weapon_on_shot = "wield_previous_weapon"
-			else
-				swap_weapon_on_shot = "rewield_wielded_weapon"
 			end
-		end
 
-		if not self._grenade_thrown then
-			self.owner_buff_extension:trigger_procs("on_grenade_use")
-			Managers.state.achievement:trigger_event("on_grenade_thrown", owner_unit, current_action)
-
-			self._grenade_thrown = true
+			if self._rewield_grenade then
+				swap_weapon_on_shot = "rewield_wielded_weapon"
+			else
+				swap_weapon_on_shot = "wield_previous_weapon"
+			end
 		end
 	end
 

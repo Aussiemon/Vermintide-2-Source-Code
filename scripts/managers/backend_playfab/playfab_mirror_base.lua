@@ -2639,3 +2639,7 @@ end
 PlayFabMirrorBase.snippet_clear_inventory = function (self)
 	self:_snippet_clear_inventory()
 end
+
+PlayFabMirrorBase.set_twitch_app_access_token = function (self, access_token)
+	self._twitch_app_access_token = access_token
+end

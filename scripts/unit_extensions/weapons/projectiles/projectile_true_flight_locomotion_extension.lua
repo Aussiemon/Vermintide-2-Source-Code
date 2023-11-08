@@ -16,11 +16,7 @@ ProjectileTrueFlightLocomotionExtension.init = function (self, extension_init_co
 	local t = Managers.time:time("game")
 	self.t = t - (extension_init_data.fast_forward_time or 0)
 	self.target_unit = extension_init_data.target_unit
-
-	if self.target_unit then
-		self.target_node = template.initial_target_node or "c_head"
-	end
-
+	self.target_node = template.initial_target_node or "c_head"
 	self.unit = unit
 	self.world = world
 	self.gravity_settings = gravity_settings
@@ -95,11 +91,12 @@ end
 local function get_target_head_node_position(unit, node_name)
 	local blackboard = BLACKBOARDS[unit]
 	local breed = blackboard and blackboard.breed
+	local node = Unit.has_node(unit, node_name) and Unit.node(unit, node_name) or 0
 
 	if breed and breed.target_head_node then
-		return Unit.world_position(unit, Unit.node(unit, breed.target_head_node))
+		return Unit.world_position(unit, node)
 	else
-		return Unit.world_position(unit, Unit.node(unit, node_name))
+		return Unit.world_position(unit, node)
 	end
 end
 
@@ -473,7 +470,6 @@ ProjectileTrueFlightLocomotionExtension.find_new_target = function (self, positi
 		local time_between_raycasts = true_flight_template.time_between_raycasts
 		self.raycast_timer = t + time_between_raycasts
 		local target = self:_find_target_func(position)
-		self.target_node = true_flight_template.target_node or "c_spine"
 
 		return target
 	end
@@ -693,7 +689,9 @@ ProjectileTrueFlightLocomotionExtension.legitimate_target_keep_target = function
 end
 
 ProjectileTrueFlightLocomotionExtension.legitimate_player_target = function (self, unit, position)
-	local target_position = Unit.world_position(unit, Unit.node(unit, "c_spine"))
+	local node_name = self.target_node
+	local node = Unit.has_node(unit, node_name) and Unit.node(unit, node_name) or 0
+	local target_position = Unit.world_position(unit, node)
 	local current_direction = self.current_direction:unbox()
 	local direction_to_target = target_position - position
 

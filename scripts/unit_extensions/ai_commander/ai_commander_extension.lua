@@ -869,6 +869,9 @@ AICommanderExtension.cancel_current_command = function (self, controlled_unit, i
 	blackboard.override_detection_radius = nil
 	blackboard.fallback_rotation = nil
 	blackboard.commander_target = nil
+	blackboard.new_command_attack = nil
+	blackboard.charge_target = nil
+	blackboard.target_unit = nil
 end
 
 AICommanderExtension.command_attack = function (self, controlled_unit, target_unit)
@@ -1016,7 +1019,16 @@ AICommanderExtension.command_stand_ground_group = function (self, units, target_
 end
 
 AICommanderExtension._command_stand_ground_group = function (self, units, target_position, fallback_rotation)
+	table.array_remove_if(units, function (unit)
+		return not self._controlled_units[unit]
+	end)
+
 	local num_pets = #units
+
+	if num_pets <= 0 then
+		return
+	end
+
 	local positions = ActionCareerBwNecromancerCommandStandTargetingUtility.generate_positions(target_position, fallback_rotation, num_pets)
 	local num_pairs = math.min(num_pets, #positions)
 	local pet_positions = FrameTable.alloc_table()

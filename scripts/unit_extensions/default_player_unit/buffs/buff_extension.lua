@@ -4,6 +4,13 @@ dofile("scripts/settings/bpc")
 local buff_perk_functions = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_functions")
 local buff_perk_names = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 script_data.buff_debug = script_data.buff_debug or Development.parameter("buff_debug")
+
+local function debug_sync_print(...)
+	if script_data.debug_synced_buffs then
+		print(...)
+	end
+end
+
 BuffExtension = class(BuffExtension)
 buff_extension_function_params = buff_extension_function_params or Script.new_map(15)
 local _removed_buff = {
@@ -1199,7 +1206,7 @@ BuffExtension.trigger_procs = function (self, event, ...)
 		local buff = temp_weighted_procs[i].buff
 		local buff_func_name = buff.buff_func
 		local buff_func = ProcFunctions[buff_func_name]
-		local success = buff_func(owner, buff, params, world, ProcEventParams[event])
+		local success = not buff_func or buff_func(owner, buff, params, world, ProcEventParams[event])
 
 		if success and buff.template.remove_on_proc then
 			event_buffs_to_remove[#event_buffs_to_remove + 1] = buff

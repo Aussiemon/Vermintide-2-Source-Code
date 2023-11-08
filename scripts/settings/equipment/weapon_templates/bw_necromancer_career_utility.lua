@@ -5,44 +5,11 @@ local function _can_command(action_user)
 end
 
 local function _can_command_stand(action_user)
-	if not _can_command(action_user) then
-		return false
-	end
-
-	local commander_extension = ScriptUnit.extension(action_user, "ai_commander_system")
-	local num_valid_units = commander_extension:get_controlled_units_count()
-	local controlled_units = commander_extension:get_controlled_units()
-
-	for controlled_unit in pairs(controlled_units) do
-		local breed = Unit.get_data(controlled_unit, "breed")
-
-		if breed and breed.name == "pet_skeleton_armored" then
-			num_valid_units = num_valid_units - 1
-		end
-	end
-
-	return num_valid_units > 0
+	return _can_command(action_user)
 end
 
 local function _can_attack(action_user)
 	if not _can_command(action_user) then
-		return false
-	end
-
-	local has_commandable_pet = false
-	local commander_extension = ScriptUnit.extension(action_user, "ai_commander_system")
-
-	for controlled_unit in pairs(commander_extension:get_controlled_units()) do
-		local breed = Unit.get_data(controlled_unit, "breed")
-
-		if breed.name ~= "pet_skeleton_with_shield" then
-			has_commandable_pet = true
-
-			break
-		end
-	end
-
-	if not has_commandable_pet then
 		return false
 	end
 
@@ -152,6 +119,12 @@ local weapon_template = {
 					},
 					{
 						sub_action = "default",
+						start_time = 0.3,
+						action = "action_three",
+						input = "action_three"
+					},
+					{
+						sub_action = "default",
 						start_time = 0.5,
 						action = "action_two",
 						release_required = "action_two_hold",
@@ -216,6 +189,12 @@ local weapon_template = {
 					{
 						sub_action = "default",
 						start_time = 0.2,
+						action = "action_three",
+						input = "action_three"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.2,
 						action = "weapon_reload",
 						input = "weapon_reload"
 					}
@@ -236,6 +215,56 @@ local weapon_template = {
 				weapon_action_hand = "left",
 				total_time = 0,
 				allowed_chain_actions = {}
+			}
+		},
+		action_three = {
+			default = {
+				anim_event = "pet_control_target_command_return",
+				weapon_action_hand = "left",
+				anim_event_3p = "pet_control_target_command",
+				kind = "dummy",
+				total_time = 0.7,
+				allowed_chain_actions = {
+					{
+						sub_action = "default",
+						start_time = 0.2,
+						action = "action_wield",
+						input = "action_wield"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.2,
+						action = "action_one",
+						input = "action_one"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.2,
+						action = "action_two",
+						release_required = "action_two_hold",
+						input = "action_two"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.2,
+						action = "weapon_reload",
+						input = "weapon_reload"
+					}
+				},
+				enter_function = function (attacker_unit, input_extension)
+					local commander_extension = ScriptUnit.extension(attacker_unit, "ai_commander_system")
+					local controlled_units = commander_extension:get_controlled_units()
+
+					for pet_unit in pairs(controlled_units) do
+						if HEALTH_ALIVE[pet_unit] then
+							commander_extension:cancel_current_command(pet_unit)
+						end
+					end
+
+					input_extension:clear_input_buffer()
+
+					return input_extension:reset_release_input()
+				end
 			}
 		},
 		weapon_reload = {
@@ -264,6 +293,12 @@ local weapon_template = {
 						start_time = 0.9,
 						action = "action_one",
 						input = "action_one"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.9,
+						action = "action_three",
+						input = "action_three"
 					}
 				}
 			}

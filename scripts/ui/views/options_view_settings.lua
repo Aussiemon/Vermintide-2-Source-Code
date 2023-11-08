@@ -221,10 +221,7 @@ local video_settings_definition = {
 		tooltip_text = "tooltip_fsr2_enabled",
 		callback = "cb_fsr2_enabled",
 		condition = "cb_fsr2_enabled_condition",
-		widget_type = "stepper",
-		required_render_caps = {
-			d3d12 = true
-		}
+		widget_type = "stepper"
 	},
 	{
 		setup = "cb_fsr2_quality_setup",
@@ -233,10 +230,7 @@ local video_settings_definition = {
 		callback = "cb_fsr2_quality",
 		indent_level = 1,
 		condition = "cb_fsr2_quality_condition",
-		widget_type = "drop_down",
-		required_render_caps = {
-			d3d12 = true
-		}
+		widget_type = "drop_down"
 	},
 	{
 		setup = "cb_dlss_enabled_setup",
@@ -258,7 +252,7 @@ local video_settings_definition = {
 		condition = "cb_dlss_frame_generation_condition",
 		widget_type = "stepper",
 		required_render_caps = {
-			dlss_g_supported = true
+			dlss_supported = true
 		}
 	},
 	{

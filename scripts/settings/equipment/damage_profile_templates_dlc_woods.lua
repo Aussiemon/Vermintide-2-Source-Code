@@ -73,7 +73,7 @@ local damage_templates = {
 				attack = 0.1,
 				impact = 0.1
 			},
-			range_dropoff_settings = carbine_dropoff_ranges
+			range_modifier_settings = carbine_dropoff_ranges
 		}
 	},
 	spirit_storm = {
@@ -331,7 +331,7 @@ local damage_templates = {
 				attack = 0.8,
 				impact = 0.85
 			},
-			range_dropoff_settings = sniper_dropoff_ranges
+			range_modifier_settings = sniper_dropoff_ranges
 		}
 	},
 	thorn_wall_explosion = {

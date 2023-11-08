@@ -144,7 +144,7 @@ local damage_templates = {
 				attack = 0.3,
 				impact = 0.25
 			},
-			range_dropoff_settings = carbine_dropoff_ranges
+			range_modifier_settings = carbine_dropoff_ranges
 		}
 	},
 	we_deus_01_dot = {
@@ -384,7 +384,7 @@ local damage_templates = {
 				attack = 0.1,
 				impact = 0.1
 			},
-			range_dropoff_settings = {
+			range_modifier_settings = {
 				dropoff_start = 8,
 				dropoff_end = 15
 			}
@@ -575,7 +575,7 @@ local damage_templates = {
 				attack = 0.075,
 				impact = 0.075
 			},
-			range_dropoff_settings = machinegun_dropoff_ranges
+			range_modifier_settings = machinegun_dropoff_ranges
 		}
 	},
 	blood_storm = {
@@ -979,7 +979,7 @@ DamageProfileTemplates.dr_deus_01 = {
 			attack = 0.6,
 			impact = 0.3
 		},
-		range_dropoff_settings = sniper_dropoff_ranges
+		range_modifier_settings = sniper_dropoff_ranges
 	}
 }
 DamageProfileTemplates.dr_deus_01_explosion = {

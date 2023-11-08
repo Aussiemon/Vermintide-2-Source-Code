@@ -2458,7 +2458,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 						if content._last_selection ~= content.current_selection or content._last_overriden_setting ~= content.overriden_setting then
 							content._last_selection = content.current_selection
 							content._last_overriden_setting = content.overriden_setting
-							local option_text = Utf8.upper(content.options_texts[content.current_selection])
+							local option_text = Utf8.upper(content.options_texts[content.current_selection] or "n/a")
 							local overriden_setting = content.overriden_setting
 
 							if overriden_setting then
@@ -2998,7 +2998,7 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 						if ui_content._last_selection ~= ui_content.current_selection or ui_content._last_overriden_setting ~= ui_content.overriden_setting then
 							ui_content._last_selection = ui_content.current_selection
 							ui_content._last_overriden_setting = ui_content.overriden_setting
-							local option_text = Utf8.upper(ui_content.options_texts[ui_content.current_selection])
+							local option_text = Utf8.upper(ui_content.options_texts[ui_content.current_selection] or "n/a")
 							local overriden_setting = ui_content.overriden_setting
 
 							if overriden_setting then

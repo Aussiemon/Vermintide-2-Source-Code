@@ -193,9 +193,9 @@ CareerAbilityBWNecromancerCommand.command_attack_enemy = function (self, target_
 
 	for controlled_unit in pairs(units) do
 		local breed = Unit.get_data(controlled_unit, "breed")
-		local is_following = commander_extension:command_state(controlled_unit) == CommandStates.Following
+		local is_defending = commander_extension:command_state(controlled_unit) == CommandStates.StandingGround
 
-		if is_following or breed.name ~= "pet_skeleton_with_shield" then
+		if breed.name ~= "pet_skeleton_with_shield" or not is_defending then
 			local pos = POSITION_LOOKUP[controlled_unit]
 
 			if pos then

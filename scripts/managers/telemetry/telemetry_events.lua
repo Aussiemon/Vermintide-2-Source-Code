@@ -783,26 +783,11 @@ TelemetryEvents._store_product_purchased = function (self, product)
 	self._manager:register_event(event)
 end
 
-TelemetryEvents.store_calendar_rewards_claimed = function (self, claim)
-	local event = self:_create_event("store_calendar_rewards_claimed")
+TelemetryEvents.store_rewards_claimed = function (self, claim)
+	local event = self:_create_event("store_rewards_claimed")
+	claim.claimed_rewards = table.keys(claim.claimed_rewards)
 
-	event:set_data({
-		strike = claim.strike,
-		total_claims = claim.total_claims,
-		cooldown = claim.cooldown,
-		reward_index = claim.reward_index,
-		rewards = claim.rewards,
-		steam_items = claim.new_steam_items,
-		cosmetics = claim.new_cosmetics,
-		currency = claim.currency_added,
-		items = table.map(claim.items, function (item)
-			return {
-				name = item.data.name,
-				type = item.data.item_type,
-				rarity = item.data.rarity_key
-			}
-		end)
-	})
+	event:set_data(claim)
 	self._manager:register_event(event)
 end
 

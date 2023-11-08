@@ -69,13 +69,11 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 	self._world = world
 	self._time = 0
 	self._level_key = level_key
-	self._spawned = {}
-	self._spawned_lookup = {}
-	self._spawned_by_side = {}
-	self._spawned_lookup_by_side = {}
-	self._num_spawned_by_breed = {}
-	self._num_spawned_by_breed_during_event = {}
-	self._spawned_units_by_breed = {}
+	self._conflict_data_by_side = {}
+	self.num_spawned_by_breed = {}
+	self._num_spawned_ai = 0
+	self._all_spawned_units = Script.new_array(128)
+	self._all_spawned_units_lookup = {}
 	self.num_queued_spawn_by_breed = {}
 
 	TerrorEventUtils.set_seed(level_seed)
@@ -100,7 +98,6 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 	self._next_threat_update = self._next_pacing_update + 0.1
 	self._living_horde = 0
 	self._horde_ends_at = math.huge
-	self._num_spawned_during_event = {}
 	self._num_angry_bosses = 0
 	self._next_horde_time = math.huge
 	self._player_directions = {}
@@ -108,8 +105,6 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 	self.world_gui = World.create_world_gui(world, Matrix4x4.identity(), 1, 1, "immediate", "material", "materials/fonts/gw_fonts")
 	self._player_areas = {}
 
-	self:reset_spawned_by_breed()
-	self:reset_spawned_by_breed_during_event()
 	self:reset_queued_spawn_by_breed()
 	TerrorEventMixer.reset()
 
@@ -124,13 +119,44 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 
 	self:_setup_sides_to_update_recycler()
 
-	local side = Managers.state.side:get_side_from_name("heroes") or Managers.state.side:get_side(1)
-	self._hero_side = side
-	local player_units = side.PLAYER_UNITS
+	local enemy_side = Managers.state.side:get_side_from_name("dark_pact")
+
+	if enemy_side then
+		self.default_enemy_side_id = enemy_side.side_id
+
+		fassert(self.default_enemy_side_id, "default enemy side id is missing")
+	else
+		self.default_enemy_side_id = 2
+		enemy_side = Managers.state.side:get_side(2)
+	end
+
+	self._enemy_side = enemy_side
+	self._master_event_id = 0
+	local data_by_side = self._conflict_data_by_side
+	local sides = Managers.state.side:sides()
+
+	for side_id, _ in pairs(sides) do
+		data_by_side[side_id] = {
+			num_spawned_ai_event = 0,
+			num_spawned_ai = 0,
+			spawned = {},
+			spawned_lookup = {},
+			spawned_units_by_breed = {},
+			num_spawned_by_breed = {},
+			num_spawned_by_breed_during_event = {}
+		}
+
+		self:_reset_spawned_by_breed(side_id)
+		self:_reset_spawned_by_breed_during_event(side_id)
+	end
+
+	local hero_side = Managers.state.side:get_side_from_name("heroes") or Managers.state.side:get_side(1)
+	self._hero_side = hero_side
 	local ahead_unit, behind_unit = nil
 
-	if side then
-		local player_units = side.PLAYER_UNITS
+	if hero_side then
+		self.default_hero_side_id = hero_side.side_id
+		local player_units = hero_side.PLAYER_UNITS
 		ahead_unit = player_units[1]
 		behind_unit = player_units[1]
 	end
@@ -257,26 +283,34 @@ ConflictDirector.reset_queued_spawn_by_breed = function (self)
 	end
 end
 
-ConflictDirector.reset_spawned_by_breed = function (self)
+ConflictDirector._reset_spawned_by_breed = function (self, side_id)
+	local conflict_data = self._conflict_data_by_side[side_id or self.default_enemy_side_id]
+
 	for name, breed in pairs(Breeds) do
-		self._num_spawned_by_breed[name] = 0
-		self._spawned_units_by_breed[name] = {}
+		conflict_data.num_spawned_by_breed[name] = 0
+		conflict_data.spawned_units_by_breed[name] = {}
+		self.num_spawned_by_breed[name] = 0
 	end
 end
 
-ConflictDirector.reset_spawned_by_breed_during_event = function (self)
+ConflictDirector._reset_spawned_by_breed_during_event = function (self, side_id)
+	self._master_event_id = self._master_event_id + 1
+	local conflict_data = self._conflict_data_by_side[side_id or self.default_enemy_side_id]
+
 	for name, breed in pairs(Breeds) do
-		self._num_spawned_by_breed_during_event[name] = 0
+		conflict_data.num_spawned_by_breed_during_event[name] = 0
 	end
 
-	local num_spawned = self._num_spawned_during_event
-
-	for side_id, n in pairs(num_spawned) do
-		num_spawned[side_id] = 0
-	end
+	conflict_data.num_spawned_ai_event = 0
 end
 
 ConflictDirector.destroy = function (self)
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:unregister("event_delay_pacing", self)
+	end
+
 	self.navigation_group_manager:destroy(self._world)
 
 	if self.nav_tag_volume_handler then
@@ -633,18 +667,18 @@ end
 
 ConflictDirector.set_master_event_running = function (self, event_name)
 	if self.running_master_event ~= event_name then
-		self:reset_spawned_by_breed_during_event()
+		self:_reset_spawned_by_breed_during_event()
 	end
 
 	self.running_master_event = event_name
 end
 
 ConflictDirector.spawned_during_event = function (self, side_id)
-	return self._num_spawned_during_event[side_id]
+	return self._conflict_data_by_side[side_id].num_spawned_ai_event
 end
 
 ConflictDirector.enemies_spawned_during_event = function (self)
-	return self._num_spawned_during_event[self.default_enemy_side_id]
+	return self._conflict_data_by_side[self.default_enemy_side_id].num_spawned_ai_event
 end
 
 ConflictDirector.horde_size = function (self)
@@ -816,7 +850,8 @@ ConflictDirector.update_horde_pacing = function (self, t, dt)
 	end
 
 	if self._next_horde_time < t and not self.delay_horde then
-		local num_spawned = #self._spawned
+		local enemy_data = self._conflict_data_by_side[self.default_enemy_side_id]
+		local num_spawned = #enemy_data.spawned
 		local horde_failed = RecycleSettings.push_horde_if_num_alive_grunts_above < num_spawned
 
 		if horde_failed then
@@ -935,7 +970,7 @@ ConflictDirector.update_horde_pacing = function (self, t, dt)
 		}
 		local side_id = self.default_enemy_side_id
 
-		print("HORDE: Spawning hordes while " .. #self._spawned .. " other ai are spawned")
+		print("HORDE: Spawning hordes while " .. #enemy_data.spawned .. " other ai are spawned")
 		self.horde_spawner:horde(horde_type, extra_data, side_id, no_fallback)
 	end
 end
@@ -1290,14 +1325,16 @@ ConflictDirector.update_mini_patrol = function (self, t, dt)
 			self._next_mini_patrol_timer = t + settings.override_timer
 		end
 	elseif self._mini_patrol_state == "running" then
-		local num_spawned_by_breed = self._num_spawned_by_breed
+		local enemy_data = self._conflict_data_by_side[self.default_enemy_side_id]
+		local num_spawned_by_breed = enemy_data.num_spawned_by_breed
 
 		if num_spawned_by_breed.skaven_clan_rat < 3 and num_spawned_by_breed.skaven_storm_vermin <= 1 or timer < t then
 			self._mini_patrol_state = "waiting"
 			self._next_mini_patrol_timer = t + ConflictUtils.random_interval(settings.frequency)
 		end
 	elseif timer < t then
-		local mini_patrol_ok = pacing.total_intensity <= settings.only_spawn_below_intensity and settings.only_spawn_above_intensity <= pacing.total_intensity and RecycleSettings.max_grunts - #self._spawned >= 0 and not self.delay_mini_patrol
+		local enemy_data = self._conflict_data_by_side[self.default_enemy_side_id]
+		local mini_patrol_ok = pacing.total_intensity <= settings.only_spawn_below_intensity and settings.only_spawn_above_intensity <= pacing.total_intensity and RecycleSettings.max_grunts - #enemy_data.spawned >= 0 and not self.delay_mini_patrol
 
 		if mini_patrol_ok then
 			self._next_mini_patrol_timer = t + 5
@@ -1499,7 +1536,8 @@ ConflictDirector.update = function (self, dt, t)
 
 	if self.enemy_recycler and not script_data.ai_roaming_spawning_disabled and not conflict_settings.roaming.disabled then
 		local threat_population = pacing:threat_population()
-		local available_to_spawn = RecycleSettings.max_grunts - #self._spawned
+		local enemy_data = self._conflict_data_by_side[self.default_enemy_side_id]
+		local available_to_spawn = RecycleSettings.max_grunts - #enemy_data.spawned
 
 		if available_to_spawn <= 0 then
 			threat_population = 0
@@ -1549,7 +1587,9 @@ ConflictDirector.update = function (self, dt, t)
 	self:update_spawn_queue(t)
 
 	if self.enemy_recycler and not script_data.ai_far_off_despawn_disabled then
-		self.enemy_recycler:far_off_despawn(t, dt, recycler_positions, self._spawned)
+		local enemy_data = self._conflict_data_by_side[self.default_enemy_side_id]
+
+		self.enemy_recycler:far_off_despawn(t, dt, recycler_positions, enemy_data.spawned)
 	end
 
 	if self._spline_groups_to_spawn then
@@ -1916,26 +1956,33 @@ ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn
 
 	blackboard.spawn_animation = spawn_animation
 	blackboard.optional_spawn_data = optional_data
-	self._spawned[#self._spawned + 1] = ai_unit
-	self._spawned_lookup[ai_unit] = #self._spawned
 	local side_id = optional_data.side_id or Managers.state.side.side_by_unit[ai_unit].side_id
-	local spawned_by_side = self._spawned_by_side[side_id]
-	spawned_by_side[#spawned_by_side + 1] = ai_unit
-	local lookup_by_side = self._spawned_lookup_by_side[side_id]
-	lookup_by_side[ai_unit] = #spawned_by_side
-	self._num_spawned_by_breed[breed_name] = self._num_spawned_by_breed[breed_name] + 1
-	self._spawned_units_by_breed[breed_name][ai_unit] = ai_unit
+	local conflict_data = self._conflict_data_by_side[side_id]
+	local spawned = conflict_data.spawned
+	local spawned_lookup = conflict_data.spawned_lookup
+	local num_spawned_ai = conflict_data.num_spawned_ai + 1
+	conflict_data.num_spawned_ai = num_spawned_ai
+	spawned[num_spawned_ai] = ai_unit
+	spawned_lookup[ai_unit] = num_spawned_ai
+	self._num_spawned_ai = self._num_spawned_ai + 1
+	self._all_spawned_units[self._num_spawned_ai] = ai_unit
+	self._all_spawned_units_lookup[ai_unit] = self._num_spawned_ai
+	self.num_spawned_by_breed[breed_name] = self.num_spawned_by_breed[breed_name] + 1
+	local num_spawned_by_breed = conflict_data.num_spawned_by_breed
+	local num_spawned_by_breed_max = conflict_data.num_spawned_by_breed_max
+	local spawned_units_by_breed = conflict_data.spawned_units_by_breed
+	num_spawned_by_breed[breed_name] = num_spawned_by_breed[breed_name] + 1
+	spawned_units_by_breed[breed_name][ai_unit] = ai_unit
 
 	if not optional_data.ignore_event_counter and self.running_master_event then
-		blackboard.event_spawned = true
-		self._num_spawned_by_breed_during_event[breed_name] = self._num_spawned_by_breed_during_event[breed_name] + 1
-		local num_event_spawned = self._num_spawned_during_event
-		num_event_spawned[side_id] = num_event_spawned[side_id] + 1
-
-		Managers.state.event:trigger("ai_unit_spawned", ai_unit, breed_name, blackboard.confirmed_player_sighting, true)
+		blackboard.master_event_id = self._master_event_id
+		conflict_data.num_spawned_ai_event = conflict_data.num_spawned_ai_event + 1
+		conflict_data.num_spawned_by_breed_during_event[breed_name] = conflict_data.num_spawned_by_breed_during_event[breed_name] + 1
 	else
-		Managers.state.event:trigger("ai_unit_spawned", ai_unit, breed_name, blackboard.confirmed_player_sighting, false)
+		blackboard.master_event_id = nil
 	end
+
+	Managers.state.event:trigger("ai_unit_spawned", ai_unit, breed_name, side_id, blackboard.master_event_id)
 
 	if breed.spawn_stinger then
 		local wwise_world = Managers.world:wwise_world(self._world)
@@ -1963,34 +2010,45 @@ ConflictDirector.set_disabled = function (self, state)
 	self.disabled = state
 end
 
-ConflictDirector.last_spawned_unit = function (self)
-	return self._spawned[#self._spawned]
-end
-
 ConflictDirector.spawned_units_by_side = function (self, side_id)
-	return self._spawned_by_side[side_id]
+	return self._conflict_data_by_side[side_id].spawned
 end
 
 ConflictDirector.spawned_enemies = function (self)
-	return self._spawned_by_side[self.default_enemy_side_id]
+	return self._conflict_data_by_side[self.default_enemy_side_id].spawned
 end
 
-ConflictDirector.spawned_units = function (self)
-	return self._spawned
+ConflictDirector.count_units_by_breed = function (self, breed_name, side_id)
+	side_id = side_id or self.default_enemy_side_id
+
+	return self._conflict_data_by_side[side_id].num_spawned_by_breed[breed_name]
 end
 
-ConflictDirector.count_units_by_breed = function (self, breed_name)
-	return self._num_spawned_by_breed[breed_name]
+ConflictDirector.spawned_units_by_breed = function (self, breed_name, side_id)
+	side_id = side_id or self.default_enemy_side_id
+
+	return self._conflict_data_by_side[side_id].spawned_units_by_breed[breed_name]
 end
 
-ConflictDirector.spawned_units_by_breed = function (self, breed_name)
-	return self._spawned_units_by_breed[breed_name]
+ConflictDirector.spawned_units_by_breed_table = function (self, side_id)
+	side_id = side_id or self.default_enemy_side_id
+
+	return self._conflict_data_by_side[side_id].spawned_units_by_breed
 end
 
-ConflictDirector.count_units_by_breed_during_event = function (self, breed_name)
-	local amount = self._num_spawned_by_breed_during_event[breed_name] or 0
+ConflictDirector.count_units_by_breed_during_event = function (self, breed_name, side_id)
+	side_id = side_id or self.default_enemy_side_id
+	local amount = self._conflict_data_by_side[side_id].num_spawned_by_breed_during_event[breed_name] or 0
 
 	return amount
+end
+
+ConflictDirector.all_spawned_units = function (self)
+	return self._all_spawned_units, self._num_spawned_ai
+end
+
+ConflictDirector.total_num_ai_spawned = function (self)
+	return self._num_spawned_ai
 end
 
 ConflictDirector.add_unit_to_bosses = function (self, unit)
@@ -2010,12 +2068,18 @@ ConflictDirector.remove_unit_from_standards = function (self, unit)
 end
 
 ConflictDirector._remove_unit_from_spawned = function (self, unit, blackboard, do_not_trigger_despawn_event)
-	local spawned_lookup = self._spawned_lookup
+	local side = Managers.state.side.side_by_unit[unit]
+
+	if not side then
+		return
+	end
+
+	local side_id = side.side_id
+	local conflict_data = self._conflict_data_by_side[side_id]
+	local spawned_lookup = conflict_data.spawned_lookup
 	local index = spawned_lookup[unit]
 
 	if not index then
-		printf("ERROR: REMOVE UNIT FROM SPAWNED:(traceback) %q", tostring(unit))
-
 		return
 	end
 
@@ -2038,7 +2102,7 @@ ConflictDirector._remove_unit_from_spawned = function (self, unit, blackboard, d
 		end
 	end
 
-	local spawned = self._spawned
+	local spawned = conflict_data.spawned
 	local index_last = #spawned
 	local swap_unit = spawned[index_last]
 
@@ -2050,33 +2114,35 @@ ConflictDirector._remove_unit_from_spawned = function (self, unit, blackboard, d
 		spawned_lookup[swap_unit] = index
 	end
 
-	local side_id = Managers.state.side.side_by_unit[unit].side_id
-	local side_spawned = self._spawned_by_side[side_id]
-	local side_spawned_lookup = self._spawned_lookup_by_side[side_id]
-	local index_side = side_spawned_lookup[unit]
-	local last_index_side = #side_spawned
-	swap_unit = side_spawned[last_index_side]
+	local all_units = self._all_spawned_units
+	local all_units_lookup = self._all_spawned_units_lookup
+	local lookup_index = all_units_lookup[unit]
+	local num_all_units = self._num_spawned_ai
+	local swap_unit = all_units[num_all_units]
 
-	table.swap_delete(side_spawned, index_side)
+	table.swap_delete(all_units, lookup_index)
 
-	side_spawned_lookup[unit] = nil
+	all_units_lookup[unit] = nil
 
-	if index_side ~= last_index_side then
-		side_spawned_lookup[swap_unit] = index_side
+	if lookup_index ~= num_all_units then
+		all_units_lookup[swap_unit] = lookup_index
 	end
+
+	self._num_spawned_ai = self._num_spawned_ai - 1
 
 	if blackboard.optional_spawn_data and blackboard.optional_spawn_data.despawned_func then
 		blackboard.optional_spawn_data.despawned_func(unit, breed, blackboard.optional_spawn_data)
 	end
 
 	local breed_name = breed.name
-	self._num_spawned_by_breed[breed_name] = self._num_spawned_by_breed[breed_name] - 1
-	self._spawned_units_by_breed[breed_name][unit] = nil
+	self.num_spawned_by_breed[breed_name] = self.num_spawned_by_breed[breed_name] - 1
+	conflict_data.num_spawned_by_breed[breed_name] = conflict_data.num_spawned_by_breed[breed_name] - 1
+	conflict_data.spawned_units_by_breed[breed_name][unit] = nil
+	conflict_data.num_spawned_ai = conflict_data.num_spawned_ai - 1
 
-	if blackboard.event_spawned then
-		self._num_spawned_by_breed_during_event[breed_name] = self._num_spawned_by_breed_during_event[breed_name] - 1
-		local num_event_spawned = self._num_spawned_during_event
-		num_event_spawned[side_id] = num_event_spawned[side_id] - 1
+	if blackboard.master_event_id and blackboard.master_event_id == self._master_event_id then
+		conflict_data.num_spawned_by_breed_during_event[breed_name] = conflict_data.num_spawned_by_breed_during_event[breed_name] - 1
+		conflict_data.num_spawned_ai_event = conflict_data.num_spawned_ai_event - 1
 	end
 
 	if breed.special then
@@ -2092,7 +2158,7 @@ ConflictDirector._remove_unit_from_spawned = function (self, unit, blackboard, d
 	end
 
 	if not do_not_trigger_despawn_event then
-		Managers.state.event:trigger("ai_unit_despawned", unit, breed_name, blackboard.confirmed_player_sighting, blackboard.event_spawned)
+		Managers.state.event:trigger("ai_unit_despawned", unit, breed_name, side_id, blackboard.master_event_id)
 	end
 end
 
@@ -2149,8 +2215,9 @@ ConflictDirector.register_unit_killed = function (self, unit, blackboard, killer
 	self:_remove_unit_from_spawned(unit, blackboard)
 
 	local side = self._hero_side
+	local enemy_side = blackboard.side
 
-	if side then
+	if Managers.state.side:is_enemy_by_side(side, enemy_side) then
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
 		self.pacing:enemy_killed(unit, player_and_bot_units)
@@ -2228,20 +2295,24 @@ ConflictDirector.destroy_all_units = function (self, except_immune)
 	end
 
 	local BLACKBOARDS = BLACKBOARDS
-	local spawned = self._spawned
-	local num_spawned = #spawned
+	local data_by_side = self._conflict_data_by_side
 
-	for k = num_spawned, 1, -1 do
-		local unit = spawned[k]
+	for side_id, data in pairs(data_by_side) do
+		local spawned = data.spawned
+		local num_spawned = #spawned
 
-		if ALIVE[unit] then
-			local blackboard = BLACKBOARDS[unit]
-			local breed = blackboard.breed
+		for k = num_spawned, 1, -1 do
+			local unit = spawned[k]
 
-			if not except_immune or not breed.debug_despawn_immunity then
-				local reason = "destroy_all_units"
+			if ALIVE[unit] then
+				local blackboard = BLACKBOARDS[unit]
+				local breed = blackboard.breed
 
-				self:destroy_unit(unit, blackboard, reason)
+				if not except_immune or not breed.debug_despawn_immunity then
+					local reason = "destroy_all_units"
+
+					self:destroy_unit(unit, blackboard, reason)
+				end
 			end
 		end
 	end
@@ -2264,44 +2335,48 @@ ConflictDirector.destroy_close_units = function (self, position, except_unit, di
 		return
 	end
 
-	local spawned = self._spawned
-	local list_size = #spawned
-	local i = 1
-	local BLACKBOARDS = BLACKBOARDS
 	local num_destroyed_units = 0
+	local data_by_side = self._conflict_data_by_side
 
-	while i <= list_size do
-		local unit = spawned[i]
-		local remove_unit = nil
+	for side_id, data in pairs(data_by_side) do
+		local spawned = data.spawned
+		local list_size = #spawned
+		local i = 1
+		local BLACKBOARDS = BLACKBOARDS
 
-		if ALIVE[unit] and unit ~= except_unit then
-			local unit_pos = Unit.local_position(unit, 0)
-			remove_unit = distance_squared(position, unit_pos) < dist_squared
-		else
-			remove_unit = false
-		end
+		while i <= list_size do
+			local unit = spawned[i]
+			local remove_unit = nil
 
-		if remove_unit then
-			local blackboard = BLACKBOARDS[unit]
-			local breed = blackboard.breed
-			local reason = "destroy_close_units"
-			num_destroyed_units = num_destroyed_units + 1
-
-			if Managers.weave:get_active_weave() then
-				local death_data = {
-					breed = breed
-				}
-				local local_player_unit = Managers.player:local_player().player_unit
-				local weave_objective_system = Managers.state.entity:system("weave_objective_system")
-
-				weave_objective_system:on_ai_killed(unit, local_player_unit, death_data)
+			if ALIVE[unit] and unit ~= except_unit then
+				local unit_pos = Unit.local_position(unit, 0)
+				remove_unit = distance_squared(position, unit_pos) < dist_squared
+			else
+				remove_unit = false
 			end
 
-			self:destroy_unit(unit, blackboard, reason)
+			if remove_unit then
+				local blackboard = BLACKBOARDS[unit]
+				local breed = blackboard.breed
+				local reason = "destroy_close_units"
+				num_destroyed_units = num_destroyed_units + 1
 
-			list_size = list_size - 1
-		else
-			i = i + 1
+				if Managers.weave:get_active_weave() then
+					local death_data = {
+						breed = breed
+					}
+					local local_player_unit = Managers.player:local_player().player_unit
+					local weave_objective_system = Managers.state.entity:system("weave_objective_system")
+
+					weave_objective_system:on_ai_killed(unit, local_player_unit, death_data)
+				end
+
+				self:destroy_unit(unit, blackboard, reason)
+
+				list_size = list_size - 1
+			else
+				i = i + 1
+			end
 		end
 	end
 
@@ -3314,35 +3389,6 @@ end
 
 ConflictDirector.ai_ready = function (self, level_seed)
 	self.enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
-	local t = Managers.time:time("game")
-	local side = self._hero_side
-
-	if side then
-		self.default_hero_side_id = side.side_id
-	end
-
-	local enemy_side = Managers.state.side:get_side_from_name("dark_pact")
-
-	if enemy_side then
-		self.default_enemy_side_id = enemy_side.side_id
-
-		fassert(self.default_enemy_side_id, "default enemy side id is missing")
-	else
-		self.default_enemy_side_id = 2
-		enemy_side = Managers.state.side:get_side(2)
-	end
-
-	self._enemy_side = enemy_side
-	local spawned = self._spawned_by_side
-	local spawned_lookup = self._spawned_lookup_by_side
-	local num_event_spawned = self._num_spawned_during_event
-	local sides = Managers.state.side:sides()
-
-	for side_id, _ in pairs(sides) do
-		spawned[side_id] = {}
-		spawned_lookup[side_id] = {}
-		num_event_spawned[side_id] = 0
-	end
 
 	print("CurrentConflictSettings", self.current_conflict_settings)
 
@@ -3410,7 +3456,7 @@ ConflictDirector.ai_ready = function (self, level_seed)
 		forward_break_list = forward_break_nodes,
 		reversed_break_list = reversed_break_nodes
 	}
-	self.specials_pacing = SpecialsPacing:new(self._world, self.nav_world, self.nav_tag_volume_handler, enemy_side)
+	self.specials_pacing = SpecialsPacing:new(self._world, self.nav_world, self.nav_tag_volume_handler, self._enemy_side)
 	local start = {
 		self.level_analysis:get_start_and_finish()
 	}
@@ -3480,8 +3526,11 @@ ConflictDirector.intensity_decay_frozen = function (self, freeze_time)
 	return self._time < self.frozen_intensity_decay_until
 end
 
-ConflictDirector.boss_event_running = function (self)
-	return self._num_spawned_by_breed.skaven_rat_ogre > 0 or self._num_spawned_by_breed.skaven_stormfiend > 0 or self._num_spawned_by_breed.chaos_troll > 0 or self._num_spawned_by_breed.chaos_spawn > 0 or self._num_spawned_by_breed.beastmen_minotaur > 0
+ConflictDirector.boss_event_running = function (self, side_id)
+	side_id = side_id or self.default_enemy_side_id
+	local num_spawned_by_breed = self._conflict_data_by_side[side_id].num_spawned_by_breed
+
+	return num_spawned_by_breed.skaven_rat_ogre > 0 or num_spawned_by_breed.skaven_stormfiend > 0 or num_spawned_by_breed.chaos_troll > 0 or num_spawned_by_breed.chaos_spawn > 0 or num_spawned_by_breed.beastmen_minotaur > 0
 end
 
 ConflictDirector.angry_boss = function (self)
@@ -3593,21 +3642,25 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 	end
 
 	if script_data.show_alive_ai then
-		ConflictUtils.display_number_of_breeds("TOTAL: ", #self._spawned, self._num_spawned_by_breed)
+		local enemy_data = self._conflict_data_by_side[self.default_enemy_side_id]
+
+		ConflictUtils.display_number_of_breeds("TOTAL: ", #enemy_data.spawned, enemy_data.num_spawned_by_breed)
 
 		if self.running_master_event then
 			local num_spawned = 0
 
-			for breed_name, amount in pairs(self._num_spawned_by_breed_during_event) do
+			for breed_name, amount in pairs(enemy_data.num_spawned_by_breed_during_event) do
 				num_spawned = num_spawned + amount
 			end
 
-			ConflictUtils.display_number_of_breeds("EVENT: ", num_spawned, self._num_spawned_by_breed_during_event)
+			ConflictUtils.display_number_of_breeds("EVENT: ", num_spawned, enemy_data.num_spawned_by_breed_during_event)
 		end
 	end
 
 	if script_data.show_where_ai_is then
-		ConflictUtils.show_where_ai_is(self._spawned)
+		local enemy_data = self._conflict_data_by_side[self.default_enemy_side_id]
+
+		ConflictUtils.show_where_ai_is(enemy_data.spawned)
 	end
 
 	if DebugKeyHandler.key_pressed("o", "draw spawn zones", "ai", "left shift") then
@@ -3662,7 +3715,9 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 			self.pacing:debug_add_intensity(player_and_bot_units, -25)
 		end
 
-		Debug.text("Total enemies alive: " .. tostring(#self._spawned))
+		local enemy_data = self._conflict_data_by_side[self.default_enemy_side_id]
+
+		Debug.text("Total enemies alive: " .. tostring(#enemy_data.spawned))
 	end
 
 	if script_data.debug_rush_intervention then

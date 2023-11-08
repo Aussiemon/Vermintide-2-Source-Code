@@ -18,6 +18,7 @@ require("scripts/entity_system/systems/attachment/attachment_system")
 require("scripts/entity_system/systems/cosmetic/cosmetic_system")
 require("scripts/entity_system/systems/area_damage/area_damage_system")
 require("scripts/entity_system/systems/audio/audio_system")
+require("scripts/entity_system/systems/buff/buff_area_system")
 require("scripts/entity_system/systems/buff/buff_system")
 require("scripts/entity_system/systems/camera/camera_system")
 require("scripts/entity_system/systems/world_marker/world_marker_system")
@@ -143,7 +144,6 @@ require("scripts/unit_extensions/weapons/area_damage/liquid/liquid_area_damage_t
 require("scripts/unit_extensions/weapons/area_damage/area_damage_templates")
 require("scripts/unit_extensions/weapons/ammo/active_reload_ammo_user_extension")
 require("scripts/unit_extensions/weapons/spread/weapon_spread_extension")
-require("scripts/unit_extensions/default_player_unit/buffs/buff_area_extension")
 require("scripts/unit_extensions/default_player_unit/charge/player_husk_overcharge_extension")
 require("scripts/unit_extensions/default_player_unit/charge/player_unit_overcharge_extension")
 require("scripts/unit_extensions/default_player_unit/player_husk_visual_effects_extension")
@@ -272,9 +272,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	end
 
 	self:_add_system("buff_system", BuffSystem, entity_system_creation_context)
-	self:_add_system("buff_area_system", ExtensionSystemBase, entity_system_creation_context, {
-		"BuffAreaExtension"
-	})
+	self:_add_system("buff_area_system", BuffAreaSystem, entity_system_creation_context)
 	self:_add_system("talent_system", TalentSystem, entity_system_creation_context)
 	self:_add_system("ammo_system", AmmoSystem, entity_system_creation_context)
 	self:_add_system("spread_system", ExtensionSystemBase, entity_system_creation_context, {

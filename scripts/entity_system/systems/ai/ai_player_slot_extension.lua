@@ -298,6 +298,7 @@ AIPlayerSlotExtension.init = function (self, extension_init_context, unit, exten
 	self.valid_target = true
 	self.debug_color_name = SLOT_COLORS[debug_color_index][1]
 	self.num_occupied_slots = 0
+	self.has_slots_attached = true
 	self.delayed_num_occupied_slots = 0
 	self.delayed_slot_decay_t = 0
 	self.full_slots_at_t = {}

@@ -3,6 +3,8 @@ require("scripts/settings/twitch_settings")
 DEBUG_TWITCH = false
 local NUM_ROUNDS_TO_DISABLE_USED_VOTES = 15
 local MIN_VOTES_LEFT_IN_ROTATION = 2
+local MAX_NUM_RETRIES = 6
+local TIME_BETWEEN_RETRY = 5
 
 local function debug_print(message, ...)
 	if DEBUG_TWITCH then
@@ -102,7 +104,7 @@ TwitchManager._unload_sound_bank = function (self)
 	end
 end
 
-TwitchManager.connect = function (self, twitch_user_name, optional_connection_failure_callback, optional_connection_success_callback)
+TwitchManager.connect = function (self, twitch_user_name, optional_connection_failure_callback, optional_connection_success_callback, is_retry)
 	fassert(twitch_user_name, "[TwitchManager] You need to provide a user name to connect")
 
 	local url = "https://api.twitch.tv/helix/users?login=" .. twitch_user_name
@@ -137,6 +139,10 @@ TwitchManager.connect = function (self, twitch_user_name, optional_connection_fa
 	self._connection_success_callback = optional_connection_success_callback
 	self._twitch_user_name = twitch_user_name
 
+	if not is_retry then
+		self._num_retries = 0
+	end
+
 	self._rest_interface:get(url, self._headers, callback(self, "cb_on_user_info_received"), {
 		"User Data",
 		twitch_user_name
@@ -150,7 +156,10 @@ TwitchManager.cb_on_user_info_received = function (self, success, code, headers,
 		local result_data = cjson.decode(data)
 
 		if result_data then
-			if result_data.error then
+			if result_data.status == 401 and self._num_retries < MAX_NUM_RETRIES then
+				self._should_retry = true
+				self._next_retry_time = Managers.time:time("main") + TIME_BETWEEN_RETRY
+			elseif result_data.error then
 				local message = string.format(Localize("start_game_window_twitch_error_connection"), result_data.message, result_data.error, code)
 
 				Application.error("[TwitchManager] " .. message)
@@ -194,6 +203,9 @@ TwitchManager.cb_on_user_info_received = function (self, success, code, headers,
 				self._connection_failure_callback(message)
 			end
 		end
+	elseif self._num_retries < MAX_NUM_RETRIES then
+		self._should_retry = true
+		self._next_retry_time = Managers.time:time("main") + TIME_BETWEEN_RETRY
 	else
 		local message = Localize("start_game_window_twitch_error_generic")
 
@@ -204,8 +216,29 @@ TwitchManager.cb_on_user_info_received = function (self, success, code, headers,
 		end
 	end
 
-	self._connecting = false
-	self._connection_failure_callback = nil
+	if not self._should_retry then
+		self._connecting = false
+		self._connection_failure_callback = nil
+	end
+end
+
+TwitchManager.cb_request_twitch_access_token = function (self, token)
+	self._num_retries = self._num_retries + 1
+
+	if token then
+		self:connect(self._twitch_user_name, self._connection_failure_callback, self._connection_success_callback, true)
+	else
+		local message = Localize("start_game_window_twitch_error_generic")
+
+		Application.error("[TwitchManager] " .. message)
+
+		if self._connection_failure_callback then
+			self._connection_failure_callback(message)
+		end
+
+		self._connecting = false
+		self._connection_failure_callback = nil
+	end
 end
 
 TwitchManager.cb_on_user_streams_received = function (self, success, code, headers, data, userdata)
@@ -713,6 +746,13 @@ TwitchManager.update = function (self, dt, t)
 	self:_validate_data(dt, t)
 	self:_update_vote_data(dt, t)
 	self:_update_twitch_game_mode(dt, t)
+
+	if self._should_retry and self._next_retry_time <= t then
+		self._should_retry = false
+		local live_event_interface = Managers.backend:get_interface("live_events")
+
+		live_event_interface:request_twitch_app_access_token(callback(self, "cb_request_twitch_access_token"))
+	end
 end
 
 TwitchManager._handle_popup = function (self)

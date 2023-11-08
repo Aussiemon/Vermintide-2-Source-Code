@@ -719,7 +719,8 @@ local function _calculate_closest_target_with_spillover_score(ai_unit, target_un
 	local target_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
 
 	if target_slot_extension then
-		local target_is_player = BLACKBOARDS[target_unit].is_player
+		local target_blackboard = BLACKBOARDS[target_unit]
+		local target_is_player = target_blackboard and target_blackboard.is_player
 
 		if target_is_player and not target_slot_extension.valid_target then
 			return

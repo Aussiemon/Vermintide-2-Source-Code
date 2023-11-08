@@ -66,9 +66,11 @@ BTSuicideRunAction.update_target_position = function (self, unit, blackboard, ai
 		if whereabouts_extension then
 			local last_position_on_navmesh = whereabouts_extension:last_position_on_navmesh()
 
-			ai_navigation:move_to(last_position_on_navmesh)
+			if last_position_on_navmesh then
+				ai_navigation:move_to(last_position_on_navmesh)
 
-			return
+				return
+			end
 		else
 			local pos = POSITION_LOOKUP[target_unit]
 			local success, z = GwNavQueries.triangle_from_position(ai_navigation:nav_world(), pos, 5, 5)

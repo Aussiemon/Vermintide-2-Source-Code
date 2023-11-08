@@ -27,7 +27,6 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 	self._num_event_ai_spawned = 0
 	self._num_event_ai_active = 0
 	self._num_ai_string = "SPAWNED: %3i   ACTIVE: %3i   EVENT SPAWNED: %3i   EVENT SPAWNED ACTIVE: %3i"
-	self._inactive_units = {}
 	self._settings = {
 		critical = {
 			font = "materials/fonts/arial",
@@ -64,9 +63,8 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 	self._events = {
 		ai_unit_activated = "event_ai_unit_activated",
 		ai_unit_despawned = "event_ai_unit_despawned",
-		ai_units_all_destroyed = "event_ai_units_all_destroyed",
-		ai_unit_spawned = "event_ai_unit_spawned",
-		ai_unit_deactivated = "event_ai_unit_deactivated"
+		ai_unit_deactivated = "event_ai_unit_deactivated",
+		ai_unit_spawned = "event_ai_unit_spawned"
 	}
 	local event_manager = Managers.state.event
 
@@ -89,39 +87,19 @@ PerformanceManager.update = function (self, dt, t)
 	return
 end
 
-PerformanceManager.event_ai_unit_spawned = function (self, unit, breed_name, active, event_spawned)
+PerformanceManager.event_ai_unit_spawned = function (self, unit, breed_name, side_id, event_spawned)
 	if not self._tracked_ai_breeds[breed_name] then
+		return
+	end
+
+	if side_id ~= Managers.state.conflict.default_enemy_side_id then
 		return
 	end
 
 	self._num_ai_spawned = self._num_ai_spawned + 1
 
-	if active then
-		self._num_ai_active = self._num_ai_active + 1
-		self._activated_per_breed[breed_name] = self._activated_per_breed[breed_name] + 1
-	else
-		self._inactive_units[unit] = true
-	end
-
 	if event_spawned then
 		self._num_event_ai_spawned = self._num_event_ai_spawned + 1
-
-		if active then
-			self._num_event_ai_active = self._num_event_ai_active + 1
-		end
-	end
-end
-
-PerformanceManager.event_ai_units_all_destroyed = function (self)
-	self._num_ai_spawned = 0
-	self._num_event_ai_spawned = 0
-	self._num_ai_active = 0
-	self._num_event_ai_active = 0
-	self._inactive_units = {}
-	local activated_per_breed = self._activated_per_breed
-
-	for breed_name, amount in pairs(activated_per_breed) do
-		activated_per_breed[breed_name] = 0
 	end
 end
 
@@ -133,47 +111,39 @@ PerformanceManager.event_ai_unit_activated = function (self, unit, breed_name, e
 	end
 
 	self._num_ai_active = self._num_ai_active + 1
-	self._inactive_units[unit] = nil
 
 	if event_spawned then
 		self._num_event_ai_active = self._num_event_ai_active + 1
 	end
 end
 
-PerformanceManager.event_ai_unit_deactivated = function (self, unit, breed_name)
-	self._activated_per_breed[breed_name] = math.clamp(self._activated_per_breed[breed_name] - 1, 0, 999999)
+PerformanceManager.event_ai_unit_deactivated = function (self, unit, breed_name, event_spawned)
+	self._activated_per_breed[breed_name] = self._activated_per_breed[breed_name] - 1
 
 	if not self._tracked_ai_breeds[breed_name] then
 		return
 	end
 
-	self._inactive_units[unit] = true
-	self._num_ai_active = math.max(self._num_ai_active - 1, 0)
+	self._num_ai_active = self._num_ai_active - 1
+
+	if event_spawned then
+		self._num_event_ai_active = self._num_event_ai_active - 1
+	end
 end
 
-PerformanceManager.event_ai_unit_despawned = function (self, unit, breed_name, active, event_spawned)
-	if active then
-		self._activated_per_breed[breed_name] = self._activated_per_breed[breed_name] - 1
+PerformanceManager.event_ai_unit_despawned = function (self, unit, breed_name, side_id, event_spawned)
+	if not self._tracked_ai_breeds[breed_name] then
+		return
 	end
 
-	if not self._tracked_ai_breeds[breed_name] then
+	if side_id ~= Managers.state.conflict.default_enemy_side_id then
 		return
 	end
 
 	self._num_ai_spawned = self._num_ai_spawned - 1
 
-	if active then
-		self._num_ai_active = self._num_ai_active - 1
-	else
-		self._inactive_units[unit] = nil
-	end
-
 	if event_spawned then
 		self._num_event_ai_spawned = self._num_event_ai_spawned - 1
-
-		if active then
-			self._num_event_ai_active = self._num_event_ai_active - 1
-		end
 	end
 end
 

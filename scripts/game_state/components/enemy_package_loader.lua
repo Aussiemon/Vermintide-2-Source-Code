@@ -147,7 +147,7 @@ end
 
 EnemyPackageLoader._find_unused_breed_to_unload = function (self, loaded_breeds)
 	local conflict_director = Managers.state.conflict
-	local num_spawned_by_breed = conflict_director._num_spawned_by_breed
+	local num_spawned_by_breed = conflict_director.num_spawned_by_breed
 	local num_queued_spawn_by_breed = conflict_director.num_queued_spawn_by_breed
 	local breed_to_package_name = self._breed_to_package_name
 	local unit_spawner = self._unit_spawner
@@ -1314,7 +1314,7 @@ EnemyPackageLoader.client_disconnected = function (self, peer_id)
 end
 
 EnemyPackageLoader.debug_loaded_breeds = function (self)
-	local num_spawned_by_breed = Managers.state.conflict._num_spawned_by_breed
+	local num_spawned_by_breed = Managers.state.conflict.num_spawned_by_breed
 	local package_state = self._package_state
 	local breed_category_lookup = self._breed_category_lookup
 	local breed_category_loaded_packages = self.breed_category_loaded_packages

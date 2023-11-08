@@ -102,7 +102,7 @@ ActionDamageTarget._apply_damage_step = function (self, hit_unit, power_level, s
 	if overcharge_amount then
 		local buff_extension = self.owner_buff_extension
 
-		if self.is_critical_strike and buff_extension:has_buff_perk("no_overcharge_crit") then
+		if self._is_critical_strike and buff_extension:has_buff_perk("no_overcharge_crit") then
 			overcharge_amount = 0
 		end
 

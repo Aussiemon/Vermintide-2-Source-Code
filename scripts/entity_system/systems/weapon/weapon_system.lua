@@ -955,6 +955,10 @@ WeaponSystem.rpc_start_soul_rip = function (self, channel_id, owner_unit_id, tar
 	local owner_unit = self.unit_storage:unit(owner_unit_id)
 	local target_unit = self.unit_storage:unit(target_unit_id)
 
+	if not target_unit then
+		return
+	end
+
 	self:start_soul_rip(owner_unit, target_unit, target_node_id, seed, false)
 
 	if self.is_server then
@@ -1132,6 +1136,11 @@ WeaponSystem._apply_chained_projectile_damage = function (self, chain_data)
 		local damage_profile = settings.damage_profile
 		local network_manager = Managers.state.network
 		local attacker_unit_id = network_manager:unit_game_object_id(chain_data.owner_unit)
+
+		if not attacker_unit_id then
+			return
+		end
+
 		local damage_profile_id = NetworkLookup.damage_profiles[damage_profile]
 		local target_unit_id, is_level_unit = network_manager:game_object_or_level_id(target_unit)
 		local damage_source_id = NetworkLookup.damage_sources[chain_data.damage_source]

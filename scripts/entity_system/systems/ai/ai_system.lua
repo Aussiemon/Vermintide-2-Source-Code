@@ -586,6 +586,14 @@ AISystem._cleanup_extension = function (self, unit, extension_name)
 			Managers.state.conflict.gathering:notify_attackers(unit)
 		end
 
+		local blackboard = self.blackboards[unit]
+
+		if blackboard then
+			blackboard.activation_lock = true
+
+			AiUtils.deactivate_unit(blackboard)
+		end
+
 		local ai_blackboard_updates = self.ai_blackboard_updates
 		local ai_blackboard_updates_n = #ai_blackboard_updates
 		local ai_blackboard_prioritized_updates = self.ai_blackboard_prioritized_updates
@@ -636,18 +644,14 @@ AISystem.freeze = function (self, unit, extension_name, reason)
 	end
 
 	local extension = self.unit_extension_data[unit]
-
-	self:_cleanup_extension(unit, extension_name)
-
-	self.unit_extension_data[unit] = nil
-
-	extension:unit_removed_from_game()
-
 	frozen_extensions[unit] = extension
 
 	if extension.freeze then
 		extension:freeze(unit)
 	end
+
+	self:_cleanup_extension(unit, extension_name)
+	extension:unit_removed_from_game()
 end
 
 AISystem.unfreeze = function (self, unit, extension_name, data)
@@ -675,6 +679,8 @@ AISystem.unfreeze = function (self, unit, extension_name, data)
 		else
 			self.ai_units_perception[unit] = extension
 		end
+
+		extension._blackboard.activation_lock = nil
 
 		if breed.immediate_threat then
 			AiUtils.activate_unit(extension._blackboard)
@@ -1221,7 +1227,9 @@ local function update_blackboard(unit, blackboard, t, dt)
 	local is_valid_attacking_target = nil
 
 	if has_attacking_target then
-		if blackboard.target_unit_status_extension then
+		local target_breed = Unit.get_data(attacking_target, "breed")
+
+		if target_breed and target_breed.is_player then
 			is_valid_attacking_target = blackboard.side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[attacking_target]
 		else
 			is_valid_attacking_target = HEALTH_ALIVE[attacking_target]

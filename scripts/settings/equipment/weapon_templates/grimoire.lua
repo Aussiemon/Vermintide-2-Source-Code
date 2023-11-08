@@ -209,16 +209,18 @@ geheimnisnacht_2021_side_objective.wield_anim_3p = "to_ritual_skull"
 geheimnisnacht_2021_side_objective.state_machine = "units/beings/player/first_person_base/state_machines/misc/ritual_skull"
 geheimnisnacht_2021_side_objective.load_state_machine = false
 geheimnisnacht_2021_side_objective.wield_anim_career = {
-	es_questingknight = "to_ritual_skull_immune",
-	dr_slayer = "to_ritual_skull_immune",
+	bw_necromancer = "to_ritual_skull_immune",
 	wh_priest = "to_ritual_skull_immune",
-	we_thornsister = "to_ritual_skull_immune"
+	we_thornsister = "to_ritual_skull_immune",
+	es_questingknight = "to_ritual_skull_immune",
+	dr_slayer = "to_ritual_skull_immune"
 }
 geheimnisnacht_2021_side_objective.wield_anim_career_3p = {
-	es_questingknight = "to_ritual_skull",
-	dr_slayer = "to_ritual_skull",
+	bw_necromancer = "to_ritual_skull",
 	wh_priest = "to_ritual_skull",
-	we_thornsister = "to_ritual_skull"
+	we_thornsister = "to_ritual_skull",
+	es_questingknight = "to_ritual_skull",
+	dr_slayer = "to_ritual_skull"
 }
 geheimnisnacht_2021_side_objective.actions.action_inspect.action_inspect_hold.kind = "inspect_geheimnisnacht_2021"
 

@@ -102,17 +102,13 @@ local function generate_non_refreshable_potion_template(potion_name)
 	return weapon_template
 end
 
-local pockets_full_of_bombs_potion_template = generate_non_refreshable_potion_template("pockets_full_of_bombs")
-pockets_full_of_bombs_potion_template.ammo_data.wield_previous_weapon_when_destroyed = false
-pockets_full_of_bombs_potion_template.ammo_data.force_wield_previous_weapon_when_ammo_given = true
-
 return {
 	liquid_bravado_potion = generate_non_refreshable_potion_template("liquid_bravado"),
 	vampiric_draught_potion = generate_non_refreshable_potion_template("vampiric_draught"),
 	moot_milk_potion = generate_non_refreshable_potion_template("moot_milk"),
 	friendly_murderer_potion = generate_non_refreshable_potion_template("friendly_murderer"),
 	killer_in_the_shadows_potion = generate_non_refreshable_potion_template("killer_in_the_shadows"),
-	pockets_full_of_bombs_potion = pockets_full_of_bombs_potion_template,
+	pockets_full_of_bombs_potion = generate_non_refreshable_potion_template("pockets_full_of_bombs"),
 	hold_my_beer_potion = generate_non_refreshable_potion_template("hold_my_beer"),
 	poison_proof_potion = generate_non_refreshable_potion_template("poison_proof")
 }

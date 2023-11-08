@@ -741,7 +741,8 @@ InteractionDefinitions.smartobject = {
 		end,
 		stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
 			if Unit.get_data(interactable_unit, "interaction_data", "resumable") then
-				local new_stored_progress = result == InteractionResult.SUCCESS and 0 or data.stored_progress + t - data.start_time
+				local old_stored_progress = data.stored_progress or 0
+				local new_stored_progress = result == InteractionResult.SUCCESS and 0 or old_stored_progress + math.max(0, t - data.start_time)
 
 				Unit.set_data(interactable_unit, "interaction_data", "stored_interaction_progress", new_stored_progress)
 			end
@@ -757,11 +758,13 @@ InteractionDefinitions.smartobject = {
 			Unit.set_data(interactable_unit, "interaction_data", "being_used", false)
 		end,
 		get_progress = function (data, config, t)
-			if data.duration == 0 then
+			if data.duration == 0 or data.start_time == nil then
 				return 0
 			end
 
-			return data.start_time == nil and 0 or math.min(1, (t + data.stored_progress - data.start_time) / data.duration)
+			local stored_progress = data.stored_progress or 0
+
+			return math.clamp((t + stored_progress - data.start_time) / data.duration, 0, 1)
 		end,
 		can_interact = function (interactor_unit, interactable_unit, data, config)
 			local custom_interaction_check_name = Unit.get_data(interactable_unit, "interaction_data", "custom_interaction_check_name")
@@ -1596,8 +1599,9 @@ InteractionDefinitions.give_item = {
 						if template.can_give_other then
 							local ammo_extension = inventory_extension:get_item_slot_extension(item_slot_name, "ammo_system")
 							local given = true
+							local check_ammo_immediately = true
 
-							ammo_extension:use_ammo(1, given)
+							ammo_extension:use_ammo(1, given, check_ammo_immediately)
 
 							if not LEVEL_EDITOR_TEST then
 								local interactor_game_object_id = Managers.state.unit_storage:go_id(interactor_unit)

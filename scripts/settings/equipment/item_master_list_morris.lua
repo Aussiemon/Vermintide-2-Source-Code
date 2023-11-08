@@ -1313,7 +1313,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_lileath_1 = {
@@ -1338,7 +1337,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_lileath_3 = {
@@ -1351,7 +1349,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_myrmidia_1 = {
@@ -1364,7 +1361,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_myrmidia_2 = {
@@ -1377,7 +1373,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_myrmidia_3 = {
@@ -1390,7 +1385,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_nurgle = {
@@ -1403,7 +1397,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_sigmar_1 = {
@@ -1416,7 +1409,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_sigmar_2 = {
@@ -1429,7 +1421,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_sigmar_3 = {
@@ -1442,7 +1433,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_slaanesh = {
@@ -1455,7 +1445,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_taal_1 = {
@@ -1468,7 +1457,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_taal_2 = {
@@ -1481,7 +1469,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_taal_3 = {
@@ -1494,7 +1481,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_tzeentch = {
@@ -1507,7 +1493,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_valaya_1 = {
@@ -1520,7 +1505,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_valaya_2 = {
@@ -1533,7 +1517,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_valaya_3 = {
@@ -1546,7 +1529,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_citadel = {
@@ -1559,7 +1541,6 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
-		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_chaos_gods = {

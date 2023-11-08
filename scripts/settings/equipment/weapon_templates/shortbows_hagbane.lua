@@ -293,6 +293,9 @@ weapon_template.buffs = {
 		external_optional_multiplier = 1.25
 	}
 }
+weapon_template.server_buffs = {
+	we_deus_01_kerillian_critical_bleed_dot_disable = {}
+}
 weapon_template.weapon_diagram = {
 	light_attack = {
 		[DamageTypes.ARMOR_PIERCING] = 2,

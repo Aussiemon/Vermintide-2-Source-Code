@@ -766,7 +766,7 @@ Boot.game_update = function (self, real_world_dt)
 	if IS_WINDOWS then
 		Managers.curl:update(true)
 		Managers.irc:update(dt)
-		Managers.twitch:update(dt)
+		Managers.twitch:update(dt, t)
 
 		if rawget(_G, "Steam") then
 			Managers.steam:update(t, dt)
@@ -1279,6 +1279,7 @@ Game._handle_win32_graphics_quality = function (self)
 		local max_fps = Application.user_setting("max_fps") or 0
 
 		if max_fps > 0 then
+			print("[Boot] Migrating from max_fps to nv_framerate_cap. Value:", max_fps)
 			Application.set_user_setting("render_settings", "nv_framerate_cap", max_fps)
 			Application.set_user_setting("max_fps", 0)
 
@@ -1288,11 +1289,50 @@ Game._handle_win32_graphics_quality = function (self)
 		local nv_framerate_cap = Application.user_setting("render_settings", "nv_framerate_cap") or 0
 
 		if nv_framerate_cap > 0 then
+			print("[Boot] Migrating from nv_framerate_cap to max_fps. Value:", nv_framerate_cap)
 			Application.set_user_setting("max_fps", nv_framerate_cap)
 			Application.set_user_setting("render_settings", "nv_framerate_cap", 0)
 
 			dirty = true
 		end
+	end
+
+	local upscaling_mode = Application.user_setting("render_settings", "upscaling_mode") or "none"
+
+	if upscaling_mode ~= "none" then
+		if Application.user_setting("render_settings", "fsr_enabled") then
+			print("[Boot] Disabling fsr1 because another upscaler was enabled.")
+			Application.set_render_setting("fsr_enabled", "false")
+
+			dirty = true
+		end
+
+		if upscaling_mode == "fsr2" then
+			if not Application.render_caps("d3d12") then
+				print("[Boot] Disabling fsr2 because d3d12 was false.")
+				Application.set_user_setting("fsr2_enabled", false)
+				Application.set_render_setting("upscaling_enabled", "false")
+				Application.set_render_setting("upscaling_mode", "none")
+				Application.set_render_setting("upscaling_quality", "none")
+
+				dirty = true
+			end
+		elseif upscaling_mode == "dlss" and not Application.render_caps("dlss_supported") then
+			print("[Boot] Disabling dlss because dlss_supported was false.")
+			Application.set_render_setting("upscaling_enabled", "false")
+			Application.set_render_setting("upscaling_mode", "none")
+			Application.set_render_setting("upscaling_quality", "none")
+
+			dirty = true
+		end
+	end
+
+	if Application.user_setting("render_settings", "dlss_g_enabled") and not Application.render_caps("dlss_g_supported") then
+		print("[Boot] Disabling dlss_g due because dlss_g_supported was false.")
+		Application.set_render_setting("dlss_g_enabled", "false")
+		Application.set_user_setting("overriden_settings", "dlss_frame_generation", true)
+
+		dirty = true
 	end
 
 	local function is_same(current, new)

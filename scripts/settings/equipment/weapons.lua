@@ -114,7 +114,7 @@ end
 Dots = {
 	poison_dot = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, source_attacker_unit)
 		if not damage_profile then
-			return false
+			return
 		end
 
 		local target_settings = damage_profile.targets[target_index] or damage_profile.default_target

@@ -778,11 +778,8 @@ DeusMapScene.highlight_edge = function (self, from, to)
 		local traversed_nodes = deus_run_controller:get_traversed_nodes()
 		local graph_data = deus_run_controller:get_graph_data()
 
-		ferror([[
-edge from<%s> to<%s> doesn't exist! 
-self._edges_to_units:%s
-traversed_nodes:%s
-graph:%s]], from, to, table.tostring(self._edges_to_units), table.tostring(traversed_nodes), table.tostring(graph_data))
+		printf("self._edges_to_units:%s\ntraversed_nodes:%s\ngraph:%s", table.tostring(self._edges_to_units), table.tostring(traversed_nodes), table.tostring(graph_data, 2))
+		ferror("[DeusMapScene] edge from<%s> to<%s> doesn't exist!", from, to)
 	end
 
 	Unit.set_data(unit, "highlighted", true)
@@ -797,11 +794,8 @@ DeusMapScene.unhighlight_edge = function (self, from, to)
 		local traversed_nodes = deus_run_controller:get_traversed_nodes()
 		local graph_data = deus_run_controller:get_graph_data()
 
-		ferror([[
-edge from<%s> to<%s> doesn't exist! 
-self._edges_to_units:%s
-traversed_nodes:%s
-graph:%s]], from, to, table.tostring(self._edges_to_units), table.tostring(traversed_nodes), table.tostring(graph_data))
+		printf("self._edges_to_units:%s\ntraversed_nodes:%s\ngraph:%s", table.tostring(self._edges_to_units), table.tostring(traversed_nodes), table.tostring(graph_data, 2))
+		ferror("[DeusMapScene] edge from<%s> to<%s> doesn't exist!", from, to)
 	end
 
 	Unit.set_data(unit, "highlighted", false)

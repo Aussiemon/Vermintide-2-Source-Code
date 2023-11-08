@@ -225,6 +225,14 @@ SimpleHuskInventoryExtension.add_equipment_limited_item = function (self, slot_n
 	}
 end
 
+SimpleHuskInventoryExtension.destroy_item_by_name = function (self, slot_name, item_name)
+	local slot_data = self:get_slot_data(slot_name)
+
+	if slot_data and slot_data.item_data.name == item_name then
+		self:destroy_slot(slot_name)
+	end
+end
+
 SimpleHuskInventoryExtension.destroy_slot = function (self, slot_name)
 	local equipment = self._equipment
 	local slot_data = equipment.slots[slot_name]

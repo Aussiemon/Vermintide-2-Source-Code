@@ -643,8 +643,7 @@ LiquidAreaDamageExtension._update_collision_detection = function (self, dt, t)
 		end
 	end
 
-	local units = Managers.state.conflict:spawned_units()
-	local num_units = #units
+	local units, num_units = Managers.state.conflict:all_spawned_units()
 	local index = self._spawned_unit_index
 	local end_index = math.min(index + units_per_frame, num_units)
 	local apply_buff_to_ai = self._apply_buff_to_ai

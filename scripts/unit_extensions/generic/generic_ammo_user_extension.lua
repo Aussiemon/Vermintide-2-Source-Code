@@ -147,47 +147,7 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 		self._queued_reload = false
 	end
 
-	if self._shots_fired > 0 then
-		self._current_ammo = self._current_ammo - self._shots_fired
-		self._shots_fired = 0
-
-		fassert(self._current_ammo >= 0)
-
-		if self._current_ammo == 0 then
-			if not owner_player or not owner_player.bot_player then
-				Unit.flow_event(unit, "used_last_ammo_clip")
-			end
-
-			if self._available_ammo == 0 then
-				if self._destroy_when_out_of_ammo then
-					local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
-					local status_extension = ScriptUnit.has_extension(self.owner_unit, "status_system")
-
-					inventory_extension:destroy_slot(self.slot_name, false, true)
-
-					if self._last_ammo_used_was_given and self._force_wield_previous_weapon_when_ammo_given or self._wield_previous_weapon_when_destroyed then
-						local grabbed_by_packmaster = status_extension and CharacterStateHelper.pack_master_status(status_extension)
-
-						if not grabbed_by_packmaster then
-							inventory_extension:wield_previous_weapon()
-						end
-					end
-				elseif self._unwield_when_out_of_ammo then
-					local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
-
-					inventory_extension:wield_previous_weapon()
-				else
-					local player = Managers.player:unit_owner(self.owner_unit)
-					local item_name = self.item_name
-					local position = POSITION_LOOKUP[self.owner_unit]
-
-					Managers.telemetry_events:player_ammo_depleted(player, item_name, position)
-				end
-
-				Unit.flow_event(unit, "used_last_ammo")
-			end
-		end
-	end
+	self:_check_ammo()
 
 	if self._next_reload_time and self._next_reload_time < t then
 		if not self._start_reloading then
@@ -250,6 +210,59 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 				Managers.state.controller_features:add_effect("rumble", {
 					rumble_effect = "reload_over"
 				})
+			end
+		end
+	end
+end
+
+GenericAmmoUserExtension._check_ammo = function (self)
+	if self._shots_fired > 0 then
+		self._current_ammo = self._current_ammo - self._shots_fired
+		self._shots_fired = 0
+
+		fassert(self._current_ammo >= 0)
+
+		if self._current_ammo == 0 then
+			local unit = self.unit
+			local owner_unit = self.owner_unit
+			local player_manager = Managers.player
+			local owner_player = player_manager:owner(self.owner_unit)
+
+			if not owner_player or not owner_player.bot_player then
+				Unit.flow_event(unit, "used_last_ammo_clip")
+			end
+
+			if self._available_ammo == 0 then
+				if self._destroy_when_out_of_ammo then
+					local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
+					local status_extension = ScriptUnit.has_extension(owner_unit, "status_system")
+
+					inventory_extension:destroy_item_by_name(self.slot_name, self.item_name, false, true)
+
+					if self._last_ammo_used_was_given and self._force_wield_previous_weapon_when_ammo_given or self._wield_previous_weapon_when_destroyed then
+						local grabbed_by_packmaster = status_extension and CharacterStateHelper.pack_master_status(status_extension)
+
+						if not grabbed_by_packmaster then
+							local wielded_slot = inventory_extension:get_wielded_slot_name()
+
+							if wielded_slot == self.slot_name then
+								inventory_extension:wield_previous_weapon()
+							end
+						end
+					end
+				elseif self._unwield_when_out_of_ammo then
+					local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
+
+					inventory_extension:wield_previous_weapon()
+				else
+					local player = Managers.player:unit_owner(owner_unit)
+					local item_name = self.item_name
+					local position = POSITION_LOOKUP[owner_unit]
+
+					Managers.telemetry_events:player_ammo_depleted(player, item_name, position)
+				end
+
+				Unit.flow_event(unit, "used_last_ammo")
 			end
 		end
 	end
@@ -390,7 +403,7 @@ GenericAmmoUserExtension.add_ammo_to_reserve = function (self, amount)
 	self:_update_anim_ammo()
 end
 
-GenericAmmoUserExtension.use_ammo = function (self, ammo_used, given)
+GenericAmmoUserExtension.use_ammo = function (self, ammo_used, given, check_ammo_immediately)
 	local buff_extension = self.owner_buff_extension
 	local infinite_ammo = false
 
@@ -434,6 +447,10 @@ GenericAmmoUserExtension.use_ammo = function (self, ammo_used, given)
 	self._last_ammo_used_was_given = given
 
 	fassert(self:ammo_count() >= 0, "ammo went below 0")
+
+	if check_ammo_immediately then
+		self:_check_ammo()
+	end
 end
 
 GenericAmmoUserExtension.start_reload = function (self, play_reload_animation, override_reload_time, override_reload_anim)

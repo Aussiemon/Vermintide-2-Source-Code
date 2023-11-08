@@ -721,6 +721,11 @@ local talents = {
 		},
 		buffs = {
 			"sienna_necromancer_5_3"
+		},
+		requires_packages = {
+			trapped_soul_skull = {
+				"units/beings/player/bright_wizard_necromancer/talents/trapped_soul_skull"
+			}
 		}
 	},
 	{

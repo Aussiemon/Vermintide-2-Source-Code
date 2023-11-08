@@ -575,7 +575,7 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 	if self._num_additional_penetrations == 0 then
 		local should_stop = false
 
-		if grenade or aoe_data and self._max_mass <= self._amount_of_mass_hit then
+		if aoe_data and (grenade or self._max_mass <= self._amount_of_mass_hit) then
 			self:do_aoe(aoe_data, hit_position)
 
 			if grenade then
