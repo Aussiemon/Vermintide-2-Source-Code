@@ -828,7 +828,9 @@ DebugManager.send_conflict_director_command = function (self, method, breed_name
 	local picked_enhancements = self.debug_breed_picker.picked_enhancements
 
 	if picked_enhancements and next(picked_enhancements) then
-		enhancements_string = table.concat(table.keys(picked_enhancements), ",")
+		enhancements_string = table.concat(table.keys_if(picked_enhancements, {}, function (key, val)
+			return val == true
+		end), ",")
 	end
 
 	Managers.state.network.network_transmit:send_rpc_server("rpc_debug_conflict_director_command", method, breed_name, position, enhancements_string, extra_data or {})
@@ -859,6 +861,14 @@ DebugManager._update_unit_spawning = function (self, dt, t)
 		self:send_conflict_director_command("debug_spawn_group_at_main_path")
 	elseif DebugKeyHandler.key_pressed("p", "spawn " .. debug_breed_name, "ai") then
 		local current_item = self.debug_breed_picker:current_item()
+
+		if Breeds[debug_breed_name] then
+			self._last_debug_breed_name = debug_breed_name
+			self._last_current_item = self.debug_breed_picker:current_item()
+		elseif self._last_debug_breed_name then
+			debug_breed_name = self._last_debug_breed_name
+			current_item = self._last_current_item
+		end
 
 		self:send_conflict_director_command("debug_spawn_breed", debug_breed_name, nil, current_item)
 	elseif DebugKeyHandler.key_pressed("o", "spawn hidden " .. debug_breed_name, "ai", "left ctrl") then

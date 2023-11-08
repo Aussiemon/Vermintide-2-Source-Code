@@ -727,6 +727,7 @@ GraphicsQuality = {
 		}
 	},
 	custom = {
+		is_custom = true,
 		user_settings = {},
 		render_settings = {}
 	}

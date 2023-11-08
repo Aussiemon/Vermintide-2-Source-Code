@@ -1,4 +1,5 @@
 require("scripts/settings/profiles/sp_profiles")
+require("scripts/ui/hud_ui/scrollbar_ui")
 
 local definitions = local_require("scripts/ui/views/character_selection_view/states/definitions/character_selection_state_character_definitions")
 local character_selection_widget_definitions = definitions.character_selection_widgets
@@ -140,8 +141,22 @@ CharacterSelectionStateCharacter._destroy_video_player = function (self)
 	self._video_created = nil
 end
 
+CharacterSelectionStateCharacter._inject_additional_scenegraph_definitions = function (self, scenegraph_definition)
+	for _, career_settings in pairs(CareerSettings) do
+		if career_settings.additional_ui_info_file then
+			local additional_ui_definitions = local_require(career_settings.additional_ui_info_file)
+
+			for name, data in pairs(additional_ui_definitions.scenegraph_definition_to_inject) do
+				scenegraph_definition[name] = data
+			end
+		end
+	end
+end
+
 CharacterSelectionStateCharacter.create_ui_elements = function (self, params)
-	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	self:_inject_additional_scenegraph_definitions(scenegraph_definition)
+
+	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
 	local info_widgets = {}
 	local bot_selection_widgets = {}
@@ -169,11 +184,13 @@ CharacterSelectionStateCharacter.create_ui_elements = function (self, params)
 	self._info_widgets = info_widgets
 	self._bot_selection_widgets = bot_selection_widgets
 	self._widgets_by_name = widgets_by_name
+	self._additional_widgets = {}
+	self._additional_widgets_by_name = {}
 
 	self:_setup_hero_selection_widgets()
 	UIRenderer.clear_scenegraph_queue(self.ui_top_renderer)
 
-	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+	self.ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
 end
 
 CharacterSelectionStateCharacter._set_hero_icon_selected = function (self, index)
@@ -844,6 +861,9 @@ CharacterSelectionStateCharacter._select_hero = function (self, profile_index, c
 	local hero_name = profile_settings.display_name
 	local character_name = profile_settings.character_name
 	local character_career_name = career_settings.display_name
+
+	GlobalShaderFlags.set_global_shader_flag("NECROMANCER_CAREER_REMAP", character_career_name == "bw_necromancer")
+
 	local hero_display_name = Localize(character_name)
 	local career_display_name = Localize(character_career_name)
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
@@ -924,6 +944,23 @@ CharacterSelectionStateCharacter.on_exit = function (self, params)
 	self.ui_animator = nil
 
 	self.parent:set_input_blocked(false)
+
+	local player = Managers.player:local_player()
+	local player_unit = player.player_unit
+	local career_extension = ALIVE[player_unit] and ScriptUnit.has_extension(player_unit, "career_system")
+	local profile_index = self._requested_profile_index or career_extension and career_extension:profile_index()
+	local career_index = self._requested_career_index or career_extension and career_extension:career_index()
+	local profile = profile_index and SPProfiles[profile_index]
+	local profile_name = profile and profile.display_name
+
+	if not DEDICATED_SERVER and profile_name == "bright_wizard" then
+		local careers = profile.careers
+		local career = careers[career_index]
+		local career_name = career.display_name
+
+		GlobalShaderFlags.set_global_shader_flag("NECROMANCER_CAREER_REMAP", career_name == "bw_necromancer")
+	end
+
 	print("[HeroViewState] Exit Substate CharacterSelectionStateCharacter")
 end
 
@@ -984,7 +1021,7 @@ CharacterSelectionStateCharacter.update = function (self, dt, t)
 		end
 	end
 
-	self:draw(dt)
+	self:draw(dt, t)
 end
 
 CharacterSelectionStateCharacter.post_update = function (self, dt, t)
@@ -1023,9 +1060,9 @@ CharacterSelectionStateCharacter.post_update = function (self, dt, t)
 	end
 end
 
-CharacterSelectionStateCharacter.draw = function (self, dt)
+CharacterSelectionStateCharacter.draw = function (self, dt, t)
 	local ui_top_renderer = self.ui_top_renderer
-	local ui_scenegraph = self.ui_scenegraph
+	local ui_scenegraph = self._ui_scenegraph
 	local input_manager = self.input_manager
 	local parent = self.parent
 	local input_service = self:input_service()
@@ -1046,6 +1083,10 @@ CharacterSelectionStateCharacter.draw = function (self, dt)
 	end
 
 	for _, widget in ipairs(self._hero_icon_widgets) do
+		UIRenderer.draw_widget(ui_top_renderer, widget)
+	end
+
+	for _, widget in ipairs(self._additional_widgets) do
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
@@ -1077,6 +1118,12 @@ CharacterSelectionStateCharacter.draw = function (self, dt)
 
 	if gamepad_active then
 		self.menu_input_description:draw(ui_top_renderer, dt)
+	end
+
+	if self._scrollbar then
+		render_settings.alpha_multiplier = render_settings.main_alpha_multiplier
+
+		self._scrollbar:update(dt, t, ui_top_renderer, input_service, render_settings)
 	end
 end
 
@@ -1153,6 +1200,12 @@ CharacterSelectionStateCharacter.cb_hero_unit_spawned = function (self, hero_nam
 		end
 	end
 
+	local preview_props = career_settings.preview_props
+
+	if preview_props then
+		world_previewer:spawn_all_props(preview_props)
+	end
+
 	if self.use_user_skins then
 		local career_name = career_settings.name
 		local item = BackendUtils.get_loadout_item(career_name, "slot_hat")
@@ -1207,7 +1260,7 @@ CharacterSelectionStateCharacter._is_button_hover_exit = function (self, widget)
 end
 
 CharacterSelectionStateCharacter._populate_career_info = function (self, profile_index, career_index)
-	local ui_scenegraph = self.ui_scenegraph
+	local ui_scenegraph = self._ui_scenegraph
 	local ui_top_renderer = self.ui_top_renderer
 	local widgets_by_name = self._widgets_by_name
 	local profile = SPProfiles[profile_index]
@@ -1217,16 +1270,14 @@ CharacterSelectionStateCharacter._populate_career_info = function (self, profile
 	local passive_ability_data = career_settings.passive_ability
 	local activated_ability_data = career_settings.activated_ability[1]
 	local passive_display_name = passive_ability_data.display_name
-	local passive_description = passive_ability_data.description
 	local passive_icon = passive_ability_data.icon
 	local activated_display_name = activated_ability_data.display_name
-	local activated_description = activated_ability_data.description
 	local activated_icon = activated_ability_data.icon
 	widgets_by_name.passive_title_text.content.text = Localize(passive_display_name)
-	widgets_by_name.passive_description_text.content.text = Localize(passive_description)
+	widgets_by_name.passive_description_text.content.text = UIUtils.get_ability_description(passive_ability_data)
 	widgets_by_name.passive_icon.content.texture_id = passive_icon
 	widgets_by_name.active_title_text.content.text = Localize(activated_display_name)
-	widgets_by_name.active_description_text.content.text = Localize(activated_description)
+	widgets_by_name.active_description_text.content.text = UIUtils.get_ability_description(activated_ability_data)
 	widgets_by_name.active_icon.content.texture_id = activated_icon
 	local passive_perks = passive_ability_data.perks
 	local total_perks_height = 0
@@ -1245,7 +1296,7 @@ CharacterSelectionStateCharacter._populate_career_info = function (self, profile
 
 		if data then
 			local display_name = Localize(data.display_name)
-			local description = Localize(data.description)
+			local description = UIUtils.get_perk_description(data)
 			local title_text_style = style.title_text
 			local description_text_style = style.description_text
 			local description_text_shadow_style = style.description_text_shadow
@@ -1261,6 +1312,8 @@ CharacterSelectionStateCharacter._populate_career_info = function (self, profile
 		content.visible = data ~= nil
 	end
 
+	self:_setup_additional_career_info(career_settings)
+
 	local video = career_settings.video
 	local material_name = video.material_name
 	local resource = video.resource
@@ -1271,6 +1324,34 @@ CharacterSelectionStateCharacter._populate_career_info = function (self, profile
 	}
 
 	self:_destroy_video_player()
+end
+
+CharacterSelectionStateCharacter._setup_additional_career_info = function (self, career_settings)
+	if career_settings.additional_ui_info_file then
+		local additional_info_definitions = local_require(career_settings.additional_ui_info_file)
+		local scroll_area_scenegraph_id = "scrollbar_window"
+		local scroll_area_anchor_scenegraph_id = "scrollbar_anchor"
+		local height = self._ui_scenegraph[scroll_area_scenegraph_id].size[2]
+		local base_offset = {
+			0,
+			-height,
+			0
+		}
+		local scroll_height = 0
+		self._additional_widgets, self._additional_widgets_by_name, scroll_height = additional_info_definitions.setup(scroll_area_scenegraph_id, base_offset)
+		local optional_scroll_area_hotspot = nil
+		local enable_auto_scroll = true
+		self._scrollbar = ScrollbarUI:new(self._ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, scroll_height, enable_auto_scroll, optional_scroll_area_hotspot)
+	else
+		table.clear(self._additional_widgets)
+		table.clear(self._additional_widgets_by_name)
+
+		if self._scrollbar then
+			self._scrollbar:destroy(self._ui_scenegraph)
+		end
+
+		self._scrollbar = nil
+	end
 end
 
 CharacterSelectionStateCharacter._handle_input = function (self, dt, t)

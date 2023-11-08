@@ -215,8 +215,16 @@ GameModeManager.damage_taken = function (self, attacked_unit, attacker_unit, dam
 	self._mutator_handler:damage_taken(attacked_unit, attacker_unit, damage, damage_source, damage_type)
 end
 
+GameModeManager.pre_ai_spawned = function (self, breed, optional_data)
+	self._mutator_handler:pre_ai_spawned(breed, optional_data)
+end
+
 GameModeManager.ai_spawned = function (self, spawned_unit)
 	self._mutator_handler:ai_spawned(spawned_unit)
+end
+
+GameModeManager.post_ai_spawned = function (self, ai_unit, breed, optional_data)
+	self._mutator_handler:post_ai_spawned(breed, optional_data)
 end
 
 GameModeManager.set_override_respawn_group = function (self, respawn_group_name, active)

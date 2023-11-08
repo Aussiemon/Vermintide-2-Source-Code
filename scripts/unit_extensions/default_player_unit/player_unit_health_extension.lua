@@ -410,8 +410,10 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 	end
 
 	local breed = Unit.get_data(attacker_unit, "breed")
+	local ai_system = Managers.state.entity:system("ai_system")
+	local attributes = ai_system:get_attributes(attacker_unit)
 
-	if breed and breed.boss then
+	if breed and breed.boss or attributes.grudge_marked then
 		local owner_player = Managers.player:owner(self.unit)
 
 		if owner_player and owner_player.local_player and not owner_player.bot_player then
@@ -965,6 +967,7 @@ PlayerUnitHealthExtension.set_dead = function (self)
 	self.status_extension:set_dead(true)
 
 	local unit = self.unit
+	HEALTH_ALIVE[unit] = nil
 
 	if ScriptUnit.has_extension(unit, "dialogue_system") then
 		local death_discover_distance = DialogueSettings.death_discover_distance

@@ -140,7 +140,7 @@ TerrorEventMixer.init_functions = {
 			local breed_name = spawn_table[i]
 
 			if element.pre_spawn_func then
-				optional_data = element.pre_spawn_func(optional_data, difficulty, breed_name, event, difficulty_tweak)
+				optional_data = element.pre_spawn_func(optional_data, difficulty, breed_name, event, difficulty_tweak, element.enhancement_list)
 			end
 
 			optional_data_table[i] = optional_data
@@ -600,7 +600,7 @@ TerrorEventMixer.run_functions = {
 			optional_data = add_spawned_counting(event, optional_data, element.spawn_counter_category)
 		end
 
-		local position = data.optional_pos and data.optional_pos:unbox()
+		local position = data.optional_pos and data.optional_pos:unbox() or data.origin_position and data.origin_position:unbox()
 		local conflict_director = Managers.state.conflict
 		local group_data = data.group_data
 		local breed_name = element.breed_name
@@ -611,7 +611,7 @@ TerrorEventMixer.run_functions = {
 
 		if element.pre_spawn_func then
 			local difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
-			optional_data = element.pre_spawn_func(optional_data, difficulty, breed_name, event, difficulty_tweak)
+			optional_data = element.pre_spawn_func(optional_data, difficulty, breed_name, event, difficulty_tweak, element.enhancement_list)
 		end
 
 		conflict_director:spawn_one(Breeds[breed_name], position, group_data, optional_data)
@@ -771,7 +771,7 @@ TerrorEventMixer.run_functions = {
 
 			if element.pre_spawn_func then
 				local difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
-				optional_data = element.pre_spawn_func(optional_data, difficulty, breed_name, event, difficulty_tweak)
+				optional_data = element.pre_spawn_func(optional_data, difficulty, breed_name, event, difficulty_tweak, element.enhancement_list)
 			end
 
 			local conflict_director = Managers.state.conflict
@@ -938,7 +938,7 @@ TerrorEventMixer.run_functions = {
 
 		if element.pre_spawn_func then
 			local difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
-			optional_data = element.pre_spawn_func(optional_data, difficulty, breed_name, event, difficulty_tweak)
+			optional_data = element.pre_spawn_func(optional_data, difficulty, breed_name, event, difficulty_tweak, element.enhancement_list)
 		end
 
 		local invalid_pos_list = {}
@@ -1245,7 +1245,7 @@ TerrorEventMixer.run_functions = {
 		for _, player in pairs(human_players) do
 			local player_unit = player.player_unit
 
-			if not AiUtils.unit_alive(player_unit) then
+			if not HEALTH_ALIVE[player_unit] then
 				all_inside = false
 
 				break

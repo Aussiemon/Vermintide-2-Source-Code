@@ -1,5 +1,4 @@
 ActionCareerDREngineerSpin = class(ActionCareerDREngineerSpin, ActionBase)
-local unit_animation_set_variable = Unit.animation_set_variable
 
 ActionCareerDREngineerSpin.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	ActionCareerDREngineerSpin.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -7,8 +6,7 @@ ActionCareerDREngineerSpin.init = function (self, world, item_name, is_server, o
 	self.weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
 	self.talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 	self.audio_loop_id = "engineer_weapon_spin"
-	self.first_person_unit = first_person_unit
-	self._barrel_spin_anim_var_1p = Unit.animation_find_variable(first_person_unit, "barrel_spin_speed")
+	self.first_person_extension = ScriptUnit.has_extension(owner_unit, "first_person_system")
 end
 
 ActionCareerDREngineerSpin.client_owner_start_action = function (self, new_action, t)
@@ -76,5 +74,5 @@ ActionCareerDREngineerSpin._update_animation_speed = function (self, windup)
 	local anim_time_scale = windup / 3 + 0.67
 	anim_time_scale = math.clamp(anim_time_scale, NetworkConstants.animation_variable_float.min, NetworkConstants.animation_variable_float.max)
 
-	unit_animation_set_variable(self.first_person_unit, self._barrel_spin_anim_var_1p, anim_time_scale)
+	self.first_person_extension:animation_set_variable("barrel_spin_speed", anim_time_scale)
 end

@@ -161,9 +161,10 @@ AchievementManager.trigger_event = function (self, event_name, ...)
 			local completed = unlocked_achievements[template.id]
 			local required_career = template.required_career
 			local required_career_in_play = not required_career or available_careers[required_career]
+			local allowed_level = template.allow_in_inn or not global_is_inside_inn
 			local always_run = template.always_run
 
-			if required_career_in_play and (not completed or always_run) then
+			if allowed_level and required_career_in_play and (not completed or always_run) then
 				template.on_event(statistics_db, stats_id, template_event_data[template.id], event_name, event_data)
 			end
 		end

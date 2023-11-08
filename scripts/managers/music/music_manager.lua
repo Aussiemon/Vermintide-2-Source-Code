@@ -739,7 +739,7 @@ MusicManager._horde_done_spawning = function (self, horde)
 				local blackboard = ai_extension:blackboard()
 				local spawn_type = blackboard.spawn_type
 
-				if (spawn_type == "horde_hidden" or spawn_type == "horde") and AiUtils.unit_alive(unit) then
+				if (spawn_type == "horde_hidden" or spawn_type == "horde") and HEALTH_ALIVE[unit] then
 					return true
 				end
 			end
@@ -918,7 +918,7 @@ MusicManager._update_versus_game_state = function (self, music_player, dt, t)
 		return
 	end
 
-	local win_conditions = game_mode:win_conditions()
+	local win_conditions = Managers.mechanism:game_mechanism():win_conditions()
 	local side_close_to_winning = win_conditions:get_side_close_to_winning()
 
 	if side_close_to_winning then

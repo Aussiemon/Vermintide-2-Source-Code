@@ -20,7 +20,10 @@ local RPCS = {
 	"rpc_weapon_blood",
 	"rpc_play_fx",
 	"rpc_change_single_weapon_state",
-	"rpc_summon_vortex"
+	"rpc_summon_vortex",
+	"rpc_start_soul_rip",
+	"rpc_stop_soul_rip",
+	"rpc_soul_rip_burst"
 }
 local extensions = {
 	"WeaponUnitExtension",
@@ -44,6 +47,9 @@ WeaponSystem.init = function (self, entity_system_creation_context, system_name)
 	self._beam_particle_effects = {}
 	self._geiser_particle_effects = {}
 	self._flamethrower_particle_effects = {}
+	self._soul_rip_spline_ids_lookup = {}
+	self._soul_rip_particle_effects = {}
+	self._chained_projectiles = {}
 end
 
 WeaponSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
@@ -54,16 +60,16 @@ WeaponSystem.on_add_extension = function (self, world, unit, extension_name, ext
 	return extension
 end
 
-WeaponSystem.rpc_alert_enemy = function (self, channel_id, enemy_unit_id, player_unit_id)
-	local unit = self.unit_storage:unit(enemy_unit_id)
+WeaponSystem.rpc_alert_enemy = function (self, channel_id, alert_unit_id, attacker_unit_id)
+	local alert_unit = self.unit_storage:unit(alert_unit_id)
 
-	if not Unit.alive(unit) then
+	if not HEALTH_ALIVE[alert_unit] then
 		return
 	end
 
-	local player_unit = self.unit_storage:unit(player_unit_id)
+	local attacker_unit = self.unit_storage:unit(attacker_unit_id)
 
-	AiUtils.alert_unit_of_enemy(unit, player_unit)
+	AiUtils.alert_unit_of_enemy(alert_unit, attacker_unit)
 end
 
 local ARGS = {
@@ -173,8 +179,10 @@ WeaponSystem.send_rpc_attack_hit = function (self, damage_source_id, attacker_un
 
 		if owner_player.local_player and not owner_player.bot_player then
 			local breed = Unit.get_data(hit_unit, "breed")
+			local ai_system = Managers.state.entity:system("ai_system")
+			local attributes = ai_system:get_attributes(hit_unit)
 
-			if breed and breed.boss then
+			if breed and breed.boss or attributes.grudge_marked then
 				Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", hit_unit, "damage_done")
 			end
 		end
@@ -225,7 +233,7 @@ WeaponSystem.rpc_attack_hit = function (self, channel_id, damage_source_id, atta
 		if hit_unit_is_enemy and uses_slot_system and target_override_extension and attacker_not_incapacitated then
 			local has_override_targets = next(blackboard.override_targets)
 
-			if has_override_targets and AiUtils.unit_alive(hit_unit) then
+			if has_override_targets and HEALTH_ALIVE[hit_unit] then
 				local t = Managers.time:time("game")
 
 				target_override_extension:add_to_override_targets(hit_unit, attacker_unit, blackboard, t)
@@ -262,6 +270,8 @@ WeaponSystem.update = function (self, context, t)
 	self:update_synced_beam_particle_effects()
 	self:update_synced_geiser_particle_effects(context, t)
 	self:update_synced_flamethrower_particle_effects()
+	self:_update_chained_projectiles(t)
+	self:update_synced_soul_rip_particle_effects()
 end
 
 local INDEX_POSITION = 1
@@ -290,14 +300,33 @@ WeaponSystem.update_synced_beam_particle_effects = function (self)
 			local hit_position, hit_unit = nil
 
 			if result then
+				local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
+				local player = Managers.player:owner(unit)
+				local allow_friendly_fire = player and DamageUtils.allow_friendly_fire_ranged(difficulty_settings, player)
+
 				for _, hit in pairs(result) do
 					local potential_hit_position = hit[INDEX_POSITION]
 					local hit_actor = hit[INDEX_ACTOR]
 					local potential_hit_unit = Actor.unit(hit_actor)
 
 					if potential_hit_unit ~= unit then
-						hit_position = potential_hit_position
-						hit_unit = potential_hit_unit
+						local breed = Unit.get_data(potential_hit_unit, "breed")
+						local valid_hit = nil
+
+						if breed then
+							local is_enemy = DamageUtils.is_enemy(unit, potential_hit_unit)
+							local node = Actor.node(hit_actor)
+							local hit_zone = breed.hit_zones_lookup[node]
+							local hit_zone_name = hit_zone.name
+							valid_hit = (allow_friendly_fire and breed.is_player or is_enemy) and hit_zone_name ~= "afro"
+						else
+							valid_hit = true
+						end
+
+						if valid_hit then
+							hit_position = potential_hit_position
+							hit_unit = potential_hit_unit
+						end
 
 						break
 					end
@@ -748,5 +777,409 @@ WeaponSystem.hot_join_sync = function (self, peer_id)
 		local time_to_shoot = data.time_to_shoot - data.start_time
 
 		RPC.rpc_start_geiser(channel_id, unit_id, geiser_effect_id, min_radius, max_radius, charge_time, angle, time_to_shoot)
+	end
+end
+
+WeaponSystem.start_soul_rip = function (self, owner_unit, target_unit, target_node_id, seed, net_sync)
+	local world = self.world
+	local current_data = self._soul_rip_particle_effects[owner_unit]
+
+	if current_data then
+		self:cleanup_soul_rip(owner_unit)
+	end
+
+	current_data = Script.new_map(7)
+	self._soul_rip_particle_effects[owner_unit] = current_data
+	local owner_unit_id = self.unit_storage:go_id(owner_unit)
+	current_data.owner_unit_id = owner_unit_id
+	current_data.target_unit = target_unit
+	current_data.target_node_id = target_node_id
+	current_data.seed = seed
+	local source_unit = owner_unit
+	local first_person = false
+	local fp_extension = ScriptUnit.has_extension(owner_unit, "first_person_system")
+
+	if fp_extension then
+		source_unit = fp_extension:get_first_person_unit()
+		local anticipation_fx_name = "fx/wpnfx_necromancer_skullstaff_anticipation"
+		local node = Unit.has_node(source_unit, "j_leftweaponattach") and Unit.node(source_unit, "j_leftweaponattach") or 0
+		current_data.anticipation_fx = ScriptWorld.create_particles_linked(world, anticipation_fx_name, source_unit, node, "destroy")
+		first_person = fp_extension:first_person_mode_active()
+	end
+
+	local hand_unit_name = first_person and "units/test_unit/cup_test" or "units/test_unit/cup_test_3p"
+	current_data.weapon_unit = source_unit
+	current_data.weapon_node_id = Unit.has_node(source_unit, "j_leftweaponattach") and Unit.node(source_unit, "j_leftweaponattach") or 0
+	current_data.weapon_fx_unit = World.spawn_unit(world, hand_unit_name)
+	current_data.target_node_id = Unit.has_node(target_unit, "j_spine") and Unit.node(target_unit, "j_spine") or 0
+	current_data.target_fx_unit = World.spawn_unit(world, "units/test_unit/cup_test_3p")
+	local anticipation_scale = Vector3(2, 2, 2)
+
+	Unit.set_local_scale(current_data.weapon_fx_unit, 0, anticipation_scale)
+
+	local target_fx_scale = Vector3(5, 5, 5)
+
+	Unit.set_local_scale(current_data.target_fx_unit, 0, target_fx_scale)
+
+	if net_sync then
+		local target_unit_id = self.unit_storage:go_id(target_unit)
+
+		if self.is_server then
+			self.network_transmit:send_rpc_clients("rpc_start_soul_rip", owner_unit_id, target_unit_id, target_node_id, seed)
+		else
+			self.network_transmit:send_rpc_server("rpc_start_soul_rip", owner_unit_id, target_unit_id, target_node_id, seed)
+		end
+	end
+end
+
+WeaponSystem.update_synced_soul_rip_particle_effects = function (self)
+	for owner_unit, data in pairs(self._soul_rip_particle_effects) do
+		if not ALIVE[owner_unit] or not ALIVE[data.target_unit] then
+			self:cleanup_soul_rip(owner_unit)
+		else
+			local position = Unit.world_position(data.target_unit, data.target_node_id)
+			local directional_from = Unit.world_position(data.weapon_unit, data.weapon_node_id)
+			local directional_to = position
+			local dir = Vector3.normalize(directional_to - directional_from)
+			local weapon_fx_unit = data.weapon_fx_unit
+			local weapon_fx_pos = Unit.world_position(data.weapon_unit, data.weapon_node_id)
+
+			Unit.set_local_position(weapon_fx_unit, 0, weapon_fx_pos)
+
+			local weapon_fx_rot = Quaternion.look(dir)
+
+			Unit.set_local_rotation(weapon_fx_unit, 0, weapon_fx_rot)
+
+			local target_fx_unit = data.target_fx_unit
+			local target_fx_pos = Unit.world_position(data.target_unit, data.target_node_id)
+
+			Unit.set_local_position(target_fx_unit, 0, target_fx_pos)
+
+			local target_fx_rot = Quaternion.look(-dir)
+
+			Unit.set_local_rotation(target_fx_unit, 0, target_fx_rot)
+		end
+	end
+end
+
+WeaponSystem.stop_soul_rip = function (self, owner_unit, net_sync)
+	local current_data = self._soul_rip_particle_effects[owner_unit]
+
+	if current_data then
+		self:cleanup_soul_rip(owner_unit)
+
+		if net_sync then
+			if self.is_server then
+				self.network_transmit:send_rpc_clients("rpc_stop_soul_rip", current_data.owner_unit_id)
+			else
+				self.network_transmit:send_rpc_server("rpc_stop_soul_rip", current_data.owner_unit_id)
+			end
+		end
+	end
+end
+
+WeaponSystem.cleanup_soul_rip = function (self, owner_unit)
+	local current_data = self._soul_rip_particle_effects[owner_unit]
+
+	if current_data then
+		local world = self.world
+
+		if current_data.anticipation_fx then
+			World.destroy_particles(world, current_data.anticipation_fx)
+		end
+
+		World.destroy_unit(world, current_data.weapon_fx_unit)
+		World.destroy_unit(world, current_data.target_fx_unit)
+
+		self._soul_rip_particle_effects[owner_unit] = nil
+	end
+end
+
+WeaponSystem.soul_rip_burst = function (self, owner_unit, target_unit, target_node_id, fx_name, seed, net_sync)
+	local world = self.world
+	local owner_unit_id = self.unit_storage:go_id(owner_unit)
+	local position = Unit.world_position(target_unit, target_node_id)
+	local aim_position = GameSession.game_object_field(self.game, owner_unit_id, "aim_position")
+	local from_target = Vector3.normalize(aim_position - position)
+	local rotation = Quaternion.look(from_target)
+	local right = Quaternion.right(rotation)
+	local forward = Quaternion.forward(rotation)
+	local up = Vector3.up()
+	local fx_id = World.create_particles(world, fx_name, position, Quaternion.look(up * 0.5 + right * 0.5))
+	local spline_ids_lookup = self._soul_rip_spline_ids_lookup
+
+	if not spline_ids_lookup[fx_name] then
+		spline_ids_lookup[fx_name] = {
+			World.find_particles_variable(world, fx_name, "spline_1"),
+			World.find_particles_variable(world, fx_name, "spline_2"),
+			World.find_particles_variable(world, fx_name, "spline_3"),
+			World.find_particles_variable(world, fx_name, "spline_4")
+		}
+	end
+
+	local spline_pos_1 = position
+	local spline_pos_2 = spline_pos_1 + up + right * 2
+	local next_seed, rand_x, rand_y = nil
+	next_seed, rand_x = Math.next_random(seed)
+	next_seed, rand_y = Math.next_random(next_seed)
+	local spline_pos_3 = spline_pos_1 + forward + Vector3(rand_x * 2 - 1, rand_y * 2 - 1, 2) + right * 0.5
+	next_seed, rand_x = Math.next_random(next_seed)
+	next_seed, rand_y = Math.next_random(next_seed)
+	local spline_pos_4 = spline_pos_1 + Vector3(rand_x * 2 - 1, rand_y * 2 - 1, 5) + right * 0.5
+	local spline_ids = spline_ids_lookup[fx_name]
+
+	World.set_particles_variable(world, fx_id, spline_ids[1], spline_pos_1)
+	World.set_particles_variable(world, fx_id, spline_ids[2], spline_pos_2)
+	World.set_particles_variable(world, fx_id, spline_ids[3], spline_pos_3)
+	World.set_particles_variable(world, fx_id, spline_ids[4], spline_pos_4)
+
+	if script_data.debug_soulrip then
+		QuickDrawerStay:line(spline_pos_1, spline_pos_2, Color(255, 0, 0))
+		QuickDrawerStay:line(spline_pos_2, spline_pos_3, Color(255, 0, 0))
+		QuickDrawerStay:line(spline_pos_3, spline_pos_4, Color(255, 0, 0))
+	end
+
+	if net_sync then
+		local target_unit_id = self.unit_storage:go_id(target_unit)
+		local fx_name_id = NetworkLookup.effects[fx_name]
+
+		if self.is_server then
+			self.network_transmit:send_rpc_clients("rpc_soul_rip_burst", owner_unit_id, target_unit_id, target_node_id, fx_name_id, seed)
+		else
+			self.network_transmit:send_rpc_server("rpc_soul_rip_burst", owner_unit_id, target_unit_id, target_node_id, fx_name_id, seed)
+		end
+	end
+end
+
+WeaponSystem.rpc_start_soul_rip = function (self, channel_id, owner_unit_id, target_unit_id, target_node_id, seed)
+	local owner_unit = self.unit_storage:unit(owner_unit_id)
+	local target_unit = self.unit_storage:unit(target_unit_id)
+
+	self:start_soul_rip(owner_unit, target_unit, target_node_id, seed, false)
+
+	if self.is_server then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_start_soul_rip", peer_id, owner_unit_id, target_unit_id, target_node_id, seed)
+	end
+end
+
+WeaponSystem.rpc_stop_soul_rip = function (self, channel_id, owner_unit_id)
+	local owner_unit = self.unit_storage:unit(owner_unit_id)
+
+	self:stop_soul_rip(owner_unit, false)
+
+	if self.is_server then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_stop_soul_rip", peer_id, owner_unit_id)
+	end
+end
+
+WeaponSystem.rpc_soul_rip_burst = function (self, channel_id, owner_unit_id, target_unit_id, target_node_id, fx_name_id, seed)
+	local target_unit = self.unit_storage:unit(target_unit_id)
+	local owner_unit = self.unit_storage:unit(owner_unit_id)
+
+	if not ALIVE[target_unit] or not ALIVE[owner_unit] then
+		return
+	end
+
+	local fx_name = NetworkLookup.effects[fx_name_id]
+
+	self:soul_rip_burst(owner_unit, target_unit, target_node_id, fx_name, seed, false)
+
+	if self.is_server then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		self.network_transmit:send_rpc_clients_except("rpc_soul_rip_burst", peer_id, owner_unit_id, target_unit_id, target_node_id, fx_name_id, seed)
+	end
+end
+
+WeaponSystem._update_chained_projectiles = function (self, t)
+	local chained_projectiles = self._chained_projectiles
+	local ai_broadphase = Managers.state.entity:system("ai_system").broadphase
+
+	for projectile in pairs(chained_projectiles) do
+		if not projectile.next_target_unit and projectile.target_selection_t <= t then
+			local chain_next = self:_select_next_chained_projectile_target(projectile, ai_broadphase)
+
+			if not chain_next then
+				self._chained_projectiles[projectile] = nil
+			end
+		elseif projectile.next_chain_t <= t then
+			local chain_next = self:_apply_chained_projectile_damage(projectile)
+
+			if chain_next then
+				projectile.next_target_unit = nil
+				projectile.next_chain_t = t + projectile.settings.chain_delay
+				projectile.target_selection_t = t + projectile.settings.target_selection_delay
+			else
+				self._chained_projectiles[projectile] = nil
+			end
+		end
+	end
+end
+
+WeaponSystem.is_chained_projectile_active = function (self, projectile)
+	return not not self._chained_projectiles[projectile]
+end
+
+local BROADPHASE_QUERY_TEMP = {}
+
+WeaponSystem._select_next_chained_projectile_target = function (self, chain_data, ai_broadphase)
+	local settings = chain_data.settings
+	local hit_units = chain_data.hit_units
+	local last_chain_pos = chain_data.last_chain_pos:unbox()
+	local nearby_enemy_units = BROADPHASE_QUERY_TEMP
+	local world = self.world
+	local fx_spline_ids = {
+		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_1"),
+		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_2"),
+		World.find_particles_variable(world, "fx/wpnfx_staff_death/curse_spirit", "spline_3")
+	}
+	local side_manager = Managers.state.side
+	local side_by_unit = side_manager.side_by_unit
+	local side = side_by_unit[chain_data.owner_unit]
+	local enemy_categories = side and side.enemy_broadphase_categories
+	local num_enemies = Broadphase.query(ai_broadphase, last_chain_pos, settings.chain_distance, nearby_enemy_units, enemy_categories)
+
+	for target_id = 1, num_enemies do
+		local target_unit = nearby_enemy_units[target_id]
+
+		if not hit_units[target_unit] and HEALTH_ALIVE[target_unit] then
+			hit_units[target_unit] = true
+			local node = Unit.has_node(target_unit, "j_spine") and Unit.node(target_unit, "j_spine") or 0
+			local next_chain_pos = Unit.world_position(target_unit, node)
+			local mid_offset = Vector3(math.lerp(-0.5, 0.5, math.random()), math.lerp(-0.5, 0.5, math.random()), math.lerp(-0.5, 0.5, math.random()))
+			local mid_point = last_chain_pos + (next_chain_pos - last_chain_pos) / 2 + mid_offset
+
+			self:_play_chained_projectile_fx("fx/wpnfx_staff_death/curse_spirit", fx_spline_ids, last_chain_pos, mid_point, next_chain_pos, true)
+
+			chain_data.next_target_unit = target_unit
+
+			return true
+		end
+	end
+
+	return false
+end
+
+WeaponSystem._play_chained_projectile_fx = function (self, fx_name, fx_spline_ids, point_1, point_2, point_3)
+	local fx_name_id = NetworkLookup.effects[fx_name]
+	local spline_points = {
+		point_1,
+		point_2,
+		point_3
+	}
+
+	if self._fire_sound_event and self.first_person_extension then
+		self.first_person_extension:play_hud_sound_event(self._fire_sound_event)
+	end
+
+	if self.is_server then
+		Managers.state.network:rpc_play_particle_effect_spline(nil, fx_name_id, fx_spline_ids, spline_points)
+	else
+		Managers.state.network.network_transmit:send_rpc_server("rpc_play_particle_effect_spline", fx_name_id, fx_spline_ids, spline_points)
+	end
+end
+
+WeaponSystem.try_fire_chained_projectile = function (self, chain_hit_settings, damage_source, is_critical_strike, power_level, boost_curve_multiplier, t, owner_unit, source_pos, optional_target_unit, optional_ignore_unit, target_index)
+	local chain_data = {
+		chain_count = 0,
+		settings = chain_hit_settings,
+		is_critical_strike = is_critical_strike,
+		power_level = power_level,
+		boost_curve_multiplier = boost_curve_multiplier,
+		damage_source = damage_source,
+		next_chain_t = t + chain_hit_settings.chain_delay - chain_hit_settings.target_selection_delay,
+		target_selection_t = math.huge,
+		owner_unit = owner_unit,
+		hit_units = {},
+		last_chain_pos = Vector3Box(source_pos),
+		base_target_index = target_index
+	}
+
+	if optional_ignore_unit then
+		chain_data.hit_units[optional_ignore_unit] = true
+	end
+
+	if not optional_target_unit then
+		local ai_broadphase = Managers.state.entity:system("ai_system").broadphase
+		optional_target_unit = self:_select_next_chained_projectile_target(chain_data, ai_broadphase)
+
+		if not optional_target_unit then
+			return
+		end
+	end
+
+	chain_data.hit_units[optional_target_unit] = true
+	self._chained_projectiles[chain_data] = true
+
+	Managers.state.achievement:trigger_event("chained_projectile_fired", chain_data, owner_unit)
+end
+
+WeaponSystem._apply_chained_projectile_damage = function (self, chain_data)
+	local settings = chain_data.settings
+	local chain_count = chain_data.chain_count + 1
+	local target_unit = chain_data.next_target_unit
+	local target_index = chain_data.base_target_index + chain_count
+
+	if HEALTH_ALIVE[target_unit] then
+		local last_chain_pos = chain_data.last_chain_pos:unbox()
+		local is_critical_strike = chain_data.is_critical_strike
+		local power_level = chain_data.power_level
+		local boost_curve_multiplier = chain_data.boost_curve_multiplier
+		local damage_profile = settings.damage_profile
+		local network_manager = Managers.state.network
+		local attacker_unit_id = network_manager:unit_game_object_id(chain_data.owner_unit)
+		local damage_profile_id = NetworkLookup.damage_profiles[damage_profile]
+		local target_unit_id, is_level_unit = network_manager:game_object_or_level_id(target_unit)
+		local damage_source_id = NetworkLookup.damage_sources[chain_data.damage_source]
+		local hit_zone_id = NetworkLookup.hit_zones.torso
+		local hit_position = Unit.world_position(target_unit, 0) + Vector3.up()
+		local attack_direction, attack_distance = Vector3.direction_length(hit_position - last_chain_pos)
+
+		if is_level_unit then
+			local hit_zone_name = "full"
+			local target_index = 1
+			local damage_source = self.item_name
+			local damage_profile_template = DamageProfileTemplates[damage_profile]
+
+			DamageUtils.damage_level_unit(target_unit, chain_data.owner_unit, hit_zone_name, power_level, self.melee_boost_curve_multiplier, is_critical_strike, damage_profile_template, target_index, attack_direction, damage_source)
+		else
+			self:send_rpc_attack_hit(damage_source_id, attacker_unit_id, target_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", target_index, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", true, "can_stagger", true, "first_hit", target_index == 1)
+		end
+
+		local fx_id = NetworkLookup.effects["fx/wpnfx_staff_death/curse_spirit_impact"]
+		local rotation = Quaternion.look(attack_direction)
+
+		if self.is_server then
+			Managers.state.network:rpc_play_particle_effect(nil, fx_id, NetworkConstants.invalid_game_object_id, 0, hit_position, rotation, false)
+		else
+			Managers.state.network.network_transmit:send_rpc_server("rpc_play_particle_effect", fx_id, NetworkConstants.invalid_game_object_id, 0, hit_position, rotation, false)
+		end
+
+		local audio_system = Managers.state.entity:system("audio_system")
+
+		audio_system:play_audio_unit_event("Play_career_necro_passive_shadow_blood", target_unit)
+	end
+
+	if ALIVE[target_unit] and chain_count < settings.max_chain_count then
+		local next_chain_pos = nil
+
+		if Unit.has_node(target_unit, "j_spine") then
+			local node = Unit.node(target_unit, "j_spine")
+			next_chain_pos = Unit.world_position(target_unit, node)
+		else
+			next_chain_pos = Unit.world_position(target_unit, 0) + Vector3.up() * 0.8
+		end
+
+		chain_data.chain_count = chain_count
+
+		chain_data.last_chain_pos:store(next_chain_pos)
+
+		return true
+	else
+		return false
 	end
 end

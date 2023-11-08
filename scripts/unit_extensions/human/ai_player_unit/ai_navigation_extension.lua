@@ -7,6 +7,7 @@ AINavigationExtension.init = function (self, extension_init_context, unit, exten
 	self._unit = unit
 	self._enabled = true
 	self._max_speed = 0
+	self._movement_modifier = 1
 	self._current_speed = 0
 	self._wanted_destination = Vector3Box(Unit.local_position(unit, 0))
 	self._destination = Vector3Box()
@@ -303,6 +304,8 @@ AINavigationExtension._recalculate_max_speed = function (self)
 		end
 	end
 
+	self._movement_modifier = aggregate_mod
+
 	GwNavBot.set_max_desired_linear_speed(self._nav_bot, aggregate_mod * self._max_speed)
 end
 
@@ -314,6 +317,10 @@ AINavigationExtension.set_max_speed = function (self, speed)
 	self._max_speed = speed
 
 	self:_recalculate_max_speed()
+end
+
+AINavigationExtension.get_movement_modifier = function (self)
+	return self._movement_modifier
 end
 
 AINavigationExtension.get_max_speed = function (self)

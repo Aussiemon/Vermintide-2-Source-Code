@@ -126,8 +126,6 @@ local dialogue_lookup_tables = {
 	"dialogues/generated/lookup_hero_conversations_ground_zero",
 	"dialogues/generated/lookup_hub_conversations",
 	"dialogues/generated/lookup_ping_dialogues_honduras",
-	"dialogues/generated/lookup_pactsworn_player_vo",
-	"dialogues/generated/lookup_vs_player_vo",
 	"dialogues/generated/lookup_wood_elf_generic_vo",
 	"dialogues/generated/lookup_empire_soldier_generic_vo",
 	"dialogues/generated/lookup_bright_wizard_generic_vo",
@@ -449,15 +447,11 @@ NetworkLookup.husks = {
 	"units/weapons/player/pup_potion_01/pup_potion_speed_01",
 	"units/weapons/player/pup_potion_01/pup_potion_strenght_01",
 	"units/weapons/player/pup_painting/pup_painting_scraps",
-	"units/gameplay/training_dummy/training_dummy",
+	"units/gameplay/training_dummy/training_dummy_bob",
 	"units/gameplay/training_dummy/wpn_training_dummy",
 	"units/gameplay/training_dummy/wpn_training_dummy_3p",
-	"units/gameplay/training_dummy/training_dummy_armored",
 	"units/gameplay/training_dummy/wpn_training_dummy_armored",
 	"units/gameplay/training_dummy/wpn_training_dummy_armored_3p",
-	"units/gameplay/training_dummy/training_dummy_skaven/training_dummy_skaven",
-	"units/gameplay/training_dummy/training_dummy_skaven/wpn_training_dummy_skaven",
-	"units/gameplay/training_dummy/training_dummy_skaven/wpn_training_dummy_skaven_3p",
 	"units/weapons/player/pup_magic_barrel/pup_magic_barrel_01",
 	"units/weapons/player/pup_magic_barrel/wpn_magic_barrel_01",
 	"units/weapons/player/pup_magic_barrel/wpn_magic_barrel_01_3p",
@@ -514,10 +508,8 @@ NetworkLookup.go_types = {
 	"player_bot_unit",
 	"ai_unit",
 	"ai_unit_with_inventory",
-	"ai_unit_with_inventory_and_target",
-	"ai_lord_with_inventory_and_target",
+	"ai_lord_with_inventory",
 	"ai_unit_with_inventory_and_shield",
-	"ai_unit_with_inventory_and_shield_and_target",
 	"ai_unit_storm_vermin_warlord",
 	"ai_unit_pack_master",
 	"ai_unit_ratling_gunner",
@@ -536,6 +528,7 @@ NetworkLookup.go_types = {
 	"aoe_projectile_unit",
 	"aoe_projectile_unit_fixed_impact",
 	"projectile_unit",
+	"sticky_projectile_unit",
 	"pickup_torch_unit",
 	"pickup_torch_unit_init",
 	"prop_projectile_unit",
@@ -558,6 +551,7 @@ NetworkLookup.go_types = {
 	"network_synched_dummy_unit",
 	"position_synched_dummy_unit",
 	"buff_aoe_unit",
+	"buff_unit",
 	"thrown_weapon_unit",
 	"aoe_unit",
 	"thorn_bush_unit",
@@ -578,6 +572,7 @@ NetworkLookup.go_types = {
 	"twitch_vote",
 	"lure_unit",
 	"pickup_training_dummy_unit",
+	"ai_unit_training_dummy_bob",
 	"keep_decoration_painting",
 	"keep_decoration_trophy",
 	"weave",
@@ -761,9 +756,9 @@ NetworkLookup.buff_attack_types = {
 	"heavy_attack",
 	"light_attack",
 	"instant_projectile",
+	"heavy_instant_projectile",
 	"grenade",
 	"ability",
-	"wind_mutator",
 	"action_push"
 }
 NetworkLookup.keep_decoration_trophies = {
@@ -978,7 +973,6 @@ NetworkLookup.damage_types = {
 	"heavy_stab_smiter",
 	"light_stab_fencer",
 	"stab_fencer",
-	"burning_stab_fencer",
 	"heavy_stab_fencer",
 	"light_stab_tank",
 	"stab_tank",
@@ -1005,13 +999,13 @@ NetworkLookup.damage_types = {
 	"burn_carbine",
 	"burn_machinegun",
 	"burninating",
-	"burninating_force_fire",
 	"bleed",
 	"burning_tank",
 	"heavy_burning_tank",
 	"light_burning_linesman",
 	"burning_linesman",
 	"burning_smiter",
+	"burning_stab_fencer",
 	"damage_over_time",
 	"wounded_dot",
 	"health_degen",
@@ -1028,7 +1022,7 @@ NetworkLookup.damage_types = {
 	"fire_grenade",
 	"fire_grenade_glance",
 	"elven_magic",
-	"elven_magic_glance",
+	"elven_magic_arrow_carbine",
 	"destructible_level_object_hit",
 	"push",
 	"pack_master_grab",
@@ -1038,6 +1032,7 @@ NetworkLookup.damage_types = {
 	"weapon_bleed_dot_maidenguard",
 	"sync_health",
 	"killing_blow",
+	"execute",
 	"military_finish",
 	"tower_wipe",
 	"belakor_arena_finish",
@@ -1137,7 +1132,8 @@ NetworkLookup.projectile_templates = {
 	"direct_impact",
 	"no_owner_direct_impact",
 	"straight_target_traversal",
-	"straight_direction_traversal"
+	"straight_direction_traversal",
+	"spiral_trajectory"
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -1148,6 +1144,9 @@ for _, dlc in pairs(DLCSettings) do
 	end
 end
 
+NetworkLookup.projectile_external_event = {
+	"detonate"
+}
 NetworkLookup.overpowered_templates = create_lookup({}, PlayerUnitMovementSettings.overpowered_templates)
 NetworkLookup.vortex_templates = create_lookup({}, VortexTemplates)
 NetworkLookup.tentacle_templates = create_lookup({}, TentacleTemplates)
@@ -1221,6 +1220,7 @@ NetworkLookup.effects = {
 	"fx/impact_blood",
 	"fx/bullet_sand",
 	"fx/wpnfx_burning_head_trail",
+	"wpnfx_necromancy_skull_trail",
 	"fx/wpnfx_pistol_bullet_trail",
 	"fx/wpnfx_barrel_explosion",
 	"fx/wpnfx_grenade_impact",
@@ -1234,6 +1234,7 @@ NetworkLookup.effects = {
 	"fx/chr_gutter_death",
 	"fx/screenspace_poison_globe_impact",
 	"fx/wpnfx_fire_grenade_impact_remains",
+	"fx/wpnfx_fire_grenade_impact_remains_remap",
 	"fx/wpnfx_poison_arrow_impact",
 	"fx/wpnfx_poison_arrow_impact_clan_rat",
 	"fx/wpnfx_poison_arrow_impact_storm_vermin",
@@ -1241,11 +1242,16 @@ NetworkLookup.effects = {
 	"fx/wpnfx_poison_arrow_impact_gutter_runner",
 	"fx/wpnfx_staff_beam_trail",
 	"fx/wpnfx_staff_beam_trail_3p",
+	"fx/wpnfx_staff_beam_trail_remap",
+	"fx/wpnfx_staff_beam_trail_3p_remap",
 	"fx/wpnfx_staff_beam_target",
+	"fx/wpnfx_staff_beam_target_remap",
 	"fx/wpnfx_staff_geiser_charge",
+	"fx/wpnfx_staff_geiser_charge_remap",
 	"fx/wpnfx_staff_geiser_fire_small",
 	"fx/wpnfx_staff_geiser_fire_medium",
 	"fx/wpnfx_staff_geiser_fire_large",
+	"fx/chr_overcharge_explosion_dwarf",
 	"fx/chr_gutter_foff",
 	"fx/chr_chaos_sorcerer_teleport",
 	"fx/chr_chaos_sorcerer_teleport_direction",
@@ -1650,6 +1656,9 @@ NetworkLookup.movement_funcs = {
 	"update_local_animation_driven_movement"
 }
 NetworkLookup.ai_inventory = create_lookup({}, InventoryConfigurations)
+NetworkLookup.controlled_unit_templates = create_lookup({
+	"n/a"
+}, ControlledUnitTemplates)
 NetworkLookup.connection_fails = {
 	"no_peer_data_on_join",
 	"no_peer_data_on_enter_game",
@@ -1701,7 +1710,12 @@ NetworkLookup.dialogue_events = {
 	"activate_ability_taunt",
 	"flanking",
 	"reload_failed",
-	"spawning"
+	"spawning",
+	"overcharge",
+	"overcharge_high",
+	"overcharge_critical",
+	"overcharge_explode",
+	"overcharge_lockout_end"
 }
 NetworkLookup.dialogue_event_data_names = {
 	"num_units",
@@ -1745,7 +1759,6 @@ NetworkLookup.dialogue_event_data_names = {
 	"trail_cog",
 	"training_dummy",
 	"training_dummy_armored",
-	"training_dummy_skaven",
 	"stance_type",
 	"offensive",
 	"defensive",
@@ -2125,6 +2138,7 @@ end
 NetworkLookup.statistics_path_names = create_lookup({}, path_names)
 NetworkLookup.mission_names = create_lookup({}, Missions)
 NetworkLookup.projectile_gravity_settings = create_lookup({}, ProjectileGravitySettings)
+NetworkLookup.projectile_units = create_lookup({}, ProjectileUnits)
 NetworkLookup.voting_types = create_lookup({}, VoteTemplates)
 NetworkLookup.session_stats = create_lookup({}, StatisticsDefinitions.session)
 local attributes = {}

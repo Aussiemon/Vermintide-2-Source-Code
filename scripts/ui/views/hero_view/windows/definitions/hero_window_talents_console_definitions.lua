@@ -31,9 +31,26 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	passive_window = {
+	scrollbar_anchor = {
 		vertical_alignment = "top",
 		parent = "info_window",
+		horizontal_alignment = "center",
+		size = {
+			career_info_size[1] + 20,
+			680
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
+	scrollbar_window = {
+		parent = "scrollbar_anchor"
+	},
+	passive_window = {
+		vertical_alignment = "top",
+		parent = "scrollbar_window",
 		horizontal_alignment = "center",
 		size = career_info_size,
 		position = {
@@ -455,7 +472,7 @@ local description_text_style = {
 	word_wrap = true,
 	horizontal_alignment = "left",
 	vertical_alignment = "top",
-	font_type = "hell_shark",
+	font_type = "hell_shark_masked",
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
@@ -501,7 +518,7 @@ local type_title_text_style = {
 	horizontal_alignment = "right",
 	vertical_alignment = "top",
 	dynamic_font_size = true,
-	font_type = "hell_shark",
+	font_type = "hell_shark_masked",
 	text_color = Colors.get_color_table_with_alpha("gray", 200),
 	offset = {
 		0,
@@ -519,6 +536,23 @@ local sub_title_text_style = {
 	vertical_alignment = "top",
 	dynamic_font_size = true,
 	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local sub_perk_title_text_style = {
+	font_size = 32,
+	upper_case = false,
+	localize = false,
+	use_shadow = true,
+	word_wrap = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "top",
+	dynamic_font_size = true,
+	font_type = "hell_shark_header_masked",
 	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
 		0,
@@ -1132,6 +1166,7 @@ local function create_career_perk_text(scenegraph_id)
 		style = {
 			icon = {
 				vertical_alignment = "bottom",
+				masked = true,
 				horizontal_alignment = "left",
 				texture_size = {
 					13,
@@ -1151,7 +1186,7 @@ local function create_career_perk_text(scenegraph_id)
 				horizontal_alignment = "left",
 				vertical_alignment = "bottom",
 				dynamic_font_size = true,
-				font_type = "hell_shark",
+				font_type = "hell_shark_masked",
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
 					20,
@@ -1167,7 +1202,7 @@ local function create_career_perk_text(scenegraph_id)
 				horizontal_alignment = "left",
 				vertical_alignment = "bottom",
 				dynamic_font_size = true,
-				font_type = "hell_shark",
+				font_type = "hell_shark_masked",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					22,
@@ -1182,7 +1217,7 @@ local function create_career_perk_text(scenegraph_id)
 				font_size = 18,
 				horizontal_alignment = "left",
 				vertical_alignment = "bottom",
-				font_type = "hell_shark",
+				font_type = "hell_shark_masked",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					20,
@@ -1197,7 +1232,7 @@ local function create_career_perk_text(scenegraph_id)
 				font_size = 18,
 				horizontal_alignment = "left",
 				vertical_alignment = "bottom",
-				font_type = "hell_shark",
+				font_type = "hell_shark_masked",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					22,
@@ -1243,23 +1278,24 @@ local widgets = {
 	talent_row_5 = talent_row("talent_row_5", scenegraph_definition.talent_row_5.size, talent_button_size, 3),
 	talent_row_6 = talent_row("talent_row_6", scenegraph_definition.talent_row_6.size, talent_button_size, 3),
 	info_window_background = UIWidgets.create_rect_with_outer_frame("info_window", scenegraph_definition.info_window.size, "frame_outer_fade_02", 0, UISettings.console_menu_rect_color),
-	perk_title_text = UIWidgets.create_simple_text(Localize("hero_view_perk_title"), "perk_title_text", nil, nil, sub_title_text_style),
-	perk_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "perk_title_divider"),
+	mask = UIWidgets.create_simple_texture("mask_rect", "scrollbar_anchor"),
+	perk_title_text = UIWidgets.create_simple_text(Localize("hero_view_perk_title"), "perk_title_text", nil, nil, sub_perk_title_text_style),
+	perk_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "perk_title_divider", true),
 	career_perk_1 = create_career_perk_text("career_perk_1"),
 	career_perk_2 = create_career_perk_text("career_perk_2"),
 	career_perk_3 = create_career_perk_text("career_perk_3"),
-	passive_title_text = UIWidgets.create_simple_text("n/a", "passive_title_text", nil, nil, sub_title_text_style),
+	passive_title_text = UIWidgets.create_simple_text("n/a", "passive_title_text", nil, nil, sub_perk_title_text_style),
 	passive_type_title = UIWidgets.create_simple_text(Localize("hero_view_passive_ability"), "passive_type_title", nil, nil, type_title_text_style),
-	passive_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "passive_title_divider"),
+	passive_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "passive_title_divider", true),
 	passive_description_text = UIWidgets.create_simple_text("n/a", "passive_description_text", nil, nil, description_text_style),
-	passive_icon = UIWidgets.create_simple_texture("icons_placeholder", "passive_icon"),
-	passive_icon_frame = UIWidgets.create_simple_texture("talent_frame", "passive_icon_frame"),
-	active_title_text = UIWidgets.create_simple_text("n/a", "active_title_text", nil, nil, sub_title_text_style),
+	passive_icon = UIWidgets.create_simple_texture("icons_placeholder", "passive_icon", true),
+	passive_icon_frame = UIWidgets.create_simple_texture("talent_frame", "passive_icon_frame", true),
+	active_title_text = UIWidgets.create_simple_text("n/a", "active_title_text", nil, nil, sub_perk_title_text_style),
 	active_type_title = UIWidgets.create_simple_text(Localize("hero_view_activated_ability"), "active_type_title", nil, nil, type_title_text_style),
-	active_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "active_title_divider"),
+	active_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "active_title_divider", true),
 	active_description_text = UIWidgets.create_simple_text("n/a", "active_description_text", nil, nil, description_text_style),
-	active_icon = UIWidgets.create_simple_texture("icons_placeholder", "active_icon"),
-	active_icon_frame = UIWidgets.create_simple_texture("talent_frame", "active_icon_frame")
+	active_icon = UIWidgets.create_simple_texture("icons_placeholder", "active_icon", true),
+	active_icon_frame = UIWidgets.create_simple_texture("talent_frame", "active_icon_frame", true)
 }
 local generic_input_actions = {
 	default = {

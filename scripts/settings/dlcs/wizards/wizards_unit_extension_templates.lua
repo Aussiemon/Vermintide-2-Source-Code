@@ -1,7 +1,7 @@
 local unit_extension_templates = {
 	ai_unit_chaos_exalted_sorcerer_drachenfels = {
 		base_template = "ai_unit_base",
-		go_type = "ai_lord_with_inventory_and_target",
+		go_type = "ai_lord_with_inventory",
 		self_owned_extensions = {
 			"AIInventoryExtension",
 			"PingTargetExtension",

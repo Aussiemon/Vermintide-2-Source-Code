@@ -1,7 +1,7 @@
 local DEFAULT_ANGLE = 0
 LootItemUnitPreviewer = class(LootItemUnitPreviewer)
 
-LootItemUnitPreviewer.init = function (self, item, spawn_position, background_world, background_viewport, unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels, delayed_spawn)
+LootItemUnitPreviewer.init = function (self, item, spawn_position, background_world, background_viewport, unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels, delayed_spawn, career_name_override)
 	self._unique_id = unique_id
 	self._loaded_packages = {}
 	self._packages_to_load = {}
@@ -13,6 +13,7 @@ LootItemUnitPreviewer.init = function (self, item, spawn_position, background_wo
 	self._spawn_position = spawn_position
 	self._item = item
 	self._use_highest_mip_levels = use_highest_mip_levels
+	self._career_name_override = career_name_override
 	self._delayed_spawn = delayed_spawn
 
 	if not self._delayed_spawn then
@@ -258,7 +259,7 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 	end
 
 	item_template = item_template or ItemHelper.get_template_by_item_name(item_key)
-	local item_units = BackendUtils.get_item_units(item_data, backend_id, item_skin)
+	local item_units = BackendUtils.get_item_units(item_data, backend_id, item_skin, self._career_name_override)
 	local units_to_spawn_data = {}
 	local slot_type = item_data.slot_type
 

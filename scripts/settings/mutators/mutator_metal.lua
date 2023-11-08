@@ -42,7 +42,7 @@ return {
 				for key, player in pairs(human_players) do
 					local player_unit = player.player_unit
 
-					if AiUtils.unit_alive(player_unit) then
+					if HEALTH_ALIVE[player_unit] then
 						data.buff_system:add_buff(player_unit, "mutator_metal_blade_dance", player_unit)
 					end
 				end

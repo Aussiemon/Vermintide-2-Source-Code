@@ -206,7 +206,7 @@ BeastmenStandardExtension.update = function (self, unit, input, dt, context, t)
 				end
 			end
 
-			if not is_inside or not AiUtils.unit_alive(ai_unit) then
+			if not is_inside or not HEALTH_ALIVE[ai_unit] then
 				if Unit.alive(ai_unit) and buff_system:has_server_controlled_buff(ai_unit, buff_id) then
 					buff_system:remove_server_controlled_buff(ai_unit, buff_id)
 				end
@@ -242,7 +242,7 @@ BeastmenStandardExtension._update_self_destruction = function (self, unit, dt, t
 	for i = 1, num_player_units do
 		local player_unit = player_units[i]
 
-		if AiUtils.unit_alive(player_unit) then
+		if HEALTH_ALIVE[player_unit] then
 			local data = player_astar_data[i]
 			local astar = data.astar
 			local traverse_logic = self.player_astar_traverse_logic

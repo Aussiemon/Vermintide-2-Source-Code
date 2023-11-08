@@ -26,6 +26,7 @@ TalentExtension.extensions_ready = function (self, world, unit)
 	self._career_name = career_name
 	local talent_ids = self:get_talent_ids()
 
+	self:_check_talent_package_dendencies(talent_ids, true)
 	self:apply_buffs_from_talents(talent_ids)
 	self:update_talent_weapon_index(talent_ids)
 	self:_broadcast_talents_changed()
@@ -40,9 +41,18 @@ end
 TalentExtension.talents_changed = function (self)
 	local talent_ids = self:get_talent_ids()
 
+	self:_check_talent_package_dendencies(talent_ids)
 	self:apply_buffs_from_talents(talent_ids)
 	self:update_talent_weapon_index(talent_ids)
 	self.inventory_extension:update_career_skill_weapon_slot_safe()
+
+	if self._needs_loadout_resync then
+		self._needs_loadout_resync = false
+		local peer_id = self.player:network_id()
+		local local_player_id = self.player:local_player_id()
+
+		Managers.state.network.profile_synchronizer:resync_loadout(peer_id, local_player_id)
+	end
 
 	if Managers.state.network:game() then
 		self:_send_rpc_sync_talents(talent_ids)
@@ -109,7 +119,7 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 			local buffs = talent_data.buffs
 			local buffer = talent_data.buffer
 
-			if (player.local_player or is_server_bot) and (not buffer or buffer == "client") or self.is_server and buffer == "server" or (self.is_server or player.local_player) and buffer == "both" then
+			if (player.local_player or is_server_bot) and (not buffer or buffer == "client") or self.is_server and buffer == "server" or (self.is_server or player.local_player) and buffer == "both" or buffer == "all" then
 				local num_buffs = buffs and #buffs or 0
 
 				if num_buffs > 0 then
@@ -305,4 +315,40 @@ end
 
 TalentExtension.initial_talent_synced = function (self)
 	return true
+end
+
+TalentExtension._check_talent_package_dendencies = function (self, talent_ids, initial_setup)
+	local new_dependencies = {}
+	local new_dependencies_n = 0
+	local hero_name = self._hero_name
+
+	for i = 1, #talent_ids do
+		local talent_id = talent_ids[i]
+		local talent_data = Talents[hero_name][talent_id]
+
+		if talent_data.requires_packages then
+			new_dependencies_n = new_dependencies_n + 1
+			new_dependencies[new_dependencies_n] = talent_id
+		end
+	end
+
+	table.sort(new_dependencies)
+
+	if initial_setup then
+		self._talent_ids_with_dependencies = new_dependencies
+	else
+		local talent_ids_with_dependencies = self._talent_ids_with_dependencies
+
+		if not talent_ids_with_dependencies or #talent_ids_with_dependencies ~= new_dependencies_n then
+			self._needs_loadout_resync = true
+		else
+			for i = 1, new_dependencies_n do
+				if new_dependencies[i] ~= talent_ids_with_dependencies[i] then
+					self._needs_loadout_resync = true
+
+					break
+				end
+			end
+		end
+	end
 end

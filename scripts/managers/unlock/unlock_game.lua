@@ -4,6 +4,10 @@ UnlockGame.init = function (self, name, app_id, backend_reward_id, always_unlock
 	return
 end
 
+UnlockGame.is_legacy_console_dlc = function (self)
+	return false
+end
+
 UnlockGame.cb_get_inventory_items_done = function (self, info)
 	return
 end

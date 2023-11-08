@@ -373,6 +373,7 @@ weapon_template.display_unit = "units/weapons/weapon_display/display_bow"
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.bow
 weapon_template.wield_anim = "to_longbow"
 weapon_template.wield_anim_no_ammo = "to_longbow_noammo"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/ranged/longbow"
 weapon_template.crosshair_style = "projectile"
 weapon_template.no_ammo_reload_event = "reload"
 weapon_template.buff_type = "RANGED"

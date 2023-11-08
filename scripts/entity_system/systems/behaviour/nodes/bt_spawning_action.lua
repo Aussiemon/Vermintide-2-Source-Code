@@ -10,6 +10,9 @@ BTSpawningAction.name = "BTSpawningAction"
 local unit_alive = Unit.alive
 
 BTSpawningAction.enter = function (self, unit, blackboard, t)
+	local action = self._tree_node.action_data
+	blackboard.action = action
+
 	Unit.set_animation_root_mode(unit, "ignore")
 	self:_apply_anim_varations(unit)
 

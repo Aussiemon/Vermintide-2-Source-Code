@@ -237,16 +237,7 @@ BackendManagerPlayFab.get_title_data = function (self, key)
 end
 
 BackendManagerPlayFab.get_read_only_data = function (self, key)
-	local mirror = self._backend_mirror
-
-	if mirror then
-		local read_only_data = mirror:get_read_only_data()
-		local value = read_only_data[key]
-
-		return value
-	end
-
-	return nil
+	return self._backend_mirror and self._backend_mirror:get_read_only_data(key) or nil
 end
 
 BackendManagerPlayFab.start_tutorial = function (self)
@@ -838,9 +829,7 @@ end
 
 BackendManagerPlayFab.get_user_data = function (self, key)
 	if self._backend_mirror then
-		local user_data = self._backend_mirror:get_user_data()
-
-		return user_data[key]
+		return self._backend_mirror:get_user_data(key)
 	else
 		return self._save_data.user_data[key]
 	end

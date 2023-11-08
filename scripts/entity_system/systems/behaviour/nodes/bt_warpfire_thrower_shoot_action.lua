@@ -349,7 +349,7 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 					if buff_extension then
 						local buff_name = action.buff_name
 
-						if is_ai_unit and not hit_ai_units[hit_unit] and AiUtils.unit_alive(hit_unit) then
+						if is_ai_unit and not hit_ai_units[hit_unit] and HEALTH_ALIVE[hit_unit] then
 							local ai_push_data = action.ai_push_data
 							local stagger_impact = ai_push_data.stagger_impact
 							local duration_table = ai_push_data.stagger_duration
@@ -383,7 +383,7 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 							elseif is_valid_target then
 								buff_system:add_buff(hit_unit, buff_name, unit)
 							end
-						elseif AiUtils.unit_alive(hit_unit) then
+						elseif HEALTH_ALIVE[hit_unit] then
 							buff_system:add_buff(hit_unit, buff_name, unit)
 						end
 					end

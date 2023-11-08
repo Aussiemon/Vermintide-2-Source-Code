@@ -117,17 +117,30 @@ AiUtils.chaos_exalted_champion_set_shield_state = function (unit, state, is_serv
 	end
 end
 
-AiUtils.alert_unit_of_enemy = function (unit, enemy_unit)
-	enemy_unit = AiUtils.get_actual_attacker_unit(enemy_unit)
+AiUtils.alert_unit_of_enemy = function (unit_to_alert, attacker_unit)
+	attacker_unit = AiUtils.get_actual_attacker_unit(attacker_unit)
 
-	if not ALIVE[enemy_unit] then
+	if not HEALTH_ALIVE[attacker_unit] then
 		return
 	end
 
-	local ai_simple_extension = ScriptUnit.has_extension(unit, "ai_system")
+	local ai_simple_extension = ScriptUnit.has_extension(unit_to_alert, "ai_system")
 
 	if ai_simple_extension then
-		ai_simple_extension:enemy_alert(unit, enemy_unit)
+		ai_simple_extension:enemy_alert(unit_to_alert, attacker_unit)
+	end
+end
+
+AiUtils.alert_unit = function (attacker_unit, unit_to_alert)
+	local network_manager = Managers.state.network
+
+	if network_manager.is_server then
+		AiUtils.alert_unit_of_enemy(unit_to_alert, attacker_unit)
+	else
+		local attacker_unit_id = network_manager:unit_game_object_id(attacker_unit)
+		local alert_unit_id = network_manager:unit_game_object_id(unit_to_alert)
+
+		network_manager.network_transmit:send_rpc_server("rpc_alert_enemy", alert_unit_id, attacker_unit_id)
 	end
 end
 
@@ -184,6 +197,35 @@ AiUtils.stagger_target = function (unit, hit_unit, distance, impact, direction, 
 	end
 end
 
+AiUtils.calculate_ai_stagger_strength = function (attacker_blackboard, target_blackboard, t, apply_toughness_break, reset_stagger_level, reset_multiplier)
+	local target_break_t = target_blackboard.ai_toughness_break_t or 0
+	local toughness_break_decay = t - target_break_t
+	local toughness_break = math.max((target_blackboard.ai_toughness_break or 0) - toughness_break_decay, 0)
+	local target_toughness = (target_blackboard.breed.ai_toughness or 0) - toughness_break
+	local attacker_strength = attacker_blackboard.breed.ai_strength or 0
+	local stagger_strength = math.round(math.clamp(attacker_strength - target_toughness, stagger_types.none, stagger_types.heavy))
+
+	if apply_toughness_break then
+		target_blackboard.ai_toughness_break = toughness_break + attacker_strength
+		target_blackboard.ai_toughness_break_t = t
+
+		if reset_stagger_level and reset_stagger_level <= stagger_strength then
+			target_blackboard.ai_toughness_break = target_blackboard.ai_toughness_break * reset_multiplier
+		end
+	end
+
+	return stagger_strength
+end
+
+AiUtils.calculate_ai_stagger_impact = function (stagger_strength)
+	local distance = (0.15 + 0.1 * math.random()) * stagger_strength
+	local impact = {
+		stagger_strength
+	}
+
+	return impact, distance
+end
+
 AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, damage_source)
 	damage = DamageUtils.calculate_damage(damage, target_unit, attacker_unit)
 	local attacker_pos = POSITION_LOOKUP[attacker_unit] or Unit.world_position(attacker_unit, 0)
@@ -192,6 +234,8 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, da
 	local _, is_level_unit = Managers.state.network:game_object_or_level_id(target_unit)
 	damage_source = damage_source or AiUtils.breed_name(attacker_unit)
 	local inflicted_damage, source_attacker_unit = nil
+	local attacker_blackboard = BLACKBOARDS[attacker_unit]
+	source_attacker_unit = attacker_blackboard and attacker_blackboard.commander_unit
 
 	if is_level_unit then
 		inflicted_damage = DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, source_attacker_unit, nil, action.hit_react_type)
@@ -243,6 +287,88 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage, da
 
 				local damage_multiplier = difficulty_settings.damage_multiplier or 1
 				damage = damage * damage_multiplier
+			end
+		else
+			local target_blackboard = BLACKBOARDS[target_unit]
+			local attacker_blackboard = BLACKBOARDS[attacker_unit]
+
+			if target_blackboard and attacker_blackboard then
+				local t = Managers.time:time("game")
+				local attacker_breed = attacker_blackboard.breed
+				local target_breed = target_blackboard.breed
+				local stagger_strength = nil
+
+				if action.unblockable and action.attack_intensity_type == "push" then
+					stagger_strength = stagger_types[action.hit_react_type]
+				end
+
+				stagger_strength = stagger_strength or AiUtils.calculate_ai_stagger_strength(attacker_blackboard, target_blackboard, t, true, stagger_types.medium, 0.25)
+
+				if stagger_strength <= 0 then
+					if target_breed.strong_hit_reacts and target_blackboard.past_damage_in_attack ~= false and (not target_blackboard.stagger or target_blackboard.stagger_anim_done) then
+						local hit_unit_dir = Quaternion.forward(unit_local_rotation(target_unit, 0))
+						local angle_difference = Vector3.flat_angle(damage_direction, hit_unit_dir)
+						local hit_anim_list = nil
+
+						if angle_difference < -math.pi * 0.75 or angle_difference > math.pi * 0.75 then
+							hit_anim_list = target_breed.strong_hit_reacts.bwd
+						elseif angle_difference < -math.pi * 0.25 then
+							hit_anim_list = target_breed.strong_hit_reacts.left
+						elseif angle_difference < math.pi * 0.25 then
+							hit_anim_list = target_breed.strong_hit_reacts.fwd
+						else
+							hit_anim_list = target_breed.strong_hit_reacts.right
+						end
+
+						if hit_anim_list then
+							local hit_anim = hit_anim_list[math.random(1, #hit_anim_list)]
+
+							unit_animation_event(target_unit, hit_anim)
+						end
+					elseif not target_breed.disable_local_hit_reactions then
+						local hit_unit_dir = Quaternion.forward(unit_local_rotation(target_unit, 0))
+						local angle_difference = Vector3.flat_angle(hit_unit_dir, damage_direction)
+						local hit_anim = nil
+
+						if angle_difference < -math.pi * 0.75 or angle_difference > math.pi * 0.75 then
+							hit_anim = "hit_reaction_backward"
+						elseif angle_difference < -math.pi * 0.25 then
+							hit_anim = "hit_reaction_left"
+						elseif angle_difference < math.pi * 0.25 then
+							hit_anim = "hit_reaction_forward"
+						else
+							hit_anim = "hit_reaction_right"
+						end
+
+						if hit_anim then
+							unit_animation_event(target_unit, hit_anim)
+						end
+					end
+				else
+					local impact, distance = AiUtils.calculate_ai_stagger_impact(stagger_strength)
+
+					AiUtils.stagger_target(attacker_unit, target_unit, distance, impact, damage_direction, t)
+				end
+
+				local damage_multiplier_vs_ai = attacker_breed.damage_multiplier_vs_ai or 0.25
+				damage = damage * damage_multiplier_vs_ai
+				local hit_effect = nil
+				local hitzone_armor_categories = target_breed.hitzone_armor_categories
+				local target_unit_armor = hitzone_armor_categories and hitzone_armor_categories.torso or target_breed.armor_category
+
+				if damage < 0.25 and target_unit_armor == 2 then
+					hit_effect = "fx/hit_armored"
+				elseif not target_breed.no_blood_splatter_on_damage then
+					hit_effect = BloodSettings:get_hit_effect_for_race(target_breed.race) or target_breed.hit_effect
+				end
+
+				if hit_effect then
+					local world = target_blackboard.world
+					local hit_node_id = target_breed.hit_zones_lookup.torso or 0
+					local hit_position = Unit.world_position(target_unit, hit_node_id) + Vector3(0, 0, math.random() * target_breed.aoe_height * 0.1)
+
+					EffectHelper.player_melee_hit_particles(world, hit_effect, hit_position, damage_direction, action.damage_type, target_unit, damage)
+				end
 			end
 		end
 
@@ -605,17 +731,6 @@ AiUtils.unit_breed = function (unit)
 	return unit_get_data(unit, "breed")
 end
 
-AiUtils.unit_alive = function (unit)
-	if not unit_alive(unit) then
-		return false
-	end
-
-	local health_extension = ScriptUnit.has_extension(unit, "health_system")
-	local is_alive = health_extension and health_extension:is_alive()
-
-	return is_alive
-end
-
 AiUtils.client_predicted_unit_alive = function (unit)
 	if not unit_alive(unit) then
 		return false
@@ -964,7 +1079,7 @@ local MIN_ANGLE = 0
 AiUtils.advance_towards_target = function (unit, blackboard, min_distance, max_distance, min_angle_step, max_angle_step, min_angle, max_tries, direction, above, below)
 	local target_unit = blackboard.target_unit
 
-	if not AiUtils.unit_alive(target_unit) then
+	if not HEALTH_ALIVE[target_unit] then
 		return
 	end
 
@@ -1085,7 +1200,7 @@ AiUtils.kill_unit = function (victim_unit, attacker_unit, hit_zone_name, damage_
 	local damage_amount = NetworkConstants.damage.max
 	attacker_unit = attacker_unit or victim_unit
 
-	if ALIVE[victim_unit] then
+	if HEALTH_ALIVE[victim_unit] then
 		hit_zone_name = hit_zone_name or "full"
 		damage_type = damage_type or "kinetic"
 		damage_source = damage_source or "suicide"
@@ -1209,7 +1324,7 @@ AiUtils.push_intersecting_players = function (unit, source_unit, displaced_units
 	local radius = data.push_width * 1.5
 	local dodge_radius = data.dodged_width and data.dodged_width * 1.5
 	local forward_pos = self_pos + self_forward * 3
-	local side_unit = AiUtils.unit_alive(source_unit) and source_unit or AiUtils.unit_alive(unit) and unit
+	local side_unit = HEALTH_ALIVE[source_unit] and source_unit or HEALTH_ALIVE[unit] and unit
 	local side = Managers.state.side.side_by_unit[side_unit]
 	local enemy_player_and_bot_units = side and side.ENEMY_PLAYER_AND_BOT_UNITS
 
@@ -1559,5 +1674,103 @@ AiUtils.taunt_unit = function (ai_unit, taunt_unit, duration, taunt_bosses)
 				blackboard.target_unit_found_time = t
 			end
 		end
+	end
+end
+
+AiUtils.taunt_nearby_units = function (unit, radius, duration, t, optional_effect_name, optional_sound_event)
+	local side = Managers.state.side.side_by_unit[unit]
+	local position = POSITION_LOOKUP[unit]
+	local nearby_ai = FrameTable.alloc_table()
+	local broadphase_categories = side.enemy_broadphase_categories
+	local n_hits = AiUtils.broadphase_query(position, radius, nearby_ai, broadphase_categories)
+
+	for i = 1, n_hits do
+		local ai_unit = nearby_ai[i]
+		local enemy_blackboard = BLACKBOARDS[ai_unit]
+		local override_targets = enemy_blackboard.override_targets
+
+		table.clear(override_targets)
+
+		enemy_blackboard.target_unit = nil
+		override_targets[unit] = t + duration
+	end
+
+	if optional_effect_name then
+		local effect_id = NetworkLookup.effects[optional_effect_name]
+		local node_id = 0
+		local linked = false
+
+		Managers.state.network:rpc_play_particle_effect_no_rotation(nil, effect_id, NetworkConstants.invalid_game_object_id, node_id, position, linked)
+	end
+
+	if optional_sound_event then
+		local audio_system = Managers.state.entity:system("audio_system")
+
+		audio_system:play_audio_unit_event(optional_sound_event, unit)
+	end
+
+	return nearby_ai
+end
+
+AiUtils.calculate_animation_movespeed = function (animation_move_speed_config, unit, target_unit)
+	local max_value = animation_move_speed_config[1].value
+	local distance_to_target = Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit])
+	local wanted_value = max_value
+	local num_configs = #animation_move_speed_config
+
+	for i = 1, num_configs do
+		local config = animation_move_speed_config[i]
+		local distance = config.distance
+		local value = config.value
+
+		if i < num_configs then
+			local next_config = animation_move_speed_config[i + 1]
+			local next_distance = next_config.distance
+			local next_value = next_config.value
+
+			if next_distance < distance_to_target then
+				local progress = math.inv_lerp(distance, next_distance, distance_to_target)
+				wanted_value = math.lerp_clamped(value, next_value, progress)
+
+				break
+			end
+		else
+			wanted_value = value
+		end
+	end
+
+	return wanted_value
+end
+
+local stagger_types = require("scripts/utils/stagger_types")
+
+AiUtils.magic_entrance_optional_spawned_func = function (unit, breed, optional_data)
+	if not breed.special and not breed.boss and not breed.cannot_be_aggroed then
+		local player_unit = PlayerUtils.get_random_alive_hero()
+
+		AiUtils.aggro_unit_of_enemy(unit, player_unit)
+	end
+
+	local teleport_effect = "fx/grudge_marks_shadow_step"
+	local effect_name_id = NetworkLookup.effects[teleport_effect]
+	local node_id = 0
+	local network_manager = Managers.state.network
+
+	network_manager:rpc_play_particle_effect_no_rotation(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, POSITION_LOOKUP[unit], false)
+
+	local blackboard = BLACKBOARDS[unit]
+
+	if blackboard then
+		local audio_system = Managers.state.entity:system("audio_system")
+
+		audio_system:play_audio_unit_event("Play_normal_spawn_stinger", unit)
+
+		local direction = Quaternion.forward(Quaternion.axis_angle(Vector3.up(), math.pi * 2 * math.random()))
+		local distance = 0.5
+		local stagger_type = stagger_types.medium
+		local stun_duration = 0.5
+		local t = Managers.time:time("game")
+
+		AiUtils.stagger(unit, blackboard, unit, direction, distance, stagger_type, stun_duration, nil, t)
 	end
 end

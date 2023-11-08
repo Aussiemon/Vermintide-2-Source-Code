@@ -23,13 +23,15 @@ curse_change_of_tzeentch.server_ai_killed_function = function (context, data, ki
 end
 
 curse_change_of_tzeentch.on_split_enemy = function (killer_unit)
-	local killed_by_player = ALIVE[killer_unit] and Managers.player:is_player_unit(killer_unit)
+	if HEALTH_ALIVE[killer_unit] then
+		local killed_by_player = Managers.player:is_player_unit(killer_unit)
 
-	if killed_by_player and ScriptUnit.extension(killer_unit, "health_system"):is_alive() then
-		local dialogue_input = ScriptUnit.extension_input(killer_unit, "dialogue_system")
-		local event_data = FrameTable.alloc_table()
+		if killed_by_player then
+			local dialogue_input = ScriptUnit.extension_input(killer_unit, "dialogue_system")
+			local event_data = FrameTable.alloc_table()
 
-		dialogue_input:trigger_dialogue_event("curse_negative_effect_happened", event_data)
+			dialogue_input:trigger_dialogue_event("curse_negative_effect_happened", event_data)
+		end
 	end
 end
 

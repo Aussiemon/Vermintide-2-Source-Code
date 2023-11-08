@@ -78,7 +78,7 @@ BTAlertedAction.init_alerted = function (self, unit, blackboard, t)
 	local has_line_of_sight = PerceptionUtils.raycast_spine_to_spine(unit, blackboard.target_unit, physics_world)
 
 	if has_line_of_sight and not blackboard.action.no_hesitation and target_dist < 12 then
-		blackboard.alerted_action.deadline = blackboard.alerted_action.deadline - Math.random(0, 0.6)
+		blackboard.alerted_action.deadline = blackboard.alerted_action.deadline - 0
 
 		return false
 	end
@@ -96,7 +96,7 @@ BTAlertedAction.decide_deadline = function (self, unit, blackboard, t)
 	local dot_product = Vector3.dot(forward_vector_flat, target_vector_flat)
 	local min_deadline = dot_product > 0.25 and 0.5 or 1
 	local max_deadline = math.max(min_deadline, 2 - dot_product * 2)
-	local time_alerted = Math.random(min_deadline, max_deadline)
+	local time_alerted = 0
 	local breed = blackboard.breed
 	local action = blackboard.action
 

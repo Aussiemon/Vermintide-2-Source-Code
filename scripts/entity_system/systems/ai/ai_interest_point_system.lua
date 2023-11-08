@@ -356,7 +356,9 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 
 			if point.is_position_on_navmesh then
 				local breed = members[i]
-				local optional_data = nil
+				local optional_data = {
+					ignore_event_counter = true
+				}
 				local spawn_category = "enemy_recycler"
 				local spawn_animation = nil
 				local spawn_type = "roam"
@@ -405,7 +407,7 @@ AIInterestPointSystem.release_obsolete_requests = function (self, t)
 	local request = self.requests[request_id]
 	local claim_unit = request.claim_unit
 	local blackboard = BLACKBOARDS[claim_unit]
-	release_claim = not AiUtils.unit_alive(claim_unit) and true or blackboard.confirmed_player_sighting
+	release_claim = not HEALTH_ALIVE[claim_unit] and true or blackboard.confirmed_player_sighting
 
 	if release_claim then
 		self.current_obsolete_request = nil
@@ -651,7 +653,7 @@ AIInterestPointSystem.debug_draw = function (self, t, dt)
 	for request_id, request in pairs(self.requests) do
 		local claim_unit = request.claim_unit
 
-		if AiUtils.unit_alive(claim_unit) then
+		if HEALTH_ALIVE[claim_unit] then
 			local ip_end_time = BLACKBOARDS[claim_unit].ip_end_time
 
 			if ip_end_time then

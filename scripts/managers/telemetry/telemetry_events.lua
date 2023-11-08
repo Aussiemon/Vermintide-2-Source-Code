@@ -966,3 +966,28 @@ end
 TelemetryEvents._create_event = function (self, type)
 	return TelemetryEvent:new(SOURCE, self._subject, type, self._session)
 end
+
+TelemetryEvents.necromancer_used_command_item = function (self, player, command_name)
+	if player and not player.local_player then
+		return
+	end
+
+	local event = TelemetryEvent:new(SOURCE, {
+		id = player:telemetry_id()
+	}, "necromancer_used_command_item", self._session)
+
+	event:set_data({
+		command_name = command_name
+	})
+	self._manager:register_event(event)
+end
+
+TelemetryEvents.geheimnisnacht_hard_mode_toggled = function (self, activated)
+	local event = self:_create_event("geheimnisnacht_hard_mode_toggled")
+	local state = activated and "activated" or "deactivated"
+
+	event:set_data({
+		state = state
+	})
+	self._manager:register_event(event)
+end

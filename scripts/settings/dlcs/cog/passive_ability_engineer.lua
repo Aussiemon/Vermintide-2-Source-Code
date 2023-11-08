@@ -2,7 +2,6 @@ PassiveAbilityEngineer = class(PassiveAbilityEngineer)
 local unit_alive = Unit.alive
 local unit_set_flow_variable = Unit.set_flow_variable
 local unit_flow_event = Unit.flow_event
-local unit_animation_set_variable = Unit.animation_set_variable
 local game_session_set_game_object_field = GameSession.set_game_object_field
 local game_session_game_object_field = GameSession.game_object_field
 local heat_pause_time = 1
@@ -35,13 +34,6 @@ PassiveAbilityEngineer.extensions_ready = function (self, world, unit)
 	self._inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
 	self._career_extension = ScriptUnit.has_extension(unit, "career_system")
 	self._first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
-
-	if self._first_person_extension then
-		local first_person_unit = self._first_person_extension:get_first_person_unit()
-		self._first_person_unit = first_person_unit
-		self._anim_ammo_count_var = Unit.animation_find_variable(first_person_unit, "ammo_count")
-		self._anim_wind_down_progress_var = Unit.animation_find_variable(first_person_unit, "wind_down_progress")
-	end
 
 	self:_register_events()
 end
@@ -134,15 +126,15 @@ PassiveAbilityEngineer._update_career_weapon = function (self, weapon_unit)
 end
 
 PassiveAbilityEngineer._update_weapon_anim_variables = function (self, dt)
-	local first_person_unit = self._first_person_unit
+	local first_person_extension = self._first_person_extension
 
-	if first_person_unit then
+	if first_person_extension then
 		local current_ability_charge = self._career_extension:current_ability_cooldown_percentage()
 		local ability_charge = math.clamp(math.lerp(self._last_ability_charge, current_ability_charge, dt * ability_charge_dial_lerp_speed), 0, 1)
 		self._last_ability_charge = ability_charge
 
-		unit_animation_set_variable(first_person_unit, self._anim_ammo_count_var, ability_charge)
-		unit_animation_set_variable(first_person_unit, self._anim_wind_down_progress_var, self._wind_down_progress)
+		first_person_extension:animation_set_variable("ammo_count", ability_charge)
+		first_person_extension:animation_set_variable("wind_down_progress", self._wind_down_progress)
 	end
 end
 

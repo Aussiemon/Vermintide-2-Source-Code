@@ -29,8 +29,15 @@ ActionUtils.get_max_targets = function (damage_profile, cleave_power_level)
 	return max_targets_attack, max_targets_impact
 end
 
-ActionUtils.get_target_armor = function (hit_zone_name, breed, dummy_unit_armor)
+ActionUtils.get_target_armor = function (hit_zone_name, breed, armor_override)
 	local target_unit_armor_attack, target_unit_armor_impact, target_unit_armor, target_unit_primary_armor_attack, target_unit_primary_armor_impact = nil
+
+	if armor_override then
+		target_unit_armor_attack = armor_override
+		target_unit_armor_impact = armor_override
+
+		return target_unit_armor_attack, target_unit_armor_impact
+	end
 
 	if breed and hit_zone_name then
 		local hitzone_armor_categories = breed.hitzone_armor_categories
@@ -59,9 +66,6 @@ ActionUtils.get_target_armor = function (hit_zone_name, breed, dummy_unit_armor)
 		target_unit_armor_impact = breed.armor_category
 		target_unit_primary_armor_attack = breed.primary_armor_category
 		target_unit_primary_armor_impact = breed.primary_armor_category
-	elseif dummy_unit_armor then
-		target_unit_armor_attack = dummy_unit_armor
-		target_unit_armor_impact = dummy_unit_armor
 	else
 		local player_armor = 1
 		target_unit_armor_attack = player_armor
@@ -71,33 +75,57 @@ ActionUtils.get_target_armor = function (hit_zone_name, breed, dummy_unit_armor)
 	return target_unit_armor_attack, target_unit_armor_impact, target_unit_primary_armor_attack, target_unit_primary_armor_impact
 end
 
-ActionUtils.get_dropoff_scalar = function (damage_profile, target_settings, attacker_unit, target_unit)
-	local range_dropoff_settings = target_settings.range_dropoff_settings or damage_profile.range_dropoff_settings
+ActionUtils.get_range_scalar_multiplier = function (damage_profile, target_settings, attacker_unit, target_unit)
+	local range_modifier_settings = target_settings.range_modifier_settings or damage_profile.range_modifier_settings
 
-	if not range_dropoff_settings then
+	if not range_modifier_settings then
 		return 0
 	end
 
 	local attacker_position = POSITION_LOOKUP[attacker_unit] or Unit.world_position(attacker_unit, 0)
 	local target_position = POSITION_LOOKUP[target_unit] or Unit.world_position(target_unit, 0)
 	local distance = Vector3.distance(target_position, attacker_position)
-	local dropoff_start = range_dropoff_settings.dropoff_start
-	local dropoff_end = range_dropoff_settings.dropoff_end
-	local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+	local scaling_steps = range_modifier_settings.distance_scaling_steps
 
-	if buff_extension:has_buff_perk("no_damage_dropoff") then
-		dropoff_start = dropoff_start * 2
-		dropoff_end = dropoff_end * 2
+	if scaling_steps then
+		local range_multiplier = nil
+
+		if distance < scaling_steps[1].distance then
+			return 0
+		elseif scaling_steps[#scaling_steps].distance < distance then
+			range_multiplier = scaling_steps[#scaling_steps].multiplier
+
+			return range_multiplier
+		else
+			for i = 1, #scaling_steps - 1 do
+				if scaling_steps[i].distance < distance and distance < scaling_steps[i + 1].distance then
+					range_multiplier = scaling_steps[i].multiplier
+
+					return range_multiplier
+				end
+			end
+		end
+
+		assert(false, "Setting: [distance_scaling_steps] range_multiplier never gets assigned a value")
+	else
+		local dropoff_start = range_modifier_settings.dropoff_start
+		local dropoff_end = range_modifier_settings.dropoff_end
+		local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+
+		if buff_extension:has_buff_perk("no_damage_dropoff") then
+			dropoff_start = dropoff_start * 2
+			dropoff_end = dropoff_end * 2
+		end
+
+		local dropoff_scale = dropoff_end - dropoff_start
+		local dropoff_distance = math.clamp(distance - dropoff_start, 0, dropoff_scale)
+		local range_scalar_multiplier = dropoff_distance / dropoff_scale
+
+		return range_scalar_multiplier
 	end
-
-	local dropoff_scale = dropoff_end - dropoff_start
-	local dropoff_distance = math.clamp(distance - dropoff_start, 0, dropoff_scale)
-	local dropoff_scalar = dropoff_distance / dropoff_scale
-
-	return dropoff_scalar
 end
 
-ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, target_settings, target_unit_armor, target_unit_primary_armor, critical_strike_settings, dropoff_scalar)
+ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, target_settings, target_unit_armor, target_unit_primary_armor, critical_strike_settings, range_scalar_multiplier)
 	local armor_modifier = target_settings.armor_modifier or damage_profile.armor_modifier or DefaultArmorPowerModifier
 	local armor_modifier_near = target_settings.armor_modifier_near or damage_profile.armor_modifier_near
 	local armor_modifier_far = target_settings.armor_modifier_far or damage_profile.armor_modifier_far
@@ -109,10 +137,10 @@ ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, tar
 
 	if critical_armor_power_modifier and critical_armor_power_modifier[target_unit_armor] then
 		armor_power_modifier = target_unit_primary_armor and critical_armor_power_modifier[target_unit_primary_armor] or critical_armor_power_modifier[target_unit_armor]
-	elseif armor_modifier_near and armor_modifier_far and dropoff_scalar then
+	elseif armor_modifier_near and armor_modifier_far and range_scalar_multiplier then
 		local armor_power_modifier_near = target_unit_primary_armor and armor_modifier_near[power_type][target_unit_primary_armor] or armor_modifier_near[power_type][target_unit_armor] or 1
 		local armor_power_modifier_far = target_unit_primary_armor and armor_modifier_far[power_type][target_unit_primary_armor] or armor_modifier_far[power_type][target_unit_armor] or 1
-		armor_power_modifier = math.lerp(armor_power_modifier_near, armor_power_modifier_far, dropoff_scalar)
+		armor_power_modifier = math.lerp(armor_power_modifier_near, armor_power_modifier_far, range_scalar_multiplier)
 	else
 		armor_power_modifier = target_unit_primary_armor and armor_modifier[power_type][target_unit_primary_armor] or armor_modifier[power_type][target_unit_armor] or 1
 	end
@@ -163,16 +191,18 @@ ActionUtils.scale_power_levels = function (power_level, power_type, attacker_uni
 	return scaled_power_level
 end
 
-ActionUtils.get_power_multiplier = function (power_type, damage_profile, target_settings, dropoff_scalar)
+ActionUtils.get_power_multiplier = function (power_type, damage_profile, target_settings, range_scalar_multiplier)
 	local power_distribution = target_settings.power_distribution or damage_profile.power_distribution or DefaultPowerDistribution
 	local power_distribution_near = target_settings.power_distribution_near or damage_profile.power_distribution_near
 	local power_distribution_far = target_settings.power_distribution_far or damage_profile.power_distribution_far
 	local power_multiplier = nil
 
-	if power_distribution_near and power_distribution_far and dropoff_scalar then
+	if range_scalar_multiplier and range_scalar_multiplier >= 0 and distance_scaling_steps then
+		power_multiplier = range_scalar_multiplier
+	elseif power_distribution_near and power_distribution_far and range_scalar_multiplier then
 		local power_near = power_distribution_near[power_type]
 		local power_far = power_distribution_far[power_type]
-		power_multiplier = math.lerp(power_near, power_far, dropoff_scalar)
+		power_multiplier = math.lerp(power_near, power_far, range_scalar_multiplier)
 	else
 		power_multiplier = power_distribution[power_type]
 	end
@@ -180,19 +210,19 @@ ActionUtils.get_power_multiplier = function (power_type, damage_profile, target_
 	return power_multiplier
 end
 
-ActionUtils.get_power_level = function (power_type, power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit, difficulty_level)
-	local power_multiplier = ActionUtils.get_power_multiplier(power_type, damage_profile, target_settings, dropoff_scalar)
+ActionUtils.get_power_level = function (power_type, power_level, damage_profile, target_settings, critical_strike_settings, range_scalar_multiplier, attacker_unit, difficulty_level)
+	local power_multiplier = ActionUtils.get_power_multiplier(power_type, damage_profile, target_settings, range_scalar_multiplier)
 	local scaled_power_level = ActionUtils.scale_power_levels(power_level, power_type, attacker_unit, difficulty_level)
 
 	return scaled_power_level * power_multiplier
 end
 
-ActionUtils.get_power_level_for_target = function (target_unit, original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, hit_zone_name, armor_type_override, damage_source, breed, dummy_unit_armor, dropoff_scalar, difficulty_level, target_unit_armor, target_unit_primary_armor)
+ActionUtils.get_power_level_for_target = function (target_unit, original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, hit_zone_name, armor_type_override, damage_source, breed, range_scalar_multiplier, difficulty_level, target_unit_armor, target_unit_primary_armor)
 	local target_settings = damage_profile.targets and damage_profile.targets[target_index] or damage_profile.default_target
 	local critical_strike_settings = is_critical_strike and damage_profile.critical_strike
 	local attack_armor_power_modifer, impact_armor_power_modifer = nil
 	local power_level = original_power_level
-	local is_enemy_target = breed or dummy_unit_armor
+	local is_enemy_target = breed
 	local target_unit_armor_attack = target_unit_armor
 	local target_unit_armor_impact = target_unit_armor
 	local target_unit_primary_armor_attack = target_unit_primary_armor
@@ -205,21 +235,22 @@ ActionUtils.get_power_level_for_target = function (target_unit, original_power_l
 		target_unit_primary_armor_impact = armor_type_override
 	end
 
-	attack_armor_power_modifer = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, target_unit_armor_attack, target_unit_primary_armor_attack, critical_strike_settings, dropoff_scalar)
-	impact_armor_power_modifer = ActionUtils.get_armor_power_modifier("impact", damage_profile, target_settings, target_unit_armor_impact, target_unit_primary_armor_impact, critical_strike_settings, dropoff_scalar)
+	attack_armor_power_modifer = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, target_unit_armor_attack, target_unit_primary_armor_attack, critical_strike_settings, range_scalar_multiplier)
+	impact_armor_power_modifer = ActionUtils.get_armor_power_modifier("impact", damage_profile, target_settings, target_unit_armor_impact, target_unit_primary_armor_impact, critical_strike_settings, range_scalar_multiplier)
 	local lord_armor = breed and breed.lord_armor
 
 	if lord_armor and target_unit_primary_armor_attack == 6 and attack_armor_power_modifer == 0 then
-		local new_armor_power_modifer = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, target_unit_armor_attack, nil, critical_strike_settings, dropoff_scalar)
+		local new_armor_power_modifer = ActionUtils.get_armor_power_modifier("attack", damage_profile, target_settings, target_unit_armor_attack, nil, critical_strike_settings, range_scalar_multiplier)
 		attack_armor_power_modifer = attack_armor_power_modifer + new_armor_power_modifer * lord_armor
 	end
 
-	local attack_power = ActionUtils.get_power_level("attack", power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit, difficulty_level)
-	local impact_power = ActionUtils.get_power_level("impact", power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit, difficulty_level)
+	local attack_power = ActionUtils.get_power_level("attack", power_level, damage_profile, target_settings, critical_strike_settings, range_scalar_multiplier, attacker_unit, difficulty_level)
+	local impact_power = ActionUtils.get_power_level("impact", power_level, damage_profile, target_settings, critical_strike_settings, range_scalar_multiplier, attacker_unit, difficulty_level)
 
 	if is_enemy_target then
-		attack_power = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, attack_power, breed, damage_source, dummy_unit_armor, is_critical_strike)
-		impact_power = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, impact_power, breed, damage_source, dummy_unit_armor, is_critical_strike)
+		local armor_override = unit_get_data(target_unit, "armor") or nil
+		attack_power = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, attack_power, breed, damage_source, is_critical_strike, armor_override)
+		impact_power = ActionUtils.apply_buffs_to_power_level_on_hit(attacker_unit, impact_power, breed, damage_source, is_critical_strike, armor_override)
 		local target_armor = armor_type_override or target_unit_primary_armor or target_unit_armor
 		attack_armor_power_modifer = ActionUtils.apply_buffs_to_armor_power_on_hit(attacker_unit, target_unit, attack_armor_power_modifer, target_armor)
 		impact_armor_power_modifer = ActionUtils.apply_buffs_to_armor_power_on_hit(attacker_unit, target_unit, impact_armor_power_modifer, target_armor)
@@ -243,7 +274,7 @@ ActionUtils.apply_buffs_to_power_level = function (unit, power_level)
 	return power_level
 end
 
-ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, breed, damage_source, dummy_unit_armor, is_critical_strike)
+ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, breed, damage_source, is_critical_strike, armor_override)
 	if not Unit.alive(unit) then
 		return power_level
 	end
@@ -283,7 +314,7 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 	end
 
 	local armor_power_level_target_multiplier = 1
-	local armor_category = breed and breed.armor_category or dummy_unit_armor or 1
+	local armor_category = armor_override or breed and breed.armor_category or 1
 
 	if armor_category == 2 then
 		armor_power_level_target_multiplier = buff_extension:apply_buffs_to_value(armor_power_level_target_multiplier, "power_level_armoured")
@@ -297,15 +328,22 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 
 	stacked_multiplier = stacked_multiplier + armor_power_level_target_multiplier - 1
 	local race_power_level_target_multiplier = 1
-	local race = breed and breed.race or unit_get_data(unit, "race")
+	local race = unit_get_data(unit, "race") or breed and breed.race
 
-	if race == "chaos" or race == "beastmen" or dummy_unit_armor == 1 then
+	if race == "chaos" or race == "beastmen" then
 		race_power_level_target_multiplier = buff_extension:apply_buffs_to_value(race_power_level_target_multiplier, "power_level_chaos")
-	elseif race == "skaven" or dummy_unit_armor == 2 then
+	elseif race == "skaven" then
 		race_power_level_target_multiplier = buff_extension:apply_buffs_to_value(race_power_level_target_multiplier, "power_level_skaven")
 	end
 
 	stacked_multiplier = stacked_multiplier + race_power_level_target_multiplier - 1
+
+	if is_critical_strike then
+		local power_level_crit_multiplier = 1
+		power_level_crit_multiplier = buff_extension:apply_buffs_to_value(power_level_crit_multiplier, "power_level_critical_strike")
+		stacked_multiplier = stacked_multiplier + power_level_crit_multiplier - 1
+	end
+
 	power_level = power_level * stacked_multiplier
 
 	return power_level
@@ -723,7 +761,7 @@ end
 ActionUtils.redirect_shield_hit = function (hit_unit, hit_actor)
 	local potential_hit_unit_owner = unit_get_data(hit_unit, "shield_owner_unit")
 
-	if not AiUtils.unit_alive(potential_hit_unit_owner) then
+	if not HEALTH_ALIVE[potential_hit_unit_owner] then
 		return hit_unit, hit_actor
 	end
 
@@ -732,7 +770,7 @@ ActionUtils.redirect_shield_hit = function (hit_unit, hit_actor)
 	return potential_hit_unit_owner, new_hit_actor
 end
 
-ActionUtils.resolve_action_selector = function (action, talent_extension, buff_extension, weapon_extension)
+ActionUtils.resolve_action_selector = function (action, talent_extension, buff_extension, weapon_extension, owner_unit)
 	if not action then
 		return nil
 	end
@@ -745,7 +783,7 @@ ActionUtils.resolve_action_selector = function (action, talent_extension, buff_e
 	local conditional_actions = action.conditional_actions
 
 	for i = 1, #conditional_actions do
-		if conditional_actions[i].condition(talent_extension, buff_extension, weapon_extension) then
+		if conditional_actions[i].condition(talent_extension, buff_extension, weapon_extension, owner_unit) then
 			next_action = conditional_actions[i]
 
 			break

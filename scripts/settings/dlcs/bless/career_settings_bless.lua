@@ -2,6 +2,7 @@ CareerActionNames.witch_hunter[#CareerActionNames.witch_hunter + 1] = "action_ca
 PlayerBreeds.hero_wh_priest = {
 	is_hero = true,
 	name = "hero_wh_priest",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -9,7 +10,10 @@ PlayerBreeds.hero_wh_priest = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 CareerSettings.wh_priest = {
 	profile_name = "witch_hunter",

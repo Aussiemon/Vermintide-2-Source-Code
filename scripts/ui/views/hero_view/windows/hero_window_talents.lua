@@ -422,7 +422,6 @@ HeroWindowTalents._populate_career_info = function (self, initialize)
 	local career_settings = profile.careers[career_index]
 	local career_name = career_settings.name
 	local character_selection_image = career_settings.character_selection_image
-	local display_name = career_settings.display_name
 	local widgets_by_name = self._widgets_by_name
 	local career_color = Colors.color_definitions[career_name] and Colors.get_color_table_with_alpha(career_name, 255) or {
 		255,
@@ -434,23 +433,20 @@ HeroWindowTalents._populate_career_info = function (self, initialize)
 	local passive_ability_data = career_settings.passive_ability
 	local activated_ability_data = career_settings.activated_ability[1]
 	local passive_display_name = passive_ability_data.display_name
-	local passive_description = passive_ability_data.description
 	local passive_icon = passive_ability_data.icon
 	local activated_display_name = activated_ability_data.display_name
-	local activated_description = activated_ability_data.description
 	local activated_icon = activated_ability_data.icon
 	widgets_by_name.passive_title_text.content.text = Localize(passive_display_name)
-	widgets_by_name.passive_description_text.content.text = Localize(passive_description)
+	widgets_by_name.passive_description_text.content.text = UIUtils.get_ability_description(passive_ability_data)
 	widgets_by_name.passive_icon.content.texture_id = passive_icon
 	widgets_by_name.active_title_text.content.text = Localize(activated_display_name)
-	widgets_by_name.active_description_text.content.text = Localize(activated_description)
+	widgets_by_name.active_description_text.content.text = UIUtils.get_ability_description(activated_ability_data)
 	widgets_by_name.active_icon.content.texture_id = activated_icon
 	local passive_perks = passive_ability_data.perks
 
 	for index, data in ipairs(passive_perks) do
-		local display_name = data.display_name
-		local description = data.description
 		local widget = widgets_by_name["career_perk_" .. index]
+		local display_name = data.display_name
 		widget.content.text = Localize(display_name)
 		widget.content.tooltip_data = data
 	end

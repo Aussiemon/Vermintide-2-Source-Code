@@ -7,6 +7,7 @@ OutlineSystem.system_extensions = {
 	"PickupOutlineExtension",
 	"PlayerHuskOutlineExtension",
 	"PlayerOutlineExtension",
+	"MinionOutlineExtension",
 	"DoorOutlineExtension",
 	"ObjectiveOutlineExtension",
 	"ObjectiveLightOutlineExtension",
@@ -79,6 +80,36 @@ OutlineSystem.add_ext_functions = {
 		end
 
 		extension:update_override_method_player_setting()
+	end,
+	MinionOutlineExtension = function (extension)
+		extension:add_outline({
+			method = "outside_distance_or_not_visible",
+			outline_color = OutlineSettings.colors.necromancer_command,
+			distance = OutlineSettings.ranges.player_husk,
+			flag = OutlineSettings.flags.non_wall_occluded
+		})
+
+		extension.apply_method = "unit_and_childs"
+		extension.pinged_method = "always"
+
+		extension.update_override_method_minion_setting = function (self)
+			local user_outline_method = nil
+			local outline_user_setting = Application.user_setting("minion_outlines")
+
+			if outline_user_setting == "off" then
+				user_outline_method = "never"
+			elseif outline_user_setting == "always_on" then
+				user_outline_method = "always"
+			else
+				user_outline_method = "outside_distance_or_not_visible"
+			end
+
+			extension:update_outline({
+				method = user_outline_method
+			}, 0)
+		end
+
+		extension:update_override_method_minion_setting()
 	end,
 	PickupOutlineExtension = function (extension)
 		extension:add_outline({
@@ -528,6 +559,13 @@ OutlineSystem.outline_unit = function (self, unit, flag, channel, do_outline, ap
 	else
 		error(sprintf("Non-existant apply method %s", apply_method))
 	end
+
+	local locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system")
+	local bone_lod_id = locomotion_extension and locomotion_extension.bone_lod_extension_id
+
+	if bone_lod_id then
+		EngineOptimized.bone_lod_set_ignore_umbra(bone_lod_id, do_outline)
+	end
 end
 
 OutlineSystem.raycast_result = function (self, unit_center)
@@ -556,7 +594,7 @@ OutlineSystem.never = function (self, unit, extension)
 end
 
 OutlineSystem.ai_alive = function (self, unit, extension)
-	return AiUtils.unit_alive(unit)
+	return not not HEALTH_ALIVE[unit]
 end
 
 OutlineSystem.always = function (self, unit, extension)

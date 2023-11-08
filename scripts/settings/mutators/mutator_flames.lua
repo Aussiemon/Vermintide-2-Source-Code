@@ -33,7 +33,7 @@ return {
 		for id, buff in pairs(data.applied_buffs) do
 			buff.duration = buff.duration + dt
 			local unit = buff.unit
-			local is_dead = not AiUtils.unit_alive(unit)
+			local is_dead = not HEALTH_ALIVE[unit]
 
 			if data.buff_time_enemy < buff.duration or is_dead then
 				data.template.remove_buff(data, unit, id, is_dead)
@@ -41,7 +41,7 @@ return {
 		end
 	end,
 	apply_buff = function (data, hit_unit, attacker_unit, is_enemy)
-		local is_alive = AiUtils.unit_alive(hit_unit)
+		local is_alive = HEALTH_ALIVE[hit_unit]
 		local buff_template_name = is_enemy and data.buff_name_enemy or data.buff_name_player
 		local buff_extension = ScriptUnit.extension(hit_unit, "buff_system")
 		local unit_has_buff = buff_extension:has_buff_type(buff_template_name)

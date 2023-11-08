@@ -181,6 +181,54 @@ TrueFlightTemplates.sorcerer_vortex_dummy_missile = {
 		return final_value
 	end
 }
+TrueFlightTemplates.necromancer_trapped_soul = {
+	lerp_distance_threshold = 625,
+	dont_target_friendly = true,
+	ignore_dead = true,
+	target_tracking_check_func = "update_towards_target",
+	retarget_broadphase_offset = 0,
+	dot_threshold = 0.9999,
+	speed_multiplier = 6.5,
+	broadphase_radius = 7.5,
+	target_players = false,
+	valid_target_dot = 0.99,
+	time_between_raycasts = 0.1,
+	max_on_target_time = math.huge,
+	lerp_modifier_func = function (distance, height, t)
+		return 0.5
+	end,
+	init_func = function (unit, world, seed, custom_data)
+		custom_data.seed = seed
+		custom_data.spin_dir = 1 - bit.band(seed, 128) / 64
+		seed, custom_data.wobble_min = math.next_random_range(seed, 0.3, 0.3)
+		seed, custom_data.wobble_max = math.next_random_range(seed, 0.3, 0.4)
+		seed, custom_data.wobble_speed = math.next_random_range(seed, 2.5, 5)
+		seed, custom_data.wobble_vertical_mult = math.next_random_range(seed, 0.7, 1)
+		seed, custom_data.wobble_horizontal_mult = math.next_random_range(seed, 1, 1.2)
+		seed, custom_data.wobble_stabiliztion_speed = math.next_random_range(seed, 0.3, 0.5)
+	end,
+	update_unit_position = function (unit, position, rotation, custom_data, locomotion_ext)
+		local target_vector = Vector3Box.unbox(locomotion_ext.target_vector_boxed)
+		local time_lived = locomotion_ext.t - locomotion_ext.spawn_time
+		local projectile_speed_scaler = locomotion_ext.speed
+		local amount_t = math.easeCubic(math.clamp(time_lived * custom_data.wobble_stabiliztion_speed * projectile_speed_scaler, 0, 1))
+		local transition_scale = math.clamp(amount_t * 100, 0, 1)
+		local amount_mult = math.lerp(custom_data.wobble_max, custom_data.wobble_min, amount_t) * transition_scale
+		local vertical_wobble_amount = amount_mult * custom_data.wobble_vertical_mult
+		local horizontal_wobble_amount = amount_mult * custom_data.wobble_horizontal_mult
+		local wobble_speed = custom_data.wobble_speed * custom_data.spin_dir
+		local phase_offset = 2.007128639793479
+		local local_wobble_offset = Vector3(math.sin(time_lived * wobble_speed - phase_offset) * horizontal_wobble_amount, 0, math.cos(time_lived * wobble_speed - phase_offset) * vertical_wobble_amount)
+		local wobble_offset = Quaternion.rotate(Quaternion.look(target_vector), local_wobble_offset)
+		local wobble_dist = horizontal_wobble_amount < math.epsilon and 0 or Vector3.dot(Vector3.right(), local_wobble_offset) / horizontal_wobble_amount
+		local rot_offset = Quaternion.axis_angle(Vector3.forward(), -wobble_dist * math.pi * 0.1)
+		local fwd_rot = Quaternion.look(target_vector)
+		rot_offset = Quaternion.multiply(fwd_rot, rot_offset)
+
+		Unit.set_local_rotation(unit, 0, rot_offset)
+		Unit.set_local_position(unit, 0, position + wobble_offset)
+	end
+}
 local template_index = 0
 TrueFlightTemplatesLookup = TrueFlightTemplatesLookup or {}
 

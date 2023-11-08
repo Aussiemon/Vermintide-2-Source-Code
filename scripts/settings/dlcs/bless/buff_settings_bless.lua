@@ -12,13 +12,15 @@ settings.buff_templates = {
 				name = "victor_priest_activated_ability_invincibility",
 				icon = "victor_priest_activated_ability",
 				update_func = "victor_priest_on_career_skill_update",
+				refresh_durations = true,
 				remove_buff_func = "victor_priest_on_career_skill_removed",
 				priority_buff = true,
-				refresh_durations = true,
 				max_stacks = 1,
 				duration = 5,
 				reapply_buff_func = "victor_priest_on_career_skill_applied",
-				perk = buff_perks.invulnerable
+				perks = {
+					buff_perks.invulnerable
+				}
 			}
 		}
 	},
@@ -46,13 +48,15 @@ settings.buff_templates = {
 				name = "victor_priest_activated_ability_invincibility",
 				icon = "victor_priest_activated_ability",
 				update_func = "victor_priest_on_career_skill_update",
+				refresh_durations = true,
 				remove_buff_func = "victor_priest_on_career_skill_removed",
 				priority_buff = true,
-				refresh_durations = true,
 				max_stacks = 1,
 				duration = 8,
 				reapply_buff_func = "victor_priest_on_career_skill_applied",
-				perk = buff_perks.invulnerable
+				perks = {
+					buff_perks.invulnerable
+				}
 			}
 		}
 	},
@@ -78,16 +82,18 @@ settings.buff_templates = {
 				stagger_distance = 1,
 				name = "victor_priest_activated_noclip_improved",
 				refresh_durations = true,
+				push_cooldown = 1,
 				remove_buff_func = "victor_priest_activated_noclip_remove",
 				apply_buff_func = "victor_priest_activated_noclip_apply",
-				push_cooldown = 1,
 				push_radius = 1.5,
 				duration = 8,
 				icon = "victor_priest_6_1",
 				max_stacks = 1,
 				update_func = "victor_priest_activated_noclip_update",
 				update_frequency = 0.1,
-				perk = buff_perks.no_ranged_knockback,
+				perks = {
+					buff_perks.no_ranged_knockback
+				},
 				stagger_impact = {
 					stagger_types.medium,
 					stagger_types.none,
@@ -111,17 +117,15 @@ settings.buff_templates = {
 			{
 				duration = 5,
 				name = "victor_priest_nuke_dot",
-				end_flow_event = "smoke",
-				start_flow_event = "burn",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 0.7,
 				time_between_dot_damages = 0.7,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
+				perks = {
+					buff_perks.burning
+				}
 			}
 		}
 	},
@@ -303,12 +307,13 @@ settings.proc_functions = {
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
 			for i = 1, #player_and_bot_units do
-				if ALIVE[player_and_bot_units[i]] then
-					local health_extension = ScriptUnit.extension(player_and_bot_units[i], "health_system")
-					local status_extension = ScriptUnit.extension(player_and_bot_units[i], "status_system")
+				local unit = player_and_bot_units[i]
 
-					if not status_extension:is_knocked_down() and not status_extension:is_assisted_respawning() and health_extension:is_alive() then
-						DamageUtils.heal_network(player_and_bot_units[i], owner_unit, amount_to_heal, "career_passive")
+				if HEALTH_ALIVE[unit] then
+					local status_extension = ScriptUnit.extension(unit, "status_system")
+
+					if not status_extension:is_knocked_down() and not status_extension:is_assisted_respawning() then
+						DamageUtils.heal_network(unit, owner_unit, amount_to_heal, "career_passive")
 					end
 				end
 			end

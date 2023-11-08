@@ -4,10 +4,9 @@ local CONSUMABLE_SLOTS = {
 	"slot_potion",
 	"slot_grenade"
 }
-local temp_table = {}
 
 SpawningHelper.netpack_consumables = function (consumables)
-	table.clear(temp_table)
+	local return_table = {}
 
 	for i = 1, #CONSUMABLE_SLOTS do
 		local slot_name = CONSUMABLE_SLOTS[i]
@@ -18,16 +17,14 @@ SpawningHelper.netpack_consumables = function (consumables)
 			item_name = "n/a"
 		end
 
-		temp_table[i] = NetworkLookup.item_names[item_name]
+		return_table[i] = NetworkLookup.item_names[item_name]
 	end
 
-	return temp_table
+	return return_table
 end
 
-local temp_table_2 = {}
-
 SpawningHelper.netpack_additional_items = function (additional_items)
-	table.clear(temp_table_2)
+	local return_table = {}
 
 	for slot_name, slot_data in pairs(additional_items) do
 		local slot_items = slot_data.items
@@ -39,13 +36,13 @@ SpawningHelper.netpack_additional_items = function (additional_items)
 				local item_name = item.key
 				local slot_id = NetworkLookup.equipment_slots[slot_name]
 				local item_id = NetworkLookup.item_names[item_name]
-				temp_table_2[#temp_table_2 + 1] = slot_id
-				temp_table_2[#temp_table_2 + 1] = item_id
+				return_table[#return_table + 1] = slot_id
+				return_table[#return_table + 1] = item_id
 			end
 		end
 	end
 
-	return temp_table_2
+	return return_table
 end
 
 SpawningHelper.unnetpack_additional_items = function (encoded_additional_items)
@@ -77,7 +74,9 @@ SpawningHelper.fill_consumable_table = function (consumables, inventory_extensio
 		local item_data = slot_data and slot_data.item_data
 		local item_key = item_data and item_data.key
 
-		if (item_key ~= nil or consumables[slot_name] ~= nil) and (not item_data or not item_data.skip_sync) then
+		if item_data and item_data.skip_sync then
+			consumables[slot_name] = nil
+		else
 			consumables[slot_name] = item_key
 		end
 	end

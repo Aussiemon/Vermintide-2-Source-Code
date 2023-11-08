@@ -5,19 +5,19 @@ local weapon_template = {
 	actions = {
 		action_one = {
 			default = {
-				charge_value = "arrow_hit",
+				anim_event = "attack_shoot_fast",
+				ammo_usage = 1,
 				kind = "bow",
 				weapon_action_hand = "left",
 				fire_sound_event = "player_combat_weapon_imperial_bow_fire_light",
 				apply_recoil = true,
-				ammo_usage = 1,
 				aim_assist_max_ramp_multiplier = 0.8,
 				aim_assist_ramp_decay_delay = 0.3,
 				anim_event_last_ammo = "attack_shoot_fast_last",
+				charge_value = "arrow_hit",
 				override_reload_time = 0.25,
 				speed = 6500,
 				aim_assist_ramp_multiplier = 0.4,
-				anim_event = "attack_shoot_fast",
 				total_time = 1,
 				buff_data = {
 					{
@@ -60,13 +60,6 @@ local weapon_template = {
 					input_extension:clear_input_buffer()
 
 					return input_extension:reset_release_input()
-				end,
-				condition_func = function (unit, input_extension, ammo_extension)
-					if ammo_extension and (ammo_extension:total_remaining_ammo() <= 0 or ammo_extension:is_reloading()) then
-						return false
-					end
-
-					return true
 				end,
 				hit_effect = ARROW_HIT_EFFECT,
 				projectile_info = Projectiles.carbine_arrow,
@@ -350,6 +343,7 @@ weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.bow
 weapon_template.wield_anim_not_loaded = "to_es_longbow"
 weapon_template.wield_anim = "to_es_longbow"
 weapon_template.wield_anim_no_ammo = "to_es_longbow_noammo"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/ranged/longbow_es"
 weapon_template.crosshair_style = "projectile"
 weapon_template.no_ammo_reload_event = "reload"
 weapon_template.reload_event = "reload"

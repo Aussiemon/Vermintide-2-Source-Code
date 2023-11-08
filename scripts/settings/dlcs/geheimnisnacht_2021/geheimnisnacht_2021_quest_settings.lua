@@ -1,5 +1,23 @@
 local settings = DLCSettings.geheimnisnacht_2021
 local quest_meta_mapping = {
+	event_geheimnisnacht_2023_disrupt_all = {
+		"event_geheimnisnacht_2023_disrupt_bardin",
+		"event_geheimnisnacht_2023_disrupt_markus",
+		"event_geheimnisnacht_2023_disrupt_kerillian",
+		"event_geheimnisnacht_2023_disrupt_victor",
+		"event_geheimnisnacht_2023_disrupt_sienna"
+	},
+	event_geheimnisnacht_2023_complete_all = {
+		"event_geheimnisnacht_2023_play_5",
+		"event_geheimnisnacht_2023_kill_cultists",
+		"event_geheimnisnacht_2023_disrupt_bardin",
+		"event_geheimnisnacht_2023_disrupt_markus",
+		"event_geheimnisnacht_2023_disrupt_kerillian",
+		"event_geheimnisnacht_2023_disrupt_victor",
+		"event_geheimnisnacht_2023_disrupt_sienna",
+		"event_geheimnisnacht_2023_disrupt_all",
+		"event_geheimnisnacht_2023_play_5_hardmode"
+	},
 	event_geheimnisnacht_2022_disrupt_all = {
 		"event_geheimnisnacht_2022_disrupt_bardin",
 		"event_geheimnisnacht_2022_disrupt_markus",
@@ -38,11 +56,11 @@ local quest_meta_mapping = {
 	}
 }
 local hard_mode_levels = table.mirror_array_inplace({
-	"catacombs",
-	"mines",
-	"ground_zero",
-	"elven_ruins",
-	"farmlands"
+	"warcamp",
+	"dlc_dwarf_beacons",
+	"nurgle",
+	"dlc_bastion",
+	"dlc_wizards_tower"
 })
 
 local function make_meta_progress(meta_quest_map)
@@ -109,6 +127,273 @@ local register_kill_victim_unit = 2
 local register_kill_damage_data = 3
 local register_kill_victim_breed = 4
 settings.quest_templates = {
+	event_geheimnisnacht_2023_play_5 = {
+		name = "quest_event_geheimnisnacht_2023_play_5",
+		icon = "quest_book_geheimnisnacht",
+		desc = "quest_event_geheimnisnacht_2023_play_5_desc",
+		completed = function (statistics_db, stats_id, quest_key, quest_templates)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) >= 5
+		end,
+		progress = function (statistics_db, stats_id, quest_key, quest_templates)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+			local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+			return {
+				count,
+				5
+			}
+		end,
+		events = {
+			"register_completed_level"
+		},
+		on_event = function (statistics_db, stats_id, template_data, event_name, event_data, quest_key)
+			if Managers.state.game_mode:has_activated_mutator("night_mode") then
+				local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+				statistics_db:increment_stat(stats_id, "quest_statistics", stat_name)
+			end
+		end
+	},
+	event_geheimnisnacht_2023_disrupt_markus = {
+		name = "quest_event_geheimnisnacht_2023_disrupt_markus",
+		icon = "quest_book_geheimnisnacht",
+		desc = "quest_event_geheimnisnacht_2023_disrupt_markus_desc",
+		completed = function (statistics_db, stats_id, quest_key, quest_templates)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) >= 1
+		end,
+		events = {
+			"altar_destroyed"
+		},
+		on_event = function (statistics_db, stats_id, template_data, event_name, event_data, quest_key)
+			local level_transition_handler = Managers.level_transition_handler
+			local level_key = level_transition_handler:get_current_level_keys()
+
+			if level_key ~= "dlc_bastion" then
+				return
+			end
+
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			statistics_db:increment_stat(stats_id, "quest_statistics", stat_name)
+		end
+	},
+	event_geheimnisnacht_2023_disrupt_bardin = {
+		name = "quest_event_geheimnisnacht_2023_disrupt_bardin",
+		icon = "quest_book_geheimnisnacht",
+		desc = "quest_event_geheimnisnacht_2023_disrupt_bardin_desc",
+		completed = function (statistics_db, stats_id, quest_key, quest_templates)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) >= 1
+		end,
+		events = {
+			"altar_destroyed"
+		},
+		on_event = function (statistics_db, stats_id, template_data, event_name, event_data, quest_key)
+			local level_transition_handler = Managers.level_transition_handler
+			local level_key = level_transition_handler:get_current_level_keys()
+
+			if level_key ~= "dlc_dwarf_beacons" then
+				return
+			end
+
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			statistics_db:increment_stat(stats_id, "quest_statistics", stat_name)
+		end
+	},
+	event_geheimnisnacht_2023_kill_cultists = {
+		name = "quest_event_geheimnisnacht_2023_kill_cultists",
+		icon = "quest_book_geheimnisnacht",
+		desc = "quest_event_geheimnisnacht_2023_kill_cultists_desc",
+		completed = function (statistics_db, stats_id, quest_key, quest_templates)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) >= 250
+		end,
+		progress = function (statistics_db, stats_id, quest_key, quest_templates)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+			local count = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name)
+
+			return {
+				count,
+				250
+			}
+		end,
+		events = {
+			"register_kill"
+		},
+		on_event = function (statistics_db, stats_id, template_data, event_name, event_data, quest_key)
+			local killed_unit = event_data[register_kill_victim_unit]
+
+			if not killed_unit then
+				return
+			end
+
+			local killed_buff_extension = ScriptUnit.has_extension(killed_unit, "buff_system")
+
+			if not killed_buff_extension or not killed_buff_extension:has_buff_type("geheimnisnacht_2021_event_eye_glow") then
+				return
+			end
+
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			statistics_db:increment_stat(stats_id, "quest_statistics", stat_name)
+		end
+	},
+	event_geheimnisnacht_2023_disrupt_kerillian = {
+		name = "quest_event_geheimnisnacht_2023_disrupt_kerillian",
+		icon = "quest_book_geheimnisnacht",
+		desc = "quest_event_geheimnisnacht_2023_disrupt_kerillian_desc",
+		completed = function (statistics_db, stats_id, quest_key, quest_templates)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) >= 1
+		end,
+		events = {
+			"altar_destroyed"
+		},
+		on_event = function (statistics_db, stats_id, template_data, event_name, event_data, quest_key)
+			local level_transition_handler = Managers.level_transition_handler
+			local level_key = level_transition_handler:get_current_level_keys()
+
+			if level_key ~= "nurgle" then
+				return
+			end
+
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			statistics_db:increment_stat(stats_id, "quest_statistics", stat_name)
+		end
+	},
+	event_geheimnisnacht_2023_disrupt_victor = {
+		name = "quest_event_geheimnisnacht_2023_disrupt_victor",
+		icon = "quest_book_geheimnisnacht",
+		desc = "quest_event_geheimnisnacht_2023_disrupt_victor_desc",
+		completed = function (statistics_db, stats_id, quest_key, quest_templates)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) >= 1
+		end,
+		events = {
+			"altar_destroyed"
+		},
+		on_event = function (statistics_db, stats_id, template_data, event_name, event_data, quest_key)
+			local level_transition_handler = Managers.level_transition_handler
+			local level_key = level_transition_handler:get_current_level_keys()
+
+			if level_key ~= "warcamp" then
+				return
+			end
+
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			statistics_db:increment_stat(stats_id, "quest_statistics", stat_name)
+		end
+	},
+	event_geheimnisnacht_2023_disrupt_sienna = {
+		name = "quest_event_geheimnisnacht_2023_disrupt_sienna",
+		icon = "quest_book_geheimnisnacht",
+		desc = "quest_event_geheimnisnacht_2023_disrupt_sienna_desc",
+		completed = function (statistics_db, stats_id, quest_key, quest_templates)
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) >= 1
+		end,
+		events = {
+			"altar_destroyed"
+		},
+		on_event = function (statistics_db, stats_id, template_data, event_name, event_data, quest_key)
+			local level_transition_handler = Managers.level_transition_handler
+			local level_key = level_transition_handler:get_current_level_keys()
+
+			if level_key ~= "dlc_wizards_tower" then
+				return
+			end
+
+			local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+			statistics_db:increment_stat(stats_id, "quest_statistics", stat_name)
+		end
+	},
+	event_geheimnisnacht_2023_disrupt_all = {
+		name = "quest_event_geheimnisnacht_2023_disrupt_all",
+		icon = "quest_book_geheimnisnacht",
+		desc = "quest_event_geheimnisnacht_2023_disrupt_all_desc",
+		completed = make_meta_completed(quest_meta_mapping.event_geheimnisnacht_2023_disrupt_all),
+		progress = make_meta_progress(quest_meta_mapping.event_geheimnisnacht_2023_disrupt_all),
+		requirements = make_meta_requirements(quest_meta_mapping.event_geheimnisnacht_2023_disrupt_all)
+	},
+	event_geheimnisnacht_2023_complete_all = {
+		name = "quest_event_geheimnisnacht_2023_complete_all",
+		icon = "quest_book_geheimnisnacht",
+		desc = "quest_event_geheimnisnacht_2023_complete_all_desc",
+		completed = make_meta_completed(quest_meta_mapping.event_geheimnisnacht_2023_complete_all),
+		progress = make_meta_progress(quest_meta_mapping.event_geheimnisnacht_2023_complete_all),
+		requirements = make_meta_requirements(quest_meta_mapping.event_geheimnisnacht_2023_complete_all)
+	},
+	event_geheimnisnacht_2023_play_5_hardmode = {
+		name = "quest_event_geheimnisnacht_2023_play_5_hardmode",
+		icon = "quest_book_geheimnisnacht",
+		desc = "quest_event_geheimnisnacht_2023_play_5_hardmode_desc",
+		completed = function (statistics_db, stats_id, quest_key, quest_templates)
+			for i = 1, #hard_mode_levels do
+				local stat_name = QuestSettings.stat_mappings[quest_key][i]
+
+				if statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) <= 0 then
+					return false
+				end
+			end
+
+			return true
+		end,
+		progress = function (statistics_db, stats_id, quest_key, quest_templates)
+			local count = 0
+
+			for i = 1, #hard_mode_levels do
+				local stat_name = QuestSettings.stat_mappings[quest_key][i]
+
+				if statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) > 0 then
+					count = count + 1
+				end
+			end
+
+			return {
+				count,
+				5
+			}
+		end,
+		requirements = function (statistics_db, stats_id, quest_key, quest_templates, claimed_quests)
+			local reqs = {}
+
+			for i = 1, #hard_mode_levels do
+				local level_id = hard_mode_levels[i]
+				local stat_name = QuestSettings.stat_mappings[quest_key][i]
+				local completed = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) > 0
+				reqs[i] = {
+					name = LevelSettings[level_id].display_name,
+					completed = completed
+				}
+			end
+
+			return reqs
+		end,
+		events = {
+			"register_completed_level"
+		},
+		on_event = function (statistics_db, stats_id, template_data, event_name, event_data, quest_key)
+			if Managers.state.game_mode:has_activated_mutator("geheimnisnacht_2021_hard_mode") then
+				local stat_id = hard_mode_levels[event_data[2]]
+				local stat_name = QuestSettings.stat_mappings[quest_key][stat_id]
+
+				statistics_db:increment_stat(stats_id, "quest_statistics", stat_name)
+			end
+		end
+	},
 	event_geheimnisnacht_2022_play_5 = {
 		name = "quest_event_geheimnisnacht_2022_play_5",
 		icon = "quest_book_geheimnisnacht",

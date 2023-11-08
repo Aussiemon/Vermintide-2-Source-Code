@@ -146,32 +146,31 @@ local weapon_template = {
 			default = {
 				charge_sound_stop_event = "player_combat_weapon_bw_deus_01_charge_down",
 				scale_chain_window_by_charge_time_buff = true,
-				charge_ready_sound_event = "hud_gameplay_stance_deactivate",
-				min_radius = 0.5,
+				fire_at_gaze_setting = "tobii_fire_at_gaze_geiser",
+				crosshair_style = "dot",
 				kind = "geiser_targeting",
 				debug_draw = false,
-				scale_anim_by_charge_time_buff = false,
-				crosshair_style = "dot",
-				attack_template = "staff_magma_charge",
-				overcharge_interval = 0.3,
-				charge_sound_switch = "projectile_charge_sound",
-				charge_sound_husk_stop_event = "stop_player_combat_weapon_bw_deus_01_charge_husk",
 				angle = 0,
-				minimum_hold_time = 0.1,
-				particle_effect = "fx/wpnfx_staff_geiser_charge",
-				anim_end_event = "attack_geiser_end",
-				fire_time = 0.1,
-				speed = 15,
-				anim_event = "attack_geiser_start",
-				charge_sound_name = "player_combat_weapon_bw_deus_01_charge",
 				height = 6,
-				fire_at_gaze_setting = "tobii_fire_at_gaze_geiser",
+				overcharge_interval = 0.3,
+				min_radius = 0.5,
+				anim_end_event = "attack_geiser_end",
+				scale_anim_by_charge_time_buff = false,
 				charge_sound_husk_name = "player_combat_weapon_bw_deus_01_charge_husk",
+				minimum_hold_time = 0.1,
 				gravity = -9.82,
 				overcharge_type = "charging",
+				charge_ready_sound_event = "hud_gameplay_stance_deactivate",
+				fire_time = 0.1,
+				particle_effect = "fx/wpnfx_staff_geiser_charge_remap",
 				charge_time = 0.6,
+				speed = 15,
+				charge_sound_switch = "projectile_charge_sound",
+				charge_sound_husk_stop_event = "stop_player_combat_weapon_bw_deus_01_charge_husk",
 				hold_input = "action_two_hold",
+				anim_event = "attack_geiser_start",
 				max_radius = 1,
+				charge_sound_name = "player_combat_weapon_bw_deus_01_charge",
 				anim_end_event_condition_func = function (unit, end_reason)
 					return end_reason ~= "new_interupting_action"
 				end,
@@ -295,6 +294,7 @@ local weapon_template = {
 	left_hand_attachment_node_linking = AttachmentNodeLinking.fireball,
 	display_unit = "units/weapons/weapon_display/display_staff",
 	wield_anim = "to_staff",
+	state_machine = "units/beings/player/first_person_base/state_machines/ranged/staff",
 	crosshair_style = "arrows",
 	buff_type = "RANGED",
 	weapon_type = "FIRE_STAFF",
@@ -307,87 +307,64 @@ local weapon_template = {
 			external_optional_multiplier = 1
 		}
 	},
-	particle_fx = {
-		wield = {
-			{
-				orphaned_policy = "stop",
-				effect = "fx/wpnfx_bw_deus_01_1p",
-				third_person = false,
-				link_target = "right_weapon",
-				first_person = true,
-				link_node = "fx_base",
-				destroy_policy = "stop_spawning"
-			},
-			{
-				orphaned_policy = "stop",
-				effect = "fx/wpnfx_bw_deus_01",
-				third_person = true,
-				link_target = "right_weapon",
-				first_person = false,
-				link_node = "fx_base",
-				destroy_policy = "stop_spawning"
-			}
+	wwise_dep_right_hand = {
+		"wwise/bw_deus_01"
+	},
+	dodge_distance = 1,
+	dodge_speed = 1,
+	aim_assist_settings = {
+		max_range = 50,
+		no_aim_input_multiplier = 0,
+		always_auto_aim = true,
+		base_multiplier = 0,
+		target_node = "j_spine1",
+		effective_max_range = 30,
+		breed_scalars = {
+			skaven_storm_vermin = 1,
+			skaven_clan_rat = 1,
+			skaven_slave = 1
 		}
-	}
-}
-weapon_template.particle_fx_lookup = table.mirror_array_inplace(table.keys(weapon_template.particle_fx))
-weapon_template.wwise_dep_right_hand = {
-	"wwise/bw_deus_01"
-}
-weapon_template.dodge_distance = 1
-weapon_template.dodge_speed = 1
-weapon_template.aim_assist_settings = {
-	max_range = 50,
-	no_aim_input_multiplier = 0,
-	always_auto_aim = true,
-	base_multiplier = 0,
-	target_node = "j_spine1",
-	effective_max_range = 30,
-	breed_scalars = {
-		skaven_storm_vermin = 1,
-		skaven_clan_rat = 1,
-		skaven_slave = 1
-	}
-}
-weapon_template.weapon_diagram = {
-	light_attack = {
-		[DamageTypes.ARMOR_PIERCING] = 4,
-		[DamageTypes.CLEAVE] = 6,
-		[DamageTypes.SPEED] = 2,
-		[DamageTypes.STAGGER] = 2,
-		[DamageTypes.DAMAGE] = 5
 	},
-	heavy_attack = {
-		[DamageTypes.ARMOR_PIERCING] = 1,
-		[DamageTypes.CLEAVE] = 7,
-		[DamageTypes.SPEED] = 3,
-		[DamageTypes.STAGGER] = 0,
-		[DamageTypes.DAMAGE] = 3
-	}
-}
-weapon_template.tooltip_keywords = {
-	"weapon_keyword_damage_over_time",
-	"weapon_keyword_crowd_control",
-	"weapon_keyword_charged_attack"
-}
-weapon_template.tooltip_compare = {
-	light = {
-		action_name = "action_one",
-		sub_action_name = "default"
+	weapon_diagram = {
+		light_attack = {
+			[DamageTypes.ARMOR_PIERCING] = 4,
+			[DamageTypes.CLEAVE] = 6,
+			[DamageTypes.SPEED] = 2,
+			[DamageTypes.STAGGER] = 2,
+			[DamageTypes.DAMAGE] = 5
+		},
+		heavy_attack = {
+			[DamageTypes.ARMOR_PIERCING] = 1,
+			[DamageTypes.CLEAVE] = 7,
+			[DamageTypes.SPEED] = 3,
+			[DamageTypes.STAGGER] = 0,
+			[DamageTypes.DAMAGE] = 3
+		}
 	},
-	heavy = {
-		action_name = "action_one",
-		sub_action_name = "geiser_launch"
-	}
-}
-weapon_template.tooltip_detail = {
-	light = {
-		action_name = "action_one",
-		sub_action_name = "default"
+	tooltip_keywords = {
+		"weapon_keyword_damage_over_time",
+		"weapon_keyword_crowd_control",
+		"weapon_keyword_charged_attack"
 	},
-	heavy = {
-		action_name = "action_one",
-		sub_action_name = "geiser_launch"
+	tooltip_compare = {
+		light = {
+			action_name = "action_one",
+			sub_action_name = "default"
+		},
+		heavy = {
+			action_name = "action_one",
+			sub_action_name = "geiser_launch"
+		}
+	},
+	tooltip_detail = {
+		light = {
+			action_name = "action_one",
+			sub_action_name = "default"
+		},
+		heavy = {
+			action_name = "action_one",
+			sub_action_name = "geiser_launch"
+		}
 	}
 }
 

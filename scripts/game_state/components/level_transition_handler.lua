@@ -1,4 +1,5 @@
 require("scripts/game_state/components/enemy_package_loader")
+require("scripts/game_state/components/transient_package_loader")
 
 local global_print = print
 
@@ -25,6 +26,7 @@ LevelTransitionHandler.init = function (self)
 	self._has_loaded_all_packages = nil
 	self.loaded_levels = {}
 	self.enemy_package_loader = EnemyPackageLoader:new()
+	self.transient_package_loader = TransientPackageLoader:new()
 	self._network_state = nil
 	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages = nil
 	level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages = LevelTransitionHandler.apply_defaults_to_level_data(level_key, level_seed, environment_variation_id, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages)
@@ -76,10 +78,12 @@ end
 
 LevelTransitionHandler.register_rpcs = function (self, network_event_delegate)
 	self.enemy_package_loader:register_rpcs(network_event_delegate)
+	self.transient_package_loader:register_rpcs(network_event_delegate)
 end
 
 LevelTransitionHandler.unregister_rpcs = function (self)
 	self.enemy_package_loader:unregister_rpcs()
+	self.transient_package_loader:unregister_rpcs()
 end
 
 LevelTransitionHandler.reload_level = function (self, optional_checkpoint_data, optional_level_seed)
@@ -133,6 +137,7 @@ LevelTransitionHandler.update = function (self)
 	end
 
 	self.enemy_package_loader:update()
+	self.transient_package_loader:update()
 end
 
 LevelTransitionHandler.promote_next_level_data = function (self)
@@ -184,7 +189,7 @@ LevelTransitionHandler.load_current_level = function (self)
 
 		dprint("loading level: %q", new_level_key)
 		dprint("loading packages: %s", table.tostring(packages))
-		dprint("loading extra packages: %s", table.tostring(extra_packages))
+		dprint("loading extra packages: [%s] %s", new_level_key, table.tostring(extra_packages))
 
 		self.loading_packages[new_level_key] = true
 		self._has_loaded_all_packages = false
@@ -195,30 +200,29 @@ LevelTransitionHandler.load_current_level = function (self)
 	self._currently_loaded_level_session_id = new_loaded_level_session_id
 end
 
-LevelTransitionHandler.release_level_resources = function (self, level_key)
-	if level_key == nil then
+LevelTransitionHandler.release_level_resources = function (self)
+	local reference_name = self._currently_loaded_level_key
+
+	if not reference_name then
 		return
 	end
 
-	self:_release_extra_packages(level_key)
-	self:_release_level_resources(level_key)
+	self:_release_extra_packages(reference_name)
+	self:_release_level_resources(reference_name)
+
+	self._currently_loaded_level_key = nil
+	self._currently_loaded_environment_variation_id = nil
 end
 
-LevelTransitionHandler._release_level_resources = function (self, level_key)
-	local is_loaded = self.loaded_levels[level_key]
-	local is_loading = self.loading_packages[level_key]
+LevelTransitionHandler._release_level_resources = function (self, reference_name)
+	local is_loaded = self.loaded_levels[reference_name]
+	local is_loading = self.loading_packages[reference_name]
 
 	if not LEVEL_EDITOR_TEST and (is_loaded or is_loading) then
-		self:_unload_level_packages(level_key)
+		self:_unload_level_packages(reference_name)
 
-		self.loading_packages[level_key] = nil
-
-		if self._currently_loaded_level_key == level_key then
-			self._currently_loaded_level_key = nil
-			self._currently_loaded_environment_variation_id = nil
-		end
-
-		self.loaded_levels[level_key] = false
+		self.loading_packages[reference_name] = nil
+		self.loaded_levels[reference_name] = false
 	end
 end
 
@@ -239,12 +243,11 @@ LevelTransitionHandler._load_extra_packages = function (self, level_key, extra_p
 	end
 end
 
-LevelTransitionHandler._release_extra_packages = function (self, level_key)
-	local reference_name = level_key
+LevelTransitionHandler._release_extra_packages = function (self, reference_name)
 	local extra_level_packages = self._extra_packages
 
 	if extra_level_packages then
-		dprint("unloading extra packages: %s", table.tostring(extra_level_packages))
+		dprint("unloading extra packages: [%s] %s", reference_name, table.tostring(extra_level_packages))
 
 		local package_manager = Managers.package
 

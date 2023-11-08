@@ -76,9 +76,6 @@ local function pick_action(action_name)
 	end
 
 	local num_condiditons = #cons_lookup
-
-	fassert(num_condiditons <= 6, "only support for 6 edit windows, %s have %d conditions -> poke jocke w and tell him to fix this", action_name, num_condiditons)
-
 	considerations = UtilityConsiderations[action_name]
 end
 

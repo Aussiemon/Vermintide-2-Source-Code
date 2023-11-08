@@ -4,28 +4,28 @@ local breed_data = {
 	leave_walk_distance = 5,
 	walk_speed = 1.8,
 	uses_spawn_animation = true,
-	aim_template = "chaos_marauder",
-	patrol_active_target_selection = "pick_closest_target_with_spillover",
 	exchange_order = 4,
-	die_on_vortex_land = true,
+	patrol_active_target_selection = "pick_closest_target_with_spillover",
+	flingable = true,
 	hit_effect = "fx/tower_skeletons_hit",
 	target_selection = "pick_closest_target_with_spillover",
-	is_always_spawnable = true,
 	aoe_height = 1.4,
+	is_always_spawnable = true,
 	debug_spawn_category = "Misc",
 	no_blood = true,
 	scale_death_push = 0.35,
-	animation_sync_rpc = "rpc_sync_anim_state_8",
+	aim_template = "chaos_marauder",
 	shield_blunt_block_sound = "Play_enemy_undead_ethereal_skeleton_shield_impact",
 	slot_template = "chaos_roamer",
 	no_stagger_duration = true,
+	die_on_vortex_land = true,
 	wield_inventory_on_spawn = true,
 	attack_general_sound_event = "Play_enemy_undead_ethereal_skeleton_attack_vce_husk",
 	default_inventory_template = "undead_ethereal_skeleton_with_shield",
 	stagger_resistance = 5,
 	patrol_detection_radius = 10,
+	animation_sync_rpc = "rpc_sync_anim_state_8",
 	hesitation_timer = 5,
-	flingable = true,
 	attack_player_sound_event = "Play_enemy_undead_ethereal_skeleton_attack_vce",
 	panic_close_detection_radius_sq = 9,
 	radius = 1,
@@ -46,13 +46,13 @@ local breed_data = {
 	death_sound_event = "Play_enemy_undead_ethereal_skeleton_death",
 	uses_attack_sfx_callback = true,
 	push_sound_event = "Play_generic_pushed_impact_large",
+	is_bot_threat = true,
 	threat_value = 2.5,
 	smart_targeting_width = 0.2,
 	bone_lod_level = 1,
-	smart_object_template = "chaos_marauder",
 	behavior = "ethereal_skeleton_with_shield",
 	use_regular_horde_spawning = false,
-	is_bot_threat = true,
+	smart_object_template = "chaos_marauder",
 	during_horde_detection_radius = 15,
 	shield_user = true,
 	has_inventory = true,
@@ -82,6 +82,7 @@ local breed_data = {
 	vortexable = true,
 	base_unit = "units/beings/enemies/undead_ethereal_skeleton/chr_undead_ethereal_skeleton",
 	enter_walk_distance = 2.5,
+	infighting = InfightingSettings.small,
 	passive_in_patrol_start_anim = {
 		"move_fwd_4",
 		"move_fwd_5",
@@ -119,6 +120,14 @@ local breed_data = {
 	diff_stagger_resist = BreedTweaks.diff_stagger_resist.marauder,
 	stagger_duration = BreedTweaks.stagger_duration.marauder,
 	hit_mass_counts = BreedTweaks.hit_mass_counts.clan_rat,
+	status_effect_settings = {
+		category = "small",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning,
+			StatusEffectNames.burning_warpfire,
+			StatusEffectNames.poisoned
+		})
+	},
 	debug_color = {
 		255,
 		200,
@@ -388,15 +397,6 @@ local AttackIntensityPerDifficulty = {
 	}
 }
 local action_data = {
-	default_spawn_animation = {
-		"spawn_floor",
-		"spawn_floor_2",
-		"spawn_floor_3",
-		"spawn_floor_4",
-		"spawn_floor_5",
-		"spawn_floor_6",
-		"spawn_floor_7"
-	},
 	idle = {
 		anim_cycle_index = 0,
 		animations = {

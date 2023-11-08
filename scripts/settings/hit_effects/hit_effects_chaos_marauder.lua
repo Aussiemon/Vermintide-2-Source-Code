@@ -700,7 +700,6 @@ HitEffectsChaosMarauder = {
 	},
 	burning_smiter_death = {
 		inherits = "default_death",
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -716,7 +715,8 @@ HitEffectsChaosMarauder = {
 			distal_force = 20,
 			vertical_force = -50,
 			lateral_force = 0
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burning_smiter_death_head = {
 		inherits = "burning_smiter_death",
@@ -884,7 +884,6 @@ HitEffectsChaosMarauder = {
 	},
 	burning_stab_fencer_death = {
 		inherits = "default_death",
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -900,7 +899,8 @@ HitEffectsChaosMarauder = {
 			distal_force = 30,
 			vertical_force = 0,
 			lateral_force = 0
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	heavy_stab_fencer_death = {
 		inherits = "default_death",
@@ -1437,7 +1437,6 @@ HitEffectsChaosMarauder = {
 	burning_tank_death = {
 		inherits = "default_death",
 		do_dismember = false,
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1453,7 +1452,8 @@ HitEffectsChaosMarauder = {
 			distal_force = 10,
 			vertical_force = 0,
 			lateral_force = 30
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burning_tank_death_head = {
 		inherits = "burning_tank_death",
@@ -1472,7 +1472,6 @@ HitEffectsChaosMarauder = {
 	heavy_burning_tank_death = {
 		inherits = "default_death",
 		do_dismember = true,
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1488,7 +1487,8 @@ HitEffectsChaosMarauder = {
 			distal_force = 20,
 			vertical_force = 10,
 			lateral_force = 40
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	heavy_burning_tank_death_head = {
 		inherits = "heavy_burning_tank_death",
@@ -1504,7 +1504,6 @@ HitEffectsChaosMarauder = {
 	},
 	light_burning_linesman_death = {
 		inherits = "default_death",
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1520,7 +1519,8 @@ HitEffectsChaosMarauder = {
 			distal_force = 20,
 			vertical_force = -10,
 			lateral_force = 30
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	light_burning_linesman_death_head = {
 		inherits = "light_burning_linesman_death",
@@ -1536,7 +1536,6 @@ HitEffectsChaosMarauder = {
 	},
 	burning_linesman_death = {
 		inherits = "default_death",
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1552,7 +1551,8 @@ HitEffectsChaosMarauder = {
 			distal_force = 20,
 			vertical_force = 0,
 			lateral_force = 40
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burning_linesman_death_right_arm = {
 		inherits = "burning_linesman_death",
@@ -1790,6 +1790,7 @@ HitEffectsChaosMarauder = {
 			damage_type = {
 				"arrow_sniper",
 				"arrow_carbine",
+				"elven_magic_arrow_carbine",
 				"arrow_machinegun",
 				"arrow_shotgun",
 				"bolt_sniper",
@@ -1852,6 +1853,13 @@ HitEffectsChaosMarauder = {
 			lateral_force = 0
 		}
 	},
+	elven_magic_arrow_carbine_death = {
+		inherits = "arrow_carbine_death",
+		extra_conditions = {
+			damage_type = "elven_magic_arrow_carbine"
+		},
+		timed_status = StatusEffectNames.burning_elven_magic
+	},
 	arrow_sniper_death = {
 		inherits = "arrow_death",
 		extra_conditions = {
@@ -1878,6 +1886,13 @@ HitEffectsChaosMarauder = {
 			vertical_force = 10,
 			lateral_force = 0
 		}
+	},
+	elven_magic_arrow_carbine_death_head = {
+		inherits = "arrow_carbine_death_head",
+		extra_conditions = {
+			damage_type = "elven_magic_arrow_carbine"
+		},
+		timed_status = StatusEffectNames.burning_elven_magic
 	},
 	arrow_sniper_death_head = {
 		inherits = "arrow_death_head",
@@ -2091,14 +2106,11 @@ HitEffectsChaosMarauder = {
 			damage_type = "burninating"
 		}
 	},
-	burn_death = {
-		flow_event = "burn_death",
+	burninating_death = {
+		inherits = "burninating",
 		extra_conditions = {
 			death = true,
-			damage_type = {
-				"burn",
-				"burninating"
-			}
+			damage = true
 		},
 		animations = {
 			"ragdoll",
@@ -2106,23 +2118,19 @@ HitEffectsChaosMarauder = {
 			"death_burn_2"
 		}
 	},
-	burn_death_force_fire = {
-		flow_event = "burn_death_force_fire",
+	burn_death = {
 		extra_conditions = {
 			death = true,
-			damage_type = {
-				"burn_force_fire",
-				"burninating_force_fire"
-			}
+			damage_type = "burn"
 		},
 		animations = {
 			"ragdoll",
 			"death_burn",
 			"death_burn_2"
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burn_sniper_death = {
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -2132,6 +2140,7 @@ HitEffectsChaosMarauder = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -2141,7 +2150,6 @@ HitEffectsChaosMarauder = {
 	burn_sniper_death_dismember = {
 		inherits = "burn_sniper_death",
 		do_dismember = true,
-		flow_event = "burn_death",
 		extra_conditions = {
 			hit_zone = {
 				"head",
@@ -2156,6 +2164,7 @@ HitEffectsChaosMarauder = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -2165,7 +2174,6 @@ HitEffectsChaosMarauder = {
 	burn_sniper_death_torso = {
 		inherits = "burn_sniper_death",
 		do_dismember = true,
-		flow_event = "burn_death",
 		extra_conditions = {
 			hit_zone = {
 				"torso"
@@ -2174,6 +2182,7 @@ HitEffectsChaosMarauder = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -2181,7 +2190,6 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	burn_shotgun_death = {
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -2193,6 +2201,7 @@ HitEffectsChaosMarauder = {
 			"death_burn",
 			"death_burn_2"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 30,
 			vertical_force = 30,
@@ -2200,7 +2209,6 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	burn_machinegun_death = {
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -2212,6 +2220,7 @@ HitEffectsChaosMarauder = {
 			"death_burn",
 			"death_burn_2"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
 			vertical_force = 10,
@@ -2231,9 +2240,9 @@ HitEffectsChaosMarauder = {
 			"death_shot_head_front"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
 			vertical_force = 10,
@@ -2241,7 +2250,6 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	burn_carbine_death = {
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -2253,6 +2261,7 @@ HitEffectsChaosMarauder = {
 			"death_burn",
 			"death_burn_2"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 10,
@@ -2272,9 +2281,9 @@ HitEffectsChaosMarauder = {
 			"death_decapitate"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 10,
@@ -2282,7 +2291,6 @@ HitEffectsChaosMarauder = {
 		}
 	},
 	arrow_poison_dot = {
-		flow_event = "poisoned",
 		extra_conditions = {
 			damage = true,
 			damage_type = {
@@ -2292,11 +2300,26 @@ HitEffectsChaosMarauder = {
 			}
 		}
 	},
-	arrow_poison_dot_death = {
-		inherits = "arrow_poison_dot",
-		flow_event = "poisoned",
+	poison_death = {
 		extra_conditions = {
-			death = true
+			death = true,
+			damage_type = {
+				"poison"
+			}
+		},
+		timed_status = StatusEffectNames.poisoned,
+		animations = {
+			"death_gas",
+			"death_gas_2"
+		}
+	},
+	arrow_poison_dot_death = {
+		extra_conditions = {
+			death = true,
+			damage_type = {
+				"arrow_poison_dot",
+				"aoe_poison_dot"
+			}
 		},
 		animations = {
 			"death_gas",
@@ -2383,7 +2406,6 @@ HitEffectsChaosMarauder = {
 	fire_grenade_glance_death = {
 		inherits = "default",
 		explosion_push = true,
-		flow_event = "burn",
 		extra_conditions = {
 			death = true,
 			damage_type = "fire_grenade_glance"
@@ -2393,6 +2415,7 @@ HitEffectsChaosMarauder = {
 			"death_burn",
 			"death_burn_2"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 50,
 			vertical_force = 50,
@@ -2402,7 +2425,6 @@ HitEffectsChaosMarauder = {
 	fire_grenade_glance_death_dismember = {
 		inherits = "fire_grenade_glance_death",
 		do_dismember = true,
-		flow_event = "burn",
 		extra_conditions = {
 			hit_zone = {
 				"head",
@@ -2417,6 +2439,7 @@ HitEffectsChaosMarauder = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 50,
 			vertical_force = 50,
@@ -2441,10 +2464,10 @@ HitEffectsChaosMarauder = {
 			"death_burn_2"
 		},
 		flow_event = {
-			"burn",
 			"dismember_left_leg",
 			"dismember_right_arm"
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	drakegun = {
 		inherits = "default",
@@ -2478,7 +2501,6 @@ HitEffectsChaosMarauder = {
 	},
 	drakegun_glance_death = {
 		inherits = "drakegun_glance",
-		flow_event = "burn",
 		extra_conditions = {
 			death = true
 		},
@@ -2487,13 +2509,13 @@ HitEffectsChaosMarauder = {
 			"death_burn",
 			"death_burn_2"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 25
 		}
 	},
 	drakegun_shot_death = {
-		flow_event = "burn",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -2505,6 +2527,7 @@ HitEffectsChaosMarauder = {
 			"death_burn",
 			"death_burn_2"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2514,7 +2537,6 @@ HitEffectsChaosMarauder = {
 	drakegun_shot_death_dismember = {
 		inherits = "drakegun_shot_death",
 		do_dismember = true,
-		flow_event = "burn",
 		extra_conditions = {
 			hit_zone = {
 				"left_arm",
@@ -2527,6 +2549,7 @@ HitEffectsChaosMarauder = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2547,9 +2570,9 @@ HitEffectsChaosMarauder = {
 			"death_decapitate_2"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2644,44 +2667,20 @@ HitEffectsChaosMarauder = {
 			}
 		}
 	},
-	burning_death = {
-		inherits = "default",
-		flow_event = "burn_death",
-		extra_conditions = {
-			death = true,
-			damage_type = {
-				"burning_1W_dot",
-				"burning_3W_dot",
-				"beam_burning_dot",
-				"burning_flamethrower_dot",
-				"burning_dot"
-			}
-		},
-		animations = {
-			"ragdoll",
-			"death_burn",
-			"death_burn_2"
-		}
-	},
 	warpfire_burning = {
 		inherits = "default",
-		flow_event = "warpfire_burn",
 		extra_conditions = {
 			damage_type = {
 				"warpfire_ground",
 				"warpfire_face"
 			}
-		}
+		},
+		timed_status = StatusEffectNames.burning_warpfire
 	},
 	warpfire_burning_death = {
-		inherits = "default",
-		flow_event = "warpfire_burn_death",
+		inherits = "warpfire_burning",
 		extra_conditions = {
-			death = true,
-			damage_type = {
-				"warpfire_ground",
-				"warpfire_face"
-			}
+			death = true
 		},
 		animations = {
 			"ragdoll",
@@ -2691,25 +2690,38 @@ HitEffectsChaosMarauder = {
 	}
 }
 
-for hit_effect_name, hit_effect_data in pairs(HitEffectsChaosMarauder) do
-	local hit_effect_flow_event = hit_effect_data.flow_event or hit_effect_data.inherits and HitEffectsChaosMarauder[hit_effect_data.inherits].flow_event
+local function get_variable(template, ...)
+	local val = template
 
-	if hit_effect_flow_event then
-		local is_table = type(hit_effect_flow_event) == "table"
+	for i = 1, select("#", ...) do
+		local key = select(i, ...)
+		val = val[key]
 
-		if is_table and table.contains(hit_effect_flow_event, "burn_death") or hit_effect_flow_event == "burn_death" then
-			local new_hit_effect_name = hit_effect_name .. "_critical"
-			local new_hit_effect_data = {
-				flow_event = "burn_death_critical",
-				do_dismember = false,
-				do_diagonal_dismemberments = false,
-				inherits = hit_effect_name,
-				extra_conditions = {
-					is_critical_strike = true
-				}
-			}
-			HitEffectsChaosMarauder[new_hit_effect_name] = new_hit_effect_data
+		if not val then
+			break
 		end
+	end
+
+	return val or template.inherits and get_variable(HitEffectsChaosMarauder[template.inherits], ...)
+end
+
+for hit_effect_name, hit_effect_data in pairs(HitEffectsChaosMarauder) do
+	local death = get_variable(hit_effect_data, "extra_conditions", "death")
+	local timed_status = get_variable(hit_effect_data, "timed_status")
+	local critical_variant = rawget(StatusEffectNames, (timed_status or "") .. "_death_critical")
+
+	if death and critical_variant then
+		local new_hit_effect_name = hit_effect_name .. "_critical"
+		local new_hit_effect_data = {
+			do_dismember = false,
+			do_diagonal_dismemberments = false,
+			inherits = hit_effect_name,
+			extra_conditions = {
+				is_critical_strike = true
+			},
+			timed_status = critical_variant
+		}
+		HitEffectsChaosMarauder[new_hit_effect_name] = new_hit_effect_data
 	end
 end
 

@@ -17,7 +17,9 @@ settings.buff_templates = {
 				hit_zone = "neck",
 				damage_profile = "bleed_maidenguard",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.bleeding
+				perks = {
+					buff_perks.bleeding
+				}
 			}
 		}
 	},
@@ -34,7 +36,9 @@ settings.buff_templates = {
 				hit_zone = "neck",
 				damage_profile = "bleed",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.bleeding
+				perks = {
+					buff_perks.bleeding
+				}
 			}
 		}
 	},
@@ -54,7 +58,9 @@ settings.buff_templates = {
 				hit_zone = "neck",
 				damage_profile = "thorn_sister_poison",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.poisoned
+				perks = {
+					buff_perks.poisoned
+				}
 			}
 		}
 	},
@@ -74,7 +80,9 @@ settings.buff_templates = {
 				hit_zone = "neck",
 				damage_profile = "thorn_sister_poison",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.poisoned
+				perks = {
+					buff_perks.poisoned
+				}
 			}
 		}
 	},
@@ -91,7 +99,9 @@ settings.buff_templates = {
 				hit_zone = "neck",
 				damage_profile = "bleed",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.bleeding
+				perks = {
+					buff_perks.bleeding
+				}
 			}
 		}
 	},
@@ -376,7 +386,7 @@ settings.proc_functions = {
 	thorn_sister_add_melee_poison = function (owner_unit, buff, params)
 		local hit_unit = params[1]
 
-		if ALIVE[owner_unit] and AiUtils.unit_alive(hit_unit) then
+		if ALIVE[owner_unit] and HEALTH_ALIVE[hit_unit] then
 			local attack_type = params[2]
 
 			if not attack_type or attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
@@ -451,7 +461,7 @@ settings.proc_functions = {
 	kerillian_thorn_sister_restore_health_on_ranged_hit = function (owner_unit, buff, params)
 		local attack_type = params[7]
 
-		if ALIVE[owner_unit] and attack_type and (attack_type == "projectile" or attack_type == "instant_projectile") then
+		if ALIVE[owner_unit] and attack_type and (attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "heavy_instant_projectile") then
 			if Managers.state.network.is_server then
 				local amount_to_heal = buff.template.amount_to_heal
 
@@ -552,10 +562,6 @@ settings.buff_function_templates = {
 		end
 	end,
 	start_dot_damage_kerillian = function (unit, buff, params)
-		if buff.template.start_flow_event then
-			Unit.flow_event(unit, buff.template.start_flow_event)
-		end
-
 		local attacker_unit = buff.attacker_unit
 
 		if ALIVE[attacker_unit] then
@@ -707,7 +713,7 @@ settings.buff_function_templates = {
 		end
 	end
 }
-settings.max_stacks_functions = {
+settings.stacking_buff_functions = {
 	kerillian_thorn_sister_avatar = function (owner_unit, sub_buff_template)
 		if ALIVE[owner_unit] then
 			local max_stack_data = sub_buff_template.max_stack_data

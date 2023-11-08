@@ -290,6 +290,9 @@ OptionsView.init = function (self, ingame_ui_context)
 	self.ui_animations = {}
 
 	self:reset_changed_settings()
+
+	self.overriden_settings = Application.user_setting("overriden_settings") or {}
+
 	self:create_ui_elements()
 
 	local input_service = input_manager:get_service("options_menu")
@@ -1712,6 +1715,77 @@ OptionsView._get_current_render_setting = function (self, setting_name)
 	return assigned(self.changed_render_settings[setting_name], Application.user_setting("render_settings", setting_name))
 end
 
+OptionsView._set_setting_override = function (self, content, style, setting_name, forced_value)
+	local current_selection = content.current_selection
+	local options_values = content.options_values
+	local forced_index = table.find(options_values, forced_value)
+
+	fassert(forced_index, "Could not find the forced value %q for setting: %s", forced_value, setting_name)
+
+	if not content.overriden_setting then
+		local wanted_value = nil
+
+		if forced_index ~= current_selection then
+			wanted_value = options_values[current_selection]
+			self.overriden_settings[setting_name] = wanted_value
+			content.current_selection = forced_index
+
+			content:callback(style, nil, true)
+		else
+			wanted_value = self.overriden_settings[setting_name]
+		end
+
+		if wanted_value then
+			local wanted_index = table.find(options_values, wanted_value)
+
+			fassert(wanted_index, "Could not find the wanted value %q for setting: %s", wanted_value, setting_name)
+
+			content.overriden_setting = content.options_texts[wanted_index]
+		end
+	end
+end
+
+OptionsView._restore_setting_override = function (self, content, style, setting_name)
+	local wanted_value = self.overriden_settings[setting_name]
+
+	if not wanted_value then
+		return
+	end
+
+	local wanted_index = table.find(content.options_values, wanted_value)
+
+	if not wanted_index then
+		wanted_index = content.default_value
+
+		printf("[OptionsView] Could not find the wanted value %q for setting %q. Using default value %q instead.", wanted_value, setting_name, content.options_values[wanted_index])
+	end
+
+	content.overriden_setting = nil
+	content.overriden_reason = nil
+	self.overriden_settings[setting_name] = nil
+
+	if wanted_index ~= content.current_selection then
+		content.current_selection = wanted_index
+
+		content:callback(style, nil, true)
+	end
+end
+
+OptionsView._clear_setting_override = function (self, content, style, setting_name)
+	if content.overriden_setting then
+		content.overriden_setting = nil
+		self.overriden_settings[setting_name] = nil
+	end
+
+	content.overriden_reason = nil
+end
+
+OptionsView._set_override_reason = function (self, content, reason)
+	if not content.overriden_reason then
+		content.overriden_reason = Localize(content.text) .. "\n" .. Localize("tooltip_overriden_by_setting") .. "\n" .. Localize(reason)
+	end
+end
+
 OptionsView.set_wwise_parameter = function (self, name, value)
 	WwiseWorld.set_global_parameter(self.wwise_world, name, value)
 end
@@ -1741,6 +1815,8 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 			needs_reload = true
 		end
 	end
+
+	Application.set_user_setting("overriden_settings", self.overriden_settings)
 
 	local char_texture_quality = user_settings.char_texture_quality
 
@@ -2146,6 +2222,22 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		end
 	end
 
+	local minion_outlines = user_settings.minion_outlines
+
+	if minion_outlines then
+		local local_player = Managers.player:local_player()
+		local local_player_unit = local_player and local_player.player_unit
+		local commander_extension = ScriptUnit.extension(local_player_unit, "ai_commander_system")
+
+		for minion_unit in pairs(commander_extension:get_controlled_units()) do
+			local outline_extension = ScriptUnit.extension(minion_unit, "outline_system")
+
+			if outline_extension.update_override_method_minion_setting then
+				outline_extension:update_override_method_minion_setting()
+			end
+		end
+	end
+
 	local overcharge_opacity = user_settings.overcharge_opacity
 	local player_manager = Managers.player
 
@@ -2294,6 +2386,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 
 	if needs_reload then
 		Application.apply_user_settings()
+		GlobalShaderFlags.apply_settings()
 		Renderer.bake_static_shadows()
 	end
 
@@ -4126,7 +4219,16 @@ OptionsView.cb_vsync = function (self, content)
 end
 
 OptionsView.cb_vsync_condition = function (self, content, style)
-	return
+	if self:_get_current_render_setting("dlss_g_enabled") then
+		self:_set_setting_override(content, style, "vsync", false)
+		self:_set_override_reason(content, "menu_settings_dlss_frame_generation")
+
+		content.disabled = true
+	else
+		self:_restore_setting_override(content, style, "vsync")
+
+		content.disabled = false
+	end
 end
 
 OptionsView.cb_hud_clamp_ui_scaling_setup = function (self)
@@ -4747,86 +4849,74 @@ OptionsView.cb_resolutions = function (self, content)
 	end
 end
 
-OptionsView.cb_lock_framerate_setup = function (self)
-	local options = {
-		{
-			value = 0,
-			text = Localize("menu_settings_off")
-		},
-		{
-			text = "30",
-			value = 30
-		},
-		{
-			text = "60",
-			value = 60
-		},
-		{
-			text = "90",
-			value = 90
-		},
-		{
-			text = "120",
-			value = 120
-		},
-		{
-			text = "144",
-			value = 144
-		},
-		{
-			text = "165",
-			value = 165
-		}
+local FRAMERATE_CAP_LOOKUP = table.mirror_array_inplace({
+	0,
+	30,
+	60,
+	90,
+	120,
+	144,
+	165
+})
+local FRAMERATE_CAP_OPTIONS = {
+	{
+		value = 0,
+		text = Localize("menu_settings_off")
+	},
+	{
+		text = "30",
+		value = 30
+	},
+	{
+		text = "60",
+		value = 60
+	},
+	{
+		text = "90",
+		value = 90
+	},
+	{
+		text = "120",
+		value = 120
+	},
+	{
+		text = "144",
+		value = 144
+	},
+	{
+		text = "165",
+		value = 165
 	}
-	local default_value = DefaultUserSettings.get("user_settings", "max_fps")
-	local default_option = nil
-	local selected_option = 1
+}
 
-	if not Application.user_setting("max_fps") then
-		local max_fps = 0
+OptionsView.cb_lock_framerate_setup = function (self)
+	local options = FRAMERATE_CAP_OPTIONS
+
+	if not FRAMERATE_CAP_LOOKUP[Application.user_setting("max_fps")] then
+		local selected_option = 1
 	end
 
-	for i = 1, #options, 1 do
-		if max_fps == options[i].value then
-			selected_option = i
-		end
-
-		if default_value == options[i].value then
-			default_option = i
-		end
+	if not FRAMERATE_CAP_LOOKUP[DefaultUserSettings.get("user_settings", "max_fps")] then
+		local default_option = 1
 	end
 
 	return selected_option, options, "menu_settings_lock_framerate", default_option
 end
 
 OptionsView.cb_lock_framerate_saved_value = function (self, widget)
-	local options_values = widget.content.options_values
-	local options_texts = widget.content.options_texts
-	local selected_option = nil
+	local max_fps = self:_get_current_user_setting("max_fps")
+	slot3 = widget.content
 
-	if not assigned(self.changed_user_settings.max_fps, Application.user_setting("max_fps")) then
-		local max_fps = 0
+	if not FRAMERATE_CAP_LOOKUP[max_fps] then
+		slot4 = 1
 	end
 
-	for i = 1, #options_values, 1 do
-		if max_fps == options_values[i] then
-			selected_option = i
-
-			break
-		end
-	end
-
-	widget.content.current_selection = selected_option
+	slot3.current_selection = slot4
 end
 
 OptionsView.cb_lock_framerate = function (self, content)
-	local selected_index = content.current_selection
-	local value = content.options_values[selected_index]
-	self.changed_user_settings.max_fps = value
-end
-
-OptionsView.cb_lock_framerate_condition = function (self, content, style)
-	return
+	local max_fps = content.options_values[content.current_selection]
+	self.changed_user_settings.max_fps = max_fps
 end
 
 OptionsView.cb_max_stacking_frames_setup = function (self)
@@ -4973,17 +5063,25 @@ end
 
 OptionsView.cb_anti_aliasing_condition = function (self, content, style)
 	if self:_get_current_render_setting("fsr_enabled") then
-		if not content.disabled then
-			content.current_selection = 3
-			content.disabled = true
+		self:_set_setting_override(content, style, "anti_aliasing", "TAA")
+		self:_set_override_reason(content, "settings_view_header_fidelityfx_super_resolution")
 
-			self:cb_anti_aliasing(content, style)
-		end
+		content.disabled = true
+	elseif self:_get_current_render_setting("upscaling_mode") == "dlss" then
+		self:_set_setting_override(content, style, "anti_aliasing", "none")
+		self:_set_override_reason(content, "menu_settings_dlss_super_resolution")
 
-		return
+		content.disabled = true
+	elseif self:_get_current_render_setting("upscaling_mode") == "fsr2" then
+		self:_set_setting_override(content, style, "anti_aliasing", "none")
+		self:_set_override_reason(content, "menu_settings_fsr2_enabled")
+
+		content.disabled = true
+	else
+		self:_restore_setting_override(content, style, "anti_aliasing")
+
+		content.disabled = false
 	end
-
-	content.disabled = false
 end
 
 OptionsView.cb_gamma_setup = function (self)
@@ -5061,7 +5159,7 @@ OptionsView.cb_fsr_enabled_setup = function (self)
 		slot6(slot7, slot8)
 	end
 
-	return selected_option, options, "menu_settings_fsr_enabled", default_option
+	return selected_option, options, "settings_view_header_fidelityfx_super_resolution", default_option
 end
 
 OptionsView.cb_fsr_enabled_saved_value = function (self, widget)
@@ -5086,7 +5184,22 @@ OptionsView.cb_fsr_enabled = function (self, content, style, called_from_graphic
 end
 
 OptionsView.cb_fsr_enabled_condition = function (self, content, style)
-	return
+	if false then
+	elseif self:_get_current_user_setting("dlss_enabled") then
+		self:_set_setting_override(content, style, "fsr_enabled", false)
+		self:_set_override_reason(content, "menu_settings_dlss_enabled")
+
+		content.disabled = true
+	elseif self:_get_current_user_setting("fsr2_enabled") then
+		self:_set_setting_override(content, style, "fsr_enabled", false)
+		self:_set_override_reason(content, "menu_settings_fsr2_enabled")
+
+		content.disabled = true
+	else
+		self:_restore_setting_override(content, style, "fsr_enabled")
+
+		content.disabled = false
+	end
 end
 
 OptionsView.cb_fsr_quality_setup = function (self)
@@ -5131,7 +5244,474 @@ OptionsView.cb_fsr_quality = function (self, content, style, called_from_graphic
 end
 
 OptionsView.cb_fsr_quality_condition = function (self, content, style)
-	content.disabled = not self:_get_current_render_setting("fsr_enabled")
+	if not self:_get_current_render_setting("fsr_enabled") then
+		self:_set_setting_override(content, style, "fsr_quality", content.current_selection)
+		self:_set_override_reason(content, "settings_view_header_fidelityfx_super_resolution")
+
+		content.disabled = true
+	else
+		self:_restore_setting_override(content, style, "fsr_quality")
+
+		content.disabled = false
+	end
+end
+
+OptionsView.cb_fsr2_enabled_setup = function (self)
+	local options = {
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		},
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		}
+	}
+	local current_value = Application.user_setting("fsr2_enabled")
+	local default_value = DefaultUserSettings.get("user_settings", "fsr2_enabled")
+
+	if current_value then
+		slot4 = 2
+	else
+		local selected_option = 1
+	end
+
+	if default_value then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
+
+	return selected_option, options, "menu_settings_fsr2_enabled", default_option
+end
+
+OptionsView.cb_fsr2_enabled_saved_value = function (self, widget)
+	local fsr2_enabled = self:_get_current_user_setting("fsr2_enabled")
+
+	if fsr2_enabled then
+		slot3 = 2
+	else
+		local selected_option = 1
+	end
+
+	widget.content.current_selection = selected_option
+end
+
+OptionsView.cb_fsr2_enabled = function (self, content, style, called_from_graphics_quality)
+	local value = content.options_values[content.current_selection]
+	self.changed_user_settings.fsr2_enabled = value
+
+	if value then
+		self.changed_render_settings.upscaling_enabled = true
+		self.changed_render_settings.upscaling_mode = "fsr2"
+	else
+		self.changed_render_settings.upscaling_enabled = false
+		self.changed_render_settings.upscaling_mode = "none"
+		self.changed_render_settings.upscaling_quality = "none"
+	end
+end
+
+OptionsView.cb_fsr2_enabled_condition = function (self, content, style)
+	if self:_get_current_render_setting("fsr_enabled") then
+		self:_set_setting_override(content, style, "fsr2_enabled", false)
+		self:_set_override_reason(content, "settings_view_header_fidelityfx_super_resolution")
+
+		content.disabled = true
+	elseif self:_get_current_user_setting("dlss_enabled") then
+		self:_set_setting_override(content, style, "fsr2_enabled", false)
+		self:_set_override_reason(content, "menu_settings_dlss_enabled")
+
+		content.disabled = true
+	else
+		self:_restore_setting_override(content, style, "fsr2_enabled")
+
+		content.disabled = false
+	end
+end
+
+local FSR2_QUALITY_LOOKUP = table.mirror_array_inplace({
+	"quality",
+	"balanced",
+	"performance",
+	"ultra_performance"
+})
+
+OptionsView.cb_fsr2_quality_setup = function (self)
+	local options = {
+		{
+			value = "quality",
+			text = Localize("menu_settings_quality")
+		},
+		{
+			value = "balanced",
+			text = Localize("menu_settings_balanced")
+		},
+		{
+			value = "performance",
+			text = Localize("menu_settings_performance")
+		},
+		{
+			value = "ultra_performance",
+			text = Localize("menu_settings_ultra_performance")
+		}
+	}
+	local selected_option = 1
+
+	if Application.user_setting("render_settings", "upscaling_enabled") and not FSR2_QUALITY_LOOKUP[Application.user_setting("render_settings", "upscaling_quality")] then
+		selected_option = 1
+	end
+
+	local default_option = FSR2_QUALITY_LOOKUP[DefaultUserSettings.get("render_settings", "upscaling_quality")]
+
+	return selected_option, options, "menu_settings_fsr2_quality", default_option
+end
+
+OptionsView.cb_fsr2_quality_saved_value = function (self, widget)
+	local upscaling_quality = self:_get_current_render_setting("upscaling_quality")
+	slot3 = widget.content
+
+	if not FSR2_QUALITY_LOOKUP[upscaling_quality] then
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
+end
+
+OptionsView.cb_fsr2_quality = function (self, content, style, called_from_graphics_quality)
+	local value = content.options_values[content.current_selection]
+	self.changed_render_settings.upscaling_quality = value
+end
+
+OptionsView.cb_fsr2_quality_condition = function (self, content, style)
+	if not self:_get_current_user_setting("fsr2_enabled") then
+		local value = content.options_values[content.current_selection]
+
+		self:_set_setting_override(content, style, "fsr2_quality", value)
+		self:_set_override_reason(content, "menu_settings_fsr2_enabled")
+
+		content.disabled = true
+	else
+		self:_restore_setting_override(content, style, "fsr2_quality")
+
+		content.disabled = false
+	end
+end
+
+OptionsView.cb_dlss_enabled_setup = function (self)
+	local options = {
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		},
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		}
+	}
+	local current_value = Application.user_setting("dlss_enabled")
+	local default_value = DefaultUserSettings.get("user_settings", "dlss_enabled")
+
+	if current_value then
+		slot4 = 2
+	else
+		local selected_option = 1
+	end
+
+	if default_value then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
+
+	return selected_option, options, "menu_settings_dlss_enabled", default_option
+end
+
+OptionsView.cb_dlss_enabled_saved_value = function (self, widget)
+	local dlss_enabled = self:_get_current_user_setting("dlss_enabled")
+
+	if dlss_enabled then
+		slot3 = 2
+	else
+		local selected_option = 1
+	end
+
+	widget.content.current_selection = selected_option
+end
+
+OptionsView.cb_dlss_enabled = function (self, content, style, called_from_graphics_quality)
+	local value = content.options_values[content.current_selection]
+	self.changed_user_settings.dlss_enabled = value
+end
+
+OptionsView.cb_dlss_enabled_condition = function (self, content, style)
+	if self:_get_current_render_setting("fsr_enabled") then
+		self:_set_setting_override(content, style, "dlss_enabled", false)
+		self:_set_override_reason(content, "settings_view_header_fidelityfx_super_resolution")
+
+		content.disabled = true
+	elseif self:_get_current_user_setting("fsr2_enabled") then
+		self:_set_setting_override(content, style, "dlss_enabled", false)
+		self:_set_override_reason(content, "menu_settings_fsr2_enabled")
+
+		content.disabled = true
+	else
+		self:_restore_setting_override(content, style, "dlss_enabled")
+
+		content.disabled = false
+	end
+end
+
+OptionsView.cb_dlss_frame_generation_setup = function (self)
+	local options = {
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		},
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		}
+	}
+	local dlss_g_enabled = Application.user_setting("render_settings", "dlss_g_enabled")
+	local default_value = DefaultUserSettings.get("render_settings", "dlss_g_enabled")
+
+	if dlss_g_enabled then
+		slot4 = 2
+	else
+		local selected_option = 1
+	end
+
+	if default_value then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
+
+	return selected_option, options, "menu_settings_dlss_frame_generation", default_option
+end
+
+OptionsView.cb_dlss_frame_generation_saved_value = function (self, widget)
+	local dlss_g_enabled = self:_get_current_render_setting("dlss_g_enabled")
+
+	if dlss_g_enabled then
+		slot3 = 2
+	else
+		local selected_option = 1
+	end
+
+	widget.content.current_selection = selected_option
+end
+
+OptionsView.cb_dlss_frame_generation = function (self, content, style, called_from_graphics_quality)
+	local value = content.options_values[content.current_selection]
+	self.changed_render_settings.dlss_g_enabled = value
+end
+
+OptionsView.cb_dlss_frame_generation_condition = function (self, content, style)
+	if not self:_get_current_user_setting("dlss_enabled") then
+		self:_set_setting_override(content, style, "dlss_frame_generation", false)
+		self:_set_override_reason(content, "menu_settings_dlss_enabled")
+
+		content.disabled = true
+	else
+		self:_restore_setting_override(content, style, "dlss_frame_generation")
+
+		content.disabled = false
+	end
+end
+
+local DLSS_SR_QUALITY_LOOKUP = table.mirror_array_inplace({
+	"none",
+	"auto",
+	"quality",
+	"balanced",
+	"performance",
+	"ultra_performance",
+	"dlaa"
+})
+
+OptionsView.cb_dlss_super_resolution_setup = function (self)
+	local options = {
+		{
+			value = "none",
+			text = Localize("menu_settings_off")
+		},
+		{
+			value = "auto",
+			text = Localize("menu_settings_auto")
+		},
+		{
+			value = "quality",
+			text = Localize("menu_settings_quality")
+		},
+		{
+			value = "balanced",
+			text = Localize("menu_settings_balanced")
+		},
+		{
+			value = "performance",
+			text = Localize("menu_settings_performance")
+		},
+		{
+			value = "ultra_performance",
+			text = Localize("menu_settings_ultra_performance")
+		},
+		{
+			value = "dlaa",
+			text = Localize("menu_settings_dlaa")
+		}
+	}
+	local selected_option = 1
+
+	if Application.user_setting("render_settings", "upscaling_enabled") and not DLSS_SR_QUALITY_LOOKUP[Application.user_setting("render_settings", "upscaling_quality")] then
+		selected_option = 1
+	end
+
+	local default_option = DLSS_SR_QUALITY_LOOKUP[DefaultUserSettings.get("render_settings", "upscaling_quality")]
+
+	return selected_option, options, "menu_settings_dlss_super_resolution", default_option
+end
+
+OptionsView.cb_dlss_super_resolution_saved_value = function (self, widget)
+	local upscaling_quality = self:_get_current_render_setting("upscaling_quality")
+	slot3 = widget.content
+
+	if not DLSS_SR_QUALITY_LOOKUP[upscaling_quality] then
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
+end
+
+OptionsView.cb_dlss_super_resolution = function (self, content, style, called_from_graphics_quality)
+	local value = content.options_values[content.current_selection]
+
+	if value == "none" then
+		self.changed_render_settings.upscaling_enabled = false
+		self.changed_render_settings.upscaling_mode = "none"
+		self.changed_render_settings.upscaling_quality = "none"
+	else
+		self.changed_render_settings.upscaling_enabled = true
+		self.changed_render_settings.upscaling_mode = "dlss"
+		self.changed_render_settings.upscaling_quality = value
+	end
+end
+
+OptionsView.cb_dlss_super_resolution_condition = function (self, content, style)
+	if not self:_get_current_user_setting("dlss_enabled") then
+		self:_set_setting_override(content, style, "dlss_super_resolution", "none")
+		self:_set_override_reason(content, "menu_settings_dlss_enabled")
+
+		content.disabled = true
+	else
+		self:_restore_setting_override(content, style, "dlss_super_resolution")
+
+		content.disabled = false
+	end
+end
+
+local function to_reflex_low_latency_value(mode, boost)
+	if mode then
+		if boost then
+			slot2 = 3
+		else
+			slot2 = 2
+		end
+	else
+		slot2 = 1
+	end
+
+	return slot2
+end
+
+OptionsView.cb_reflex_low_latency_setup = function (self)
+	local options = {
+		{
+			value = 1,
+			text = Localize("menu_settings_off")
+		},
+		{
+			value = 2,
+			text = Localize("menu_settings_reflex_enabled")
+		},
+		{
+			value = 3,
+			text = Localize("menu_settings_reflex_boost")
+		}
+	}
+	local selected_option = to_reflex_low_latency_value(Application.user_setting("render_settings", "nv_low_latency_mode"), Application.user_setting("render_settings", "nv_low_latency_boost"))
+	local default_option = to_reflex_low_latency_value(DefaultUserSettings.get("render_settings", "nv_low_latency_mode"), DefaultUserSettings.get("render_settings", "nv_low_latency_boost"))
+
+	return selected_option, options, "menu_settings_reflex_low_latency", default_option
+end
+
+OptionsView.cb_reflex_low_latency_saved_value = function (self, widget)
+	local nv_low_latency_mode = self:_get_current_render_setting("nv_low_latency_mode")
+	local nv_low_latency_boost = self:_get_current_render_setting("nv_low_latency_boost")
+	widget.content.current_selection = to_reflex_low_latency_value(nv_low_latency_mode, nv_low_latency_boost)
+end
+
+OptionsView.cb_reflex_low_latency = function (self, content, style, called_from_graphics_quality, called_from_override)
+	local value = content.options_values[content.current_selection]
+	local nv_low_latency_mode = false
+	local nv_low_latency_boost = false
+
+	if value == 2 then
+		nv_low_latency_mode = true
+	elseif value == 3 then
+		nv_low_latency_boost = true
+		nv_low_latency_mode = true
+	end
+
+	self.changed_render_settings.nv_low_latency_mode = nv_low_latency_mode
+	self.changed_render_settings.nv_low_latency_boost = nv_low_latency_boost
+
+	if not called_from_override then
+		self:_clear_setting_override(content, style, "reflex_low_latency")
+	end
+end
+
+OptionsView.cb_reflex_low_latency_condition = function (self, content, style)
+	if self:_get_current_render_setting("dlss_g_enabled") then
+		if content.current_selection == 1 then
+			self:_set_setting_override(content, style, "reflex_low_latency", 2)
+			self:_set_override_reason(content, "menu_settings_dlss_frame_generation")
+		end
+
+		content.list_content[1].hotspot.disabled = true
+	else
+		self:_restore_setting_override(content, style, "reflex_low_latency")
+
+		content.list_content[1].hotspot.disabled = false
+	end
+end
+
+OptionsView.cb_reflex_framerate_cap_setup = function (self)
+	local options = FRAMERATE_CAP_OPTIONS
+
+	if not FRAMERATE_CAP_LOOKUP[Application.user_setting("render_settings", "nv_framerate_cap")] then
+		local selected_option = 1
+	end
+
+	local default_option = FRAMERATE_CAP_LOOKUP[DefaultUserSettings.get("render_settings", "nv_framerate_cap")]
+
+	return selected_option, options, "menu_settings_reflex_framerate_cap", default_option
+end
+
+OptionsView.cb_reflex_framerate_cap_saved_value = function (self, widget)
+	local nv_framerate_cap = self:_get_current_render_setting("nv_framerate_cap")
+	slot3 = widget.content
+
+	if not FRAMERATE_CAP_LOOKUP[nv_framerate_cap] then
+		slot4 = 1
+	end
+
+	slot3.current_selection = slot4
+end
+
+OptionsView.cb_reflex_framerate_cap = function (self, content, style, called_from_graphics_quality)
+	local value = content.options_values[content.current_selection]
+	self.changed_render_settings.nv_framerate_cap = value
 end
 
 OptionsView.cb_sun_shadows_setup = function (self)
@@ -5895,7 +6475,26 @@ OptionsView.cb_sharpen = function (self, content, style, called_from_graphics_qu
 end
 
 OptionsView.cb_sharpen_condition = function (self, content, style)
-	return
+	if self:_get_current_render_setting("fsr_enabled") then
+		self:_set_setting_override(content, style, "sharpen", false)
+		self:_set_override_reason(content, "settings_view_header_fidelityfx_super_resolution")
+
+		content.disabled = true
+	elseif self:_get_current_user_setting("fsr2_enabled") then
+		self:_set_setting_override(content, style, "sharpen", false)
+		self:_set_override_reason(content, "menu_settings_fsr2_enabled")
+
+		content.disabled = true
+	elseif self:_get_current_user_setting("dlss_enabled") then
+		self:_set_setting_override(content, style, "sharpen", false)
+		self:_set_override_reason(content, "menu_settings_dlss_enabled")
+
+		content.disabled = true
+	else
+		self:_restore_setting_override(content, style, "sharpen")
+
+		content.disabled = false
+	end
 end
 
 OptionsView.cb_lens_quality_setup = function (self)
@@ -10092,6 +10691,61 @@ OptionsView.cb_player_outlines = function (self, content)
 	local options_values = content.options_values
 	local value = options_values[current_selection]
 	self.changed_user_settings.player_outlines = value
+end
+
+OptionsView.cb_minion_outlines = function (self, content)
+	local current_selection = content.current_selection
+	local options_values = content.options_values
+	local value = options_values[current_selection]
+	self.changed_user_settings.minion_outlines = value
+end
+
+OptionsView.cb_minion_outlines_setup = function (self)
+	local options = {
+		{
+			value = "off",
+			text = Localize("menu_settings_off")
+		},
+		{
+			value = "on",
+			text = Localize("menu_settings_on")
+		},
+		{
+			value = "always_on",
+			text = Localize("menu_settings_always_on")
+		}
+	}
+	local minion_outlines = Application.user_setting("minion_outlines")
+	local default_value = DefaultUserSettings.get("user_settings", "minion_outlines")
+	local selection, default_selection = nil
+
+	for i, option in ipairs(options) do
+		if minion_outlines == option.value then
+			selection = i
+		end
+
+		if default_value == option.value then
+			default_selection = i
+		end
+	end
+
+	return selection, options, "menu_settings_minion_outlines", default_selection
+end
+
+OptionsView.cb_minion_outlines_saved_value = function (self, widget)
+	local minion_outlines = assigned(self.changed_user_settings.minion_outlines, Application.user_setting("minion_outlines"))
+	local selection = nil
+	local options_values = widget.content.options_values
+
+	for i = 1, #options_values, 1 do
+		local value = options_values[i]
+
+		if minion_outlines == value then
+			selection = i
+		end
+	end
+
+	widget.content.current_selection = selection
 end
 
 local function AddTobiiStepperSetting(setting_name, setter_cb)

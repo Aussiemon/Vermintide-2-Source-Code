@@ -67,13 +67,15 @@ Debug.update = function (t, dt)
 		-- Nothing
 	end
 
+	local bitmaskflags = Gui.FormatDirectives + Gui.MultiColor
+
 	for i = 1, num_debug_texts do
 		local data = Debug.debug_texts[i]
 		local text = data.text
 		local instance_text_color = data.color
 		local text_pos = Vector3(130, pos, 700)
 
-		Gui.text(gui, text, font_mtrl, font_size, font, text_pos, instance_text_color and instance_text_color:unbox() or text_color)
+		Gui.text(gui, text, font_mtrl, font_size, font, text_pos, instance_text_color and instance_text_color:unbox() or text_color, bitmaskflags)
 
 		if show_debug_text_background then
 			local text_min, text_max = Gui.text_extents(gui, text, font_mtrl, font_size)
@@ -94,7 +96,7 @@ Debug.update = function (t, dt)
 		while num_sticky >= i do
 			local text, display_time = unpack(sticky_texts[i])
 
-			Gui.text(gui, text, font_mtrl, font_size, font, Vector3(10, pos, 700), text_color)
+			Gui.text(gui, text, font_mtrl, font_size, font, Vector3(10, pos, 700), text_color, bitmaskflags)
 
 			pos = pos - (font_size + 2)
 

@@ -14,7 +14,6 @@ ProximityMineExtension.init = function (self, extension_init_context, unit, exte
 	self._is_server = extension_init_context.is_server
 	self._armed = false
 	self._detonating = false
-	self._health_extension = nil
 	self._unit = unit
 
 	self:enable(true)
@@ -26,11 +25,10 @@ end
 
 ProximityMineExtension.enable = function (self, enable)
 	self._arm_timer = self.arm_time
-	self._health_extension = ScriptUnit.extension(self._unit, "health_system")
 end
 
 ProximityMineExtension.update = function (self, unit, input, dt, context, t)
-	if not self._is_server or not self._health_extension:is_alive() then
+	if not self._is_server or not HEALTH_ALIVE[unit] then
 		return
 	end
 

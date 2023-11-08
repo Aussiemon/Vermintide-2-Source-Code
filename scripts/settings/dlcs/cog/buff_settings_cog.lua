@@ -127,11 +127,7 @@ settings.buff_function_templates = {
 			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 
 			if first_person_extension then
-				local unit_animation_set_variable = Unit.animation_set_variable
-				local first_person_unit = first_person_extension:get_first_person_unit()
-				local anim_var = Unit.animation_find_variable(first_person_unit, "crank_speed")
-
-				unit_animation_set_variable(first_person_unit, anim_var, 1)
+				first_person_extension:animation_set_variable("crank_speed", 1)
 			end
 		end
 	end,

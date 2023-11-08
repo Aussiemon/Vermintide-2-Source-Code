@@ -4,7 +4,7 @@ local breed_data = {
 	walk_speed = 0.65,
 	threat_value = 8,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
-	poison_resistance = 100,
+	server_controlled_health_bar = true,
 	has_inventory = true,
 	lord_damage_reduction = true,
 	aoe_radius = 0.7,
@@ -12,10 +12,11 @@ local breed_data = {
 	bot_hitbox_radius_approximation = 0.8,
 	animation_sync_rpc = "rpc_sync_anim_state_7",
 	unit_template = "ai_unit_chaos_exalted_sorcerer",
-	minion_detection_radius = 10,
+	death_reaction = "ai_default",
 	ai_strength = 10,
 	ai_toughness = 10,
-	boss = true,
+	minion_detection_radius = 10,
+	race = "chaos",
 	behavior = "chaos_exalted_sorcerer",
 	bone_lod_level = 1,
 	wield_inventory_on_spawn = true,
@@ -24,11 +25,10 @@ local breed_data = {
 	dialogue_source_name = "chaos_exalted_sorcerer",
 	flingable = true,
 	radius = 1,
-	server_controlled_health_bar = true,
-	race = "chaos",
+	boss = true,
 	disable_second_hit_ragdoll = true,
 	proximity_system_check = true,
-	death_reaction = "ai_default",
+	poison_resistance = 100,
 	armor_category = 3,
 	smart_targeting_width = 0.3,
 	is_bot_aid_threat = true,
@@ -52,6 +52,7 @@ local breed_data = {
 	vortexable = false,
 	base_unit = "units/beings/enemies/chaos_sorcerer_boss/chr_chaos_sorcerer_boss",
 	aoe_height = 2.1,
+	infighting = InfightingSettings.boss,
 	size_variation_range = {
 		1.27,
 		1.27
@@ -72,6 +73,13 @@ local breed_data = {
 
 		return stagger_type, duration, length
 	end,
+	status_effect_settings = {
+		category = "medium",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire,
+			StatusEffectNames.poisoned
+		})
+	},
 	debug_color = {
 		255,
 		200,

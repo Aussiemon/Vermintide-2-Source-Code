@@ -801,6 +801,116 @@ local items = {
 		weak_spot = "head",
 		attachment_node_linking = AttachmentNodeLinking.ai_zombie_blob_head
 	},
+	wpn_npc_skeleton_sword_01_right = {
+		drop_on_hit = true,
+		unit_name = "units/weapons/enemy/wpn_npc_skeleton_set/wpn_npc_skeleton_sword_01",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_weapon
+	},
+	wpn_npc_skeleton_sword_01_left = {
+		drop_on_hit = true,
+		unit_name = "units/weapons/enemy/wpn_npc_skeleton_set/wpn_npc_skeleton_sword_01",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_weapon_offhand
+	},
+	wpn_npc_skeleton_shield_01 = {
+		unit_name = "units/weapons/enemy/wpn_npc_skeleton_set/wpn_npc_skeleton_shield_01",
+		unit_extension_template = "ai_shield_unit",
+		flow_event = "using_shield",
+		drop_on_hit = true,
+		attachment_node_linking = AttachmentNodeLinking.ai_shield
+	},
+	wpn_npc_skeleton_2h_hammer_01 = {
+		drop_on_hit = true,
+		unit_name = "units/weapons/enemy/wpn_npc_skeleton_set/wpn_npc_skeleton_2h_hammer_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_2h
+	},
+	wpn_npc_skeleton_short_sword_01_right = {
+		drop_on_hit = true,
+		unit_name = "units/weapons/enemy/wpn_npc_skeleton_set/wpn_npc_skeleton_short_sword_01",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_weapon
+	},
+	wpn_npc_skeleton_short_sword_01_left = {
+		drop_on_hit = true,
+		unit_name = "units/weapons/enemy/wpn_npc_skeleton_set/wpn_npc_skeleton_short_sword_01",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_weapon_offhand
+	},
+	chr_npc_skeleton_armor_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_armor_01",
+		flow_event = "hide_shoulders",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_armor
+	},
+	chr_npc_skeleton_helmet_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_helmet_02",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_helmet
+	},
+	chr_npc_skeleton_helmet_03 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_helmet_03",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_helmet
+	},
+	chr_npc_skeleton_helmet_04 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_helmet_04",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_helmet
+	},
+	chr_npc_skeleton_skull_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_skull_01",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_skull
+	},
+	chr_npc_skeleton_skull_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_skull_02",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_skull
+	},
+	chr_npc_skeleton_skull_03 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_skull_03",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_skull
+	},
+	chr_npc_skeleton_greaves_01_l = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_greaves_01_l",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_greaves_l
+	},
+	chr_npc_skeleton_greaves_01_r = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_greaves_01_r",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_greaves_r
+	},
+	chr_npc_skeleton_vambrace_01_l = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_vambrace_01_l",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_vambrace_l
+	},
+	chr_npc_skeleton_vambrace_01_r = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_vambrace_01_r",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_vambrace_r
+	},
+	chr_npc_skeleton_hip_cloth_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_hip_cloth_01",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_hips
+	},
+	chr_npc_skeleton_hip_cloth_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_hip_cloth_02",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_hips
+	},
+	chr_npc_skeleton_torso_cloth_01 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_torso_cloth_01",
+		flow_event = "show_shoulders",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_torso
+	},
+	chr_npc_skeleton_torso_cloth_02 = {
+		unit_extension_template = "ai_outfit_unit",
+		unit_name = "units/beings/npcs/necromancer_skeleton/outfits/chr_npc_skeleton_torso_cloth_02",
+		flow_event = "show_shoulders",
+		attachment_node_linking = AttachmentNodeLinking.skeleton_torso
+	},
 	wpn_undead_ethereal_skeleton_sword_01 = {
 		drop_on_hit = true,
 		unit_name = "units/weapons/enemy/wpn_undead_ethereal_set/wpn_undead_ethereal_sword_01",
@@ -1399,6 +1509,75 @@ local item_categories = {
 		items.zombie_blob_03,
 		items.zombie_blob_04
 	},
+	undead_npc_skeleton_sword = {
+		items.wpn_npc_skeleton_sword_01_right
+	},
+	undead_npc_skeleton_shield = {
+		items.wpn_npc_skeleton_shield_01
+	},
+	undead_npc_skeleton_2h_hammer = {
+		items.wpn_npc_skeleton_2h_hammer_01
+	},
+	undead_npc_skeleton_dual_wield_right = {
+		items.wpn_npc_skeleton_sword_01_right,
+		items.wpn_npc_skeleton_short_sword_01_right
+	},
+	undead_npc_skeleton_dual_wield_left = {
+		items.wpn_npc_skeleton_sword_01_left,
+		items.wpn_npc_skeleton_short_sword_01_left
+	},
+	undead_npc_skeleton_skull = {
+		items.chr_npc_skeleton_skull_01,
+		items.chr_npc_skeleton_skull_02,
+		items.chr_npc_skeleton_skull_03
+	},
+	undead_npc_skeleton_helmet = {
+		items.outfit_null,
+		items.chr_npc_skeleton_helmet_02,
+		items.chr_npc_skeleton_helmet_03,
+		items.chr_npc_skeleton_helmet_04
+	},
+	undead_npc_skeleton_chest_armor = {
+		items.chr_npc_skeleton_armor_01
+	},
+	undead_npc_skeleton_chest_cloth = {
+		items.outfit_null,
+		items.chr_npc_skeleton_torso_cloth_01,
+		items.chr_npc_skeleton_torso_cloth_02
+	},
+	undead_npc_skeleton_torso = {
+		items.outfit_null,
+		items.chr_npc_skeleton_armor_01,
+		items.chr_npc_skeleton_torso_cloth_01,
+		items.chr_npc_skeleton_torso_cloth_02
+	},
+	undead_npc_skeleton_hips = {
+		items.outfit_null,
+		items.chr_npc_skeleton_hip_cloth_01,
+		items.chr_npc_skeleton_hip_cloth_01,
+		items.chr_npc_skeleton_hip_cloth_02,
+		items.chr_npc_skeleton_hip_cloth_02
+	},
+	undead_npc_skeleton_vambrace_l = {
+		items.outfit_null,
+		items.chr_npc_skeleton_vambrace_01_l,
+		items.chr_npc_skeleton_vambrace_01_l
+	},
+	undead_npc_skeleton_vambrace_r = {
+		items.outfit_null,
+		items.chr_npc_skeleton_vambrace_01_r,
+		items.chr_npc_skeleton_vambrace_01_r
+	},
+	undead_npc_skeleton_greaves_l = {
+		items.outfit_null,
+		items.chr_npc_skeleton_greaves_01_l,
+		items.chr_npc_skeleton_greaves_01_l
+	},
+	undead_npc_skeleton_greaves_r = {
+		items.outfit_null,
+		items.chr_npc_skeleton_greaves_01_r,
+		items.chr_npc_skeleton_greaves_01_r
+	},
 	undead_ethereal_skeleton_sword = {
 		items.wpn_undead_ethereal_skeleton_sword_01
 	},
@@ -1874,6 +2053,62 @@ InventoryConfigurations = {
 	zombie_blobs = {
 		items = {
 			item_categories.zombie_blobs
+		}
+	},
+	undead_npc_skeleton = {
+		enemy_hit_sound = "sword",
+		anim_state_event = "to_sword",
+		items = {
+			item_categories.undead_npc_skeleton_skull,
+			item_categories.undead_npc_skeleton_sword,
+			item_categories.undead_npc_skeleton_hips
+		}
+	},
+	undead_npc_skeleton_with_shield = {
+		enemy_hit_sound = "sword",
+		anim_state_event = "to_shield",
+		items = {
+			item_categories.undead_npc_skeleton_skull,
+			item_categories.undead_npc_skeleton_sword,
+			item_categories.undead_npc_skeleton_shield,
+			item_categories.undead_npc_skeleton_helmet,
+			item_categories.undead_npc_skeleton_torso,
+			item_categories.undead_npc_skeleton_hips,
+			item_categories.undead_npc_skeleton_vambrace_l,
+			item_categories.undead_npc_skeleton_vambrace_r,
+			item_categories.undead_npc_skeleton_greaves_l,
+			item_categories.undead_npc_skeleton_greaves_r
+		}
+	},
+	undead_npc_skeleton_dual_wield = {
+		enemy_hit_sound = "sword",
+		anim_state_event = "to_dual_wield",
+		items = {
+			item_categories.undead_npc_skeleton_skull,
+			item_categories.undead_npc_skeleton_dual_wield_right,
+			item_categories.undead_npc_skeleton_dual_wield_left,
+			item_categories.undead_npc_skeleton_helmet,
+			item_categories.undead_npc_skeleton_chest_cloth,
+			item_categories.undead_npc_skeleton_hips,
+			item_categories.undead_npc_skeleton_vambrace_l,
+			item_categories.undead_npc_skeleton_vambrace_r,
+			item_categories.undead_npc_skeleton_greaves_l,
+			item_categories.undead_npc_skeleton_greaves_r
+		}
+	},
+	undead_npc_skeleton_armored = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_2h_hammer",
+		items = {
+			item_categories.undead_npc_skeleton_skull,
+			item_categories.undead_npc_skeleton_2h_hammer,
+			item_categories.undead_npc_skeleton_helmet,
+			item_categories.undead_npc_skeleton_torso,
+			item_categories.undead_npc_skeleton_hips,
+			item_categories.undead_npc_skeleton_vambrace_l,
+			item_categories.undead_npc_skeleton_vambrace_r,
+			item_categories.undead_npc_skeleton_greaves_l,
+			item_categories.undead_npc_skeleton_greaves_r
 		}
 	},
 	pack_master = {

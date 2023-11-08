@@ -507,6 +507,84 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_necromancer_01 = {
+		{
+			texture = "portrait_frame_necromancer_01_child",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				128,
+				140
+			},
+			offset = {
+				0,
+				-61,
+				0
+			}
+		}
+	},
+	frame_necromancer_02 = {
+		{
+			texture = "portrait_frame_necromancer_02",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_necromancer_03 = {
+		{
+			texture = "portrait_frame_necromancer_03",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_geheimnisnacht_04 = {
+		{
+			texture = "portrait_frame_geheimnisnacht_04",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_geheimnisnacht_05 = {
+		{
+			texture = "portrait_frame_geheimnisnacht_05_child",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				128,
+				140
+			},
+			offset = {
+				0,
+				-61,
+				0
+			}
+		}
+	},
 	default = {
 		{
 			texture = "portrait_frame_0000",

@@ -50,10 +50,10 @@ curse_skulking_sorcerer.server_stop_function = function (context, data)
 end
 
 curse_skulking_sorcerer.server_ai_killed_function = function (context, data, killed_unit, killer_unit, death_data)
-	if death_data.breed.name == "curse_mutator_sorcerer" then
-		local killed_by_player = ALIVE[killer_unit] and Managers.player:is_player_unit(killer_unit)
+	if death_data.breed.name == "curse_mutator_sorcerer" and HEALTH_ALIVE[killer_unit] then
+		local killed_by_player = Managers.player:is_player_unit(killer_unit)
 
-		if killed_by_player and ScriptUnit.extension(killer_unit, "health_system"):is_alive() then
+		if killed_by_player then
 			local dialogue_input = ScriptUnit.extension_input(killer_unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
 

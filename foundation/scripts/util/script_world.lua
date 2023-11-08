@@ -527,3 +527,19 @@ ScriptWorld.create_particles_linked = function (world, effect_name, unit, node, 
 
 	return id
 end
+
+ScriptWorld.set_material_variable_for_particles = function (world, particle_id, cloud_name, material_variable, value)
+	if type(value) == "number" then
+		World.set_particles_material_scalar(world, particle_id, cloud_name, material_variable, value)
+	elseif type(value) == "table" then
+		local num_values = #value
+
+		if num_values == 2 then
+			World.set_particles_material_vector2(world, particle_id, cloud_name, material_variable, Vector2(value[1], value[2]))
+		elseif num_values == 3 then
+			World.set_particles_material_vector3(world, particle_id, cloud_name, material_variable, Vector3(value[1], value[2], value[3]))
+		elseif num_values == 4 then
+			World.set_particles_material_vector3(world, particle_id, cloud_name, material_variable, Color(value[1], value[2], value[3], value[4]))
+		end
+	end
+end

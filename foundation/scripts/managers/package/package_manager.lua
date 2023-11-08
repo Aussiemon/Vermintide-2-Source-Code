@@ -257,8 +257,8 @@ PackageManager.destroy = function (self)
 	end
 end
 
-PackageManager.is_loading = function (self, package)
-	return self._packages[package] == nil and (self._asynch_packages[package] ~= nil or self._queued_async_packages[package] ~= nil)
+PackageManager.is_loading = function (self, package, optional_reference_name)
+	return self._packages[package] == nil and (self._asynch_packages[package] ~= nil or self._queued_async_packages[package] ~= nil) and (not optional_reference_name or self._references[package][optional_reference_name])
 end
 
 PackageManager.has_loaded = function (self, package, reference_name)

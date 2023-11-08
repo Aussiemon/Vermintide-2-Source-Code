@@ -1,6 +1,10 @@
 print("boot.lua start, os clock:", os.clock())
 dofile("scripts/boot_init")
 
+if not DEDICATED_SERVER then
+	dofile("scripts/global_shader_flags")
+end
+
 local BUILD = BUILD
 local PLATFORM = PLATFORM
 
@@ -108,8 +112,6 @@ end
 
 Boot.setup = function (self)
 	_G.Crashify = require("foundation/scripts/util/crashify")
-
-	foundation_require("util", "testify")
 
 	if not DEDICATED_SERVER and IS_WINDOWS then
 		Application.set_time_step_policy("throttle", 30)
@@ -480,7 +482,7 @@ Boot.booting_render = function (self)
 end
 
 Boot._require_foundation_scripts = function (self)
-	base_require("util", "verify_plugins", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path", "string", "reportify")
+	base_require("util", "verify_plugins", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "circular_queue", "grow_queue", "table", "testify", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path", "string", "reportify")
 	base_require("debug", "table_trap")
 	base_require("managers", "world/world_manager", "player/player", "free_flight/free_flight_manager", "state/state_machine_manager", "time/time_manager", "token/token_manager")
 	base_require("managers", "localization/localization_manager", "event/event_manager")
@@ -1271,6 +1273,27 @@ end
 Game._handle_win32_graphics_quality = function (self)
 	local p = profile_start("Game:_handle_win32_graphics_quality()")
 	local graphics_quality = Application.user_setting("graphics_quality")
+	local dirty = false
+
+	if Application.render_caps("reflex_supported") then
+		local max_fps = Application.user_setting("max_fps") or 0
+
+		if max_fps > 0 then
+			Application.set_user_setting("render_settings", "nv_framerate_cap", max_fps)
+			Application.set_user_setting("max_fps", 0)
+
+			dirty = true
+		end
+	else
+		local nv_framerate_cap = Application.user_setting("render_settings", "nv_framerate_cap") or 0
+
+		if nv_framerate_cap > 0 then
+			Application.set_user_setting("max_fps", nv_framerate_cap)
+			Application.set_user_setting("render_settings", "nv_framerate_cap", 0)
+
+			dirty = true
+		end
+	end
 
 	local function is_same(current, new)
 		if current == new then
@@ -1293,8 +1316,6 @@ Game._handle_win32_graphics_quality = function (self)
 			return false
 		end
 	end
-
-	local dirty = false
 
 	local function set_user_setting(category, setting, value)
 		if value ~= nil then
@@ -1326,76 +1347,76 @@ Game._handle_win32_graphics_quality = function (self)
 		Application.set_user_setting("graphics_quality", graphics_quality)
 	end
 
-	if LEVEL_EDITOR_TEST or graphics_quality == "custom" or not GraphicsQuality[graphics_quality] then
-		return
-	end
-
 	local settings = GraphicsQuality[graphics_quality]
-	local user_settings = settings.user_settings
 
-	for setting, value in pairs(user_settings) do
-		if setting == "char_texture_quality" then
-			local texture_settings = TextureQuality.characters[value]
+	if not LEVEL_EDITOR_TEST and settings and not settings.is_custom then
+		local user_settings = settings.user_settings
 
-			for i, texture_setting in ipairs(texture_settings) do
-				set_user_setting("texture_settings", texture_setting.texture_setting, texture_setting.mip_level)
+		for setting, value in pairs(user_settings) do
+			if setting == "char_texture_quality" then
+				local texture_settings = TextureQuality.characters[value]
+
+				for i, texture_setting in ipairs(texture_settings) do
+					set_user_setting("texture_settings", texture_setting.texture_setting, texture_setting.mip_level)
+				end
+			elseif setting == "env_texture_quality" then
+				local texture_settings = TextureQuality.environment[value]
+
+				for i, texture_setting in ipairs(texture_settings) do
+					set_user_setting("texture_settings", texture_setting.texture_setting, texture_setting.mip_level)
+				end
+			elseif setting == "local_light_shadow_quality" then
+				local local_light_shadow_quality_settings = LocalLightShadowQuality[value]
+
+				for render_setting, key in pairs(local_light_shadow_quality_settings) do
+					set_user_setting("render_settings", render_setting, key)
+				end
+			elseif setting == "particles_quality" then
+				local particle_quality_settings = ParticlesQuality[value]
+
+				for render_setting, key in pairs(particle_quality_settings) do
+					Application.set_user_setting("render_settings", render_setting, key)
+				end
+			elseif setting == "sun_shadow_quality" then
+				local sun_shadow_quality_settings = SunShadowQuality[value]
+
+				for render_setting, key in pairs(sun_shadow_quality_settings) do
+					set_user_setting("render_settings", render_setting, key)
+				end
+			elseif setting == "volumetric_fog_quality" then
+				local volumetric_fog_quality_settings = VolumetricFogQuality[value]
+
+				for render_setting, key in pairs(volumetric_fog_quality_settings) do
+					set_user_setting("render_settings", render_setting, key)
+				end
+			elseif setting == "ambient_light_quality" then
+				local ambient_light_quality_settings = AmbientLightQuality[value]
+
+				for render_setting, key in pairs(ambient_light_quality_settings) do
+					set_user_setting("render_settings", render_setting, key)
+				end
+			elseif setting == "ao_quality" then
+				local ao_quality_settings = AmbientOcclusionQuality[value]
+
+				for render_setting, key in pairs(ao_quality_settings) do
+					set_user_setting("render_settings", render_setting, key)
+				end
 			end
-		elseif setting == "env_texture_quality" then
-			local texture_settings = TextureQuality.environment[value]
 
-			for i, texture_setting in ipairs(texture_settings) do
-				set_user_setting("texture_settings", texture_setting.texture_setting, texture_setting.mip_level)
-			end
-		elseif setting == "local_light_shadow_quality" then
-			local local_light_shadow_quality_settings = LocalLightShadowQuality[value]
-
-			for render_setting, key in pairs(local_light_shadow_quality_settings) do
-				set_user_setting("render_settings", render_setting, key)
-			end
-		elseif setting == "particles_quality" then
-			local particle_quality_settings = ParticlesQuality[value]
-
-			for render_setting, key in pairs(particle_quality_settings) do
-				Application.set_user_setting("render_settings", render_setting, key)
-			end
-		elseif setting == "sun_shadow_quality" then
-			local sun_shadow_quality_settings = SunShadowQuality[value]
-
-			for render_setting, key in pairs(sun_shadow_quality_settings) do
-				set_user_setting("render_settings", render_setting, key)
-			end
-		elseif setting == "volumetric_fog_quality" then
-			local volumetric_fog_quality_settings = VolumetricFogQuality[value]
-
-			for render_setting, key in pairs(volumetric_fog_quality_settings) do
-				set_user_setting("render_settings", render_setting, key)
-			end
-		elseif setting == "ambient_light_quality" then
-			local ambient_light_quality_settings = AmbientLightQuality[value]
-
-			for render_setting, key in pairs(ambient_light_quality_settings) do
-				set_user_setting("render_settings", render_setting, key)
-			end
-		elseif setting == "ao_quality" then
-			local ao_quality_settings = AmbientOcclusionQuality[value]
-
-			for render_setting, key in pairs(ao_quality_settings) do
-				set_user_setting("render_settings", render_setting, key)
-			end
+			set_user_setting(setting, value)
 		end
 
-		set_user_setting(setting, value)
-	end
+		local render_settings = settings.render_settings
 
-	local render_settings = settings.render_settings
-
-	for setting, value in pairs(render_settings) do
-		set_user_setting("render_settings", setting, value)
+		for setting, value in pairs(render_settings) do
+			set_user_setting("render_settings", setting, value)
+		end
 	end
 
 	if dirty then
 		profile(p, "apply")
 		Application.apply_user_settings()
+		GlobalShaderFlags.apply_settings()
 		profile(p, "apply")
 	end
 

@@ -25,7 +25,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			UILayer.default + 1
+			UILayer.options_menu + 1
 		}
 	},
 	panel_edge = {
@@ -38,7 +38,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			UILayer.default + 10
+			UILayer.options_menu + 10
 		}
 	},
 	bottom_panel = {
@@ -51,7 +51,7 @@ local scenegraph_definition = {
 		position = {
 			0,
 			0,
-			UILayer.default + 1
+			UILayer.options_menu + 1
 		}
 	},
 	system_button = {

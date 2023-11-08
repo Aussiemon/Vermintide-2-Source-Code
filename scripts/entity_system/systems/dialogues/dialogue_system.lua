@@ -8,6 +8,7 @@ require("scripts/entity_system/systems/dialogues/dialogue_flow_events")
 require("scripts/settings/dialogue_settings")
 
 local LIVE_EVENT_PACKAGES = require("scripts/settings/live_events_packages")
+local GLOBAL_SOUND_EVENT_FILTERS = require("scripts/entity_system/systems/dialogues/global_sound_event_filters")
 script_data.dialogue_debug_all_contexts = script_data.dialogue_debug_all_contexts or Development.parameter("dialogue_debug_all_contexts")
 script_data.dialogue_debug_last_query = script_data.dialogue_debug_last_query or Development.parameter("dialogue_debug_last_query")
 script_data.dialogue_debug_last_played_query = script_data.dialogue_debug_last_played_query or Development.parameter("dialogue_debug_last_played_query")
@@ -40,6 +41,36 @@ local function update_switch_group(wwise_world, wwise_source_id, extension)
 
 		if extension.vo_center_percent then
 			WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, "vo_center_percent", extension.vo_center_percent)
+		end
+	end
+end
+
+DialogueSystem._load_special_event_dialogues = function (self, package_name, mechanism_name)
+	local event_packages = LIVE_EVENT_PACKAGES[package_name]
+	local event_dialogues = event_packages and event_packages.dialogues
+	local additional_dialogues = event_dialogues and event_dialogues[mechanism_name]
+
+	if additional_dialogues then
+		for dialogue_idx = 1, #additional_dialogues do
+			local file_name = additional_dialogues[dialogue_idx]
+
+			if not self._loaded_event_dialogues[file_name] then
+				if Application.can_get("lua", file_name) then
+					self.tagquery_loader:load_file(file_name)
+				end
+
+				if Application.can_get("lua", file_name .. "_markers") then
+					local markers = dofile(file_name .. "_markers")
+
+					for name, marker in pairs(markers) do
+						fassert(not self._markers[name], "[DialogueSystem] There is already a marker called %s registered", name)
+
+						self._markers[name] = marker
+					end
+				end
+
+				self._loaded_event_dialogues[file_name] = true
+			end
 		end
 	end
 end
@@ -138,31 +169,21 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 
 		if special_events then
 			local mechanism_name = Managers.mechanism:current_mechanism_name()
+			self._loaded_event_dialogues = {}
 
 			for event_idx = 1, #special_events do
 				local event_data = special_events[event_idx]
 				local event_name = event_data.name
-				local event_packages = LIVE_EVENT_PACKAGES[event_name]
-				local event_dialogues = event_packages and event_packages.dialogues
-				local additional_dialogues = event_dialogues and event_dialogues[mechanism_name]
 
-				if additional_dialogues then
-					for dialogue_idx = 1, #additional_dialogues do
-						local file_name = additional_dialogues[dialogue_idx]
+				self:_load_special_event_dialogues(event_name, mechanism_name)
 
-						if Application.can_get("lua", file_name) then
-							self.tagquery_loader:load_file(file_name)
-						end
+				local mutators = event_data.mutators
 
-						if Application.can_get("lua", file_name .. "_markers") then
-							local markers = dofile(file_name .. "_markers")
+				if mutators then
+					for i = 1, #mutators do
+						local mutator = mutators[i]
 
-							for name, marker in pairs(markers) do
-								fassert(not self._markers[name], "[DialogueSystem] There is already a marker called %s registered", name)
-
-								self._markers[name] = marker
-							end
-						end
+						self:_load_special_event_dialogues(mutator, mechanism_name)
 					end
 				end
 			end
@@ -204,14 +225,18 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	local environment_variation_name = entity_system_creation_context.startup_data.environment_variation_name
 	self.statistics_db = entity_system_creation_context.statistics_db
 	self.global_context = {
-		dwarf_ranger = false,
-		empire_soldier = false,
-		wood_elf = false,
-		bright_wizard = false,
-		witch_hunter = false,
 		current_level = current_level,
 		weather = environment_variation_name
 	}
+
+	for _, profile in ipairs(SPProfiles) do
+		self.global_context[profile.display_name] = false
+
+		for _, career in ipairs(profile.careers) do
+			self.global_context[career.display_name] = false
+		end
+	end
+
 	local weave_manager = Managers.weave
 	local weave_template = weave_manager:get_active_weave_template()
 
@@ -374,13 +399,15 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 	self.tagquery_database:add_object_context(unit, "user_memory", extension.user_memory)
 	self.tagquery_database:add_object_context(unit, "user_context", extension.context)
 
-	if extension_init_data.faction then
-		extension.faction = extension_init_data.faction
+	local faction = extension_init_data.faction or Unit.get_data(unit, "faction")
 
-		fassert(self.faction_memories[extension_init_data.faction], "No such faction %q", tostring(extension_init_data.faction))
-		self.tagquery_database:add_object_context(unit, "faction_memory", self.faction_memories[extension_init_data.faction])
+	if faction then
+		extension.faction = faction
 
-		extension.faction_memory = self.faction_memories[extension_init_data.faction]
+		fassert(self.faction_memories[faction], "No such faction %q", tostring(faction))
+		self.tagquery_database:add_object_context(unit, "faction_memory", self.faction_memories[faction])
+
+		extension.faction_memory = self.faction_memories[faction]
 	end
 
 	ScriptUnit.set_extension(unit, "dialogue_system", extension)
@@ -762,6 +789,8 @@ DialogueSystem._trigger_marker = function (self, marker_data)
 	end
 end
 
+local EMPTY_TABLE = {}
+
 DialogueSystem.physics_async_update = function (self, context, t)
 	local dt = context.dt
 
@@ -846,7 +875,14 @@ DialogueSystem.physics_async_update = function (self, context, t)
 					end
 
 					local go_id, is_level_unit = network_manager:game_object_or_level_id(dialogue_actor_unit)
-					local dialogue_index = DialogueQueries.get_dialogue_event_index(dialogue)
+					local filter_context = FrameTable.alloc_table()
+					filter_context.query_context = query.query_context
+					filter_context.global_context = self.global_context
+					local user_context_list = self.tagquery_database:get_object_context(dialogue_actor_unit) or EMPTY_TABLE
+					filter_context.user_context = user_context_list.user_context or EMPTY_TABLE
+					filter_context.user_memory = user_context_list.user_memory or EMPTY_TABLE
+					filter_context.faction_memory = user_context_list.faction_memory or EMPTY_TABLE
+					local dialogue_index = DialogueQueries.get_filtered_dialogue_event_index(dialogue, filter_context, GLOBAL_SOUND_EVENT_FILTERS)
 					dialogue.dialogue_timer = DialogueQueries.get_sound_event_duration(dialogue, dialogue_index)
 					dialogue.used_query = query
 					local additional_trigger = dialogue.additional_trigger or dialogue.additional_trigger_heard

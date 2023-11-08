@@ -61,6 +61,8 @@ ProjectileTrueFlightLocomotionExtension.init = function (self, extension_init_co
 
 	self._legitimate_target_func = template.legitimate_target_func and self[template.legitimate_target_func] or self.legitimate_target
 	self._keep_target_on_miss_check_func = template.keep_target_on_miss_check_func and self[template.keep_target_on_miss_check_func] or self.legitimate_never
+	self._valid_target_dot = template.valid_target_dot or 0.75
+	self._retarget_broadphase_offset = template.retarget_broadphase_offset or 10
 	self._lerp_modifier_func = template.lerp_modifier_func or function (distance)
 		return distance < 5 and 1 or 5 / distance
 	end
@@ -248,17 +250,13 @@ ProjectileTrueFlightLocomotionExtension._check_target_valid = function (self, ta
 
 	if self.position_target then
 		can_see_target = true
-	elseif target and Unit.alive(target) and ScriptUnit.has_extension(target, "health_system") then
-		local health_extension = ScriptUnit.extension(target, "health_system")
+	elseif HEALTH_ALIVE[target] and not self.hit_units[target] then
+		has_good_target = true
 
-		if health_extension:is_alive() and not self.hit_units[target] then
-			has_good_target = true
-
-			if self:_legitimate_target_func(target, current_position) then
-				can_see_target = true
-			elseif template.retarget_on_miss then
-				has_good_target = self:_keep_target_on_miss_check_func(target, current_position)
-			end
+		if self:_legitimate_target_func(target, current_position) then
+			can_see_target = true
+		elseif template.retarget_on_miss then
+			has_good_target = self:_keep_target_on_miss_check_func(target, current_position)
 		end
 	end
 
@@ -350,7 +348,7 @@ ProjectileTrueFlightLocomotionExtension.update_towards_strike_missile_target = f
 				local create_bot_threat = template.create_bot_threat
 
 				if create_bot_threat then
-					local blackboard = AiUtils.unit_alive(self.owner_unit) and BLACKBOARDS[self.owner_unit]
+					local blackboard = HEALTH_ALIVE[self.owner_unit] and BLACKBOARDS[self.owner_unit]
 
 					if blackboard and not blackboard.created_missile_bot_threat then
 						blackboard.missile_bot_threat_unit = target_unit
@@ -501,12 +499,8 @@ ProjectileTrueFlightLocomotionExtension.find_player_target = function (self, pos
 			local index = (i - 1) % players_n + 1
 			local unit = player_units[index]
 
-			if ScriptUnit.has_extension(unit, "health_system") then
-				local health_extension = ScriptUnit.extension(unit, "health_system")
-
-				if health_extension:is_alive() and not self.hit_units[unit] and self:_legitimate_target_func(unit, position) then
-					return unit
-				end
+			if HEALTH_ALIVE[unit] and not self.hit_units[unit] and self:_legitimate_target_func(unit, position) then
+				return unit
 			end
 		end
 	end
@@ -526,10 +520,10 @@ ProjectileTrueFlightLocomotionExtension.find_broadphase_target = function (self,
 		ai_units_n = AiUtils.broadphase_query(self.target_position:unbox(), broadphase_radius, ai_units, broadphase_categories)
 	else
 		local current_direction = self.current_direction:unbox()
-		ai_units_n = AiUtils.broadphase_query(position + current_direction * 10, broadphase_radius, ai_units, broadphase_categories)
+		ai_units_n = AiUtils.broadphase_query(position + current_direction * self._retarget_broadphase_offset, broadphase_radius, ai_units, broadphase_categories)
 
 		if ai_units_n <= 0 then
-			ai_units_n = AiUtils.broadphase_query(position + current_direction * 20, broadphase_radius * 2, ai_units, broadphase_categories)
+			ai_units_n = AiUtils.broadphase_query(position + current_direction * 2 * self._retarget_broadphase_offset, broadphase_radius * 2, ai_units, broadphase_categories)
 		end
 	end
 
@@ -539,7 +533,7 @@ ProjectileTrueFlightLocomotionExtension.find_broadphase_target = function (self,
 		for i = 1, ai_units_n do
 			local unit = ai_units[i]
 
-			if ScriptUnit.has_extension(unit, "health_system") and AiUtils.unit_alive(unit) and not self.hit_units[unit] and self:_legitimate_target_func(unit, position) then
+			if ScriptUnit.has_extension(unit, "health_system") and HEALTH_ALIVE[unit] and not self.hit_units[unit] and self:_legitimate_target_func(unit, position) then
 				return unit
 			end
 		end
@@ -576,7 +570,7 @@ ProjectileTrueFlightLocomotionExtension.find_closest_highest_value_target = func
 			local unit = ai_units[i]
 			local breed = Unit.get_data(unit, "breed")
 
-			if not breed or breed.no_autoaim or not ScriptUnit.has_extension(unit, "health_system") or not AiUtils.unit_alive(unit) or self.hit_units[unit] or not self:_legitimate_target_func(unit, position) then
+			if not breed or breed.no_autoaim or not ScriptUnit.has_extension(unit, "health_system") or not HEALTH_ALIVE[unit] or self.hit_units[unit] or not self:_legitimate_target_func(unit, position) then
 				table.swap_delete(ai_units, i)
 
 				ai_units_n = ai_units_n - 1
@@ -609,7 +603,7 @@ ProjectileTrueFlightLocomotionExtension.legitimate_only_dot_check = function (se
 	local wanted_direction = Vector3.normalize(direction_to_target)
 	local dot_value = Vector3.dot(current_direction, wanted_direction)
 
-	if dot_value > -0.75 then
+	if dot_value > -self._valid_target_dot then
 		return true
 	else
 		self.target_unit = nil
@@ -621,14 +615,14 @@ ProjectileTrueFlightLocomotionExtension.legitimate_target = function (self, unit
 	local current_direction = self.current_direction:unbox()
 	local direction_to_target = target_position - position
 
-	if Vector3.length_squared(direction_to_target) == 0 then
+	if Vector3.length_squared(direction_to_target) < math.epsilon then
 		return true
 	end
 
 	local wanted_direction = Vector3.normalize(direction_to_target)
 	local dot_value = Vector3.dot(current_direction, wanted_direction)
 
-	if dot_value > -0.75 then
+	if dot_value > -self._valid_target_dot then
 		local physics_world = World.get_data(self.world, "physics_world")
 		local result = PhysicsWorld.immediate_raycast_actors(physics_world, position, wanted_direction, 10000, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
 		local INDEX_ACTOR = 4
@@ -670,7 +664,7 @@ ProjectileTrueFlightLocomotionExtension.legitimate_target_keep_target = function
 	local wanted_direction = Vector3.normalize(direction_to_target)
 	local dot_value = Vector3.dot(current_direction, wanted_direction)
 
-	if dot_value > -0.75 and Vector3.length_squared(wanted_direction) > 0 then
+	if dot_value > -self._valid_target_dot and Vector3.length_squared(wanted_direction) > 0 then
 		local physics_world = World.get_data(self.world, "physics_world")
 		local result = PhysicsWorld.immediate_raycast_actors(physics_world, position, wanted_direction, 10000, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_ai_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
 		local INDEX_ACTOR = 4
@@ -765,7 +759,7 @@ ProjectileTrueFlightLocomotionExtension.destroy = function (self)
 	local template = self.true_flight_template
 
 	if template.create_bot_threat then
-		local blackboard = AiUtils.unit_alive(self.owner_unit) and BLACKBOARDS[self.owner_unit]
+		local blackboard = HEALTH_ALIVE[self.owner_unit] and BLACKBOARDS[self.owner_unit]
 
 		if blackboard then
 			blackboard.created_missile_bot_threat = nil
@@ -784,7 +778,7 @@ ProjectileTrueFlightLocomotionExtension.update_bot_threat = function (self, targ
 	local template = self.true_flight_template
 
 	if distance < template.bot_threat_at_distance then
-		local blackboard = AiUtils.unit_alive(self.owner_unit) and BLACKBOARDS[self.owner_unit]
+		local blackboard = HEALTH_ALIVE[self.owner_unit] and BLACKBOARDS[self.owner_unit]
 
 		if blackboard and not blackboard.created_missile_bot_threat then
 			blackboard.missile_bot_threat_unit = target_unit

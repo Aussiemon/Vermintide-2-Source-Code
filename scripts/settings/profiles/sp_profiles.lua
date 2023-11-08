@@ -114,6 +114,7 @@ local hud_components = {
 	"WorldMarkerUI",
 	"ChallengeTrackerUI"
 }
+local default_state_machine = "units/beings/player/first_person_base/state_machines/common"
 
 for _, dlc in pairs(DLCSettings) do
 	local dlc_hud_components = dlc.hero_hud_components
@@ -153,6 +154,7 @@ SPProfiles = {
 		},
 		room_profile = RoomProfiles.witch_hunter,
 		base_units = BaseUnits.witch_hunter,
+		default_state_machine = default_state_machine,
 		first_person_attachment = FirstPersonAttachments.witch_hunter,
 		first_person_heights = {
 			charged = 1,
@@ -197,6 +199,7 @@ SPProfiles = {
 		},
 		room_profile = RoomProfiles.bright_wizard,
 		base_units = BaseUnits.bright_wizard,
+		default_state_machine = default_state_machine,
 		first_person_attachment = FirstPersonAttachments.bright_wizard,
 		first_person_heights = {
 			charged = 0.9,
@@ -241,6 +244,7 @@ SPProfiles = {
 		},
 		room_profile = RoomProfiles.dwarf_ranger,
 		base_units = BaseUnits.dwarf_ranger,
+		default_state_machine = default_state_machine,
 		first_person_attachment = FirstPersonAttachments.dwarf_ranger,
 		first_person_heights = {
 			charged = 0.75,
@@ -285,6 +289,7 @@ SPProfiles = {
 		},
 		room_profile = RoomProfiles.wood_elf,
 		base_units = BaseUnits.wood_elf,
+		default_state_machine = default_state_machine,
 		first_person_attachment = FirstPersonAttachments.wood_elf,
 		first_person_heights = {
 			charged = 0.85,
@@ -329,6 +334,7 @@ SPProfiles = {
 		},
 		room_profile = RoomProfiles.empire_soldier,
 		base_units = BaseUnits.empire_soldier,
+		default_state_machine = default_state_machine,
 		first_person_attachment = FirstPersonAttachments.empire_soldier,
 		first_person_heights = {
 			charged = 1,
@@ -374,6 +380,7 @@ SPProfiles = {
 		},
 		room_profile = RoomProfiles.empire_soldier,
 		base_units = BaseUnits.empire_soldier,
+		default_state_machine = default_state_machine,
 		first_person_attachment = FirstPersonAttachments.empire_soldier,
 		first_person_heights = {
 			grabbed_by_tentacle = 1.9,

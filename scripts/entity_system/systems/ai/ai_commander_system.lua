@@ -1,6 +1,12 @@
+require("scripts/unit_extensions/ai_commander/command_states")
+require("scripts/unit_extensions/ai_commander/controlled_unit_templates")
+
 local RPCS = {
 	"rpc_add_controlled_unit",
-	"rpc_remove_controlled_unit"
+	"rpc_remove_controlled_unit",
+	"rpc_cancel_current_command",
+	"rpc_command_stand_ground",
+	"rpc_command_attack"
 }
 local extensions = {
 	"AICommanderExtension"
@@ -10,13 +16,14 @@ AICommanderSystem = class(AICommanderSystem, ExtensionSystemBase)
 AICommanderSystem.init = function (self, entity_system_creation_context, system_name)
 	AICommanderSystem.super.init(self, entity_system_creation_context, system_name, extensions)
 
+	self._is_server = entity_system_creation_context.is_server
 	self._unit_storage = entity_system_creation_context.unit_storage
 	self._network_transmit = entity_system_creation_context.network_transmit
 	self._network_event_delegate = entity_system_creation_context.network_event_delegate
 
 	self._network_event_delegate:register(self, unpack(RPCS))
 
-	self._commanding_unit_lookup = {}
+	self._commander_unit_lookup = {}
 	self._extensions = {}
 end
 
@@ -24,18 +31,18 @@ AICommanderSystem.destroy = function (self)
 	self._network_event_delegate:unregister(self)
 end
 
-AICommanderSystem.register_commanding_unit = function (self, commanding_unit, controlled_unit)
-	assert(self._commanding_unit_lookup[controlled_unit] == nil, "unit [%s] already has a commander [%s]", controlled_unit, self._commanding_unit_lookup[controlled_unit])
+AICommanderSystem.register_commander_unit = function (self, commander_unit, controlled_unit)
+	assert(self._commander_unit_lookup[controlled_unit] == nil, "unit [%s] already has a commander [%s]", controlled_unit, self._commander_unit_lookup[controlled_unit])
 
-	self._commanding_unit_lookup[controlled_unit] = commanding_unit
+	self._commander_unit_lookup[controlled_unit] = commander_unit
 end
 
-AICommanderSystem.clear_commanding_unit = function (self, controlled_unit)
-	self._commanding_unit_lookup[controlled_unit] = nil
+AICommanderSystem.clear_commander_unit = function (self, controlled_unit)
+	self._commander_unit_lookup[controlled_unit] = nil
 end
 
 AICommanderSystem.get_commander_unit = function (self, controlled_unit)
-	return self._commanding_unit_lookup[controlled_unit]
+	return self._commander_unit_lookup[controlled_unit]
 end
 
 AICommanderSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
@@ -65,26 +72,85 @@ AICommanderSystem._cleanup_extension = function (self, extension)
 	end
 end
 
-AICommanderSystem.rpc_add_controlled_unit = function (self, channel_id, commanding_unit_id, controlled_unit_id)
-	local commanding_unit = self._unit_storage:unit(commanding_unit_id)
+AICommanderSystem.rpc_add_controlled_unit = function (self, channel_id, commander_unit_id, controlled_unit_id, template_id)
+	local commander_unit = self._unit_storage:unit(commander_unit_id)
 	local controlled_unit = self._unit_storage:unit(controlled_unit_id)
 
-	if ALIVE[commanding_unit] and ALIVE[controlled_unit] then
-		local extension = self._extensions[commanding_unit]
+	if ALIVE[commander_unit] and ALIVE[controlled_unit] then
+		local extension = self._extensions[commander_unit]
+		local template_name = NetworkLookup.controlled_unit_templates[template_id]
 		local skip_sync = true
+		local t = Managers.time:time("game")
 
-		extension:add_controlled_unit(controlled_unit, skip_sync)
+		extension:add_controlled_unit(controlled_unit, template_name, t, skip_sync)
 	end
 end
 
-AICommanderSystem.rpc_remove_controlled_unit = function (self, channel_id, commanding_unit_id, controlled_unit_id)
-	local commanding_unit = self._unit_storage:unit(commanding_unit_id)
+AICommanderSystem.rpc_remove_controlled_unit = function (self, channel_id, commander_unit_id, controlled_unit_id)
+	local commander_unit = self._unit_storage:unit(commander_unit_id)
 	local controlled_unit = self._unit_storage:unit(controlled_unit_id)
 
-	if ALIVE[commanding_unit] and ALIVE[controlled_unit] then
-		local extension = self._extensions[commanding_unit]
+	if ALIVE[commander_unit] and ALIVE[controlled_unit] then
+		local extension = self._extensions[commander_unit]
 		local skip_sync = true
 
 		extension:remove_controlled_unit(controlled_unit, skip_sync)
 	end
+end
+
+AICommanderSystem.rpc_cancel_current_command = function (self, channel_id, controlled_unit_id)
+	local controlled_unit = self._unit_storage:unit(controlled_unit_id)
+	local commander_unit = self:get_commander_unit(controlled_unit)
+
+	if not commander_unit then
+		return
+	end
+
+	local extension = self._extensions[commander_unit]
+
+	if not extension then
+		return
+	end
+
+	extension:cancel_current_command(controlled_unit)
+end
+
+AICommanderSystem.rpc_command_stand_ground = function (self, channel_id, controlled_unit_id, position, rotation)
+	local controlled_unit = self._unit_storage:unit(controlled_unit_id)
+	local commander_unit = self:get_commander_unit(controlled_unit)
+
+	if not commander_unit then
+		return
+	end
+
+	local extension = self._extensions[commander_unit]
+
+	if not extension then
+		return
+	end
+
+	extension:command_stand_ground(controlled_unit, position, rotation)
+end
+
+AICommanderSystem.rpc_command_attack = function (self, channel_id, controlled_unit_id, target_unit_id)
+	local controlled_unit = self._unit_storage:unit(controlled_unit_id)
+	local commander_unit = self:get_commander_unit(controlled_unit)
+
+	if not commander_unit then
+		return
+	end
+
+	local extension = self._extensions[commander_unit]
+
+	if not extension then
+		return
+	end
+
+	local target_unit = self._unit_storage:unit(target_unit_id)
+
+	if not ALIVE[target_unit] then
+		return
+	end
+
+	extension:command_attack(controlled_unit, target_unit)
 end

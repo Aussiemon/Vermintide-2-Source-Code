@@ -551,6 +551,48 @@ UtilityConsiderations = {
 			is_condition = true
 		}
 	},
+	running_command_attack = {
+		distance_to_target = {
+			max_value = 7,
+			blackboard_input = "target_dist",
+			spline = {
+				0,
+				0,
+				0.4,
+				0,
+				0.45,
+				0.75,
+				0.85,
+				1,
+				1,
+				0
+			}
+		},
+		have_slot = {
+			max_value = 1,
+			blackboard_input = "have_slot",
+			spline = {
+				0,
+				0,
+				0.5033333333333333,
+				0,
+				1,
+				1
+			}
+		},
+		max_occupied_slots = {
+			max_value = 3,
+			blackboard_input = "target_num_occupied_slots",
+			spline = {
+				0,
+				1,
+				0.5033333333333333,
+				1,
+				1,
+				0
+			}
+		}
+	},
 	jump_slam = {
 		distance_to_target = {
 			max_value = 25,
@@ -1514,6 +1556,39 @@ UtilityConsiderations = {
 				0.15,
 				0,
 				1,
+				0
+			}
+		}
+	},
+	command_attack = {
+		distance_to_target_flat_sq = {
+			max_value = 30.25,
+			blackboard_input = "target_dist_xy_sq",
+			spline = {
+				0,
+				0,
+				0.2018769,
+				1,
+				0.4392308,
+				1,
+				0.656528,
+				0,
+				0.8437957,
+				0,
+				1,
+				0
+			}
+		},
+		distance_to_target_height = {
+			max_value = 3.75,
+			min_value = 0,
+			blackboard_input = "target_dist_z_abs",
+			spline = {
+				0,
+				1,
+				0.9,
+				1,
+				0.92,
 				0
 			}
 		}

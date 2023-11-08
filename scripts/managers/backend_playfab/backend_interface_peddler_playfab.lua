@@ -72,8 +72,7 @@ BackendInterfacePeddlerPlayFab.is_purchaseable = function (self, steam_itemdefid
 end
 
 BackendInterfacePeddlerPlayFab.get_unseen_currency_rewards = function (self)
-	local user_data = self._backend_mirror:get_user_data()
-	local unseen_rewards_json = user_data.unseen_rewards
+	local unseen_rewards_json = self._backend_mirror:get_user_data("unseen_rewards")
 
 	if not unseen_rewards_json then
 		return nil
@@ -606,7 +605,7 @@ BackendInterfacePeddlerPlayFab._refresh_app_prices_xboxlive = function (self, ex
 	if #product_ids < 0 then
 		local success = true
 
-		if external_cb(success) then
+		if external_cb then
 			external_cb(success)
 		end
 
@@ -680,7 +679,7 @@ BackendInterfacePeddlerPlayFab._exchange_chips_success_cb = function (self, exte
 			items = items
 		}
 	}
-	local request_cb = callback(self, "_store_purchase_made_cb")
+	local request_cb = callback(self, "_store_purchase_made_cb", items)
 	local request_queue = self._backend_mirror:request_queue()
 
 	request_queue:enqueue(request, request_cb, true)
@@ -700,7 +699,7 @@ BackendInterfacePeddlerPlayFab._exchange_chips_error_cb = function (self, extern
 	end
 end
 
-BackendInterfacePeddlerPlayFab._store_purchase_made_cb = function (self, result)
+BackendInterfacePeddlerPlayFab._store_purchase_made_cb = function (self, items, result)
 	local function_result = result.FunctionResult
 	local updated_statistics = function_result.updated_statistics
 
@@ -720,6 +719,25 @@ BackendInterfacePeddlerPlayFab._store_purchase_made_cb = function (self, result)
 					statistics_db:set_stat(player_stats_id, key, value)
 				end
 			end
+		end
+	end
+
+	if function_result.new_cosmetics then
+		for i = 1, #function_result.new_cosmetics do
+			local cosmetic = function_result.new_cosmetics[i]
+			local _, item = table.find_by_key(items, "ItemId", cosmetic)
+
+			self._backend_mirror:add_item(item and item.ItemInstanceId, {
+				ItemId = function_result.new_cosmetics[i]
+			})
+		end
+	end
+
+	if function_result.new_weapon_skins then
+		for i = 1, #function_result.new_weapon_skins do
+			self._backend_mirror:add_item(nil, {
+				ItemId = function_result.new_weapon_skins[i]
+			})
 		end
 	end
 end
@@ -868,6 +886,7 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 
 	if rewards_claimed then
 		Managers.telemetry_events:store_calendar_rewards_claimed(result.FunctionResult)
+		Managers.save:auto_save(SaveFileName, SaveData, nil)
 	end
 
 	self._is_done_claiming = true

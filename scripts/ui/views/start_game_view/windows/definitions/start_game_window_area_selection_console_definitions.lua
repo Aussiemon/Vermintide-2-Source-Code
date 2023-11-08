@@ -326,7 +326,7 @@ local function create_area_widget(i, specific_scenegraph_id)
 		locked = true,
 		frame = "map_frame_04",
 		icon = "level_icon_01",
-		lock = "hero_icon_locked",
+		lock = "hero_icon_locked_gold",
 		icon_glow = "map_frame_glow_02",
 		button_hotspot = {}
 	}

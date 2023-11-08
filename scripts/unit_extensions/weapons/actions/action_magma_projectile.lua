@@ -9,9 +9,6 @@ ActionMagmaProjectile.client_owner_start_action = function (self, new_action, t,
 	if self.charge_level and self.charge_level >= 1 and is_spell then
 		buff_extension:trigger_procs("on_full_charge_action", new_action, t, chain_action_data)
 	end
-
-	local owner_unit = self.owner_unit
-	self._is_critical_strike = ActionUtils.is_critical_strike(owner_unit, new_action)
 end
 
 ActionMagmaProjectile._start_shooting = function (self)

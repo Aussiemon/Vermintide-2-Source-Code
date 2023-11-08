@@ -301,7 +301,9 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				max_stacks = 10,
 				icon = "markus_huntsman_passive",
-				perk = buff_perks.auto_headshot
+				perks = {
+					buff_perks.auto_headshot
+				}
 			}
 		}
 	},
@@ -333,7 +335,9 @@ TalentBuffTemplates.empire_soldier = {
 	markus_huntsman_passive_no_damage_dropoff = {
 		buffs = {
 			{
-				perk = buff_perks.no_damage_dropoff
+				perks = {
+					buff_perks.no_damage_dropoff
+				}
 			}
 		}
 	},
@@ -355,11 +359,13 @@ TalentBuffTemplates.empire_soldier = {
 	markus_huntsman_activated_ability_increased_zoom = {
 		buffs = {
 			{
-				name = "markus_huntsman_activated_ability_increased_zoom",
 				refresh_durations = true,
+				name = "markus_huntsman_activated_ability_increased_zoom",
 				max_stacks = 1,
 				duration = buff_tweak_data.markus_huntsman_activated_ability.duration,
-				perk = buff_perks.increased_zoom
+				perks = {
+					buff_perks.increased_zoom
+				}
 			}
 		}
 	},
@@ -493,11 +499,13 @@ TalentBuffTemplates.empire_soldier = {
 	markus_huntsman_activated_ability_increased_zoom_duration = {
 		buffs = {
 			{
-				name = "markus_huntsman_activated_ability_increased_zoom",
 				refresh_durations = true,
+				name = "markus_huntsman_activated_ability_increased_zoom",
 				max_stacks = 1,
 				duration = buff_tweak_data.markus_huntsman_activated_ability_duration.duration,
-				perk = buff_perks.increased_zoom
+				perks = {
+					buff_perks.increased_zoom
+				}
 			}
 		}
 	},
@@ -629,7 +637,9 @@ TalentBuffTemplates.empire_soldier = {
 				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = buff_perks.tank_healing
+				perks = {
+					buff_perks.tank_healing
+				}
 			}
 		}
 	},
@@ -641,7 +651,9 @@ TalentBuffTemplates.empire_soldier = {
 				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = buff_perks.smiter_healing
+				perks = {
+					buff_perks.smiter_healing
+				}
 			}
 		}
 	},
@@ -926,10 +938,12 @@ TalentBuffTemplates.empire_soldier = {
 	markus_huntsman_invuln_flash = {
 		buffs = {
 			{
-				remove_buff_func = "remove_invulnd_flash",
 				apply_buff_func = "add_invulnd_flash",
+				remove_buff_func = "remove_invulnd_flash",
 				duration = 1,
-				perk = buff_perks.invulnerable
+				perks = {
+					buff_perks.invulnerable
+				}
 			}
 		}
 	},
@@ -1000,7 +1014,9 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				remove_buff_func = "end_knight_activated_ability",
 				icon = "markus_knight_activated_ability",
-				perk = buff_perks.uninterruptible
+				perks = {
+					buff_perks.uninterruptible
+				}
 			}
 		}
 	},
@@ -1011,7 +1027,9 @@ TalentBuffTemplates.empire_soldier = {
 				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = buff_perks.tank_healing
+				perks = {
+					buff_perks.tank_healing
+				}
 			}
 		}
 	},
@@ -1020,11 +1038,13 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
+				max_targets = 5,
 				bonus = 0.25,
-				perk = buff_perks.linesman_healing
+				perks = {
+					buff_perks.linesman_healing
+				}
 			}
 		}
 	},
@@ -1246,7 +1266,9 @@ TalentBuffTemplates.empire_soldier = {
 				stat_buff = "push_power",
 				max_stacks = 1,
 				refresh_durations = true,
-				perk = buff_perks.no_push_fatigue_cost
+				perks = {
+					buff_perks.no_push_fatigue_cost
+				}
 			}
 		}
 	},
@@ -1361,7 +1383,9 @@ TalentBuffTemplates.empire_soldier = {
 	markus_mercenary_passive_uninterruptible_heavy = {
 		buffs = {
 			{
-				perk = buff_perks.uninterruptible_heavy
+				perks = {
+					buff_perks.uninterruptible_heavy
+				}
 			}
 		}
 	},
@@ -1388,11 +1412,13 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
+				max_targets = 5,
 				bonus = 0.25,
-				perk = buff_perks.linesman_healing
+				perks = {
+					buff_perks.linesman_healing
+				}
 			}
 		}
 	},
@@ -1404,7 +1430,9 @@ TalentBuffTemplates.empire_soldier = {
 				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = buff_perks.smiter_healing
+				perks = {
+					buff_perks.smiter_healing
+				}
 			}
 		}
 	},
@@ -1471,12 +1499,14 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_critical_action",
-				icon = "markus_mercenary_crit_count",
 				max_stacks = 1,
 				buff_func = "dummy_function",
 				remove_on_proc = true,
+				icon = "markus_mercenary_crit_count",
 				priority_buff = true,
-				perk = buff_perks.guaranteed_crit
+				perks = {
+					buff_perks.guaranteed_crit
+				}
 			}
 		}
 	},

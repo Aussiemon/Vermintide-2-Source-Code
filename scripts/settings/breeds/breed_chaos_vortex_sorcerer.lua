@@ -134,6 +134,13 @@ local breed_data = {
 			}
 		}
 	},
+	status_effect_settings = {
+		category = "medium",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire,
+			StatusEffectNames.poisoned
+		})
+	},
 	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
 		local blackboard = BLACKBOARDS[unit]
 

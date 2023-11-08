@@ -440,8 +440,9 @@ StoreWindowCategoryItemList._on_list_index_pressed = function (self, index)
 	local current_store_path = parent:get_store_path()
 	local new_path = table.clone(current_store_path)
 	new_path[#new_path + 1] = "all_items"
+	local keep_global_shader_flags = true
 
-	parent:go_to_product(product_id, new_path)
+	parent:go_to_product(product_id, new_path, nil, keep_global_shader_flags)
 end
 
 StoreWindowCategoryItemList._create_product_widgets = function (self, layout)

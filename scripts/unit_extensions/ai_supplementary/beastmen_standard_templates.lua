@@ -23,7 +23,7 @@ BeastmenStandardTemplates = {
 		sfx_loop = "Play_enemy_standard_bearer_place_standar",
 		ai_buff_vfx_name = "fx/chr_beastmen_standard_bearer_buff_01",
 		custom_update_func = function (template, data, t, dt, unit, units_inside)
-			if data.is_server and not data.challenge_done and data.challenge_time < t and AiUtils.unit_alive(data.standard_bearer_unit) then
+			if data.is_server and not data.challenge_done and data.challenge_time < t and HEALTH_ALIVE[data.standard_bearer_unit] then
 				local stat_name = "scorpion_keep_standard_bearer_alive"
 				local stat_name_index = NetworkLookup.statistics[stat_name]
 				local statistics_db = Managers.player:statistics_db()

@@ -1,8 +1,10 @@
 local deus_rally_flag_template = {
 	max_fatigue_points = 4,
 	left_hand_unit = "units/weapons/player/wpn_deus_folded_rally_flag_01/wpn_deus_folded_rally_flag_01",
+	state_machine = "units/beings/player/first_person_base/state_machines/common",
 	gui_texture = "hud_consumable_icon_potion",
 	wield_anim = "to_first_aid",
+	load_state_machine = false,
 	can_give_other = true,
 	actions = {
 		action_one = {

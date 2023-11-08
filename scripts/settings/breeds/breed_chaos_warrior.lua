@@ -20,10 +20,10 @@ local pushed_data = {
 }
 local breed_data = {
 	detection_radius = 12,
-	target_stickyness_modifier = -10,
+	aoe_height = 1.7,
 	walk_speed = 2.4,
 	big_boy_turning_dot = 0.4,
-	friends_alert_range = 10,
+	perception_previous_attacker_stickyness_value = 0,
 	has_running_attack = true,
 	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
 	disable_crowd_dispersion = true,
@@ -35,7 +35,7 @@ local breed_data = {
 	aim_template = "chaos_warrior",
 	sync_full_rotation = false,
 	use_avoidance = false,
-	aoe_height = 1.7,
+	proximity_system_check = true,
 	target_selection = "pick_rat_ogre_target_with_weights",
 	ai_strength = 6,
 	slot_template = "chaos_large_elite",
@@ -43,7 +43,7 @@ local breed_data = {
 	default_inventory_template = "warrior_axe",
 	stagger_resistance = 5,
 	patrol_detection_radius = 10,
-	proximity_system_check = true,
+	target_stickyness_modifier = -10,
 	poison_resistance = 100,
 	primary_armor_category = 6,
 	panic_close_detection_radius_sq = 9,
@@ -53,7 +53,7 @@ local breed_data = {
 	hit_mass_count = 20,
 	patrol_active_perception = "perception_regular_update_aggro",
 	is_bot_threat = true,
-	perception_previous_attacker_stickyness_value = 0,
+	friends_alert_range = 10,
 	race = "chaos",
 	bot_hitbox_radius_approximation = 0.8,
 	death_reaction = "ai_default",
@@ -103,6 +103,7 @@ local breed_data = {
 	enter_walk_distance = 3,
 	elite = true,
 	displace_players_data = pushed_data,
+	infighting = InfightingSettings.large,
 	perception_exceptions = {
 		poison_well = true,
 		wizard_destructible = true
@@ -135,6 +136,12 @@ local breed_data = {
 		"low",
 		"medium",
 		"high"
+	},
+	status_effect_settings = {
+		category = "medium",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire
+		})
 	},
 	debug_color = {
 		255,

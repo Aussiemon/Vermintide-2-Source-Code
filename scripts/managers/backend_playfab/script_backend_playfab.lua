@@ -13,7 +13,7 @@ ScriptBackendPlayFab = class(ScriptBackendPlayFab)
 
 ScriptBackendPlayFab.init = function (self)
 	if HAS_STEAM then
-		self._steam_ticket_id = Steam.retrieve_auth_session_ticket()
+		self._steam_ticket_id = Steam.retrieve_auth_session_ticket("AzurePlayFab")
 	elseif GameSettingsDevelopment.use_offline_backend then
 		-- Nothing
 	end
@@ -37,6 +37,7 @@ ScriptBackendPlayFab.update_signin = function (self)
 
 		if ticket then
 			local login_request = {
+				TicketIsServiceSpecific = true,
 				CreateAccount = true,
 				TitleId = PlayFabClientApi.settings.titleId,
 				SteamTicket = ticket,

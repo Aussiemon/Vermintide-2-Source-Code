@@ -22,13 +22,13 @@ ActionWield.client_owner_start_action = function (self, new_action, t, chain_att
 		first_person_extension:reset_aim_assist_multiplier()
 	end
 
-	local new_slot, scroll_value = CharacterStateHelper.wield_input(input_extension, inventory_extension, "action_wield", true)
+	local new_slot, scroll_value, swap_from_storage_type = CharacterStateHelper.wield_input(input_extension, inventory_extension, "action_wield", true)
 	self.new_slot = new_slot
 
 	assert(self.new_slot, "went into wield action without input")
 
-	if new_slot == inventory_extension:get_wielded_slot_name() then
-		inventory_extension:swap_equipment_from_storage(new_slot, SwapFromStorageType.Unique)
+	if new_slot == inventory_extension:get_wielded_slot_name() or swap_from_storage_type then
+		inventory_extension:swap_equipment_from_storage(new_slot, swap_from_storage_type)
 		Managers.state.event:trigger("swap_equipment_from_storage", new_slot, inventory_extension:get_additional_items(new_slot))
 	end
 

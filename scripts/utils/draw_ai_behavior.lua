@@ -254,7 +254,7 @@ local function present_perception(gui, x, y, blackboard)
 			local target_unit = blackboard.target_unit
 
 			if target_unit and BLACKBOARDS[target_unit] then
-				target_unit_text = "u" .. Unit.get_data(target_unit, "unique_id") .. ") " .. BLACKBOARDS[target_unit].breed.name .. "  (" .. (AiUtils.unit_alive(target_unit) and "alive" or "dead") .. ")"
+				target_unit_text = "u" .. Unit.get_data(target_unit, "unique_id") .. ") " .. BLACKBOARDS[target_unit].breed.name .. "  (" .. (HEALTH_ALIVE[target_unit] and "alive" or "dead") .. ")"
 			end
 
 			y2 = y2 + 10

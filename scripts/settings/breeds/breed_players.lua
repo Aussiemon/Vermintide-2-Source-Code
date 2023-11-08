@@ -77,6 +77,7 @@ PlayerBreedHitZones.kruber_breed_hit_zones = {
 PlayerBreeds.hero_we_waywatcher = {
 	is_hero = true,
 	name = "hero_we_waywatcher",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -84,11 +85,15 @@ PlayerBreeds.hero_we_waywatcher = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 PlayerBreeds.hero_we_maidenguard = {
 	is_hero = true,
 	name = "hero_we_maidenguard",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -96,11 +101,15 @@ PlayerBreeds.hero_we_maidenguard = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 PlayerBreeds.hero_we_shade = {
 	is_hero = true,
 	name = "hero_we_shade",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -108,11 +117,15 @@ PlayerBreeds.hero_we_shade = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 PlayerBreeds.hero_bw_scholar = {
 	is_hero = true,
 	name = "hero_bw_scholar",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -120,11 +133,15 @@ PlayerBreeds.hero_bw_scholar = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 PlayerBreeds.hero_bw_adept = {
 	is_hero = true,
 	name = "hero_bw_adept",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -132,11 +149,15 @@ PlayerBreeds.hero_bw_adept = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 PlayerBreeds.hero_bw_unchained = {
 	is_hero = true,
 	name = "hero_bw_unchained",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -144,11 +165,15 @@ PlayerBreeds.hero_bw_unchained = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 PlayerBreeds.hero_dr_ranger = {
 	is_hero = true,
 	name = "hero_dr_ranger",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -156,11 +181,15 @@ PlayerBreeds.hero_dr_ranger = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 PlayerBreeds.hero_dr_ironbreaker = {
 	is_hero = true,
 	name = "hero_dr_ironbreaker",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -168,11 +197,15 @@ PlayerBreeds.hero_dr_ironbreaker = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 PlayerBreeds.hero_dr_slayer = {
 	is_hero = true,
 	name = "hero_dr_slayer",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -180,11 +213,15 @@ PlayerBreeds.hero_dr_slayer = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 PlayerBreeds.hero_es_mercenary = {
 	is_hero = true,
 	name = "hero_es_mercenary",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -192,11 +229,15 @@ PlayerBreeds.hero_es_mercenary = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.kruber_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.kruber_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 PlayerBreeds.hero_es_huntsman = {
 	is_hero = true,
 	name = "hero_es_huntsman",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -204,11 +245,15 @@ PlayerBreeds.hero_es_huntsman = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.kruber_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.kruber_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 PlayerBreeds.hero_es_knight = {
 	is_hero = true,
 	name = "hero_es_knight",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -216,11 +261,15 @@ PlayerBreeds.hero_es_knight = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.kruber_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.kruber_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 PlayerBreeds.hero_wh_zealot = {
 	is_hero = true,
 	name = "hero_wh_zealot",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -228,11 +277,15 @@ PlayerBreeds.hero_wh_zealot = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 PlayerBreeds.hero_wh_bountyhunter = {
 	is_hero = true,
 	name = "hero_wh_bountyhunter",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -240,11 +293,15 @@ PlayerBreeds.hero_wh_bountyhunter = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 PlayerBreeds.hero_wh_captain = {
 	is_hero = true,
 	name = "hero_wh_captain",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -252,5 +309,8 @@ PlayerBreeds.hero_wh_captain = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }

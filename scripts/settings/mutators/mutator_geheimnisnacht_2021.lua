@@ -27,52 +27,52 @@ local event_settings = {
 			}
 		}
 	},
-	catacombs = {
+	warcamp = {
 		ritual_locations = {
 			{
-				178.8,
-				109,
-				32,
-				50
-			}
-		}
-	},
-	mines = {
-		ritual_locations = {
-			{
-				-76.08,
-				130,
-				22.75,
-				5
-			}
-		}
-	},
-	ground_zero = {
-		ritual_locations = {
-			{
-				-171.5,
-				102.7,
-				42.094002,
-				20
-			}
-		}
-	},
-	elven_ruins = {
-		ritual_locations = {
-			{
-				37.891605,
-				-109,
-				19.562,
+				-151.1,
+				-20,
+				19.15,
 				0
 			}
 		}
 	},
-	farmlands = {
+	nurgle = {
 		ritual_locations = {
 			{
-				223.965363,
-				-253.689133,
-				7.712,
+				175.1,
+				-114.5,
+				2.5,
+				0
+			}
+		}
+	},
+	dlc_wizards_tower = {
+		ritual_locations = {
+			{
+				4.45,
+				36.4,
+				77.01,
+				0
+			}
+		}
+	},
+	dlc_bastion = {
+		ritual_locations = {
+			{
+				109.6,
+				56.7,
+				-52.8,
+				0
+			}
+		}
+	},
+	dlc_dwarf_beacons = {
+		ritual_locations = {
+			{
+				-128.2,
+				-102.8,
+				-15.3,
 				0
 			}
 		}
@@ -83,11 +83,6 @@ local hard_mode_mutators = {
 }
 
 local function side_objective_picked_up()
-	local pop_chat = true
-	local message = Localize("system_chat_geheimnisnacht_2021_hard_mode_on")
-
-	Managers.chat:add_local_system_message(1, message, pop_chat)
-
 	local mutator_handler = Managers.state.game_mode._mutator_handler
 
 	mutator_handler:initialize_mutators(hard_mode_mutators)
@@ -98,11 +93,6 @@ local function side_objective_picked_up()
 end
 
 local function side_objective_picked_dropped()
-	local pop_chat = true
-	local message = Localize("system_chat_geheimnisnacht_2021_hard_mode_off")
-
-	Managers.chat:add_local_system_message(1, message, pop_chat)
-
 	local mutator_handler = Managers.state.game_mode._mutator_handler
 
 	for i = 1, #hard_mode_mutators do
@@ -117,8 +107,9 @@ end
 
 return {
 	description = "description_mutator_geheimnisnacht_2021",
-	display_name = "display_name_mutator_geheimnisnacht_2021",
 	icon = "mutator_icon_death_spirits",
+	display_name = "display_name_mutator_geheimnisnacht_2021",
+	curse_package_name = "resource_packages/dlcs/geheimnisnacht_2021_event",
 	server_start_function = function (context, data)
 		local level_key = Managers.state.game_mode:level_key()
 		local settings = event_settings[level_key]

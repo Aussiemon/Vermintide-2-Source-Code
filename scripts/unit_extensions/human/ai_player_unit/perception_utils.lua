@@ -1,7 +1,7 @@
 require("scripts/unit_extensions/human/ai_player_unit/ai_utils")
 
 PerceptionUtils = {}
-local AiUtils_unit_alive = AiUtils.unit_alive
+local HEALTH_ALIVE = HEALTH_ALIVE
 local unit_knocked_down = AiUtils.unit_knocked_down
 local POSITION_LOOKUP = POSITION_LOOKUP
 local AI_UTILS = AI_UTILS
@@ -50,7 +50,7 @@ end
 PerceptionUtils.perception_continuous_keep_target = function (unit, blackboard, breed, t, dt)
 	local target_unit = blackboard.target_unit
 	local side = blackboard.side
-	local target_alive = AiUtils_unit_alive(target_unit)
+	local target_alive = HEALTH_ALIVE[target_unit]
 
 	return not target_alive or DamageUtils.is_player_unit(target_unit) and not side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[target_unit]
 end
@@ -263,7 +263,7 @@ end
 
 PerceptionUtils.perception_all_seeing_re_evaluate = function (unit, blackboard, breed, pick_target_func, t)
 	local target_unit = blackboard.target_unit
-	local target_alive = AiUtils_unit_alive(target_unit)
+	local target_alive = HEALTH_ALIVE[target_unit]
 	local best_enemy, enemy_dist, urgency_to_engage = pick_target_func(unit, blackboard, breed, t)
 
 	if target_alive and best_enemy == target_unit then
@@ -304,13 +304,12 @@ PerceptionUtils.perception_all_seeing_re_evaluate = function (unit, blackboard, 
 end
 
 PerceptionUtils.perception_regular = function (unit, blackboard, breed, pick_target_func, t)
-	local target_unit = blackboard.target_unit
-	local target_alive = AiUtils_unit_alive(target_unit)
-
 	if blackboard.keep_target then
 		return false
 	end
 
+	local target_unit = blackboard.target_unit
+	local target_alive = HEALTH_ALIVE[target_unit]
 	local best_enemy = pick_target_func(unit, blackboard, breed, t)
 
 	if target_unit and target_alive and best_enemy == target_unit then
@@ -330,7 +329,7 @@ PerceptionUtils.perception_regular = function (unit, blackboard, breed, pick_tar
 			blackboard.slot_layer = nil
 			blackboard.is_passive = false
 			blackboard.target_changed = true
-		elseif blackboard.delayed_target_unit and AiUtils_unit_alive(blackboard.delayed_target_unit) and blackboard.target_unit == nil then
+		elseif blackboard.delayed_target_unit and HEALTH_ALIVE[blackboard.delayed_target_unit] and blackboard.target_unit == nil then
 			blackboard.previous_target_unit = blackboard.target_unit
 			blackboard.target_unit = blackboard.delayed_target_unit
 			blackboard.target_unit_found_time = t
@@ -404,7 +403,15 @@ PerceptionUtils.alert_enemies_within_range = function (___world, player_unit, is
 	end
 
 	local ScriptUnit_extension = ScriptUnit.extension
-	local num_ai_units = AiUtils.broadphase_query(alert_position, alert_radius, ai_units)
+	local enemy_categories = nil
+	local blackboard = BLACKBOARDS[player_unit]
+
+	if blackboard then
+		local side = blackboard.side
+		enemy_categories = side.enemy_broadphase_categories
+	end
+
+	local num_ai_units = AiUtils.broadphase_query(alert_position, alert_radius, ai_units, enemy_categories)
 
 	for i = 1, num_ai_units do
 		local ai_unit = ai_units[i]

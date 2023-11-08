@@ -6,6 +6,7 @@ HeroPreviewer.init = function (self, ingame_ui_context, unique_id, delayed_spawn
 	self.mesh_unit = nil
 	self.world = nil
 	self._item_info_by_slot = {}
+	self._props_data = {}
 	self._equipment_units = {}
 	self._hidden_units = {}
 	self._delayed_material_changes = {}
@@ -223,6 +224,26 @@ HeroPreviewer._update_units_visibility = function (self, dt)
 		end
 
 		self:_trigger_equip_events()
+	end
+
+	if self._draw_character then
+		for _, data in pairs(self._props_data) do
+			if not data.visible and data.unit then
+				data.visible = true
+
+				Unit.set_unit_visibility(data.unit, true)
+
+				local settings = data.settings
+
+				if settings.animation_event then
+					Unit.animation_event(data.unit, settings.animation_event)
+				end
+
+				if settings.spawn_callback then
+					settings.spawn_callback(data.unit)
+				end
+			end
+		end
 	end
 end
 
@@ -548,6 +569,22 @@ HeroPreviewer.get_equipped_item_info = function (self, slot)
 	return item_info_by_slot[item_slot_type]
 end
 
+HeroPreviewer.spawn_all_props = function (self, prop_spawn_settings_list)
+	for _, prop_spawn_settings in pairs(prop_spawn_settings_list) do
+		self:spawn_prop(prop_spawn_settings)
+	end
+end
+
+HeroPreviewer.spawn_prop = function (self, prop_spawn_settings)
+	self._props_data[#self._props_data + 1] = {
+		visible = false,
+		loaded = false,
+		settings = prop_spawn_settings
+	}
+
+	self:_load_packages(prop_spawn_settings.package_names)
+end
+
 HeroPreviewer.equip_item = function (self, item_name, slot, backend_id, skin)
 	local skin_data = self.character_unit_skin_data
 
@@ -693,6 +730,28 @@ HeroPreviewer._poll_item_package_loading = function (self)
 
 	local reference_name = self:_reference_name()
 	local package_manager = Managers.package
+
+	for _, data in pairs(self._props_data) do
+		if not data.loaded then
+			local package_names = data.settings.package_names
+			local all_packages_loaded = true
+
+			for i = 1, #package_names do
+				if not package_manager:has_loaded(package_names[i], reference_name) then
+					all_packages_loaded = false
+
+					break
+				end
+			end
+
+			if all_packages_loaded and self._activated then
+				data.loaded = true
+
+				self:_spawn_prop(data)
+			end
+		end
+	end
+
 	local item_info_by_slot = self._item_info_by_slot
 
 	for slot_name, data in pairs(item_info_by_slot) do
@@ -734,6 +793,24 @@ HeroPreviewer._is_all_items_loaded = function (self)
 	end
 
 	return all_loaded
+end
+
+HeroPreviewer._spawn_prop = function (self, data)
+	local settings = data.settings
+	local world = self.world
+	local unit = World.spawn_unit(world, settings.unit_name)
+
+	if Unit.has_lod_object(unit, "lod") then
+		local lod_object = Unit.lod_object(unit, "lod")
+
+		LODObject.set_static_height(lod_object, 1)
+	end
+
+	data.unit = unit
+	local offset = settings.offset
+
+	Unit.set_local_position(unit, 0, Vector3(offset[1], offset[2], offset[3]))
+	Unit.set_unit_visibility(unit, false)
 end
 
 HeroPreviewer._spawn_item = function (self, item_name, spawn_data)
@@ -1013,6 +1090,17 @@ end
 HeroPreviewer._unload_all_packages = function (self)
 	self:_unload_hero_packages()
 	self:_unload_all_items()
+	self:_unload_all_prop_packages()
+end
+
+HeroPreviewer._unload_all_prop_packages = function (self)
+	local props_data = self._props_data
+
+	for i, data in pairs(props_data) do
+		self:_unload_prop_packages(data)
+
+		props_data[i] = nil
+	end
 end
 
 HeroPreviewer._unload_hero_packages = function (self)
@@ -1040,6 +1128,17 @@ HeroPreviewer._unload_all_items = function (self)
 
 	for slot_type, data in pairs(item_info_by_slot) do
 		self:_unload_item_packages_by_slot(slot_type)
+	end
+end
+
+HeroPreviewer._unload_prop_packages = function (self, data)
+	local package_manager = Managers.package
+	local reference_name = self:_reference_name()
+
+	for _, package_name in ipairs(data.settings.package_names) do
+		if package_manager:has_loaded(package_name, reference_name) then
+			package_manager:unload(package_name, reference_name)
+		end
 	end
 end
 
@@ -1097,6 +1196,14 @@ HeroPreviewer.clear_units = function (self)
 		World.destroy_unit(world, self.character_unit)
 
 		self.character_unit = nil
+	end
+
+	for _, data in pairs(self._props_data) do
+		if data.unit then
+			World.destroy_unit(world, data.unit)
+
+			data.unit = nil
+		end
 	end
 end
 

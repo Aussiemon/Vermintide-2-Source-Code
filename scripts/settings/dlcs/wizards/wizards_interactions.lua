@@ -48,10 +48,9 @@ base_trail_light_urn_definition.client.start = function (world, interactor_unit,
 end
 
 base_trail_light_urn_definition.server.update = function (world, interactor_unit, interactable_unit, data, config, dt, t)
-	local health_extension = ScriptUnit.extension(interactor_unit, "health_system")
 	local status_extension = ScriptUnit.extension(interactor_unit, "status_system")
 
-	if status_extension:is_knocked_down() or not health_extension:is_alive() then
+	if status_extension:is_knocked_down() or not HEALTH_ALIVE[interactor_unit] then
 		return InteractionResult.FAILURE
 	end
 

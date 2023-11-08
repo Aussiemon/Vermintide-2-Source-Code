@@ -6,6 +6,20 @@ menu_cinematics_atlas = {
 		},
 		uv00 = {
 			0.583984,
+			0.664063
+		},
+		uv11 = {
+			0.776367,
+			0.880859
+		}
+	},
+	bless_thumbnail = {
+		size = {
+			394,
+			222
+		},
+		uv00 = {
+			0.583984,
 			0.443359
 		},
 		uv11 = {
@@ -13,7 +27,7 @@ menu_cinematics_atlas = {
 			0.660156
 		}
 	},
-	bless_thumbnail = {
+	bogenhafen_thumbnail = {
 		size = {
 			394,
 			222
@@ -24,20 +38,6 @@ menu_cinematics_atlas = {
 		},
 		uv11 = {
 			0.970703,
-			0.439453
-		}
-	},
-	bogenhafen_thumbnail = {
-		size = {
-			394,
-			222
-		},
-		uv00 = {
-			0.583984,
-			0.222656
-		},
-		uv11 = {
-			0.776367,
 			0.439453
 		}
 	},
@@ -47,6 +47,20 @@ menu_cinematics_atlas = {
 			222
 		},
 		uv00 = {
+			0.583984,
+			0.222656
+		},
+		uv11 = {
+			0.776367,
+			0.439453
+		}
+	},
+	cog_thumbnail = {
+		size = {
+			394,
+			222
+		},
+		uv00 = {
 			0.77832,
 			0.001953
 		},
@@ -55,7 +69,7 @@ menu_cinematics_atlas = {
 			0.21875
 		}
 	},
-	cog_thumbnail = {
+	holly_thumbnail = {
 		size = {
 			394,
 			222
@@ -69,7 +83,7 @@ menu_cinematics_atlas = {
 			0.21875
 		}
 	},
-	holly_thumbnail = {
+	honduras_thumbnail = {
 		size = {
 			394,
 			222
@@ -83,7 +97,7 @@ menu_cinematics_atlas = {
 			0.880859
 		}
 	},
-	honduras_thumbnail = {
+	karak_thumbnail = {
 		size = {
 			394,
 			222
@@ -97,7 +111,7 @@ menu_cinematics_atlas = {
 			0.660156
 		}
 	},
-	karak_thumbnail = {
+	lake_thumbnail = {
 		size = {
 			394,
 			222
@@ -111,7 +125,7 @@ menu_cinematics_atlas = {
 			0.439453
 		}
 	},
-	lake_thumbnail = {
+	morris_thumbnail = {
 		size = {
 			394,
 			222
@@ -125,7 +139,7 @@ menu_cinematics_atlas = {
 			0.21875
 		}
 	},
-	morris_thumbnail = {
+	penny_thumbnail = {
 		size = {
 			394,
 			222
@@ -139,7 +153,7 @@ menu_cinematics_atlas = {
 			0.880859
 		}
 	},
-	penny_thumbnail = {
+	prologue_thumbnail = {
 		size = {
 			394,
 			222
@@ -153,7 +167,7 @@ menu_cinematics_atlas = {
 			0.660156
 		}
 	},
-	prologue_thumbnail = {
+	scorpion_thumbnail = {
 		size = {
 			394,
 			222
@@ -167,7 +181,7 @@ menu_cinematics_atlas = {
 			0.439453
 		}
 	},
-	scorpion_thumbnail = {
+	shovel_thumbnail = {
 		size = {
 			394,
 			222

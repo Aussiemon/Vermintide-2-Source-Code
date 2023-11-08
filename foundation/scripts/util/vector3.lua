@@ -61,6 +61,12 @@ Vector3.reflect = function (vector, surface_normal)
 	return vector - 2 * Vector3.dot(vector, surface_normal) * surface_normal
 end
 
+Vector3.rotate = function (vector, angle, optional_axis)
+	optional_axis = optional_axis or Vector3.up()
+
+	return Quaternion.rotate(Quaternion.axis_angle(optional_axis, angle), vector)
+end
+
 Vector3Aux = Vector3Aux or {}
 
 Vector3Aux.box = function (destination, vector_3)

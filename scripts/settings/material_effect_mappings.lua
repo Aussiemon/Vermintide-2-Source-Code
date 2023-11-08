@@ -5484,6 +5484,225 @@ MaterialEffectMappings.fireball_impact = MaterialEffectMappings.fireball_impact 
 		water = {}
 	}
 }
+MaterialEffectMappings.drake_impact = MaterialEffectMappings.drake_impact or {
+	sound = {
+		cloth = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "cloth",
+				damage_type = "piercing"
+			}
+		},
+		dirt = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "dirt",
+				damage_type = "piercing"
+			}
+		},
+		flesh = {
+			no_damage_event = "bullet_hit_armour",
+			event = "fireball_small_hit",
+			parameters = {}
+		},
+		fruit = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "fruit",
+				damage_type = "piercing"
+			}
+		},
+		forest_grass = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "forest_grass",
+				damage_type = "piercing"
+			}
+		},
+		glass = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "glass",
+				damage_type = "piercing"
+			}
+		},
+		grass = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "grass",
+				damage_type = "piercing"
+			}
+		},
+		hay = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "hay",
+				damage_type = "piercing"
+			}
+		},
+		ice = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "ice",
+				damage_type = "piercing"
+			}
+		},
+		metal_hollow = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "metal_hollow",
+				damage_type = "piercing"
+			}
+		},
+		armored = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "metal_hollow",
+				damage_type = "piercing"
+			}
+		},
+		shield = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "metal_hollow",
+				damage_type = "piercing"
+			}
+		},
+		shield_metal = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "metal_hollow",
+				damage_type = "piercing"
+			}
+		},
+		metal_solid = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "metal_solid",
+				damage_type = "piercing"
+			}
+		},
+		mud = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "mud",
+				damage_type = "piercing"
+			}
+		},
+		plaster = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "plaster",
+				damage_type = "piercing"
+			}
+		},
+		sand = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "grass",
+				damage_type = "piercing"
+			}
+		},
+		stone = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "stone",
+				damage_type = "piercing"
+			}
+		},
+		stone_dirt = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "stone_dirt",
+				damage_type = "piercing"
+			}
+		},
+		stone_wet = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "stone_wet",
+				damage_type = "piercing"
+			}
+		},
+		snow = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "snow",
+				damage_type = "piercing"
+			}
+		},
+		water = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "water",
+				damage_type = "piercing"
+			}
+		},
+		water_deep = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "water_deep",
+				damage_type = "piercing"
+			}
+		},
+		wood_bridge = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "wood_bridge",
+				damage_type = "piercing"
+			}
+		},
+		wood_hollow = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "wood_hollow",
+				damage_type = "piercing"
+			}
+		},
+		wood_solid = {
+			event = "fireball_small_hit",
+			parameters = {
+				material = "wood_solid",
+				damage_type = "piercing"
+			}
+		}
+	},
+	particles = {
+		shield = "fx/hit_enemy_shield",
+		dirt = "fx/wpnfx_drake_spark_impact",
+		glass = "fx/wpnfx_drake_spark_impact",
+		stone = "fx/wpnfx_drake_spark_impact",
+		cloth = "fx/wpnfx_drake_spark_impact",
+		shield_metal = "fx/hit_enemy_shield_metal",
+		ward = "fx/chr_stormvermin_champion_shield_dot",
+		water = "fx/wpnfx_drake_spark_impact",
+		fruit = "fx/wpnfx_drake_spark_impact",
+		sand = "fx/wpnfx_drake_spark_impact",
+		armored = "fx/hit_armored_with_fire",
+		flesh = "fx/wpnfx_drake_spark_impact",
+		stone_dirt = "fx/wpnfx_drake_spark_impact",
+		plaster = "fx/wpnfx_drake_spark_impact",
+		snow = "fx/wpnfx_drake_spark_impact",
+		ice = "fx/wpnfx_drake_spark_impact",
+		water_deep = "fx/wpnfx_drake_spark_impact",
+		forest_grass = "fx/wpnfx_drake_spark_impact",
+		wood_bridge = "fx/wpnfx_drake_spark_impact",
+		grass = "fx/wpnfx_drake_spark_impact",
+		hay = "fx/wpnfx_drake_spark_impact",
+		wood_hollow = "fx/wpnfx_drake_spark_impact",
+		stone_wet = "fx/wpnfx_drake_spark_impact",
+		mud = "fx/wpnfx_drake_spark_impact",
+		wood_solid = "fx/wpnfx_drake_spark_impact",
+		metal_solid = "fx/wpnfx_drake_spark_impact",
+		metal_hollow = "fx/wpnfx_drake_spark_impact"
+	},
+	flow_event = {
+		ward = "ward_impact"
+	},
+	world_interaction = {
+		water = {}
+	}
+}
 MaterialEffectMappings.flamethrower = MaterialEffectMappings.flamethrower or {
 	sound = {
 		armored = {

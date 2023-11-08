@@ -1178,7 +1178,7 @@ AIBotGroupSystem._update_priority_targets = function (self, dt, t)
 					target = status_ext.overpowered_attacking_unit
 				end
 
-				if AiUtils.unit_alive(target) then
+				if HEALTH_ALIVE[target] then
 					PRIORITY_TARGETS_TEMP[player_unit] = target
 					NEW_TARGETS[target] = (side_old_priority_targets[target] or 0) + dt
 				end
@@ -1267,7 +1267,7 @@ AIBotGroupSystem._update_urgent_targets = function (self, dt, t)
 				local time_left = is_target_until - t
 
 				if time_left > 0 then
-					if AiUtils.unit_alive(target_unit) then
+					if HEALTH_ALIVE[target_unit] then
 						local utility, distance = self:_calculate_opportunity_utility(bot_unit, blackboard, self_pos, old_target, target_unit, t, false, false)
 
 						if best_utility < utility then
@@ -1288,7 +1288,7 @@ AIBotGroupSystem._update_urgent_targets = function (self, dt, t)
 					local target_unit = alive_bosses[j]
 					local pos = POSITION_LOOKUP[target_unit]
 
-					if AiUtils.unit_alive(target_unit) and not AiUtils.unit_invincible(target_unit) and Vector3.distance_squared(pos, self_pos) < BOSS_ENGAGE_DISTANCE_SQ and not BLACKBOARDS[target_unit].defensive_mode_duration then
+					if HEALTH_ALIVE[target_unit] and not AiUtils.unit_invincible(target_unit) and Vector3.distance_squared(pos, self_pos) < BOSS_ENGAGE_DISTANCE_SQ and not BLACKBOARDS[target_unit].defensive_mode_duration then
 						local utility, distance = self:_calculate_opportunity_utility(bot_unit, blackboard, self_pos, old_target, target_unit, t, false, false)
 
 						if best_utility < utility then
@@ -1306,7 +1306,7 @@ AIBotGroupSystem._update_urgent_targets = function (self, dt, t)
 			local hit_by_projectile = blackboard.hit_by_projectile
 
 			for attacking_unit, _ in pairs(hit_by_projectile) do
-				if not AiUtils.unit_alive(attacking_unit) then
+				if not HEALTH_ALIVE[attacking_unit] then
 					hit_by_projectile[attacking_unit] = nil
 				end
 			end
@@ -1379,7 +1379,7 @@ AIBotGroupSystem._update_opportunity_targets = function (self, dt, t)
 				local ignore_bot_opportunity = opportunity_target_blackboard.breed.ignore_bot_opportunity
 				local target_pos = POSITION_LOOKUP[target_unit]
 
-				if not ignore_bot_opportunity and AiUtils.unit_alive(target_unit) and Vector3_distance_squared(target_pos, self_pos) < FALLBACK_OPPORTUNITY_DISTANCE_SQ then
+				if not ignore_bot_opportunity and HEALTH_ALIVE[target_unit] and Vector3_distance_squared(target_pos, self_pos) < FALLBACK_OPPORTUNITY_DISTANCE_SQ then
 					local utility, distance = self:_calculate_opportunity_utility(bot_unit, blackboard, self_pos, old_target, target_unit, t, false, true)
 
 					if best_utility < utility then
@@ -1399,7 +1399,7 @@ AIBotGroupSystem._update_opportunity_targets = function (self, dt, t)
 					if not ghost_mode_ext or not ghost_mode_ext:is_in_ghost_mode() then
 						local target_pos = POSITION_LOOKUP[target_unit]
 
-						if AiUtils.unit_alive(target_unit) and Vector3_distance_squared(target_pos, self_pos) < FALLBACK_OPPORTUNITY_DISTANCE_SQ then
+						if HEALTH_ALIVE[target_unit] and Vector3_distance_squared(target_pos, self_pos) < FALLBACK_OPPORTUNITY_DISTANCE_SQ then
 							local utility, distance = self:_calculate_opportunity_utility(bot_unit, blackboard, self_pos, old_target, target_unit, t, false, true)
 
 							if best_utility < utility then
@@ -1484,7 +1484,7 @@ AIBotGroupSystem._update_pickups = function (self, dt, t)
 		self._last_key_in_available_pickups = key
 		local player_unit = player.player_unit
 
-		if AiUtils.unit_alive(player_unit) and not ScriptUnit.extension(player_unit, "status_system"):is_ready_for_assisted_respawn() then
+		if HEALTH_ALIVE[player_unit] and not ScriptUnit.extension(player_unit, "status_system"):is_ready_for_assisted_respawn() then
 			self:_update_pickups_near_player(player_unit, t)
 		end
 	end
@@ -1604,7 +1604,7 @@ AIBotGroupSystem._update_pickups_near_player = function (self, player_unit, t)
 					for i = 1, num_human_players do
 						local player_unit = PLAYER_UNITS[i]
 
-						if AiUtils.unit_alive(player_unit) then
+						if HEALTH_ALIVE[player_unit] then
 							local inventory_ext = ScriptUnit.extension(player_unit, "inventory_system")
 							local ammo_percentage = inventory_ext:ammo_percentage()
 
@@ -1819,7 +1819,7 @@ AIBotGroupSystem._update_mule_pickups = function (self, dt, t)
 
 				local player_unit = PLAYER_UNITS[i]
 
-				if AiUtils.unit_alive(player_unit) then
+				if HEALTH_ALIVE[player_unit] then
 					local inventory_ext = ScriptUnit.extension(player_unit, "inventory_system")
 					local item = inventory_ext:get_slot_data(slot_name)
 
@@ -1934,7 +1934,7 @@ AIBotGroupSystem._update_health_pickups = function (self, dt, t)
 		for i = 1, num_human_players do
 			local player_unit = PLAYER_UNITS[i]
 
-			if AiUtils.unit_alive(player_unit) then
+			if HEALTH_ALIVE[player_unit] then
 				local inventory_ext = ScriptUnit.extension(player_unit, "inventory_system")
 				local med_item = inventory_ext:get_slot_data("slot_healthkit")
 
@@ -1998,7 +1998,7 @@ AIBotGroupSystem._update_health_pickups = function (self, dt, t)
 
 			if RESERVED_HEALTH_ITEMS_TEMP[unit] and not has_heal_item then
 				-- Nothing
-			elseif not has_heal_item and AiUtils.unit_alive(unit) and not status_ext:is_ready_for_assisted_respawn() then
+			elseif not has_heal_item and HEALTH_ALIVE[unit] and not status_ext:is_ready_for_assisted_respawn() then
 				num_valid_bots = num_valid_bots + 1
 				BOT_UNITS[num_valid_bots] = unit
 				BOT_BBS[num_valid_bots] = blackboard
@@ -2019,7 +2019,7 @@ AIBotGroupSystem._update_health_pickups = function (self, dt, t)
 				end
 
 				BOT_INDICES[unit] = num_valid_bots
-			elseif has_heal_item and AiUtils.unit_alive(unit) and not status_ext:is_ready_for_assisted_respawn() then
+			elseif has_heal_item and HEALTH_ALIVE[unit] and not status_ext:is_ready_for_assisted_respawn() then
 				local health_extension = ScriptUnit.extension(unit, "health_system")
 				local hp_percent = health_extension:current_health_percent()
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
@@ -2288,7 +2288,7 @@ AIBotGroupSystem._update_order_debug = function (self)
 				local side_bot_data = self._bot_ai_data[side_id]
 
 				for bot_unit, _ in pairs(side_bot_data) do
-					if AiUtils.unit_alive(bot_unit) then
+					if HEALTH_ALIVE[bot_unit] then
 						selected_bot = bot_unit
 
 						if Math.random() < 0.3 then
@@ -2338,7 +2338,7 @@ AIBotGroupSystem._update_ally_needs_aid_priority = function (self)
 
 		if unit_alive(bot_unit) then
 			local blackboard = bot_ai_data_lookup[bot_unit].blackboard
-			reset_priority_aid = blackboard.target_ally_unit ~= target_unit or not blackboard.target_ally_needs_aid or not ScriptUnit.extension(bot_unit, "health_system"):is_alive()
+			reset_priority_aid = blackboard.target_ally_unit ~= target_unit or not blackboard.target_ally_needs_aid or not HEALTH_ALIVE[bot_unit]
 		end
 
 		if reset_priority_aid then
@@ -2531,9 +2531,8 @@ AIBotGroupSystem._update_proximity_bot_breakables = function (self, t)
 
 			for i = 1, num_hits do
 				local unit = BROADPHASE_RESULTS[i]
-				local health_extension = ScriptUnit.extension(unit, "health_system")
 
-				if health_extension:is_alive() then
+				if HEALTH_ALIVE[unit] then
 					current_bot_breakables[unit] = unit
 
 					if previous_bot_breakables[unit] then

@@ -52,7 +52,7 @@ BTInterestPointApproachAction.leave = function (self, unit, blackboard, t, reaso
 	navigation_extension:set_max_speed(default_move_speed)
 
 	if reason == "failed" then
-		if AiUtils.unit_alive(unit) then
+		if HEALTH_ALIVE[unit] then
 			local interest_point_system_api = blackboard.system_api.ai_interest_point_system
 
 			interest_point_system_api.release_claim(blackboard.ip_request_id)

@@ -51,10 +51,7 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_alive = function (data, t, 
 	local other_update_units = data.other_update_units
 
 	for unit, extension in pairs(all_update_units) do
-		local health_extension = ScriptUnit.extension(unit, "health_system")
-		local is_alive = health_extension:is_alive()
-
-		if not is_alive then
+		if not HEALTH_ALIVE[unit] then
 			all_update_units[unit] = nil
 			pure_network_update_units[unit] = nil
 			other_update_units[unit] = nil

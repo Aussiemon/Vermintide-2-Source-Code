@@ -110,7 +110,7 @@ BTJumpAcrossAction.run = function (self, unit, blackboard, t, dt)
 		self:_debug_draw_update(unit, blackboard, t)
 	end
 
-	if blackboard.jump_state == "moving_to_ledge" and Vector3.distance_squared(entrance_pos, unit_position) < 1 then
+	if blackboard.jump_state == "moving_to_ledge" and blackboard.is_in_smartobject_range then
 		LocomotionUtils.set_animation_driven_movement(unit, false)
 		locomotion_extension:set_wanted_velocity(Vector3.zero())
 		locomotion_extension:set_movement_type("script_driven")
@@ -222,7 +222,7 @@ BTJumpAcrossAction._debug_draw_update = function (self, unit, blackboard, t)
 	Debug.text("BTJumpAcrossAction entrance_pos=%s", tostring(jump_entrance_pos))
 	Debug.text("BTJumpAcrossAction exit_pos=        %s", tostring(jump_exit_pos))
 	Debug.text("BTJumpAcrossAction pos=             %s", tostring(unit_position))
-	drawer:sphere(jump_entrance_pos, 0.3, Colors.get("red"))
+	drawer:sphere(jump_entrance_pos, 0.3, Colors.get("yellow"))
 	drawer:sphere(jump_exit_pos, 0.3, Colors.get("red"))
 	drawer:sphere(unit_position, 0.3 + math.sin(t * 5) * 0.01, Colors.get("purple"))
 	debug_graph():add_point(t, unit_position.z)

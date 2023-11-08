@@ -43,6 +43,11 @@ EnemyPackageLoaderSettings.categories = {
 			"chaos_plague_wave_spawner",
 			"skaven_stormfiend_boss",
 			"skaven_grey_seer",
+			"training_dummy",
+			"pet_skeleton",
+			"pet_skeleton_with_shield",
+			"pet_skeleton_dual_wield",
+			"pet_skeleton_armored",
 			"critter_nurgling"
 		}
 	},
@@ -53,6 +58,7 @@ EnemyPackageLoaderSettings.categories = {
 		limit = math.huge,
 		breeds = {
 			"chaos_zombie",
+			"chaos_skeleton",
 			"chaos_tentacle",
 			"chaos_tentacle_sorcerer",
 			"skaven_stormfiend_demo"

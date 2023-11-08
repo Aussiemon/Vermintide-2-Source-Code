@@ -201,7 +201,7 @@ PlayerCharacterStateGrabbedByChaosSpawn.update = function (self, unit, input, dt
 		return
 	end
 
-	if not status_extension.grabbed_by_chaos_spawn or not AiUtils.unit_alive(chaos_spawn_unit) then
+	if not status_extension.grabbed_by_chaos_spawn or not HEALTH_ALIVE[chaos_spawn_unit] then
 		if CharacterStateHelper.is_waiting_for_assisted_respawn(status_extension) then
 			csm:change_state("waiting_for_assisted_respawn")
 		else

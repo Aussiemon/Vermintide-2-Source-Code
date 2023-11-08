@@ -1317,6 +1317,7 @@ weapon_template.left_hand_unit = "units/weapons/player/wpn_empire_shield_01_t1/w
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.shield
 weapon_template.display_unit = "units/weapons/weapon_display/display_shield_hammer"
 weapon_template.wield_anim = "to_1h_hammer_shield"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/melee/1h_hammer_shield"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "MACE_1H_SHIELD"
 weapon_template.shield_block = true

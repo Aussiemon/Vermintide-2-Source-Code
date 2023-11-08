@@ -133,6 +133,11 @@ PlayerControllerKeymaps = {
 			"4",
 			"pressed"
 		},
+		wield_4_alt = {
+			"keyboard",
+			UNASSIGNED_KEY,
+			"pressed"
+		},
 		wield_5 = IS_XB1 and {
 			"keyboard",
 			"4",
@@ -541,6 +546,7 @@ PlayerControllerKeymaps = {
 			"d_right",
 			"pressed"
 		},
+		wield_4_alt = {},
 		wield_5 = {
 			"gamepad",
 			"d_up",
@@ -836,6 +842,7 @@ PlayerControllerKeymaps = {
 			"right",
 			"pressed"
 		},
+		wield_4_alt = {},
 		wield_5 = {
 			"gamepad",
 			"up",
@@ -2185,6 +2192,56 @@ FreeFlightKeymaps = {
 		left_ctrl = {
 			"keyboard",
 			"left ctrl",
+			"pressed"
+		},
+		keyboard_1 = {
+			"keyboard",
+			"1",
+			"pressed"
+		},
+		keyboard_2 = {
+			"keyboard",
+			"2",
+			"pressed"
+		},
+		keyboard_3 = {
+			"keyboard",
+			"3",
+			"pressed"
+		},
+		keyboard_4 = {
+			"keyboard",
+			"4",
+			"pressed"
+		},
+		keyboard_5 = {
+			"keyboard",
+			"5",
+			"pressed"
+		},
+		keyboard_6 = {
+			"keyboard",
+			"6",
+			"pressed"
+		},
+		keyboard_7 = {
+			"keyboard",
+			"7",
+			"pressed"
+		},
+		keyboard_8 = {
+			"keyboard",
+			"8",
+			"pressed"
+		},
+		keyboard_9 = {
+			"keyboard",
+			"9",
+			"pressed"
+		},
+		keyboard_0 = {
+			"keyboard",
+			"0",
 			"pressed"
 		}
 	},

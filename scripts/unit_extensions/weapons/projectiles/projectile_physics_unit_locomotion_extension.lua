@@ -51,14 +51,6 @@ ProjectilePhysicsUnitLocomotionExtension.update = function (self, unit, input, d
 		return
 	end
 
-	if script_data.debug_projectiles then
-		local network_manager = self.network_manager
-		local go_id = network_manager:unit_game_object_id(unit)
-		local game = network_manager:game()
-
-		GameSession.set_game_object_field(game, go_id, "debug_pos", Unit.local_position(unit, 0))
-	end
-
 	local physics_actor = self.physics_actor
 	local current_velocity = Actor.velocity(physics_actor)
 	local current_velocity_length = Vector3.length(current_velocity)

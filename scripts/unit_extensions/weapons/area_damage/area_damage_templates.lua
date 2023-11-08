@@ -258,7 +258,6 @@ AreaDamageTemplates.templates = {
 				local area_damage_position = Unit.world_position(unit, 0)
 				local explosion_template = ExplosionTemplates[explosion_template_name]
 				local aoe_data = explosion_template.aoe
-				local friendly_fire_data = true
 
 				if explosion_template.friendly_fire ~= nil then
 					friendly_fire_data = explosion_template.friendly_fire
@@ -269,7 +268,8 @@ AreaDamageTemplates.templates = {
 				local num_ai_units = nil
 
 				if (attack_template_name or gravity_well) and (damage_timer <= 0 or damage_interval <= damage_timer) then
-					num_ai_units = AiUtils.broadphase_query(area_damage_position, radius, ai_units)
+					local broadphase_query_categories = side.enemy_broadphase_categories
+					num_ai_units = AiUtils.broadphase_query(area_damage_position, radius, ai_units, broadphase_query_categories)
 				end
 
 				if gravity_well and num_ai_units then
@@ -296,7 +296,6 @@ AreaDamageTemplates.templates = {
 
 				if attack_template_name and num_ai_units then
 					local damage_buffer = {}
-					local dot_template_name = aoe_data.dot_template_name
 					local hit_zone_name = "full"
 
 					for i = 1, num_ai_units do
@@ -306,20 +305,18 @@ AreaDamageTemplates.templates = {
 							unit = ai_unit,
 							damage_source = damage_source,
 							hit_zone_name = hit_zone_name,
-							dot_template_name = dot_template_name
+							aoe_data = aoe_data
 						}
 						damage_buffer[#damage_buffer + 1] = damage_data
 					end
 
 					if aoe_dot_player_take_damage then
-						local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 						local enemy_players = side.ENEMY_PLAYER_AND_BOT_UNITS
 
 						for _, player_unit in ipairs(enemy_players) do
 							local unit_position = POSITION_LOOKUP[player_unit]
 							local distance = Vector3.distance(unit_position, area_damage_position)
 							local is_inside_radius = distance < radius
-							local dot_template_name = aoe_data.dot_template_name
 							local ghost_ext = ScriptUnit.has_extension(player_unit, "ghost_mode_system")
 							local is_in_ghost_mode = ghost_ext and ghost_ext:is_in_ghost_mode()
 
@@ -329,30 +326,9 @@ AreaDamageTemplates.templates = {
 									unit = player_unit,
 									damage_source = damage_source,
 									hit_zone_name = hit_zone_name,
-									dot_template_name = dot_template_name
+									aoe_data = aoe_data
 								}
 								damage_buffer[#damage_buffer + 1] = damage_data
-							end
-						end
-
-						if difficulty_settings.friendly_fire_ranged and friendly_fire_data then
-							local friendly_players = side.PLAYER_AND_BOT_UNITS
-
-							for _, player_unit in ipairs(friendly_players) do
-								local unit_position = POSITION_LOOKUP[player_unit]
-								local distance = Vector3.distance(unit_position, area_damage_position)
-								local is_inside_radius = distance < radius
-								local dot_template_name = aoe_data.dot_template_name
-
-								if is_inside_radius then
-									local damage_data = {
-										area_damage_template = "explosion_template_aoe",
-										unit = player_unit,
-										damage_source = damage_source,
-										hit_zone_name = hit_zone_name
-									}
-									damage_buffer[#damage_buffer + 1] = damage_data
-								end
 							end
 						end
 					end
@@ -361,21 +337,17 @@ AreaDamageTemplates.templates = {
 				end
 			end,
 			do_damage = function (data, extension_unit, source_attacker_unit)
-				local dot_template_name = data.dot_template_name
+				local target_unit = data.unit
+				local attacker_unit = extension_unit
+				local hit_zone_name = data.hit_zone_name
+				local damage_source = data.damage_source
+				local aoe_data = data.aoe_data
+				local custom_dot = FrameTable.alloc_table()
+				custom_dot.dot_template_name = aoe_data.dot_template_name
+				custom_dot.dot_balefire_variant = aoe_data.dot_balefire_variant
+				local damage_profile, target_index, power_level, boost_curve_multiplier, is_critical_strike = nil
 
-				if dot_template_name then
-					local attacker_unit = extension_unit
-					local target_unit = data.unit
-					local hit_zone_name = data.hit_zone_name
-					local damage_source = data.damage_source
-					local dot_type = DotTypeLookup[dot_template_name]
-
-					if dot_type then
-						local dot_func = Dots[dot_type]
-
-						dot_func(dot_template_name, nil, nil, nil, target_unit, attacker_unit, hit_zone_name, damage_source, nil, nil, source_attacker_unit)
-					end
-				end
+				DamageUtils.apply_dot(damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, aoe_data, source_attacker_unit, custom_dot)
 			end
 		},
 		client = {
@@ -411,18 +383,13 @@ AreaDamageTemplates.templates = {
 
 				for i = 1, ai_units_n do
 					local ai_unit = ai_units[i]
-					local breed = Unit.get_data(ai_unit, "breed")
-					local chance_to_die = 100 - breed.poison_resistance
-					local health_extension = ScriptUnit.extension(ai_unit, "health_system")
 
-					assert(health_extension)
-
-					local is_alive = health_extension:is_alive()
-
-					if is_alive then
+					if HEALTH_ALIVE[ai_unit] then
 						local die_roll = math.random(1, 100)
+						local breed = Unit.get_data(ai_unit, "breed")
+						local chance_to_die = 100 - breed.poison_resistance
 
-						if die_roll < chance_to_die then
+						if die_roll <= chance_to_die then
 							local damage_data = {
 								area_damage_template = "area_poison_ai_random_death",
 								unit = ai_unit
@@ -454,7 +421,7 @@ AreaDamageTemplates.templates = {
 
 				local is_ai_unit = DamageUtils.is_ai(unit)
 
-				if is_ai_unit and not AiUtils.unit_alive(unit) then
+				if is_ai_unit and not HEALTH_ALIVE[unit] then
 					QuestSettings.check_num_enemies_killed_by_poison(unit, extension_unit)
 				end
 			end

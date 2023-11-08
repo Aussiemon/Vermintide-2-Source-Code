@@ -185,6 +185,47 @@ go_type_table = {
 
 			return data_table
 		end,
+		ai_unit_training_dummy_bob = function (unit, unit_name, unit_template, gameobject_functor_context)
+			local mover = Unit.mover(unit)
+			local breed = Unit.get_data(unit, "breed")
+			local ai_extension = ScriptUnit.extension(unit, "ai_system")
+			local size_variation, size_variation_normalized = ai_extension:size_variation()
+			local side = Managers.state.side.side_by_unit[unit]
+			local side_id = side.side_id
+			local locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
+			local network_position = locomotion_extension.network_position
+			local network_rotation = locomotion_extension.network_rotation
+			local network_velocity = locomotion_extension.network_velocity
+			local network_angular_velocity = locomotion_extension.network_angular_velocity
+			local pickup_extension = ScriptUnit.extension(unit, "pickup_system")
+			local pickup_name = pickup_extension.pickup_name
+			local has_physics = pickup_extension.has_physics
+			local spawn_type = pickup_extension.spawn_type
+			local data_table = {
+				damage = 0,
+				has_teleported = 1,
+				go_type = NetworkLookup.go_types.ai_unit_training_dummy_bob,
+				husk_unit = NetworkLookup.husks[unit_name],
+				health = ScriptUnit.extension(unit, "health_system"):get_max_health(),
+				position = mover and Mover.position(mover) or Unit.local_position(unit, 0),
+				yaw_rot = Quaternion.yaw(Unit.local_rotation(unit, 0)),
+				velocity = Vector3(0, 0, 0),
+				breed_name = NetworkLookup.breeds[breed.name],
+				uniform_scale = size_variation,
+				bt_action_name = NetworkLookup.bt_action_names["n/a"],
+				side_id = side_id,
+				rotation = Unit.local_rotation(unit, 0),
+				network_position = network_position,
+				network_rotation = network_rotation,
+				network_velocity = network_velocity,
+				network_angular_velocity = network_angular_velocity,
+				pickup_name = NetworkLookup.pickup_names[pickup_name],
+				has_physics = has_physics,
+				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+			}
+
+			return data_table
+		end,
 		ai_unit_beastmen_bestigor = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
@@ -423,34 +464,6 @@ go_type_table = {
 
 			return data_table
 		end,
-		ai_unit_with_inventory_and_shield_and_target = function (unit, unit_name, unit_template, gameobject_functor_context)
-			local mover = Unit.mover(unit)
-			local breed = Unit.get_data(unit, "breed")
-			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension:size_variation()
-			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
-			local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
-			local is_blocking = ai_shield_extension.is_blocking
-			local side = Managers.state.side.side_by_unit[unit]
-			local side_id = side.side_id
-			local data_table = {
-				has_teleported = 1,
-				go_type = NetworkLookup.go_types.ai_unit_with_inventory_and_shield_and_target,
-				husk_unit = NetworkLookup.husks[unit_name],
-				health = ScriptUnit.extension(unit, "health_system"):get_max_health(),
-				position = mover and Mover.position(mover) or Unit.local_position(unit, 0),
-				yaw_rot = Quaternion.yaw(Unit.local_rotation(unit, 0)),
-				velocity = Vector3(0, 0, 0),
-				breed_name = NetworkLookup.breeds[breed.name],
-				uniform_scale = size_variation,
-				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
-				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				is_blocking = is_blocking,
-				side_id = side_id
-			}
-
-			return data_table
-		end,
 		ai_unit_storm_vermin_warlord = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
@@ -482,31 +495,6 @@ go_type_table = {
 
 			return data_table
 		end,
-		ai_unit_with_inventory_and_target = function (unit, unit_name, unit_template, gameobject_functor_context)
-			local mover = Unit.mover(unit)
-			local breed = Unit.get_data(unit, "breed")
-			local ai_extension = ScriptUnit.extension(unit, "ai_system")
-			local size_variation, size_variation_normalized = ai_extension:size_variation()
-			local inventory_configuration_name = ScriptUnit.extension(unit, "ai_inventory_system").inventory_configuration_name
-			local side = Managers.state.side.side_by_unit[unit]
-			local side_id = side.side_id
-			local data_table = {
-				has_teleported = 1,
-				go_type = NetworkLookup.go_types.ai_unit_with_inventory_and_target,
-				husk_unit = NetworkLookup.husks[unit_name],
-				health = ScriptUnit.extension(unit, "health_system"):get_max_health(),
-				position = mover and Mover.position(mover) or Unit.local_position(unit, 0),
-				yaw_rot = Quaternion.yaw(Unit.local_rotation(unit, 0)),
-				velocity = Vector3(0, 0, 0),
-				breed_name = NetworkLookup.breeds[breed.name],
-				uniform_scale = size_variation,
-				inventory_configuration = NetworkLookup.ai_inventory[inventory_configuration_name],
-				bt_action_name = NetworkLookup.bt_action_names["n/a"],
-				side_id = side_id
-			}
-
-			return data_table
-		end,
 		ai_unit_chaos_troll = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
@@ -532,7 +520,7 @@ go_type_table = {
 
 			return data_table
 		end,
-		ai_lord_with_inventory_and_target = function (unit, unit_name, unit_template, gameobject_functor_context)
+		ai_lord_with_inventory = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local mover = Unit.mover(unit)
 			local breed = Unit.get_data(unit, "breed")
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
@@ -543,7 +531,7 @@ go_type_table = {
 			local data_table = {
 				show_health_bar = false,
 				has_teleported = 1,
-				go_type = NetworkLookup.go_types.ai_lord_with_inventory_and_target,
+				go_type = NetworkLookup.go_types.ai_lord_with_inventory,
 				husk_unit = NetworkLookup.husks[unit_name],
 				health = ScriptUnit.extension(unit, "health_system"):get_max_health(),
 				position = mover and Mover.position(mover) or Unit.local_position(unit, 0),
@@ -730,6 +718,47 @@ go_type_table = {
 				fast_forward_time = fast_forward_time,
 				rotation_speed = rotation_speed,
 				power_level = power_level
+			}
+
+			return data_table
+		end,
+		sticky_projectile_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
+			local locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
+			local target_vector = locomotion_extension.target_vector
+			local initial_position = locomotion_extension.initial_position_boxed:unbox()
+			local speed = locomotion_extension.speed
+			local target_unit = locomotion_extension.target_unit
+			local stopped = locomotion_extension.stopped
+			local seed = locomotion_extension.seed
+			local impact_extension = ScriptUnit.extension(unit, "projectile_impact_system")
+			local owner_unit = impact_extension.owner_unit
+			local projectile_extension = ScriptUnit.extension(unit, "projectile_system")
+			local item_name = projectile_extension.item_name
+			local item_template_name = projectile_extension.action_lookup_data.item_template_name
+			local action_name = projectile_extension.action_lookup_data.action_name
+			local sub_action_name = projectile_extension.action_lookup_data.sub_action_name
+			local scale = projectile_extension.scale * 100
+			local power_level = projectile_extension.power_level
+			local charge_level = projectile_extension.charge_level * 100
+			local data_table = {
+				go_type = NetworkLookup.go_types.sticky_projectile_unit,
+				husk_unit = NetworkLookup.husks[unit_name],
+				position = Unit.local_position(unit, 0),
+				rotation = Unit.local_rotation(unit, 0),
+				initial_position = initial_position,
+				target_vector = target_vector,
+				speed = speed,
+				owner_unit = Unit.alive(owner_unit) and Managers.state.network:unit_game_object_id(owner_unit) or 0,
+				item_name = NetworkLookup.item_names[item_name],
+				item_template_name = NetworkLookup.item_template_names[item_template_name],
+				action_name = NetworkLookup.actions[action_name],
+				sub_action_name = NetworkLookup.sub_actions[sub_action_name],
+				scale = scale,
+				power_level = power_level,
+				target_unit = Unit.alive(target_unit) and Managers.state.network:unit_game_object_id(target_unit) or 0,
+				stopped = stopped,
+				seed = seed,
+				charge_level = charge_level
 			}
 
 			return data_table
@@ -1924,6 +1953,15 @@ go_type_table = {
 
 			return data_table
 		end,
+		buff_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
+			local data_table = {
+				go_type = NetworkLookup.go_types.buff_unit,
+				husk_unit = NetworkLookup.husks[unit_name],
+				position = Unit.local_position(unit, 0)
+			}
+
+			return data_table
+		end,
 		thrown_weapon_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local data_table = {
 				go_type = NetworkLookup.go_types.thrown_weapon_unit,
@@ -2116,6 +2154,7 @@ go_type_table = {
 					profile_index = profile_id
 				},
 				talent_system = {
+					is_husk = true,
 					player = player,
 					profile_index = profile_id
 				},
@@ -2142,6 +2181,9 @@ go_type_table = {
 				},
 				target_override_system = {
 					side = side
+				},
+				ai_commander_system = {
+					player = player
 				}
 			}
 			local unit_template_name = profile.unit_template_name or "player_unit_3rd"
@@ -2265,6 +2307,7 @@ go_type_table = {
 					profile_index = profile_id
 				},
 				talent_system = {
+					is_husk = true,
 					player = player,
 					profile_index = profile_id
 				},
@@ -2291,6 +2334,9 @@ go_type_table = {
 				},
 				target_override_system = {
 					side = side
+				},
+				ai_commander_system = {
+					player = player
 				}
 			}
 			local unit_template_name = "player_bot_unit"
@@ -2336,6 +2382,62 @@ go_type_table = {
 				}
 			}
 			local unit_template_name = breed.unit_template
+
+			return unit_template_name, extension_init_data
+		end,
+		ai_unit_training_dummy_bob = function (game_session, game_object_id, owner_id, unit, gameobject_functor_context)
+			local breed, breed_name, side_id = enemy_unit_common_extractor(unit, game_session, game_object_id)
+			local health = GameSession.game_object_field(game_session, game_object_id, "health")
+			local network_position = GameSession.game_object_field(game_session, game_object_id, "network_position")
+			local network_rotation = GameSession.game_object_field(game_session, game_object_id, "network_rotation")
+			local network_velocity = GameSession.game_object_field(game_session, game_object_id, "network_velocity")
+			local network_angular_velocity = GameSession.game_object_field(game_session, game_object_id, "network_angular_velocity")
+			local pickup_name = GameSession.game_object_field(game_session, game_object_id, "pickup_name")
+			local has_physics = GameSession.game_object_field(game_session, game_object_id, "has_physics")
+			local spawn_type = GameSession.game_object_field(game_session, game_object_id, "spawn_type")
+			local extension_init_data = {
+				ai_system = {
+					go_id = game_object_id,
+					game = game_session,
+					side_id = side_id
+				},
+				health_system = {
+					damage = 0,
+					health = health
+				},
+				death_system = {
+					is_husk = true,
+					death_reaction_template = breed.death_reaction,
+					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
+				},
+				hit_reaction_system = {
+					is_husk = true,
+					hit_reaction_template = breed.hit_reaction,
+					hit_effect_template = breed.hit_effect_template
+				},
+				dialogue_system = {
+					faction = "enemy",
+					breed_name = breed_name
+				},
+				proximity_system = {
+					breed = breed
+				},
+				buff_system = {
+					breed = breed
+				},
+				projectile_locomotion_system = {
+					network_position = network_position,
+					network_rotation = network_rotation,
+					network_velocity = network_velocity,
+					network_angular_velocity = network_angular_velocity
+				},
+				pickup_system = {
+					pickup_name = NetworkLookup.pickup_names[pickup_name],
+					has_physics = has_physics,
+					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
+				}
+			}
+			local unit_template_name = "ai_unit_training_dummy_bob"
 
 			return unit_template_name, extension_init_data
 		end,
@@ -2605,6 +2707,10 @@ go_type_table = {
 				ai_inventory_system = {
 					inventory_configuration_name = inventory_configuration_name
 				},
+				aim_system = {
+					is_husk = true,
+					template = breed.aim_template
+				},
 				dialogue_system = {
 					faction = "enemy",
 					breed_name = breed_name
@@ -2614,6 +2720,10 @@ go_type_table = {
 				},
 				buff_system = {
 					breed = breed
+				},
+				animation_movement_system = {
+					is_husk = true,
+					template = breed.animation_movement_template
 				}
 			}
 			local unit_template_name = breed.unit_template
@@ -2621,56 +2731,6 @@ go_type_table = {
 			return unit_template_name, extension_init_data
 		end,
 		ai_unit_with_inventory_and_shield = function (game_session, game_object_id, owner_id, unit, gameobject_functor_context)
-			local breed, breed_name, side_id = enemy_unit_common_extractor(unit, game_session, game_object_id)
-			local inventory_configuration_name = NetworkLookup.ai_inventory[GameSession.game_object_field(game_session, game_object_id, "inventory_configuration")]
-			local health = GameSession.game_object_field(game_session, game_object_id, "health")
-			local is_blocking = GameSession.game_object_field(game_session, game_object_id, "is_blocking")
-			local extension_init_data = {
-				ai_system = {
-					go_id = game_object_id,
-					game = game_session,
-					side_id = side_id
-				},
-				locomotion_system = {
-					go_id = game_object_id,
-					breed = breed,
-					game = game_session
-				},
-				health_system = {
-					health = health
-				},
-				death_system = {
-					is_husk = true,
-					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
-				},
-				hit_reaction_system = {
-					is_husk = true,
-					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
-				},
-				ai_inventory_system = {
-					inventory_configuration_name = inventory_configuration_name
-				},
-				dialogue_system = {
-					faction = "enemy",
-					breed_name = breed_name
-				},
-				ai_shield_system = {
-					is_blocking = is_blocking
-				},
-				proximity_system = {
-					breed = breed
-				},
-				buff_system = {
-					breed = breed
-				}
-			}
-			local unit_template_name = breed.unit_template
-
-			return unit_template_name, extension_init_data
-		end,
-		ai_unit_with_inventory_and_shield_and_target = function (game_session, game_object_id, owner_id, unit, gameobject_functor_context)
 			local breed, breed_name, side_id = enemy_unit_common_extractor(unit, game_session, game_object_id)
 			local inventory_configuration_name = NetworkLookup.ai_inventory[GameSession.game_object_field(game_session, game_object_id, "inventory_configuration")]
 			local health = GameSession.game_object_field(game_session, game_object_id, "health")
@@ -2775,60 +2835,6 @@ go_type_table = {
 
 			return unit_template_name, extension_init_data
 		end,
-		ai_unit_with_inventory_and_target = function (game_session, game_object_id, owner_id, unit, gameobject_functor_context)
-			local breed, breed_name, side_id = enemy_unit_common_extractor(unit, game_session, game_object_id)
-			local inventory_configuration_name = NetworkLookup.ai_inventory[GameSession.game_object_field(game_session, game_object_id, "inventory_configuration")]
-			local health = GameSession.game_object_field(game_session, game_object_id, "health")
-			local extension_init_data = {
-				ai_system = {
-					go_id = game_object_id,
-					game = game_session,
-					side_id = side_id
-				},
-				locomotion_system = {
-					go_id = game_object_id,
-					breed = breed,
-					game = game_session
-				},
-				health_system = {
-					health = health
-				},
-				death_system = {
-					is_husk = true,
-					death_reaction_template = breed.death_reaction,
-					disable_second_hit_ragdoll = breed.disable_second_hit_ragdoll
-				},
-				hit_reaction_system = {
-					is_husk = true,
-					hit_reaction_template = breed.hit_reaction,
-					hit_effect_template = breed.hit_effect_template
-				},
-				ai_inventory_system = {
-					inventory_configuration_name = inventory_configuration_name
-				},
-				dialogue_system = {
-					faction = "enemy",
-					breed_name = breed_name
-				},
-				aim_system = {
-					is_husk = true,
-					template = breed.aim_template
-				},
-				proximity_system = {
-					breed = breed
-				},
-				buff_system = {
-					breed = breed
-				},
-				animation_movement_system = {
-					is_husk = true,
-					template = breed.animation_movement_template
-				}
-			}
-			local unit_template_name = breed.unit_template
-
-			return unit_template_name, extension_init_data
-		end,
 		ai_unit_chaos_troll = function (game_session, game_object_id, owner_id, unit, gameobject_functor_context)
 			local breed, breed_name = enemy_unit_common_extractor(unit, game_session, game_object_id)
 			local inventory_configuration_name = NetworkLookup.ai_inventory[GameSession.game_object_field(game_session, game_object_id, "inventory_configuration")]
@@ -2884,7 +2890,7 @@ go_type_table = {
 
 			return unit_template_name, extension_init_data
 		end,
-		ai_lord_with_inventory_and_target = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
+		ai_lord_with_inventory = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local side_id = GameSession.game_object_field(game_session, go_id, "side_id")
 			local breed_name_id = GameSession.game_object_field(game_session, go_id, "breed_name")
 			local breed_name = NetworkLookup.breeds[breed_name_id]
@@ -3236,6 +3242,60 @@ go_type_table = {
 					time_initialized = time_initialized,
 					scale = scale,
 					power_level = power_level
+				}
+			}
+			local action = Weapons[item_template_name].actions[action_name][sub_action_name]
+			local projectile_info = action.projectile_info
+			local unit_template_name = projectile_info.projectile_unit_template_name or "player_projectile_unit"
+
+			return unit_template_name, extension_init_data
+		end,
+		sticky_projectile_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
+			local target_vector = GameSession.game_object_field(game_session, go_id, "target_vector")
+			local initial_position = GameSession.game_object_field(game_session, go_id, "initial_position")
+			local speed = GameSession.game_object_field(game_session, go_id, "speed")
+			local target_unit_id = GameSession.game_object_field(game_session, go_id, "target_unit")
+			local stopped = GameSession.game_object_field(game_session, go_id, "stopped")
+			local seed = GameSession.game_object_field(game_session, go_id, "seed")
+			local charge_level = GameSession.game_object_field(game_session, go_id, "charge_level")
+			local owner_unit_id = GameSession.game_object_field(game_session, go_id, "owner_unit")
+			local item_name_id = GameSession.game_object_field(game_session, go_id, "item_name")
+			local item_template_name_id = GameSession.game_object_field(game_session, go_id, "item_template_name")
+			local action_name_id = GameSession.game_object_field(game_session, go_id, "action_name")
+			local sub_action_name_id = GameSession.game_object_field(game_session, go_id, "sub_action_name")
+			local scale = GameSession.game_object_field(game_session, go_id, "scale") / 100
+			local item_name = NetworkLookup.item_names[item_name_id]
+			local item_template_name = NetworkLookup.item_template_names[item_template_name_id]
+			local action_name = NetworkLookup.actions[action_name_id]
+			local sub_action_name = NetworkLookup.sub_actions[sub_action_name_id]
+			local power_level = GameSession.game_object_field(game_session, go_id, "power_level")
+			local owner_unit = owner_unit_id ~= 0 and Managers.state.unit_storage:unit(owner_unit_id) or nil
+			local target_unit = target_unit_id ~= 0 and Managers.state.unit_storage:unit(target_unit_id) or nil
+			local extension_init_data = {
+				projectile_locomotion_system = {
+					is_husk = true,
+					speed = speed,
+					target_vector = target_vector,
+					initial_position = initial_position,
+					target_unit = target_unit,
+					stopped = stopped,
+					seed = seed
+				},
+				projectile_impact_system = {
+					item_name = item_name,
+					owner_unit = owner_unit
+				},
+				projectile_system = {
+					item_name = item_name,
+					item_template_name = item_template_name,
+					action_name = action_name,
+					sub_action_name = sub_action_name,
+					owner_unit = owner_unit,
+					time_initialized = Managers.time:time("game"),
+					scale = scale,
+					power_level = power_level,
+					stopped = stopped,
+					charge_level = charge_level
 				}
 			}
 			local action = Weapons[item_template_name].actions[action_name][sub_action_name]
@@ -4450,6 +4510,16 @@ go_type_table = {
 				}
 			}
 			local unit_template_name = "buff_aoe_unit"
+
+			return unit_template_name, extension_init_data
+		end,
+		buff_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
+			local extension_init_data = {
+				buff_system = {
+					is_husk = true
+				}
+			}
+			local unit_template_name = "buff_unit"
 
 			return unit_template_name, extension_init_data
 		end,

@@ -186,20 +186,22 @@ for career, career_settings in pairs(CareerSettings) do
 				table.insert(achievement_group, stat_count_achv)
 			end
 
-			local achievement_id = "kill_grudge_each_expedition_" .. career
-			local icon = "achievement_trophy_" .. achievement_id
+			achievement_id = "kill_grudge_each_expedition_" .. career
 
 			add_meta_challenge(achievements, achievement_id, achievement_group, icon, required_dlc, nil, nil)
 
+			icon = "achievement_trophy_" .. achievement_id
 			achievement_group = {
 				"kill_grudge_each_expedition_" .. career,
 				"kill_each_monster_grudge_" .. career,
 				"grudge_mark_kills_grind_" .. career
 			}
-			local achievement_id = "complete_all_career_grudge_challenges_" .. career
-			local icon = "achievement_trophy_" .. achievement_id
+			achievement_id = "complete_all_career_grudge_challenges_" .. career
 
 			add_meta_challenge(achievements, achievement_id, achievement_group, icon, required_dlc, nil, nil)
+
+			icon = "achievement_trophy_" .. achievement_id
+
 			table.insert(achievement_to_check, achievement_id)
 		end
 	end

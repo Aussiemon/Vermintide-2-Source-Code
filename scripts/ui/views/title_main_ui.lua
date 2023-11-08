@@ -128,6 +128,7 @@ end
 TitleMainUI._init_animations = function (self)
 	self._menu_item_animations = {}
 	self._ui_animations = {}
+	self._ui_animation_callbacks = {}
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animations)
 end
 
@@ -243,6 +244,13 @@ TitleMainUI._update_animations = function (self, dt)
 
 		if UIAnimation.completed(ui_animation) then
 			self._ui_animations[name] = nil
+			local animation_callback = self._ui_animation_callbacks[name]
+
+			if animation_callback then
+				animation_callback()
+
+				self._ui_animation_callbacks[name] = nil
+			end
 		end
 	end
 end
@@ -668,6 +676,7 @@ TitleMainUI.show_menu = function (self, show, force)
 		self._ui_scenegraph.sidebar.position[1] = -800
 		self._ui_scenegraph.sidebar_fade_bg.position[1] = -256
 		self._ui_animations = {}
+		self._ui_animation_callbacks = {}
 	else
 		self:_play_sound("Play_console_menu_start")
 
@@ -681,8 +690,12 @@ TitleMainUI.show_menu = function (self, show, force)
 			self._alpha_multiplier = 1
 		else
 			self._ui_animations.sidebar = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.sidebar.position, 1, -800, 0, 0.25, math.easeCubic)
-			self._ui_animations.sidebar_fade_bg = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.sidebar_fade_bg.position, 1, -256, 544, 0.25, math.easeCubic)
+			self._ui_animations.sidebar_fade_bg = UIAnimation.init(UIAnimation.function_by_time, self._ui_scenegraph.sidebar_fade_bg.position, 1, -256, 542, 0.25, math.easeCubic)
 			self._ui_animations.alpha_multiplier = UIAnimation.init(UIAnimation.function_by_time, self, "_alpha_multiplier", 0, 1, 0.25, math.easeCubic)
+
+			self._ui_animation_callbacks.sidebar_fade_bg = function ()
+				self._ui_scenegraph.sidebar_fade_bg.position[1] = 544
+			end
 		end
 	end
 

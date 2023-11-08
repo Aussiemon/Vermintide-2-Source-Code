@@ -22,7 +22,7 @@ local DISTANCE_TO_FORBIDDEN_POSITION_LIST = 10
 
 return {
 	description = "curse_grey_wings_desc",
-	package_name = "resource_packages/mutators/mutator_curse_grey_wings",
+	curse_package_name = "resource_packages/mutators/mutator_curse_grey_wings",
 	display_name = "curse_grey_wings_name",
 	icon = "deus_curse_belakor_01",
 	server_start_function = function (context, data)

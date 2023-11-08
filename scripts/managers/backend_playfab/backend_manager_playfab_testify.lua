@@ -1,12 +1,12 @@
-local BackendManagerPlayFabTestify = {
-	clear_backend_inventory = function (_, backend_manager_playfab)
-		local backend_mirror = backend_manager_playfab:get_backend_mirror()
+local BackendManagerPlayFabTestify = {}
 
-		backend_mirror:snippet_clear_inventory()
-	end
-}
+BackendManagerPlayFabTestify.clear_backend_inventory = function (backend_manager_playfab)
+	local backend_mirror = backend_manager_playfab:get_backend_mirror()
 
-BackendManagerPlayFabTestify.request_magic_weapons_for_career = function (career_name, backend_manager_playfab)
+	backend_mirror:snippet_clear_inventory()
+end
+
+BackendManagerPlayFabTestify.request_magic_weapons_for_career = function (backend_manager_playfab, career_name)
 	local items = backend_manager_playfab:get_interface("items"):get_all_backend_items()
 
 	return table.filter(items, function (item)
@@ -18,7 +18,7 @@ BackendManagerPlayFabTestify.request_magic_weapons_for_career = function (career
 	end)
 end
 
-BackendManagerPlayFabTestify.request_non_magic_weapons_for_career = function (career_name, backend_manager_playfab)
+BackendManagerPlayFabTestify.request_non_magic_weapons_for_career = function (backend_manager_playfab, career_name)
 	local items = backend_manager_playfab:get_interface("items"):get_all_backend_items()
 
 	return table.filter(items, function (item)
@@ -30,7 +30,7 @@ BackendManagerPlayFabTestify.request_non_magic_weapons_for_career = function (ca
 	end)
 end
 
-BackendManagerPlayFabTestify.wait_for_playfab_response = function (cloudscript_function, backend_manager_playfab)
+BackendManagerPlayFabTestify.wait_for_playfab_response = function (backend_manager_playfab, cloudscript_function)
 	return Testify.RETRY
 end
 

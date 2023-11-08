@@ -269,6 +269,33 @@ local function create_slot_widget(index, total_amount)
 					retained_mode = RETAINED_MODE_ENABLED
 				},
 				{
+					pass_type = "rotated_texture",
+					style_id = "secondary_texture_icon",
+					texture_id = "secondary_texture_icon",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return content.secondary_texture_icon
+					end
+				},
+				{
+					pass_type = "rotated_texture",
+					style_id = "secondary_texture_icon_glow",
+					texture_id = "secondary_texture_icon_glow",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return content.secondary_texture_icon
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "secondary_texture_bg",
+					texture_id = "secondary_texture_bg",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return content.secondary_texture_icon
+					end
+				},
+				{
 					pass_type = "texture",
 					style_id = "texture_frame",
 					texture_id = "texture_frame",
@@ -346,18 +373,19 @@ local function create_slot_widget(index, total_amount)
 			}
 		},
 		content = {
-			use_count_text = "",
-			can_swap_text = "+",
-			is_expired = false,
-			input_text = "-",
-			texture_frame = "hud_inventory_slot",
 			texture_selected = "hud_inventory_slot_selection",
+			texture_frame = "hud_inventory_slot",
+			can_swap_text = "+",
+			input_text = "-",
+			selected = false,
+			is_expired = false,
 			texture_background = "hud_inventory_slot_bg_01",
 			texture_icon = "journal_icon_02",
-			selected = false,
+			use_count_text = "",
 			visible = false,
 			can_swap = false,
 			has_additional_slots = false,
+			secondary_texture_bg = "hud_inventory_slot_circle",
 			use_count = 0,
 			texture_highlight = "hud_inventory_slot_small_pickup",
 			hud_index = index
@@ -460,7 +488,74 @@ local function create_slot_widget(index, total_amount)
 				offset = {
 					0,
 					0,
-					1
+					5
+				}
+			},
+			secondary_texture_icon = {
+				vertical_alignment = "top",
+				horizontal_alignment = "right",
+				texture_size = {
+					slot_icon_size[1] * 0.75,
+					slot_icon_size[2] * 0.75
+				},
+				color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					10,
+					10,
+					205
+				},
+				angle = math.degrees_to_radians(-45),
+				pivot = {
+					slot_icon_size[1] * 0.75 * 0.5,
+					slot_icon_size[2] * 0.75 * 0.5
+				}
+			},
+			secondary_texture_icon_glow = {
+				vertical_alignment = "top",
+				horizontal_alignment = "right",
+				texture_size = {
+					slot_icon_size[1] * 0.75,
+					slot_icon_size[2] * 0.75
+				},
+				color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					10,
+					10,
+					204
+				},
+				angle = math.degrees_to_radians(-45),
+				pivot = {
+					slot_icon_size[1] * 0.75 * 0.5,
+					slot_icon_size[2] * 0.75 * 0.5
+				}
+			},
+			secondary_texture_bg = {
+				vertical_alignment = "top",
+				horizontal_alignment = "right",
+				texture_size = {
+					30,
+					30
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					10,
+					10,
+					202
 				}
 			},
 			texture_frame = {

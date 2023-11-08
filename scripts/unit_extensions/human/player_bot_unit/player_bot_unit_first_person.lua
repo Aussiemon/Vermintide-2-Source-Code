@@ -16,6 +16,11 @@ PlayerBotUnitFirstPerson.init = function (self, extension_init_context, unit, ex
 	local fp_unit = unit_spawner:spawn_local_unit(unit_name)
 	self.first_person_unit = fp_unit
 	self.first_person_attachment_unit = unit_spawner:spawn_local_unit(attachment_unit_name)
+	local default_state_machine = profile.default_state_machine
+
+	if default_state_machine then
+		Unit.set_animation_state_machine(fp_unit, default_state_machine)
+	end
 
 	Unit.set_flow_variable(fp_unit, "character_vo", profile.character_vo)
 	Unit.set_flow_variable(fp_unit, "sound_character", career.sound_character)
@@ -65,6 +70,10 @@ PlayerBotUnitFirstPerson.destroy = function (self)
 
 	unit_spawner:mark_for_deletion(self.first_person_unit)
 	unit_spawner:mark_for_deletion(self.first_person_attachment_unit)
+end
+
+PlayerBotUnitFirstPerson.set_state_machine = function (self, new_state_machine)
+	return
 end
 
 local function ease_out_quad(t, b, c, d)

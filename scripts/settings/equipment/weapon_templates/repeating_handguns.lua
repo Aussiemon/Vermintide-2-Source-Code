@@ -307,6 +307,7 @@ local weapon_template = {
 	display_unit = "units/weapons/weapon_display/display_repeating_handguns",
 	wield_anim = "to_repeating_handgun",
 	wield_anim_no_ammo = "to_repeating_handgun_noammo",
+	state_machine = "units/beings/player/first_person_base/state_machines/ranged/repeating_handgun",
 	reload_event = "reload",
 	buff_type = "RANGED",
 	weapon_type = "REPEATING_HANDGUN",

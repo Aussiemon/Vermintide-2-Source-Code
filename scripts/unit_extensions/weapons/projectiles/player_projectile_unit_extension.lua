@@ -60,6 +60,7 @@ PlayerProjectileUnitExtension.init = function (self, extension_init_context, uni
 	self.power_level = extension_init_data.power_level
 	self.projectile_info = projectile_info
 	self.charge_data = current_action.charge_data
+	self.chain_hit_settings = current_action.chain_hit_settings
 
 	if impact_data.grenade and owner_buff_extension and owner_buff_extension:has_buff_perk("frag_fire_grenades") then
 		impact_data = table.shallow_copy(impact_data)
@@ -486,7 +487,7 @@ PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impa
 					elseif breed.is_player then
 						self:hit_player(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, has_ranged_boost, ranged_boost_curve_multiplier)
 					end
-				elseif is_level_unit or Unit.get_data(hit_unit, "is_dummy") then
+				elseif is_level_unit then
 					self:hit_level_unit(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, level_index, has_ranged_boost, ranged_boost_curve_multiplier)
 				elseif not is_level_unit then
 					self:hit_non_level_unit(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, has_ranged_boost, ranged_boost_curve_multiplier)
@@ -533,7 +534,7 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 		local num_targets_hit = self._num_targets_hit + 1
 		local unmodified = true
 
-		if hit_zone_name ~= "head" and AiUtils.unit_alive(hit_unit) and breed and breed.hit_zones and breed.hit_zones.head then
+		if hit_zone_name ~= "head" and HEALTH_ALIVE[hit_unit] and breed and breed.hit_zones and breed.hit_zones.head then
 			local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
 			local auto_headshot = owner_buff_extension and owner_buff_extension:has_buff_perk("auto_headshot")
 
@@ -571,19 +572,36 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 
 	local grenade = impact_data.grenade
 
-	if self._num_additional_penetrations == 0 and (grenade or aoe_data and self._max_mass <= self._amount_of_mass_hit) then
-		self:do_aoe(aoe_data, hit_position)
+	if self._num_additional_penetrations == 0 then
+		local should_stop = false
 
-		if grenade then
-			local owner_unit = self._owner_unit
-			local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
+		if grenade or aoe_data and self._max_mass <= self._amount_of_mass_hit then
+			self:do_aoe(aoe_data, hit_position)
 
-			if owner_buff_extension then
-				owner_buff_extension:trigger_procs("on_grenade_exploded", impact_data, hit_position, self._is_critical_strike, self.item_name, Unit.local_rotation(self._projectile_unit, 0), self.scale, self.power_level)
+			if grenade then
+				local owner_unit = self._owner_unit
+				local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
+
+				if owner_buff_extension then
+					owner_buff_extension:trigger_procs("on_grenade_exploded", impact_data, hit_position, self._is_critical_strike, self.item_name, Unit.local_rotation(self._projectile_unit, 0), self.scale, self.power_level)
+				end
 			end
+
+			should_stop = true
 		end
 
-		self:stop(hit_unit, hit_zone_name, hit_normal)
+		if self.chain_hit_settings then
+			local t = Managers.time:time("game")
+			local source_pos = Unit.has_node(hit_unit, "j_spine") and Unit.world_position(hit_unit, Unit.node(hit_unit, "j_spine")) or POSITION_LOOKUP[hit_unit] + Vector3(0, 0, 1.5)
+
+			self._weapon_system:try_fire_chained_projectile(self.chain_hit_settings, self.item_name, self._is_critical_strike, self.power_level, ranged_boost_curve_multiplier, t, self._owner_unit, source_pos, nil, hit_unit, 1)
+
+			should_stop = true
+		end
+
+		if should_stop then
+			self:stop(hit_unit, hit_zone_name, hit_normal)
+		end
 	end
 
 	if self._max_mass <= self._amount_of_mass_hit then
@@ -617,13 +635,13 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	local hit_zone_name = action.projectile_info.forced_hitzone or hit_zone.name
 	local attack_direction = hit_direction
 	local forced_penetration = false
-	local was_alive = is_server and AiUtils.unit_alive(hit_unit) or AiUtils.client_predicted_unit_alive(hit_unit)
+	local was_alive = is_server and HEALTH_ALIVE[hit_unit] or AiUtils.client_predicted_unit_alive(hit_unit)
 
 	if was_alive then
 		self._num_targets_hit = self._num_targets_hit + 1
 	end
 
-	if hit_zone_name ~= "head" and AiUtils.unit_alive(hit_unit) and breed and breed.hit_zones and breed.hit_zones.head then
+	if hit_zone_name ~= "head" and HEALTH_ALIVE[hit_unit] and breed and breed.hit_zones and breed.hit_zones.head then
 		local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
 		local auto_headshot = owner_buff_extension and owner_buff_extension:has_buff_perk("auto_headshot")
 
@@ -649,10 +667,9 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	end
 
 	breed = AiUtils.unit_breed(hit_unit)
-	local is_dummy = Unit.get_data(hit_unit, "is_dummy")
-	local multiplier_type = DamageUtils.get_breed_damage_multiplier_type(breed, hit_zone_name, is_dummy)
+	local multiplier_type = DamageUtils.get_breed_damage_multiplier_type(breed, hit_zone_name)
 
-	if (multiplier_type == "headshot" or multiplier_type == "weakspot" and not shield_blocked) and not action.no_headshot_sound and AiUtils.unit_alive(hit_unit) then
+	if (multiplier_type == "headshot" or multiplier_type == "weakspot" and not shield_blocked) and not action.no_headshot_sound and HEALTH_ALIVE[hit_unit] then
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
 		first_person_extension:play_hud_sound_event("Play_hud_headshot", nil, false)
@@ -742,7 +759,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 		local _, procced = buff_extension:apply_buffs_to_value(0, "coop_stamina")
 
-		if (procced or script_data.debug_legendary_traits) and AiUtils.unit_alive(hit_unit) then
+		if (procced or script_data.debug_legendary_traits) and HEALTH_ALIVE[hit_unit] then
 			local headshot_coop_stamina_fatigue_type = breed.headshot_coop_stamina_fatigue_type or "headshot_clan_rat"
 			local fatigue_type_id = NetworkLookup.fatigue_types[headshot_coop_stamina_fatigue_type]
 
@@ -896,11 +913,11 @@ PlayerProjectileUnitExtension.hit_level_unit = function (self, impact_data, hit_
 		EffectHelper.play_surface_material_effects(hit_effect, world, hit_unit, hit_position, hit_rotation, hit_normal, nil, is_husk, nil, hit_actor)
 	end
 
-	local bounce = impact_data.bounce_on_level_units and not Unit.get_data(hit_unit, "is_dummy")
+	local bounce = impact_data.bounce_on_level_units
 	local owner_buff_extension = ScriptUnit.has_extension(self._owner_unit, "buff_system")
 	local buffed_bounces = 0
 
-	if not impact_data.grenade and owner_buff_extension and not bounce and not Unit.get_data(hit_unit, "is_dummy") then
+	if not impact_data.grenade and owner_buff_extension and not bounce then
 		bounce = owner_buff_extension:has_buff_perk("add_projectile_bounces")
 		buffed_bounces = owner_buff_extension:apply_buffs_to_value(buffed_bounces, "projectile_bounces")
 	end
@@ -954,30 +971,8 @@ PlayerProjectileUnitExtension.hit_damagable_prop = function (self, damage_profil
 	local power_level = self.power_level
 	local is_critical_strike = self._is_critical_strike
 	local damage_source = self.item_name
-	local is_dummy_unit = Unit.get_data(hit_unit, "is_dummy")
 
-	if is_dummy_unit then
-		local node = Actor.node(hit_actor)
-		local head_actor = Unit.actor(hit_unit, "c_head")
-		local head_node = Actor.node(head_actor)
-
-		if node == head_node then
-			hit_zone_name = "head"
-			local action = self._current_action
-
-			if not action.no_headshot_sound and AiUtils.unit_alive(hit_unit) then
-				local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
-
-				first_person_extension:play_hud_sound_event("Play_hud_headshot", nil, false)
-			end
-		end
-
-		local check_backstab = false
-
-		DamageUtils.damage_dummy_unit(hit_unit, owner_unit, hit_zone_name, power_level, ranged_boost_curve_multiplier, is_critical_strike, damage_profile, target_index, hit_position, hit_direction, damage_source, hit_actor, self._impact_damage_profile_id or self._timed_damage_profile_id, nil, check_backstab)
-	else
-		DamageUtils.damage_level_unit(hit_unit, owner_unit, hit_zone_name, power_level, ranged_boost_curve_multiplier, is_critical_strike, damage_profile, target_index, hit_direction, damage_source)
-	end
+	DamageUtils.damage_level_unit(hit_unit, owner_unit, hit_zone_name, power_level, ranged_boost_curve_multiplier, is_critical_strike, damage_profile, target_index, hit_direction, damage_source)
 end
 
 PlayerProjectileUnitExtension.hit_non_level_unit = function (self, impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, has_ranged_boost, ranged_boost_curve_multiplier)
@@ -1187,7 +1182,7 @@ end
 
 PlayerProjectileUnitExtension._redirect_shield_linking = function (self, hit_unit, node_index, link_position, depth_position_offset)
 	local breed = AiUtils.unit_breed(hit_unit)
-	local do_redirect = AiUtils.unit_alive(hit_unit) and breed and not breed.no_effects_on_shield_block and not breed.is_player
+	local do_redirect = HEALTH_ALIVE[hit_unit] and breed and not breed.no_effects_on_shield_block and not breed.is_player
 
 	if not do_redirect then
 		return hit_unit, node_index, link_position
@@ -1414,4 +1409,60 @@ end
 
 PlayerProjectileUnitExtension.are_impacts_stopped = function (self)
 	return self._stop_impacts
+end
+
+PlayerProjectileUnitExtension.trigger_external_event = function (self, event_name, network_sync)
+	local external_events = self.projectile_info.external_events
+	local event = external_events and external_events[event_name]
+
+	if event then
+		event(self)
+
+		if network_sync then
+			local is_server = self._is_server
+			local network_manager = Managers.state.network
+			local unit_go_id = network_manager:unit_game_object_id(self._projectile_unit)
+			local event_id = NetworkLookup.projectile_external_event[event_name]
+
+			if is_server then
+				network_manager.network_transmit:send_rpc_clients("rpc_projectile_event", unit_go_id, event_id)
+			else
+				network_manager.network_transmit:send_rpc_server("rpc_projectile_event", unit_go_id, event_id)
+			end
+		end
+	end
+end
+
+PlayerProjectileUnitExtension.queue_delayed_external_event = function (self, event_name, event_t, network_sync)
+	if not self._delayed_external_events then
+		self._delayed_external_events = {}
+	end
+
+	local num_entries = #self._delayed_external_events
+	self._delayed_external_events[num_entries + 1] = {
+		event_t,
+		event_name,
+		network_sync
+	}
+end
+
+PlayerProjectileUnitExtension._update_delayed_external_event = function (self, t)
+	local entries = self._delayed_external_events
+	local num_entries = #entries
+
+	for i = num_entries, 1, -1 do
+		local event = entries[i]
+
+		if event[1] <= t then
+			self:trigger_external_event(event[2], event[3])
+
+			entries[i] = entries[num_entries]
+			entries[num_entries] = nil
+			num_entries = num_entries - 1
+		end
+	end
+
+	if num_entries == 0 then
+		self._delayed_external_events = nil
+	end
 end

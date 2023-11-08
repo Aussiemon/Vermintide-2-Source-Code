@@ -306,7 +306,7 @@ local function is_valid_target(unit)
 		dlc_valid = false
 	end
 
-	return not status_ext:is_in_end_zone() and not status_ext:is_invisible() and dlc_valid and not status_ext.spawn_grace and ScriptUnit.extension(unit, "health_system"):is_alive()
+	return not status_ext:is_in_end_zone() and not status_ext:is_invisible() and dlc_valid and not status_ext.spawn_grace and HEALTH_ALIVE[unit]
 end
 
 SideManager.is_valid_target = is_valid_target
@@ -319,7 +319,7 @@ local function is_valid_aggro_target(unit)
 	local status_ext = ScriptUnit.has_extension(unit, "status_system")
 
 	if status_ext then
-		return not status_ext.ready_for_assisted_respawn and not status_ext:is_in_end_zone() and not status_ext:is_invisible() and not status_ext.spawn_grace and ScriptUnit.extension(unit, "health_system"):is_alive()
+		return not status_ext.ready_for_assisted_respawn and not status_ext:is_in_end_zone() and not status_ext:is_invisible() and not status_ext.spawn_grace and HEALTH_ALIVE[unit]
 	end
 
 	return true

@@ -363,8 +363,7 @@ BackendInterfaceItemPlayfab.add_steam_items = function (self, item_list)
 end
 
 BackendInterfaceItemPlayfab.get_unseen_item_rewards = function (self)
-	local user_data = self._backend_mirror:get_user_data()
-	local unseen_rewards_json = user_data.unseen_rewards
+	local unseen_rewards_json = self._backend_mirror:get_user_data("unseen_rewards")
 
 	if not unseen_rewards_json then
 		return nil
@@ -378,7 +377,7 @@ BackendInterfaceItemPlayfab.get_unseen_item_rewards = function (self)
 		local reward = unseen_rewards[index]
 		local reward_type = reward.reward_type
 
-		if reward_type == "item" or reward_type == "keep_decoration_painting" or CosmeticUtils.is_cosmetic_item(reward_type) then
+		if reward_type == "item" or reward_type == "keep_decoration_painting" or reward_type == "weapon_skin" or CosmeticUtils.is_cosmetic_item(reward_type) then
 			unseen_items = unseen_items or {}
 			unseen_items[#unseen_items + 1] = reward
 

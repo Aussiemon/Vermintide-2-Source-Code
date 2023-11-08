@@ -256,7 +256,9 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_passive_uninterruptible_heavy = {
 		buffs = {
 			{
-				perk = buff_perks.uninterruptible_heavy
+				perks = {
+					buff_perks.uninterruptible_heavy
+				}
 			}
 		}
 	},
@@ -296,7 +298,9 @@ TalentBuffTemplates.witch_hunter = {
 				max_stacks = 1,
 				icon = "victor_zealot_passive_invulnerability",
 				priority_buff = true,
-				perk = buff_perks.ignore_death
+				perks = {
+					buff_perks.ignore_death
+				}
 			}
 		}
 	},
@@ -308,7 +312,9 @@ TalentBuffTemplates.witch_hunter = {
 				max_stacks = 1,
 				icon = "victor_zealot_activated_ability",
 				priority_buff = true,
-				perk = buff_perks.victor_zealot_activated_ability
+				perks = {
+					buff_perks.victor_zealot_activated_ability
+				}
 			}
 		}
 	},
@@ -317,11 +323,13 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
+				max_targets = 5,
 				bonus = 0.25,
-				perk = buff_perks.linesman_healing
+				perks = {
+					buff_perks.linesman_healing
+				}
 			}
 		}
 	},
@@ -333,7 +341,9 @@ TalentBuffTemplates.witch_hunter = {
 				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = buff_perks.smiter_healing
+				perks = {
+					buff_perks.smiter_healing
+				}
 			}
 		}
 	},
@@ -377,12 +387,14 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_critical_action",
-				icon = "victor_zealot_crit_count",
 				max_stacks = 1,
 				buff_func = "dummy_function",
 				remove_on_proc = true,
+				icon = "victor_zealot_crit_count",
 				priority_buff = true,
-				perk = buff_perks.guaranteed_crit
+				perks = {
+					buff_perks.guaranteed_crit
+				}
 			}
 		}
 	},
@@ -479,7 +491,9 @@ TalentBuffTemplates.witch_hunter = {
 				event = "on_damage_taken",
 				buff_to_add = "victor_zealot_move_speed_on_damage_taken_buff",
 				buff_func = "add_buff_on_enemy_damage_taken",
-				perk = buff_perks.no_moveslow_on_hit
+				perks = {
+					buff_perks.no_moveslow_on_hit
+				}
 			}
 		}
 	},
@@ -542,7 +556,9 @@ TalentBuffTemplates.witch_hunter = {
 				max_stacks = 1,
 				icon = "victor_zealot_activated_ability_ignore_death",
 				duration = 5,
-				perk = buff_perks.ignore_death
+				perks = {
+					buff_perks.ignore_death
+				}
 			}
 		}
 	},
@@ -632,7 +648,9 @@ TalentBuffTemplates.witch_hunter = {
 				buff_func = "heal_finesse_damage_on_melee",
 				event = "on_hit",
 				bonus = 2,
-				perk = buff_perks.ninja_healing
+				perks = {
+					buff_perks.ninja_healing
+				}
 			}
 		}
 	},
@@ -655,7 +673,9 @@ TalentBuffTemplates.witch_hunter = {
 				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = buff_perks.smiter_healing
+				perks = {
+					buff_perks.smiter_healing
+				}
 			}
 		}
 	},
@@ -800,7 +820,9 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				max_stacks = 1,
 				icon = "victor_bountyhunter_passive_infinite_ammo",
-				perk = buff_perks.infinite_ammo
+				perks = {
+					buff_perks.infinite_ammo
+				}
 			}
 		}
 	},
@@ -987,7 +1009,9 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_passive_block_cost_reduction = {
 		buffs = {
 			{
-				perk = buff_perks.in_arc_block_cost_reduction
+				perks = {
+					buff_perks.in_arc_block_cost_reduction
+				}
 			}
 		}
 	},
@@ -1001,7 +1025,9 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_headshot_crit_killing_blow = {
 		buffs = {
 			{
-				perk = buff_perks.crit_headshot_killing_blow
+				perks = {
+					buff_perks.crit_headshot_killing_blow
+				}
 			}
 		}
 	},
@@ -1022,7 +1048,9 @@ TalentBuffTemplates.witch_hunter = {
 				buff_func = "heal_finesse_damage_on_melee",
 				event = "on_hit",
 				bonus = 2,
-				perk = buff_perks.ninja_healing
+				perks = {
+					buff_perks.ninja_healing
+				}
 			}
 		}
 	},
@@ -1031,11 +1059,13 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
+				max_targets = 5,
 				bonus = 0.25,
-				perk = buff_perks.linesman_healing
+				perks = {
+					buff_perks.linesman_healing
+				}
 			}
 		}
 	},
@@ -1082,7 +1112,9 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_bleed_on_critical_hit = {
 		buffs = {
 			{
-				perk = buff_perks.victor_witchhunter_bleed_on_critical_hit
+				perks = {
+					buff_perks.victor_witchhunter_bleed_on_critical_hit
+				}
 			}
 		}
 	},

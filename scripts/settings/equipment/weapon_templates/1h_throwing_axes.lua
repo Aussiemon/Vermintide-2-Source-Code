@@ -380,6 +380,7 @@ weapon_template.display_unit = "units/weapons/weapon_display/display_1h_throwing
 weapon_template.wield_anim_not_loaded = "to_throwing_axe"
 weapon_template.wield_anim = "to_throwing_axe"
 weapon_template.wield_anim_no_ammo = "to_throwing_axe_noammo"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/ranged/throwing_axes"
 weapon_template.crosshair_style = "projectile"
 weapon_template.no_ammo_reload_event = "to_ammo"
 weapon_template.reload_event = "to_ammo"

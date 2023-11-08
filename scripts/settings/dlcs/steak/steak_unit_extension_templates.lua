@@ -6,7 +6,8 @@ local unit_extension_templates = {
 			"AILineOfSightExtension",
 			"AIInventoryExtension",
 			"PingTargetExtension",
-			"GenericUnitAnimationMovementExtension"
+			"GenericUnitAnimationMovementExtension",
+			"AIEnemySlotExtension"
 		},
 		husk_extensions = {
 			"AIInventoryExtension",
@@ -16,7 +17,8 @@ local unit_extension_templates = {
 		remove_when_killed = {
 			self_owned_extensions = {
 				"AILineOfSightExtension",
-				"GenericUnitAnimationMovementExtension"
+				"GenericUnitAnimationMovementExtension",
+				"AIEnemySlotExtension"
 			},
 			husk_extensions = {
 				"GenericUnitAnimationMovementExtension"

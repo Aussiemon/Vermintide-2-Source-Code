@@ -343,13 +343,11 @@ settings.explosion_templates = {
 			radius = 1,
 			always_stagger_ai = true,
 			alert_enemies = false,
-			sound_event_name = "Play_curse_shadow_dagger_projectile_impact",
-			damage_type_glance = "fire_grenade_glance",
+			buff_to_apply = "belakor_homing_skull_debuff",
 			max_damage_radius_min = 0.5,
 			attack_template = "drakegun",
-			buff_to_apply = "belakor_homing_skull_debuff",
 			max_damage_radius_max = 1,
-			damage_type = "grenade",
+			sound_event_name = "Play_curse_shadow_dagger_projectile_impact",
 			damage_profile = "homing_skull_explosion",
 			power_level = 500,
 			effect_name = "fx/belakor/blk_curse_skulls_explosion_fx",
@@ -380,15 +378,13 @@ settings.explosion_templates = {
 	tiny_explosive_barrel = {
 		explosion = {
 			radius = 6,
-			dot_template_name = "burning_1W_dot",
+			dot_template_name = "burning_dot_1tick",
 			max_damage_radius = 1.75,
-			sound_event_name = "boon_cluster_barrel_explosion",
-			damage_type_glance = "grenade_glance",
 			alert_enemies = true,
-			attack_template = "drakegun",
 			alert_enemies_radius = 10,
 			always_hurt_players = true,
-			damage_type = "grenade",
+			attack_template = "drakegun",
+			sound_event_name = "boon_cluster_barrel_explosion",
 			damage_profile = "explosive_barrel",
 			effect_name = "fx/wpnfx_barrel_explosion",
 			difficulty_power_level = {
@@ -538,9 +534,11 @@ settings.buff_templates = {
 				multiplier = 1.75,
 				name = "belakor_shadow_lieutenant",
 				stat_buff = "max_health",
-				perk = "anti_oneshot",
 				remove_buff_func = "remove_max_health_buff_for_ai",
-				apply_buff_func = "apply_max_health_buff_for_ai"
+				apply_buff_func = "apply_max_health_buff_for_ai",
+				perks = {
+					"anti_oneshot"
+				}
 			},
 			{
 				name = "belakor_shadow_lieutenant_material_objective_unit",
@@ -612,7 +610,9 @@ settings.buff_templates = {
 		buffs = {
 			{
 				name = "belakor_grey_wings_teleport_available",
-				perk = buff_perks.invulnerable_ranged
+				perks = {
+					buff_perks.invulnerable_ranged
+				}
 			},
 			{
 				remove_buff_func = "remove_attach_particle",
@@ -662,7 +662,9 @@ settings.buff_templates = {
 				continuous_effect = "fx/screenspace_darkness_flash",
 				max_stacks = 1,
 				duration = 2.5,
-				perk = buff_perks.overpowered
+				perks = {
+					buff_perks.overpowered
+				}
 			},
 			{
 				particle_fx = "fx/skull_trap",
@@ -679,18 +681,22 @@ settings.buff_templates = {
 			{
 				icon = "twitch_icon_vanishing_act",
 				name = "belakor_homing_skull_debuff_delayed_banish",
-				debuff = true,
 				continuous_effect = "fx/screenspace_inside_plague_vortex",
 				max_stacks = 1,
 				duration = 5,
 				priority_buff = true,
-				perk = buff_perks.invulnerable
+				debuff = true,
+				perks = {
+					buff_perks.invulnerable
+				}
 			},
 			{
 				max_stacks = 1,
 				name = "belakor_homing_skull_debuff_delayed_banish_stun",
 				duration = 5,
-				perk = buff_perks.overpowered
+				perks = {
+					buff_perks.overpowered
+				}
 			}
 		}
 	},

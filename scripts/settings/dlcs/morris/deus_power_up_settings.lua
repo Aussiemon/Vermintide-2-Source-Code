@@ -27,7 +27,9 @@ DeusPowerUpBuffTemplates = {
 			{
 				name = "deus_large_ammo_pickup_infinite_ammo_buff",
 				icon = "icons_placeholder",
-				perk = buff_perks.infinite_ammo,
+				perks = {
+					buff_perks.infinite_ammo
+				},
 				duration = MorrisBuffTweakData.deus_large_ammo_pickup_infinite_ammo_buff.duration
 			}
 		}
@@ -82,12 +84,14 @@ DeusPowerUpBuffTemplates = {
 	deus_crit_on_damage_taken_buff = {
 		buffs = {
 			{
-				name = "deus_crit_on_damage_taken_buff",
 				icon = "deus_icon_crit_on_damage_taken",
+				name = "deus_crit_on_damage_taken_buff",
 				refresh_durations = true,
 				max_stacks = 1,
 				duration = MorrisBuffTweakData.deus_crit_on_damage_taken_buff.duration,
-				perk = buff_perks.guaranteed_crit
+				perks = {
+					buff_perks.guaranteed_crit
+				}
 			}
 		}
 	},
@@ -124,14 +128,16 @@ DeusPowerUpBuffTemplates = {
 	deus_knockdown_damage_immunity_buff = {
 		buffs = {
 			{
-				icon = "deus_knockdown_damage_immunity_aura",
+				particle_fx = "fx/cw_allies_shield",
 				name = "deus_knockdown_damage_immunity_buff",
-				proc_weight = 15,
 				buff_func = "play_particle_effect",
 				event = "on_damage_taken",
+				icon = "deus_knockdown_damage_immunity_aura",
 				max_stacks = 1,
-				particle_fx = "fx/cw_allies_shield",
-				perk = buff_perks.invulnerable
+				proc_weight = 15,
+				perks = {
+					buff_perks.invulnerable
+				}
 			}
 		}
 	},
@@ -152,12 +158,14 @@ DeusPowerUpBuffTemplates = {
 			{
 				event = "on_ammo_used",
 				name = "deus_timed_block_free_shot_buff",
-				icon = "deus_utils",
 				buff_func = "dummy_function",
 				remove_on_proc = true,
+				icon = "deus_utils",
 				priority_buff = true,
 				max_stacks = 1,
-				perk = buff_perks.infinite_ammo
+				perks = {
+					buff_perks.infinite_ammo
+				}
 			}
 		}
 	},
@@ -211,7 +219,9 @@ DeusPowerUpBuffTemplates = {
 				apply_buff_func = "apply_second_wind",
 				icon = "deus_second_wind",
 				max_stacks = 1,
-				perk = buff_perks.invulnerable,
+				perks = {
+					buff_perks.invulnerable
+				},
 				duration = MorrisBuffTweakData.deus_second_wind_attack_speed.duration,
 				multiplier = MorrisBuffTweakData.deus_second_wind_attack_speed.multiplier
 			}
@@ -285,11 +295,13 @@ DeusPowerUpBuffTemplates = {
 	deus_parry_damage_immune_buff = {
 		buffs = {
 			{
-				name = "deus_parry_damage_immune_buff",
 				icon = "deus_parry_damage_immune",
+				name = "deus_parry_damage_immune_buff",
 				max_stacks = 1,
 				apply_buff_func = "apply_parry_damage_immune",
-				perk = buff_perks.invulnerable,
+				perks = {
+					buff_perks.invulnerable
+				},
 				duration = MorrisBuffTweakData.deus_parry_damage_immune_buff.duration
 			}
 		}
@@ -854,7 +866,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					dormant = true,
-					perk = buff_perks.potion_duration
+					perks = {
+						buff_perks.potion_duration
+					}
 				}
 			}
 		},
@@ -937,7 +951,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					max_stacks = 1,
 					update_func = "update_heal_ticks",
 					dormant = true,
-					perk = buff_perks.no_permanent_health
+					perks = {
+						buff_perks.no_permanent_health
+					}
 				}
 			}
 		},
@@ -1286,7 +1302,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					name = "deus_push_cost_reduction",
-					perk = buff_perks.slayer_stamina
+					perks = {
+						buff_perks.slayer_stamina
+					}
 				}
 			}
 		},
@@ -2000,7 +2018,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					name = "deus_infinite_dodges",
-					perk = buff_perks.infinite_dodge
+					perks = {
+						buff_perks.infinite_dodge
+					}
 				}
 			}
 		},
@@ -2018,7 +2038,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					name = "deus_uninterruptable_attacks",
-					perk = buff_perks.uninterruptible
+					perks = {
+						buff_perks.uninterruptible
+					}
 				}
 			}
 		},
@@ -3155,7 +3177,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					name = "indomitable",
-					perk = buff_perks.infinite_wounds
+					perks = {
+						buff_perks.infinite_wounds
+					}
 				}
 			}
 		},

@@ -1,9 +1,10 @@
 local player_unit_first_person_testify = script_data.testify and require("scripts/unit_extensions/default_player_unit/player_unit_first_person_testify")
 PlayerUnitFirstPerson = class(PlayerUnitFirstPerson)
 script_data.disable_aim_lead_rig_motion = script_data.disable_aim_lead_rig_motion or Development.parameter("disable_aim_lead_rig_motion") or true
-local unit_alive = Unit.alive
-local unit_animation_find_variable = Unit.animation_find_variable
-local unit_animation_set_variable = Unit.animation_set_variable
+local Unit_alive = Unit.alive
+local Unit_animation_event = Unit.animation_event
+local Unit_animation_find_variable = Unit.animation_find_variable
+local Unit_animation_set_variable = Unit.animation_set_variable
 local MOUSE_SCALE = 0.001
 local DEFAULT_WEAPON_SWAY_SETTINGS = {
 	recentering_lerp_speed = 2,
@@ -28,6 +29,12 @@ PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, exten
 	local unit_spawner = Managers.state.unit_spawner
 	local fp_unit = unit_spawner:spawn_local_unit(unit_name)
 	local career = profile.careers[career_index]
+	local default_state_machine = profile.default_state_machine
+
+	if default_state_machine then
+		Unit.set_animation_state_machine(fp_unit, default_state_machine)
+	end
+
 	self.profile = profile
 	self.first_person_unit = fp_unit
 
@@ -43,6 +50,7 @@ PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, exten
 	self.first_person_mode = true
 	self._show_first_person_units = true
 	self._anim_var_id_lookup = {}
+	self._anim_var_values = {}
 	self.look_position = Vector3Box(Unit.local_position(unit, 0))
 	self.look_rotation = QuaternionBox(Unit.local_rotation(unit, 0))
 	self.forced_look_rotation = nil
@@ -83,12 +91,6 @@ PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, exten
 	end
 
 	self._rig_update_timestep = 0.016666666666666666
-	local career_fp_anim_setup = career.fp_anim_setup
-
-	if career_fp_anim_setup then
-		career_fp_anim_setup(fp_unit)
-	end
-
 	self._show_selected_jump = Managers.state.game_mode:setting("show_selected_jump")
 	self._current_jump_id = nil
 	self._move_y = 0
@@ -102,6 +104,21 @@ PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, exten
 
 	Managers.state.event:register(self, "on_game_options_changed", "_set_game_options_dirty")
 	self:update_game_options()
+	self:animation_set_variable("career_index", career_index)
+	self:animation_set_variable("profile_index", profile.index)
+
+	local career_animation_variables = career.animation_variables
+
+	if career_animation_variables then
+		for var_name, var_value in pairs(career_animation_variables) do
+			self:animation_set_variable(var_name, var_value)
+		end
+	end
+
+	local career_ext = ScriptUnit.extension(unit, "career_system")
+	local career_name = career_ext:career_name()
+
+	Wwise.set_state("current_career", career_name)
 end
 
 PlayerUnitFirstPerson.reset = function (self)
@@ -135,6 +152,35 @@ PlayerUnitFirstPerson.destroy = function (self)
 	Managers.state.event:unregister("on_game_options_changed", self)
 end
 
+PlayerUnitFirstPerson.set_state_machine = function (self, new_state_machine)
+	if new_state_machine == self._current_state_machine then
+		return
+	end
+
+	local unit = self.first_person_unit
+
+	Unit.set_animation_state_machine_blend_base_layer(unit, new_state_machine)
+
+	if self.profile.supports_motion_sickness_modes then
+		Unit_animation_event(unit, self._head_bob and "enable_headbob" or "disable_headbob")
+		Unit_animation_event(unit, "motion_sickness_hit_" .. self._motion_sickness_hit)
+		Unit_animation_event(unit, "motion_sickness_swing_" .. self._motion_sickness_swing)
+		Unit_animation_event(unit, "motion_sickness_misc_" .. self._motion_sickness_misc_cam)
+
+		if self._motion_sickness_swing == "off" and self._motion_sickness_hit == "off" then
+			Unit_animation_event(unit, "motion_sickness_both_muted")
+		end
+	end
+
+	table.clear(self._anim_var_id_lookup)
+
+	for name, value in pairs(self._anim_var_values) do
+		self:animation_set_variable(name, value)
+	end
+
+	self._current_state_machine = new_state_machine
+end
+
 PlayerUnitFirstPerson._set_game_options_dirty = function (self)
 	self._game_options_dirty = true
 end
@@ -147,7 +193,7 @@ PlayerUnitFirstPerson.update_game_options = function (self)
 	local head_bob = Application.user_setting("head_bob")
 
 	if self._head_bob ~= head_bob then
-		Unit.animation_event(self.first_person_unit, head_bob and "enable_headbob" or "disable_headbob")
+		Unit_animation_event(self.first_person_unit, head_bob and "enable_headbob" or "disable_headbob")
 
 		self._head_bob = head_bob
 	end
@@ -158,7 +204,7 @@ PlayerUnitFirstPerson.update_game_options = function (self)
 		if self._motion_sickness_hit ~= motion_sickness_hit then
 			local event_name = "motion_sickness_hit_" .. motion_sickness_hit
 
-			Unit.animation_event(self.first_person_unit, event_name)
+			Unit_animation_event(self.first_person_unit, event_name)
 
 			self._motion_sickness_hit = motion_sickness_hit
 		end
@@ -168,13 +214,13 @@ PlayerUnitFirstPerson.update_game_options = function (self)
 		if self._motion_sickness_swing ~= motion_sickness_swing then
 			local event_name = "motion_sickness_swing_" .. motion_sickness_swing
 
-			Unit.animation_event(self.first_person_unit, event_name)
+			Unit_animation_event(self.first_person_unit, event_name)
 
 			self._motion_sickness_swing = motion_sickness_swing
 		end
 
 		if motion_sickness_swing == "off" and motion_sickness_hit == "off" then
-			Unit.animation_event(self.first_person_unit, "motion_sickness_both_muted")
+			Unit_animation_event(self.first_person_unit, "motion_sickness_both_muted")
 		end
 
 		local motion_sickness_misc_cam = Application.user_setting("motion_sickness_misc_cam")
@@ -182,7 +228,7 @@ PlayerUnitFirstPerson.update_game_options = function (self)
 		if self._motion_sickness_misc_cam ~= motion_sickness_misc_cam then
 			local event_name = "motion_sickness_misc_" .. motion_sickness_misc_cam
 
-			Unit.animation_event(self.first_person_unit, event_name)
+			Unit_animation_event(self.first_person_unit, event_name)
 
 			self._motion_sickness_misc_cam = motion_sickness_misc_cam
 		end
@@ -289,7 +335,7 @@ PlayerUnitFirstPerson._reset_jump_indicator = function (self)
 	self._valid_jump_id = nil
 	self._valid_jump_data = nil
 
-	if self._indicator_unit and unit_alive(self._indicator_unit) then
+	if self._indicator_unit and Unit_alive(self._indicator_unit) then
 		Unit.flow_event(self._indicator_unit, "disable_glow")
 
 		self._indicator_unit = nil
@@ -715,7 +761,7 @@ PlayerUnitFirstPerson.set_weapon_sway_settings = function (self, weapon_sway_set
 end
 
 PlayerUnitFirstPerson.play_animation_event = function (self, anim_event)
-	Unit.animation_event(self.first_person_unit, anim_event)
+	Unit_animation_event(self.first_person_unit, anim_event)
 end
 
 PlayerUnitFirstPerson.set_aim_constraint_target = function (self, id, target)
@@ -941,22 +987,24 @@ PlayerUnitFirstPerson.show_first_person_ammo = function (self, show)
 	end
 end
 
-PlayerUnitFirstPerson.animation_set_variable = function (self, variable_name, value)
+PlayerUnitFirstPerson.animation_set_variable = function (self, variable_name, value, strict)
 	local fp_unit = self.first_person_unit
 	local anim_var_id = self._anim_var_id_lookup[variable_name]
 
 	if anim_var_id == nil then
-		anim_var_id = unit_animation_find_variable(fp_unit, variable_name) or false
+		anim_var_id = Unit_animation_find_variable(fp_unit, variable_name) or false
 		self._anim_var_id_lookup[variable_name] = anim_var_id
 	end
 
 	if anim_var_id then
-		unit_animation_set_variable(fp_unit, anim_var_id, value)
+		Unit_animation_set_variable(fp_unit, anim_var_id, value)
+
+		self._anim_var_values[variable_name] = value
 	end
 end
 
 PlayerUnitFirstPerson.animation_event = function (self, event)
-	Unit.animation_event(self.first_person_unit, event)
+	Unit_animation_event(self.first_person_unit, event)
 end
 
 PlayerUnitFirstPerson.create_screen_particles = function (self, name, pos, ...)
@@ -1074,7 +1122,7 @@ PlayerUnitFirstPerson.enable_rig_movement = function (self)
 	if not self._rig_movement_enabled then
 		self._rig_movement_enabled = true
 
-		Unit.animation_event(self.first_person_unit, "activate_aim")
+		Unit_animation_event(self.first_person_unit, "activate_aim")
 	end
 end
 
@@ -1082,7 +1130,7 @@ PlayerUnitFirstPerson.disable_rig_movement = function (self)
 	if self._rig_movement_enabled then
 		self._rig_movement_enabled = false
 
-		Unit.animation_event(self.first_person_unit, "deactivate_aim")
+		Unit_animation_event(self.first_person_unit, "deactivate_aim")
 	end
 end
 

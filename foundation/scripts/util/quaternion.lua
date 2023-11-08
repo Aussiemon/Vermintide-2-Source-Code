@@ -15,3 +15,7 @@ Quaternion.roll = function (q)
 
 	return math.asin(-2 * (x * z - w * y))
 end
+
+Quaternion.flat_no_roll = function (q)
+	return Quaternion.axis_angle(Vector3.up(), Quaternion.yaw(q))
+end

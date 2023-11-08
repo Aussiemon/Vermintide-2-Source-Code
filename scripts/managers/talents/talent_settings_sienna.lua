@@ -252,11 +252,13 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
+				max_targets = 5,
 				bonus = 0.25,
-				perk = buff_perks.linesman_healing
+				perks = {
+					buff_perks.linesman_healing
+				}
 			}
 		}
 	},
@@ -268,7 +270,9 @@ TalentBuffTemplates.bright_wizard = {
 				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = buff_perks.smiter_healing
+				perks = {
+					buff_perks.smiter_healing
+				}
 			}
 		}
 	},
@@ -420,7 +424,9 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_scholar_overcharge_no_slow = {
 		buffs = {
 			{
-				perk = buff_perks.overcharge_no_slow
+				perks = {
+					buff_perks.overcharge_no_slow
+				}
 			}
 		}
 	},
@@ -537,7 +543,9 @@ TalentBuffTemplates.bright_wizard = {
 				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = buff_perks.tank_healing
+				perks = {
+					buff_perks.tank_healing
+				}
 			}
 		}
 	},
@@ -549,7 +557,9 @@ TalentBuffTemplates.bright_wizard = {
 				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = buff_perks.smiter_healing
+				perks = {
+					buff_perks.smiter_healing
+				}
 			}
 		}
 	},
@@ -571,7 +581,9 @@ TalentBuffTemplates.bright_wizard = {
 				stat_buff = "full_charge_boost",
 				buff_func = "add_buff",
 				event = "on_full_charge",
-				perk = buff_perks.full_charge_boost
+				perks = {
+					buff_perks.full_charge_boost
+				}
 			}
 		}
 	},
@@ -671,7 +683,7 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_adept_increased_burn_damage = {
 		buffs = {
 			{
-				stat_buff = "increased_burn_damage"
+				stat_buff = "increased_burn_dot_damage"
 			}
 		}
 	},
@@ -687,9 +699,11 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				buff_to_add = "sienna_adept_ability_trail_double_remove",
 				icon = "sienna_adept_activated_ability_dump_overcharge",
-				remove_buff_func = "sienna_adept_double_trail_talent_start_ability_cooldown_add",
 				max_stacks = 1,
-				perk = buff_perks.free_ability
+				remove_buff_func = "sienna_adept_double_trail_talent_start_ability_cooldown_add",
+				perks = {
+					buff_perks.free_ability
+				}
 			}
 		}
 	},
@@ -729,14 +743,18 @@ TalentBuffTemplates.bright_wizard = {
 		buffs = {
 			{
 				stat_buff = "damage_taken_to_overcharge",
-				perk = buff_perks.sienna_unchained
+				perks = {
+					buff_perks.sienna_unchained
+				}
 			}
 		}
 	},
 	sienna_unchained_passive_overcharged_blocks = {
 		buffs = {
 			{
-				perk = buff_perks.overcharged_block
+				perks = {
+					buff_perks.overcharged_block
+				}
 			}
 		}
 	},
@@ -771,7 +789,9 @@ TalentBuffTemplates.bright_wizard = {
 				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = buff_perks.tank_healing
+				perks = {
+					buff_perks.tank_healing
+				}
 			}
 		}
 	},
@@ -780,11 +800,13 @@ TalentBuffTemplates.bright_wizard = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
+				max_targets = 5,
 				bonus = 0.25,
-				perk = buff_perks.linesman_healing
+				perks = {
+					buff_perks.linesman_healing
+				}
 			}
 		}
 	},
@@ -824,7 +846,9 @@ TalentBuffTemplates.bright_wizard = {
 				event = "on_hit",
 				buff_to_add = "sienna_unchained_push_arc_buff",
 				buff_func = "sienna_burn_push_on_charged_attacks",
-				perk = buff_perks.sienna_unchained_burn_push
+				perks = {
+					buff_perks.sienna_unchained_burn_push
+				}
 			}
 		}
 	},

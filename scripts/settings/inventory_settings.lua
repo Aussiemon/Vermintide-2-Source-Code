@@ -89,6 +89,7 @@ InventorySettings = {
 			wield_input = "wield_4",
 			category = "weapon",
 			hud_index = 4,
+			wield_input_alt = "wield_4_alt",
 			console_hud_index = 4,
 			drop_reasons = {
 				death = true

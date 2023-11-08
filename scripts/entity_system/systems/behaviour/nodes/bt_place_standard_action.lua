@@ -50,7 +50,7 @@ BTPlaceStandardAction.leave = function (self, unit, blackboard, t, reason, destr
 		blackboard.switching_weapons = 2
 	end
 
-	if blackboard.move_state ~= "idle" and AiUtils.unit_alive(unit) then
+	if blackboard.move_state ~= "idle" and HEALTH_ALIVE[unit] then
 		blackboard.move_state = "idle"
 	end
 
@@ -127,7 +127,7 @@ BTPlaceStandardAction.anim_cb_place_standard = function (self, unit, blackboard)
 			for i = 1, num_results do
 				local nearby_unit = broadphase_results[i]
 
-				if AiUtils.unit_alive(nearby_unit) then
+				if HEALTH_ALIVE[nearby_unit] then
 					local nearby_unit_blackboard = BLACKBOARDS[nearby_unit]
 
 					if nearby_unit_blackboard.breed.race == "beastmen" then

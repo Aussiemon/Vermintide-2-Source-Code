@@ -1,12 +1,12 @@
 local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
 	detection_radius = 12,
-	ai_strength = 3,
-	walk_speed = 2.2,
 	disable_crowd_dispersion = true,
+	walk_speed = 2.2,
+	dont_wield_weapon_on_patrol = true,
 	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
-	aim_template = "chaos_marauder",
-	line_of_sight_distance_sq = 64,
+	death_reaction = "ai_default",
+	ai_toughness = 4,
 	scale_death_push = 0.75,
 	animation_sync_rpc = "rpc_sync_anim_state_7",
 	aoe_radius = 0.4,
@@ -14,10 +14,10 @@ local breed_data = {
 	opt_base_unit = "units/beings/enemies/chaos_raider/chr_chaos_raider_baked",
 	exchange_order = 3,
 	target_selection = "pick_closest_target_with_spillover",
-	death_reaction = "ai_default",
+	ai_strength = 3,
+	line_of_sight_distance_sq = 64,
 	hit_mass_count = 8,
 	slot_template = "chaos_elite",
-	dont_wield_weapon_on_patrol = true,
 	no_stagger_duration = true,
 	attack_general_sound_event = "Play_enemy_marauder_attack_husk_vce",
 	default_inventory_template = "raider_axe_2h",
@@ -38,21 +38,21 @@ local breed_data = {
 	poison_resistance = 100,
 	armor_category = 1,
 	push_sound_event = "Play_generic_pushed_impact_large",
-	headshot_coop_stamina_fatigue_type = "headshot_special",
 	backstab_player_sound_event = "Play_enemy_marauder_attack_player_back_vce",
 	death_sound_event = "Play_enemy_marauder_death_vce",
+	headshot_coop_stamina_fatigue_type = "headshot_special",
 	threat_value = 5,
 	awards_positive_reinforcement_message = true,
 	bone_lod_level = 1,
 	smart_targeting_width = 0.2,
-	smart_object_template = "special",
 	is_bot_aid_threat = true,
 	behavior = "raider",
 	stagger_armor_category = 2,
+	smart_object_template = "special",
 	bots_should_flank = true,
 	has_inventory = true,
 	run_speed = 4.8,
-	ai_toughness = 4,
+	aim_template = "chaos_marauder",
 	stagger_threshold_heavy = 3,
 	stagger_multiplier = 0.6,
 	stagger_threshold_light = 0.4,
@@ -81,6 +81,7 @@ local breed_data = {
 		"move_fwd_5",
 		"move_fwd_6"
 	},
+	infighting = InfightingSettings.small,
 	perception_exceptions = {
 		poison_well = true,
 		wizard_destructible = true
@@ -110,6 +111,12 @@ local breed_data = {
 	wwise_voices = {
 		"marauder_andreas",
 		"marauder_olof"
+	},
+	status_effect_settings = {
+		category = "medium",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire
+		})
 	},
 	debug_color = {
 		255,

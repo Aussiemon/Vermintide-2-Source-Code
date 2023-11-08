@@ -2991,6 +2991,21 @@ Cosmetics = {
 	},
 	frame_karak_03 = {
 		icon = "unit_frame_02"
+	},
+	frame_necromancer_01 = {
+		icon = "unit_frame_02"
+	},
+	frame_necromancer_02 = {
+		icon = "unit_frame_02"
+	},
+	frame_necromancer_03 = {
+		icon = "unit_frame_02"
+	},
+	frame_geheimnisnacht_04 = {
+		icon = "unit_frame_02"
+	},
+	frame_geheimnisnacht_05 = {
+		icon = "unit_frame_02"
 	}
 }
 

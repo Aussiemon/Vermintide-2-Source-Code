@@ -8,37 +8,41 @@ AiBreedSnippets.on_beastmen_minotaur_spawn = function (unit, blackboard)
 	blackboard.num_charges_targeting_target = 0
 	blackboard.target_is_charged = false
 	blackboard.aggro_list = {}
-	local allowed_layers = {
-		planks = 1,
-		bot_ratling_gun_fire = 1,
-		doors = 1,
-		destructible_wall = 0,
-		bot_poison_wind = 1,
-		temporary_wall = 0,
-		fire_grenade = 1
-	}
-	local navtag_layer_cost_table = GwNavTagLayerCostTable.create()
+	local breed = blackboard.breed
 
-	table.merge(allowed_layers, NAV_TAG_VOLUME_LAYER_COST_AI)
-	AiUtils.initialize_cost_table(navtag_layer_cost_table, allowed_layers)
+	if breed.use_charge_nav_layers then
+		local allowed_layers = {
+			planks = 1,
+			bot_ratling_gun_fire = 1,
+			doors = 1,
+			destructible_wall = 0,
+			bot_poison_wind = 1,
+			temporary_wall = 0,
+			fire_grenade = 1
+		}
+		local navtag_layer_cost_table = GwNavTagLayerCostTable.create()
 
-	local nav_cost_map_cost_table = GwNavCostMap.create_tag_cost_table()
+		table.merge(allowed_layers, NAV_TAG_VOLUME_LAYER_COST_AI)
+		AiUtils.initialize_cost_table(navtag_layer_cost_table, allowed_layers)
 
-	AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table)
+		local nav_cost_map_cost_table = GwNavCostMap.create_tag_cost_table()
 
-	local charge_traverse_logic = GwNavTraverseLogic.create(blackboard.nav_world, nav_cost_map_cost_table)
+		AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table)
 
-	GwNavTraverseLogic.set_navtag_layer_cost_table(charge_traverse_logic, navtag_layer_cost_table)
+		local charge_traverse_logic = GwNavTraverseLogic.create(blackboard.nav_world, nav_cost_map_cost_table)
 
-	blackboard.charge_nav_cost_map_cost_table = nav_cost_map_cost_table
-	blackboard.charge_traverse_logic = charge_traverse_logic
-	blackboard.charge_navtag_layer_cost_table = navtag_layer_cost_table
+		GwNavTraverseLogic.set_navtag_layer_cost_table(charge_traverse_logic, navtag_layer_cost_table)
+
+		blackboard.charge_nav_cost_map_cost_table = nav_cost_map_cost_table
+		blackboard.charge_traverse_logic = charge_traverse_logic
+		blackboard.charge_navtag_layer_cost_table = navtag_layer_cost_table
+	end
+
 	blackboard.aggro_list = {}
 	blackboard.fling_skaven_timer = 0
 	blackboard.next_move_check = 0
 	blackboard.is_valid_target_func = GenericStatusExtension.is_ogre_target
 	local conflict_director = Managers.state.conflict
-	local breed = blackboard.breed
 	local ai_simple = ScriptUnit.extension(unit, "ai_system")
 
 	ai_simple:set_perception(breed.perception, breed.target_selection_angry)
@@ -78,7 +82,9 @@ AiBreedSnippets.on_beastmen_minotaur_spawn = function (unit, blackboard)
 end
 
 AiBreedSnippets.on_beastmen_minotaur_update = function (unit, blackboard, t)
-	if blackboard.charge_astar_data and not blackboard.charge_state and Unit.alive(blackboard.target_unit) then
+	local traverse_logic = blackboard.charge_traverse_logic or blackboard.navigation_extension:traverse_logic()
+
+	if traverse_logic and blackboard.charge_astar_data and not blackboard.charge_state and Unit.alive(blackboard.target_unit) then
 		local data = blackboard.charge_astar_data
 		local astar = data.astar
 
@@ -109,7 +115,7 @@ AiBreedSnippets.on_beastmen_minotaur_update = function (unit, blackboard, t)
 				local width = 7
 				local new_astar = GwNavAStar.create(nav_world)
 
-				GwNavAStar.start_with_propagation_box(new_astar, nav_world, POSITION_LOOKUP[unit], wanted_position, width, blackboard.charge_traverse_logic)
+				GwNavAStar.start_with_propagation_box(new_astar, nav_world, POSITION_LOOKUP[unit], wanted_position, width, traverse_logic)
 
 				data.astar = new_astar
 				data.astar_timer = t + 1

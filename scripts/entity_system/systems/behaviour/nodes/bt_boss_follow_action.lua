@@ -192,7 +192,7 @@ BTBossFollowAction.check_fling_skaven = function (self, unit, blackboard, t)
 			local hit_unit_bb = BLACKBOARDS[hit_unit]
 			local hit_unit_breed = hit_unit_bb and hit_unit_bb.breed
 
-			if hit_unit_breed and hit_unit_breed.flingable and AiUtils.unit_alive(hit_unit) then
+			if hit_unit_breed and hit_unit_breed.flingable and HEALTH_ALIVE[hit_unit] then
 				blackboard.fling_skaven = true
 				blackboard.fling_skaven_timer = t + 5
 

@@ -75,7 +75,7 @@ BackendInterfaceDLCsPlayfab._update_owned_dlcs_cb = function (self, result)
 
 		local unlocked_weapon_skins = function_result.unlocked_weapon_skins
 
-		if unlocked_cosmetics then
+		if unlocked_weapon_skins then
 			self._backend_mirror:set_read_only_data("unlocked_weapon_skins", unlocked_weapon_skins, true)
 		end
 	end
@@ -105,8 +105,7 @@ end
 BackendInterfaceDLCsPlayfab._execute_dlc_logic_cb = function (self, result)
 	local function_result = result.FunctionResult
 	local new_rewards = function_result.item_grant_results
-	local user_data = self._backend_mirror:get_user_data()
-	local unseen_rewards = user_data.unseen_rewards
+	local unseen_rewards = self._backend_mirror:get_user_data("unseen_rewards")
 	unseen_rewards = unseen_rewards and cjson.decode(unseen_rewards) or {}
 
 	for i = 1, #new_rewards do

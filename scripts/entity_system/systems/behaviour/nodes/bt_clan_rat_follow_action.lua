@@ -61,7 +61,7 @@ BTClanRatFollowAction.enter = function (self, unit, blackboard, t)
 		if use_slow_approach then
 			blackboard.walk_timer = t + action_data.slow_approach_time
 		else
-			blackboard.walk_timer = t + 3 + 1 * Math.random()
+			blackboard.walk_timer = t + (action_data.walk_time or 3 + 1 * Math.random())
 		end
 	end
 
@@ -213,7 +213,7 @@ BTClanRatFollowAction._update_walking = function (self, unit, blackboard, dt, t)
 	local is_tired = blackboard.action.custom_is_tired_function and blackboard.action.custom_is_tired_function(unit, blackboard)
 	local run_anim = is_tired and blackboard.action.alt_tired_anim or "move_fwd"
 
-	if (not breed.force_walk_while_tired or not is_tired) and (walk_timer_finished or run or target_moving_fast) then
+	if (not breed.force_walk_while_tired or not is_tired) and (not should_walk and walk_timer_finished or run or target_moving_fast) then
 		blackboard.walking = false
 		blackboard.walking_direction = nil
 
@@ -335,7 +335,9 @@ BTClanRatFollowAction.follow = function (self, unit, blackboard, t, dt)
 		new_speed = math.min(current_speed + sign * interpolation_factor * dt, wanted_speed)
 	end
 
-	if blackboard.action.custom_is_tired_function and blackboard.action.custom_is_tired_function(unit, blackboard) then
+	local action = blackboard.action
+
+	if action.custom_is_tired_function and action.custom_is_tired_function(unit, blackboard) then
 		blackboard.walking = true
 		blackboard.walk_timer = t + 2.5
 	end
@@ -348,8 +350,12 @@ BTClanRatFollowAction.follow = function (self, unit, blackboard, t, dt)
 		local should_walk = self:_should_walk(destination, position, enter_walk_dist_sq, rotation)
 
 		if should_walk then
-			local target_velocity = target_locomotion and target_locomotion.average_velocity and target_locomotion:average_velocity() or Vector3.zero()
-			local target_speed = Vector3.length(target_velocity) or 0
+			local target_speed = 0
+
+			if not action.ignore_target_velocity then
+				local target_velocity = target_locomotion and target_locomotion.average_velocity and target_locomotion:average_velocity() or Vector3.zero()
+				target_speed = Vector3.length(target_velocity) or 0
+			end
 
 			if target_speed < WALK_MAX_TARGET_VELOCITY then
 				blackboard.walking = true

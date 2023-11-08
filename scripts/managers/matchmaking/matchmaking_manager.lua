@@ -2100,7 +2100,7 @@ MatchmakingManager._decode_reserved_slots_mask = function (self, reserved_slots_
 	local party_settings = mechanism_settings and mechanism_settings.party_data
 
 	for party_name, party_data in pairs(party_settings) do
-		if not party_data.spectator_party then
+		if party_data.game_participating then
 			SLOTS[party_data.party_id] = party_data.num_slots
 		end
 	end

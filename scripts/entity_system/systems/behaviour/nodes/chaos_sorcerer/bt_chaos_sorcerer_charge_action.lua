@@ -29,6 +29,7 @@ BTChaosSorcererChargeAction.enter = function (self, unit, blackboard, t)
 	blackboard.test_start_time = t + 1
 	blackboard.charge_target_position = Vector3Box(0, 0, 0)
 	blackboard.charge_target_unit = blackboard.target_unit
+	blackboard.lunge_data = action.lunge
 	local start_animation = randomize(action.start_animation)
 
 	Managers.state.network:anim_event(unit, start_animation)
@@ -41,9 +42,6 @@ BTChaosSorcererChargeAction.enter = function (self, unit, blackboard, t)
 	locomotion_extension:set_wanted_velocity(Vector3.zero())
 	navigation_extension:set_enabled(false)
 	navigation_extension:reset_destination()
-
-	locomotion_extension.death_velocity_boxed = locomotion_extension.death_velocity_boxed or Vector3Box()
-
 	locomotion_extension:use_lerp_rotation(true)
 
 	blackboard.stored_rotation = QuaternionBox(Quaternion.identity())
@@ -71,7 +69,7 @@ BTChaosSorcererChargeAction.enter = function (self, unit, blackboard, t)
 end
 
 BTChaosSorcererChargeAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	if blackboard.move_state ~= "idle" and AiUtils.unit_alive(unit) then
+	if blackboard.move_state ~= "idle" and HEALTH_ALIVE[unit] then
 		if not blackboard.blocked then
 			local network_manager = Managers.state.network
 
@@ -83,7 +81,7 @@ BTChaosSorcererChargeAction.leave = function (self, unit, blackboard, t, reason,
 
 	blackboard.attack_token = false
 
-	if AiUtils.unit_alive(unit) then
+	if HEALTH_ALIVE[unit] then
 		local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 		local navigation_extension = blackboard.navigation_extension
 
@@ -96,7 +94,6 @@ BTChaosSorcererChargeAction.leave = function (self, unit, blackboard, t, reason,
 		GwNavTraverseLogic.set_navtag_layer_cost_table(traverse_logic, blackboard.old_navtag_layer_cost_table)
 
 		blackboard.old_navtag_layer_cost_table = nil
-		blackboard.locomotion_extension.death_velocity_boxed = nil
 		local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
 		hit_reaction_extension.force_ragdoll_on_death = nil
 
@@ -136,6 +133,7 @@ BTChaosSorcererChargeAction.leave = function (self, unit, blackboard, t, reason,
 	blackboard.target_unit_status_extension = nil
 	blackboard.triggered_dodge_sound = nil
 	blackboard.charge_target_position = nil
+	blackboard.lunge_data = nil
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, true)
@@ -210,22 +208,21 @@ BTChaosSorcererChargeAction._start_charging = function (self, unit, blackboard)
 	blackboard.charge_started_at_t = t
 end
 
-BTChaosSorcererChargeAction._start_lunge = function (self, unit, blackboard, distance_to_target, t)
-	local action = blackboard.action
+BTChaosSorcererChargeAction._start_lunge = function (self, unit, blackboard, lunge_data, distance_to_target, t)
 	blackboard.charge_state = "lunge"
 	blackboard.time_to_impact = t + 0.25
-	local distance_thresholds = action.enter_lunge_thresholds
+	local distance_thresholds = lunge_data.enter_thresholds
 	local distance_identifier = self:_pick_distance_identifier(distance_thresholds, distance_to_target)
-	local lunge_animation = action.lunge_animations and action.lunge_animations[distance_identifier]
+	local lunge_animation = lunge_data.animations and lunge_data.animations[distance_identifier]
 	local locomotion_extension = blackboard.locomotion_extension
 	local current_velocity = locomotion_extension:current_velocity()
-	local lunge_velocity_scaling = action.lunge_velocity_scaling
+	local lunge_velocity_scaling = lunge_data.velocity_scaling
 	local lunge_velocity_scale = lunge_velocity_scaling[distance_identifier]
 	local lunge_threshold = distance_thresholds[distance_identifier]
 	local lunge_distance_scale = distance_to_target / lunge_threshold
 
 	locomotion_extension:set_wanted_velocity(current_velocity * lunge_velocity_scale * lunge_distance_scale)
-	locomotion_extension:set_rotation_speed(action.lunge_rotation_speed)
+	locomotion_extension:set_rotation_speed(lunge_data.rotation_speed)
 
 	blackboard.current_lunge_velocity_scale = lunge_velocity_scale
 end
@@ -470,21 +467,18 @@ BTChaosSorcererChargeAction._run_charging = function (self, unit, blackboard, t,
 	locomotion_extension:set_wanted_velocity(new_velocity)
 
 	blackboard.current_charge_speed = wanted_charge_speed
-
-	locomotion_extension.death_velocity_boxed:store(new_velocity * 2)
-
 	local distance_to_target = Vector3.distance(self_position, target_position)
+	local lunge_data = blackboard.lunge_data
 
-	if distance_to_target <= action.enter_lunge_thresholds.far then
+	if lunge_data and distance_to_target <= lunge_data.enter_thresholds.far then
 		return true
 	end
 
 	return false
 end
 
-BTChaosSorcererChargeAction._run_lunge = function (self, unit, blackboard, t, dt)
+BTChaosSorcererChargeAction._run_lunge = function (self, unit, blackboard, lunge_data, t, dt)
 	local locomotion_extension = blackboard.locomotion_extension
-	local action = blackboard.action
 	local slow_down_speed = nil
 
 	locomotion_extension:use_lerp_rotation(false)
@@ -495,7 +489,7 @@ BTChaosSorcererChargeAction._run_lunge = function (self, unit, blackboard, t, dt
 
 	locomotion_extension:set_wanted_rotation(wanted_rotation)
 
-	slow_down_speed = action.lunge_rotation_slow_down_speed
+	slow_down_speed = lunge_data.rotation_slow_down_speed
 
 	self:_check_lunge(unit, blackboard, t)
 	self:_slow_down(unit, blackboard, slow_down_speed, t, dt)

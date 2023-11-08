@@ -37,6 +37,7 @@ PassiveAbilitySettings.es_4 = {
 	},
 	passive_ability_classes = {
 		{
+			name = "es_4",
 			ability_class = PassiveAbilityQuestingKnight,
 			init_data = {}
 		}

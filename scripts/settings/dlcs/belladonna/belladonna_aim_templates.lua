@@ -109,8 +109,6 @@ AimTemplates.ungor_archer = {
 					local target_go_id = Managers.state.unit_storage:go_id(target_unit)
 
 					if game and go_id and target_go_id then
-						GameSession.set_game_object_field(game, go_id, "target_unit_id", target_go_id)
-
 						data.previous_aim_target_unit = target_unit
 					end
 				end
@@ -151,7 +149,7 @@ AimTemplates.ungor_archer = {
 				if use_head_constraint then
 					local target_unit_id = GameSession.game_object_field(game, go_id, "target_unit_id")
 
-					if target_unit_id > 0 then
+					if target_unit_id ~= NetworkConstants.invalid_game_object_id then
 						local target_unit = unit_storage:unit(target_unit_id)
 						local target_distance = target_unit and Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit])
 						local head_constraint_target = data.head_constraint_target

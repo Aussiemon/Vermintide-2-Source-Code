@@ -668,6 +668,24 @@ AdventureMechanism.load_packages = function (self)
 	self._additional_packages_initialized = true
 end
 
+local function load_special_event_packages(map, name, event_packages)
+	if event_packages and event_packages.resource_packages then
+		if not map[name] then
+			map[name] = {}
+		end
+
+		local list = map[name]
+
+		for i = 1, #event_packages.resource_packages do
+			local package_name = event_packages.resource_packages[i]
+
+			if not table.contains(list, package_name) then
+				list[#list + 1] = package_name
+			end
+		end
+	end
+end
+
 AdventureMechanism._load_live_event_packages = function (self)
 	local live_event_interface = Managers.backend:get_interface("live_events")
 	local special_events = live_event_interface and live_event_interface:get_special_events()
@@ -681,18 +699,23 @@ AdventureMechanism._load_live_event_packages = function (self)
 			local event_name = event_data.name
 			local event_packages = live_event_packages[event_name]
 
-			if event_packages and event_packages.resource_packages then
-				if not additional_packages[event_name] then
-					additional_packages[event_name] = {}
-				end
+			load_special_event_packages(additional_packages, event_name, event_packages)
 
-				table.append(additional_packages[event_name], event_packages.resource_packages)
+			local mutators = event_data.mutators
+
+			if mutators then
+				for j = 1, #mutators do
+					local mutator = mutators[j]
+					event_packages = live_event_packages[mutator]
+
+					load_special_event_packages(additional_packages, mutator, event_packages)
+				end
 			end
 		end
 
 		local package_manager = Managers.package
 
-		for name, packages in pairs(additional_packages) do
+		for name, packages in pairs(self._additional_packages) do
 			for i = 1, #packages do
 				package_manager:load(packages[i], name, nil, true)
 			end

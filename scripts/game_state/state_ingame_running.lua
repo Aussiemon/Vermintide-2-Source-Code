@@ -227,6 +227,8 @@ StateInGameRunning.on_enter = function (self, params)
 	self._waiting_for_peers_message_timer = Managers.time:time("game") + 10
 	self._game_started_current_frame = false
 	self._transitioned_from_black_screen = false
+
+	Managers.level_transition_handler.transient_package_loader:signal_in_game()
 end
 
 StateInGameRunning._setup_end_of_level_UI = function (self)
@@ -274,6 +276,7 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 		if not self._booted_eac_untrusted then
 			local level, start_experience, start_experience_pool = self.rewards:get_level_start()
 			local win_track_start_experience = self.rewards:get_win_track_experience_start()
+			local mechanism_name = Managers.mechanism:current_mechanism_name()
 			local rewards, end_of_level_rewards_arguments = self.rewards:get_rewards()
 			level_end_view_context.rewards = {
 				end_of_level_rewards = table.clone(rewards),
@@ -288,8 +291,6 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 			level_end_view_context.end_of_level_rewards_arguments = table.clone(end_of_level_rewards_arguments)
 		end
 
-		local party_data = Managers.mechanism:score_information()
-		level_end_view_context.party_data = party_data
 		level_end_view_context.level_end_view = Managers.mechanism:get_level_end_view()
 		self.parent.parent.loading_context.level_end_view_context = level_end_view_context
 

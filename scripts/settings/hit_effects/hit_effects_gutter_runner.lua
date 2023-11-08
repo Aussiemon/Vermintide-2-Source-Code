@@ -685,7 +685,6 @@ HitEffectsGutterRunner = {
 	},
 	burning_stab_fencer_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -699,7 +698,8 @@ HitEffectsGutterRunner = {
 			distal_force = 30,
 			vertical_force = 0,
 			lateral_force = 0
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	heavy_stab_fencer_death = {
 		inherits = "default_death",
@@ -1127,7 +1127,6 @@ HitEffectsGutterRunner = {
 	burning_tank_death = {
 		inherits = "default_death",
 		do_dismember = false,
-		flow_event = "burn",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1141,7 +1140,8 @@ HitEffectsGutterRunner = {
 			distal_force = 10,
 			vertical_force = 0,
 			lateral_force = 30
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burning_tank_death_head = {
 		inherits = "burning_tank_death",
@@ -1157,7 +1157,6 @@ HitEffectsGutterRunner = {
 	},
 	heavy_burning_tank_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1171,7 +1170,8 @@ HitEffectsGutterRunner = {
 			distal_force = 20,
 			vertical_force = 10,
 			lateral_force = 40
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	heavy_burning_tank_death_head = {
 		inherits = "heavy_burning_tank_death",
@@ -1438,6 +1438,7 @@ HitEffectsGutterRunner = {
 			damage_type = {
 				"arrow_sniper",
 				"arrow_carbine",
+				"elven_magic_arrow_carbine",
 				"arrow_machinegun",
 				"arrow_shotgun",
 				"bolt_sniper",
@@ -1490,7 +1491,8 @@ HitEffectsGutterRunner = {
 		extra_conditions = {
 			damage_type = {
 				"arrow_carbine",
-				"arrow_shotgun"
+				"arrow_shotgun",
+				"elven_magic_arrow_carbine"
 			}
 		},
 		push = {
@@ -1517,7 +1519,8 @@ HitEffectsGutterRunner = {
 		extra_conditions = {
 			damage_type = {
 				"arrow_carbine",
-				"arrow_shotgun"
+				"arrow_shotgun",
+				"elven_magic_arrow_carbine"
 			}
 		},
 		push = {
@@ -1700,37 +1703,26 @@ HitEffectsGutterRunner = {
 			damage_type = "burninating"
 		}
 	},
-	burn_death = {
+	burninating_death = {
+		inherits = "burninating",
+		flow_event = "gutter_death",
 		extra_conditions = {
-			death = true,
-			damage_type = {
-				"burninating",
-				"burn"
-			}
+			death = true
 		},
 		animations = {
 			"ragdoll"
-		},
-		flow_event = {
-			"burn",
-			"gutter_death"
 		}
 	},
-	burn_death_force_fire = {
+	burn_death = {
+		flow_event = "gutter_death",
 		extra_conditions = {
 			death = true,
-			damage_type = {
-				"burn_force_fire",
-				"burninating_force_fire"
-			}
+			damage_type = "burn"
 		},
 		animations = {
 			"ragdoll"
 		},
-		flow_event = {
-			"burn_force_fire",
-			"gutter_death"
-		}
+		timed_status = StatusEffectNames.burning
 	},
 	burn_sniper_death = {
 		extra_conditions = {
@@ -1743,9 +1735,9 @@ HitEffectsGutterRunner = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"gutter_death"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -1754,7 +1746,6 @@ HitEffectsGutterRunner = {
 	},
 	burn_sniper_death_dismember = {
 		inherits = "burn_sniper_death",
-		flow_event = "burn",
 		extra_conditions = {
 			hit_zone = {
 				"torso"
@@ -1763,6 +1754,7 @@ HitEffectsGutterRunner = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -1780,9 +1772,9 @@ HitEffectsGutterRunner = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"gutter_death"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 30,
 			vertical_force = 30,
@@ -1800,9 +1792,9 @@ HitEffectsGutterRunner = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"gutter_death"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
 			vertical_force = 10,
@@ -1821,9 +1813,9 @@ HitEffectsGutterRunner = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
 			vertical_force = 10,
@@ -1841,9 +1833,9 @@ HitEffectsGutterRunner = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"gutter_death"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 10,
@@ -1862,9 +1854,9 @@ HitEffectsGutterRunner = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 10,
@@ -1880,7 +1872,6 @@ HitEffectsGutterRunner = {
 		}
 	},
 	arrow_poison_dot_death = {
-		inherits = "arrow_poison_dot",
 		flow_event = "gutter_death",
 		extra_conditions = {
 			death = true,
@@ -2027,9 +2018,9 @@ HitEffectsGutterRunner = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"gutter_death"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 25
@@ -2046,9 +2037,9 @@ HitEffectsGutterRunner = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"gutter_death"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2057,7 +2048,6 @@ HitEffectsGutterRunner = {
 	},
 	drakegun_shot_death_dismember = {
 		inherits = "drakegun_shot_death",
-		flow_event = "burn",
 		extra_conditions = {
 			hit_zone = {
 				"left_arm",
@@ -2070,6 +2060,7 @@ HitEffectsGutterRunner = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2088,9 +2079,9 @@ HitEffectsGutterRunner = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,

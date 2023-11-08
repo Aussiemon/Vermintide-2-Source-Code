@@ -3,7 +3,6 @@ AttackTemplates = {
 		damage_type = "knockdown_bleed"
 	},
 	poison_proc = {
-		dot_template_name = "arrow_poison_dot",
 		dot_type = "poison_dot"
 	},
 	added_push = {
@@ -26,22 +25,6 @@ AttackTemplates = {
 			100,
 			255
 		}
-	},
-	basic_debug_damage_ai = {
-		sound_type = "light",
-		damage_type = "slashing",
-		damage = {
-			1,
-			1,
-			10,
-			1,
-			1
-		}
-	},
-	basic_debug_damage_player = {
-		sound_type = "light",
-		damage = 20,
-		damage_type = "slashing"
 	},
 	slashing_buffed_damage = {
 		sound_type = "light",
@@ -518,6 +501,11 @@ AttackTemplates = {
 		sound_type = "medium",
 		damage_type = "arrow_carbine"
 	},
+	elven_magic_arrow_carbine = {
+		stagger_angle = "stab",
+		sound_type = "medium",
+		damage_type = "elven_magic_arrow_carbine"
+	},
 	arrow_machinegun = {
 		stagger_angle = "stab",
 		sound_type = "light",
@@ -525,7 +513,6 @@ AttackTemplates = {
 	},
 	arrow_poison_machinegun = {
 		dot_type = "poison_dot",
-		dot_template_name = "arrow_poison_dot",
 		sound_type = "light",
 		damage_type = "arrow_poison"
 	},
@@ -533,8 +520,7 @@ AttackTemplates = {
 		dot_type = "poison_dot",
 		dot_on_wound = true,
 		sound_type = "medium",
-		damage_type = "arrow_poison",
-		dot_template_name = "arrow_poison_dot"
+		damage_type = "arrow_poison"
 	},
 	arrow_poison_sniper = {
 		sound_type = "heavy",
@@ -565,10 +551,9 @@ AttackTemplates = {
 		damage_type = "bolt_machinegun"
 	},
 	wizard_staff_geiser = {
-		dot_template_name = "burning_1W_dot",
+		dot_type = "burning_dot",
 		sound_type = "light",
 		damage_type = "burn",
-		dot_type = "burning_dot",
 		damage = {
 			0,
 			0,
@@ -581,7 +566,6 @@ AttackTemplates = {
 		stagger_block_offset = true,
 		sound_type = "light",
 		damage_type = "burn",
-		dot_template_name = "beam_burning_dot",
 		stagger_angle = "stab",
 		dot_type = "burning_dot",
 		damage = {
@@ -637,19 +621,16 @@ AttackTemplates = {
 	},
 	fireball = {
 		dot_type = "burning_dot",
-		dot_template_name = "burning_1W_dot",
 		sound_type = "light",
 		damage_type = "burn_carbine"
 	},
 	drakegun = {
-		dot_template_name = "burning_1W_dot",
-		stagger_value = 2,
-		dot_type = "burning_dot"
+		dot_type = "burning_dot",
+		stagger_value = 2
 	},
 	drakegun_glance = {
-		dot_template_name = "burning_1W_dot",
-		stagger_value = 2,
-		dot_type = "burning_dot"
+		dot_type = "burning_dot",
+		stagger_value = 2
 	},
 	drake_pistol_shot = {
 		stagger_value = 2,
@@ -665,7 +646,6 @@ AttackTemplates = {
 		stagger_value = 2,
 		sound_type = "medium",
 		damage_type = "burn_shotgun",
-		dot_template_name = "burning_1W_dot",
 		stagger_angle = "stab",
 		dot_type = "burning_dot",
 		range_dropoff_settings = {
@@ -738,14 +718,12 @@ AttackTemplates = {
 		damage_type = "grenade_glance"
 	},
 	fire_grenade_explosion = {
-		dot_type = "burning_dot_force_fire",
+		dot_type = "burning_dot",
 		stagger_value = 2,
-		dot_template_name = "burning_3W_dot_force_fire",
 		damage_type = "fire_grenade_glance"
 	},
 	fire_grenade_dot = {
-		dot_type = "burning_dot_force_fire",
-		dot_template_name = "burning_1W_dot_force_fire",
+		dot_type = "burning_dot",
 		sound_type = "light",
 		damage_type = "drakegun_shot"
 	},
@@ -771,7 +749,6 @@ AttackTemplates = {
 		}
 	},
 	environment_fire = {
-		dot_template_name = "burning_1W_dot",
 		dot_type = "burning_dot"
 	},
 	payload_wagon = {},

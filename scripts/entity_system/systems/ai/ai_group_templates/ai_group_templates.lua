@@ -52,6 +52,86 @@ AIGroupTemplates.boss_door_closers = {
 		return
 	end
 }
+AIGroupTemplates.resurrected = {
+	pre_unit_init = function (unit, group)
+		local blackboard = BLACKBOARDS[unit]
+		blackboard.ignore_interest_points = true
+		blackboard.ignore_passive_on_patrol = true
+	end,
+	init = function (world, nav_world, group, t, unit)
+		return
+	end,
+	update = function (world, nav_world, group, t)
+		return
+	end,
+	destroy = function (world, nav_world, group)
+		print("Group is destroyed", group)
+
+		if group then
+			group.commanding_player.resurrected_group_id = nil
+			group.commanding_player = nil
+		end
+	end
+}
+AIGroupTemplates.encampment = {
+	pre_unit_init = function (unit, group)
+		local ai_simple = ScriptUnit.extension(unit, "ai_system")
+
+		ai_simple:set_perception("perception_regular", "pick_encampment_target_idle")
+
+		local blackboard = BLACKBOARDS[unit]
+		blackboard.ignore_interest_points = true
+	end,
+	setup_group = function (world, nav_world, group, first_unit)
+		group.idle = true
+	end,
+	init = function (world, nav_world, group, t, unit)
+		return
+	end,
+	update = function (world, nav_world, group, t)
+		local group_data = group.group_data
+		local awake = t > group_data.spawn_time + 10
+
+		Debug.text(string.format("Encampment size: %d/%d awake %s", group.members_n, group.size, tostring(awake)))
+
+		local side_manager = Managers.state.side
+		local side = side_manager:get_side(group.side_id)
+		local enemy_side = side:get_enemy_sides()[1]
+		local PLAYER_POSITIONS = enemy_side.PLAYER_POSITIONS
+		local PLAYER_UNITS = enemy_side.PLAYER_UNITS
+
+		if group.idle and awake then
+			local encampment_pos = group_data.encampment.pos:unbox()
+
+			for i = 1, #PLAYER_POSITIONS do
+				local player_pos = PLAYER_POSITIONS[i]
+
+				if Vector3.distance(encampment_pos, player_pos) < 15 then
+					AIGroupTemplates.encampment.wake_up_encampment(group, PLAYER_UNITS[i])
+
+					break
+				end
+			end
+		end
+	end,
+	destroy = function (world, nav_world, group)
+		print("Encampment killed")
+	end,
+	wake_up_encampment = function (group, prime_target_unit)
+		Managers.state.entity:system("ai_group_system"):run_func_on_all_members(group, AIGroupTemplates.encampment.wake_up_unit, prime_target_unit)
+
+		group.idle = false
+	end,
+	wake_up_unit = function (unit, group, prime_target_unit)
+		local ai_simple = ScriptUnit_extension(unit, "ai_system")
+
+		ai_simple:enemy_aggro(nil, prime_target_unit)
+
+		local breed = ai_simple._breed
+
+		ai_simple:set_perception(breed.perception, breed.target_selection)
+	end
+}
 AIGroupTemplates.spawn_test = {
 	pre_unit_init = function (unit, group)
 		local blackboard = BLACKBOARDS[unit]
@@ -67,9 +147,7 @@ AIGroupTemplates.spawn_test = {
 	update = function (world, nav_world, group, t)
 		if group.kill_after_time < t then
 			for unit, extension in pairs(group.members) do
-				local heath_extension = ScriptUnit.has_extension(unit, "health_system")
-
-				if heath_extension and heath_extension:is_alive() then
+				if HEALTH_ALIVE[unit] then
 					Managers.state.conflict:destroy_unit(unit, BLACKBOARDS[unit], "test")
 
 					group.check_size = group.check_size - 1

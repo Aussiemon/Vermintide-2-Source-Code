@@ -1075,6 +1075,7 @@ weapon_template.right_hand_unit = "units/weapons/player/wpn_empire_short_sword/w
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.two_handed_melee_weapon
 weapon_template.display_unit = "units/weapons/weapon_display/display_2h_swords_wood_elf"
 weapon_template.wield_anim = "to_2h_sword_we"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/melee/2h_sword_we"
 weapon_template.max_fatigue_points = 6
 weapon_template.dodge_count = 6
 weapon_template.buff_type = "MELEE_2H"

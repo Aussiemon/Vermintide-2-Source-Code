@@ -732,7 +732,7 @@ LiquidAreaDamageExtension._pulse_damage = function (self)
 	for unit, armor_category in pairs(self._colliding_units) do
 		local is_player = DamageUtils.is_player_unit(unit)
 
-		if AiUtils.unit_alive(unit) then
+		if HEALTH_ALIVE[unit] then
 			if is_player and do_direct_damage_player or not is_player and do_direct_damage_ai then
 				local damage = damage_table[armor_category] or damage_table[1]
 

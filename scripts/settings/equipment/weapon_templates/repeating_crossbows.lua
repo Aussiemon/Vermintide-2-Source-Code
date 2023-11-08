@@ -242,6 +242,7 @@ local weapon_template = {
 	wield_anim = "to_repeating_crossbow",
 	wield_anim_no_ammo = "to_repeating_crossbow_noammo",
 	wield_anim_not_loaded = "to_repeating_crossbow",
+	state_machine = "units/beings/player/first_person_base/state_machines/ranged/repeating_crossbow",
 	crosshair_style = "projectile",
 	reload_event = "reload",
 	buff_type = "RANGED",

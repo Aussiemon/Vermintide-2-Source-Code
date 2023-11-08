@@ -26,9 +26,8 @@ return {
 
 		for i = 1, #PLAYER_UNITS do
 			local player_unit = PLAYER_UNITS[i]
-			local player_health_extension = ScriptUnit.has_extension(player_unit, "health_system")
 
-			if ALIVE[player_unit] and player_health_extension:is_alive() then
+			if HEALTH_ALIVE[player_unit] then
 				local player_position = POSITION_LOOKUP[player_unit]
 				center_position = center_position + player_position
 				num_alive_players = num_alive_players + 1
@@ -55,9 +54,8 @@ return {
 
 		for i = 1, #PLAYER_UNITS do
 			local player_unit = PLAYER_UNITS[i]
-			local player_health_extension = ScriptUnit.has_extension(player_unit, "health_system")
 
-			if ALIVE[player_unit] and player_health_extension:is_alive() then
+			if HEALTH_ALIVE[player_unit] then
 				if player_damage_data[player_unit] == nil then
 					player_damage_data[player_unit] = {}
 				end
@@ -86,9 +84,7 @@ return {
 		local max_damage_distance = template.max_damage_distance
 
 		for player_unit, damage_data in pairs(player_damage_data) do
-			local player_health_extension = ScriptUnit.has_extension(player_unit, "health_system")
-
-			if not ALIVE[player_unit] or not player_health_extension:is_alive() then
+			if not HEALTH_ALIVE[player_unit] then
 				player_damage_data[player_unit] = nil
 			elseif damage_data.do_damage then
 				local distance = damage_data.distance_to_center
@@ -97,6 +93,7 @@ return {
 				local last_t = damage_data.last_t
 
 				if t > last_t + interval then
+					local player_health_extension = ScriptUnit.extension(player_unit, "health_system")
 					local max_health = player_health_extension:get_max_health()
 					local damage = max_health * damage_percentage
 					local player_position = POSITION_LOOKUP[player_unit]
@@ -176,9 +173,8 @@ return {
 
 			for i = 1, #PLAYER_UNITS do
 				local player_unit = PLAYER_UNITS[i]
-				local player_health_extension = ScriptUnit.has_extension(player_unit, "health_system")
 
-				if ALIVE[player_unit] and player_health_extension:is_alive() then
+				if HEALTH_ALIVE[player_unit] then
 					if not beam_effects[player_unit] then
 						local beam_effect_id = World.create_particles(world, beam_effect_name, Vector3.zero(), Quaternion.identity())
 						local player_effect_id = World.create_particles(world, player_effect_name, Vector3.zero(), Quaternion.identity())
@@ -258,9 +254,7 @@ return {
 		end
 
 		for player_unit, effects in pairs(beam_effects) do
-			local player_health_extension = ScriptUnit.has_extension(player_unit, "health_system")
-
-			if not ALIVE[player_unit] or not player_health_extension:is_alive() or num_alive_players == 1 then
+			if not HEALTH_ALIVE[player_unit] or num_alive_players == 1 then
 				for _, effect_id in pairs(effects) do
 					World.destroy_particles(world, effect_id)
 				end

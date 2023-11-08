@@ -25,6 +25,7 @@ local DEFAULT_UI_DATA = {
 		0
 	}
 }
+local KEEP_AT_0_DURATION = 0.5
 
 OverchargeBarUI.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
@@ -44,6 +45,7 @@ OverchargeBarUI.init = function (self, parent, ingame_ui_context)
 		snap_pixel_positions = true
 	}
 	self._previous_overcharge_fraction = 0
+	self._keep_at_0_t = 0
 	self._is_spectator = false
 	self._spectated_player = nil
 	self._spectated_player_unit = nil
@@ -54,7 +56,7 @@ end
 
 local function get_overcharge_amount(player_unit)
 	local overcharge_extension = ScriptUnit.extension(player_unit, "overcharge_system")
-	local overcharge_fraction = overcharge_extension:overcharge_fraction()
+	local overcharge_fraction = overcharge_extension:lerped_overcharge_fraction()
 	local threshold_fraction = overcharge_extension:threshold_fraction()
 	local anim_blend_overcharge = overcharge_extension:get_anim_blend_overcharge()
 
@@ -72,7 +74,7 @@ OverchargeBarUI._set_player_extensions = function (self, player_unit)
 	self.initialize_charge_bar = true
 end
 
-OverchargeBarUI._update_overcharge = function (self, player, dt)
+OverchargeBarUI._update_overcharge = function (self, player, t)
 	if not player then
 		return
 	end
@@ -110,12 +112,16 @@ OverchargeBarUI._update_overcharge = function (self, player, dt)
 				local overcharge_fraction, min_threshold_fraction, max_threshold_fraction, anim_blend_overcharge = get_overcharge_amount(player_unit)
 				local has_overcharge = overcharge_fraction and overcharge_fraction > 0
 
-				if has_overcharge then
+				if has_overcharge or t < self._keep_at_0_t then
 					if not self.wielded_item_name or self.wielded_item_name ~= item_name then
 						self.wielded_item_name = item_name
 					end
 
 					self:set_charge_bar_fraction(player, overcharge_fraction, min_threshold_fraction, max_threshold_fraction, anim_blend_overcharge)
+
+					if has_overcharge then
+						self._keep_at_0_t = t + KEEP_AT_0_DURATION
+					end
 
 					return true
 				end
@@ -151,7 +157,7 @@ OverchargeBarUI.update = function (self, dt, t, player)
 		UISceneGraph.update_scenegraph(ui_scenegraph)
 	end
 
-	local is_dirty = self:_update_overcharge(actual_player, dt)
+	local is_dirty = self:_update_overcharge(actual_player, t)
 	local has_twitch = Managers.twitch:is_activated()
 
 	if has_twitch ~= self._has_twitch then

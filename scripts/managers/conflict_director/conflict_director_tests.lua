@@ -359,7 +359,7 @@ function make_points_for_hull_test()
 	local points = table.clone(units)
 
 	for unit, _ in pairs(units) do
-		if AiUtils.unit_alive(unit) then
+		if HEALTH_ALIVE[unit] then
 			points[#points + 1] = POSITION_LOOKUP[unit]
 		end
 	end

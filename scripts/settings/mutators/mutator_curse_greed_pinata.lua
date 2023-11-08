@@ -53,7 +53,7 @@ mutator_config.pickup_system_multipliers = {
 	deus_soft_currency = 0,
 	healing = 0
 }
-mutator_config.package_name = "resource_packages/mutators/mutator_curse_greed_pinata"
+mutator_config.curse_package_name = "resource_packages/mutators/mutator_curse_greed_pinata"
 mutator_config.marked_enemy_killed_dialogue_event = "curse_see_objective"
 
 return mutator_config

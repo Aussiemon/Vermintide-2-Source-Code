@@ -64,6 +64,10 @@ StateLoading.on_enter = function (self, param_block)
 		Managers.chat:set_chat_enabled(Application.user_setting("chat_enabled"))
 	end
 
+	if not DEDICATED_SERVER then
+		GlobalShaderFlags.reset()
+	end
+
 	Framerate.set_low_power()
 	Wwise.set_state("inside_waystone", "false")
 
@@ -645,7 +649,7 @@ StateLoading.update = function (self, dt, t)
 
 	local level_transition_handler = Managers.level_transition_handler
 
-	if IS_PS4 and not self._popup_id and not self._handled_psn_client_error and level_transition_handler:all_packages_loaded() and level_transition_handler.enemy_package_loader:loading_completed() and Managers.backend:profiles_loaded() and self:global_packages_loaded() then
+	if IS_PS4 and not self._popup_id and not self._handled_psn_client_error and level_transition_handler:all_packages_loaded() and level_transition_handler.enemy_package_loader:loading_completed() and level_transition_handler.transient_package_loader:loading_completed() and Managers.backend:profiles_loaded() and self:global_packages_loaded() then
 		local psn_client_error = Managers.account:psn_client_error()
 
 		if psn_client_error then
@@ -818,6 +822,7 @@ StateLoading._update_network = function (self, dt)
 			self._network_client = nil
 
 			Managers.level_transition_handler.enemy_package_loader:network_context_destroyed()
+			Managers.level_transition_handler.transient_package_loader:network_context_destroyed()
 
 			if self._lobby_client then
 				self:create_popup(fail_reason, "popup_error_topic", "restart_as_server", "menu_accept")
@@ -1824,7 +1829,7 @@ StateLoading.on_exit = function (self, application_shutdown)
 	end
 
 	if release_level_resources then
-		Managers.level_transition_handler:release_level_resources(self:get_current_level_keys())
+		Managers.level_transition_handler:release_level_resources()
 	end
 end
 
@@ -1881,6 +1886,10 @@ StateLoading._packages_loaded = function (self)
 		end
 
 		if not level_transition_handler.enemy_package_loader:loading_completed() then
+			return false
+		end
+
+		if not level_transition_handler.transient_package_loader:loading_completed() then
 			return false
 		end
 
@@ -2104,6 +2113,11 @@ StateLoading._destroy_network = function (self, application_shutdown)
 
 	enemy_package_loader:unload_enemy_packages(application_shutdown)
 	enemy_package_loader:network_context_destroyed()
+
+	local transient_package_loader = level_transition_handler.transient_package_loader
+
+	transient_package_loader:unload_all_packages()
+	transient_package_loader:network_context_destroyed()
 	Managers.party:network_context_destroyed()
 	Managers.mechanism:network_context_destroyed()
 
@@ -2404,6 +2418,7 @@ end
 
 StateLoading.setup_enemy_package_loader = function (self, lobby, host_peer_id, my_peer_id)
 	Managers.level_transition_handler.enemy_package_loader:network_context_created(lobby, host_peer_id, my_peer_id)
+	Managers.level_transition_handler.transient_package_loader:network_context_created(lobby, host_peer_id, my_peer_id)
 end
 
 StateLoading.setup_global_managers = function (self, lobby, host_peer_id, my_peer_id, is_server, network_handler)

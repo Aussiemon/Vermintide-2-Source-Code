@@ -416,6 +416,10 @@ LevelSettings.farmlands = {
 		wh_priest = {
 			"pwh_wp_loading_screen_farmland_01",
 			"pwh_wp_loading_screen_farmland_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_farmland_01",
+			"pbw_nm_loading_screen_farmland_02"
 		}
 	},
 	locations = {
@@ -516,6 +520,10 @@ LevelSettings.catacombs = {
 		wh_priest = {
 			"pwh_wp_loading_screen_catacombs_01",
 			"pwh_wp_loading_screen_catacombs_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_catacombs_01",
+			"pbw_nm_loading_screen_catacombs_02"
 		}
 	},
 	locations = {
@@ -628,6 +636,10 @@ LevelSettings.elven_ruins = {
 		wh_priest = {
 			"pwh_wp_loading_screen_elven_ruins_01",
 			"pwh_wp_loading_screen_elven_ruins_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_elven_ruins_01",
+			"pbw_nm_loading_screen_elven_ruins_02"
 		}
 	},
 	locations = {
@@ -742,6 +754,10 @@ LevelSettings.mines = {
 		wh_priest = {
 			"pwh_wp_loading_screen_mines_01",
 			"pwh_wp_loading_screen_mines_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_mines_01",
+			"pbw_nm_loading_screen_mines_02"
 		}
 	},
 	locations = {
@@ -852,6 +868,10 @@ LevelSettings.ground_zero = {
 		wh_priest = {
 			"pwh_wp_loading_screen_ground_zero_01",
 			"pwh_wp_loading_screen_ground_zero_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_ground_zero_01",
+			"pbw_nm_loading_screen_ground_zero_02"
 		}
 	},
 	locations = {
@@ -969,6 +989,10 @@ LevelSettings.fort = {
 		wh_priest = {
 			"pwh_wp_loading_screen_fort_01",
 			"pwh_wp_loading_screen_fort_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_fort_01",
+			"pbw_nm_loading_screen_fort_02"
 		}
 	}
 }
@@ -1078,6 +1102,10 @@ LevelSettings.ussingen = {
 		wh_priest = {
 			"pwh_wp_loading_screen_ussingen_01",
 			"pwh_wp_loading_screen_ussingen_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_ussingen_01",
+			"pbw_nm_loading_screen_ussingen_02"
 		}
 	}
 }
@@ -1263,6 +1291,10 @@ LevelSettings.skaven_stronghold = {
 		wh_priest = {
 			"pwh_wp_loading_screen_skaven_stronghold_01",
 			"pwh_wp_loading_screen_skaven_stronghold_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_skaven_stronghold_01",
+			"pbw_nm_loading_screen_skaven_stronghold_02"
 		}
 	}
 }
@@ -1359,6 +1391,10 @@ LevelSettings.military = {
 		wh_priest = {
 			"pwh_wp_loading_screen_helmgart_military_01",
 			"pwh_wp_loading_screen_helmgart_military_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_helmgart_military_01",
+			"pbw_nm_loading_screen_helmgart_military_02"
 		}
 	},
 	locations = {
@@ -1509,6 +1545,10 @@ LevelSettings.skittergate = {
 		wh_priest = {
 			"pwh_wp_loading_screen_skittergate_01",
 			"pwh_wp_loading_screen_skittergate_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_skittergate_01",
+			"pbw_nm_loading_screen_skittergate_02"
 		}
 	},
 	locations = {
@@ -1620,6 +1660,10 @@ LevelSettings.bell = {
 		wh_priest = {
 			"pwh_wp_loading_screen_bell_01",
 			"pwh_wp_loading_screen_bell_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_bell_01",
+			"pbw_nm_loading_screen_bell_02"
 		}
 	},
 	locations = {
@@ -1729,6 +1773,10 @@ LevelSettings.nurgle = {
 		wh_priest = {
 			"pwh_wp_loading_screen_nurgle_01",
 			"pwh_wp_loading_screen_nurgle_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_nurgle_01",
+			"pbw_nm_loading_screen_nurgle_02"
 		}
 	},
 	locations = {
@@ -1848,6 +1896,10 @@ LevelSettings.warcamp = {
 		wh_priest = {
 			"pwh_wp_loading_screen_chaos_war_camp_01",
 			"pwh_wp_loading_screen_chaos_war_camp_02"
+		},
+		bw_necromancer = {
+			"pbw_nm_loading_screen_chaos_war_camp_01",
+			"pbw_nm_loading_screen_chaos_war_camp_02"
 		}
 	},
 	locations = {

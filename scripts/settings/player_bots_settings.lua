@@ -224,6 +224,9 @@ BotActions.default = {
 		bw_scholar = {},
 		bw_unchained = {
 			activation = {}
+		},
+		bw_necromancer = {
+			activation = {}
 		}
 	}
 }

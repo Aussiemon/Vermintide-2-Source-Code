@@ -299,6 +299,7 @@ BreedFreezer.commit_freezes = function (self)
 			units[i] = nil
 
 			queue:push_back(unit)
+			Managers.state.event:trigger_referenced(unit, "on_unit_freeze")
 
 			local systems = self.systems_by_breed[breed_name]
 			local breed_extension_names = self.extension_names_by_breed[breed_name]
@@ -438,6 +439,7 @@ BreedFreezer.unfreeze_unit = function (self, unit, breed_name, data)
 	Unit.set_unit_visibility(unit, true)
 	Managers.state.blood:clear_unit_decals(unit)
 	Unit.trigger_flow_unit_spawned(unit)
+	World.update_unit(self.world, unit)
 
 	self.count = self.count - 1
 	local systems = self.systems_by_breed[breed_name]

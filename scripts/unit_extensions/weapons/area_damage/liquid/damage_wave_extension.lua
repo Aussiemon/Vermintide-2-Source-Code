@@ -41,6 +41,12 @@ DamageWaveExtension.init = function (self, extension_init_context, unit, extensi
 	self.buff_system = buff_system
 	local template_name = extension_init_data.damage_wave_template_name
 	local template = DamageWaveTemplates.templates[template_name]
+
+	if template.is_transient then
+		self.is_transient = true
+		self.transient_name_override = template.transient_name_override
+	end
+
 	self.template = template
 	self.damage_wave_template_name = template_name
 	self.immune_breeds = template.immune_breeds
@@ -100,6 +106,7 @@ DamageWaveExtension.init = function (self, extension_init_context, unit, extensi
 	self.apply_buff_to_owner = template.apply_buff_to_owner
 	self.apply_impact_buff_to_player = template.apply_impact_buff_to_player
 	self.apply_impact_buff_to_ai = template.apply_impact_buff_to_ai
+	self.damage_friendly_ai = template.damage_friendly_ai
 	self.time_of_life = template.time_of_life
 	self.launch_animation = template.launch_animation
 	self._on_arrive_func = template.on_arrive_func
@@ -509,13 +516,13 @@ DamageWaveExtension.wavefront_impact = function (self, t, impact_position, radiu
 	local buff_wave_impact_impact_type = self.buff_wave_impact_impact_type
 	local buff_wave_impact_template_name = self.buff_wave_impact_template_name
 	local side = self._source_side
+	local broadphase_categories = side and not self.damage_friendly_ai and side.enemy_broadphase_categories or nil
 	local ai_units = FrameTable.alloc_table()
-	local num_ai_units = AiUtils.broadphase_query(impact_position, radius, ai_units)
+	local num_ai_units = AiUtils.broadphase_query(impact_position, radius, ai_units, broadphase_categories)
 
 	for i = 1, num_ai_units do
 		local hit_unit = ai_units[i]
-		local health_extension = ScriptUnit.extension(hit_unit, "health_system")
-		local is_alive = health_extension:is_alive()
+		local is_alive = HEALTH_ALIVE[hit_unit]
 		local hit_unit_blackboard = BLACKBOARDS[hit_unit]
 		local breed_name = hit_unit_blackboard.breed.name
 
@@ -626,7 +633,7 @@ DamageWaveExtension.check_overlap = function (self, unit, target_unit, wave_radi
 end
 
 DamageWaveExtension.update = function (self, unit, input, dt, context, t)
-	if not AiUtils.unit_alive(self.source_unit) and not self.is_launched then
+	if not HEALTH_ALIVE[self.source_unit] and not self.is_launched then
 		self:abort()
 	end
 
@@ -827,6 +834,7 @@ DamageWaveExtension.update_blob_overlaps = function (self)
 	local ai_units_inside = self.ai_units_inside
 	local BLACKBOARDS = BLACKBOARDS
 	local side = self._source_side
+	local broadphase_categories = side and not self.damage_friendly_ai and side.enemy_broadphase_categories or nil
 	local ai_units = FrameTable.alloc_table()
 	local inside_this_frame = FrameTable.alloc_table()
 
@@ -835,14 +843,14 @@ DamageWaveExtension.update_blob_overlaps = function (self)
 		local blob_pos = Vector3(blob[1], blob[2], blob[3])
 		local blob_radius = blob[4]
 		local ai_units_inside_blob = blob[5]
-		local num_ai_units = AiUtils.broadphase_query(blob_pos, blob_radius, ai_units)
+		local num_ai_units = AiUtils.broadphase_query(blob_pos, blob_radius, ai_units, broadphase_categories)
 
 		for i = 1, num_ai_units do
 			local target_unit = ai_units[i]
 			local already_checked = inside_this_frame[target_unit] ~= nil
 			local inside_blob = ai_units_inside[target_unit]
 
-			if not already_checked and AiUtils.unit_alive(target_unit) then
+			if not already_checked and HEALTH_ALIVE[target_unit] then
 				local target_position = position_lookup[target_unit]
 				local pos_projected_on_wave_line = Geometry.closest_point_on_line(target_position, first_blob_position, last_blob_position)
 				local to_line_distance_sq = Vector3.distance_squared(target_position, pos_projected_on_wave_line)
@@ -881,7 +889,7 @@ DamageWaveExtension.update_blob_overlaps = function (self)
 		end
 
 		for target_unit, _ in pairs(ai_units_inside_blob) do
-			if not AiUtils.unit_alive(target_unit) then
+			if not HEALTH_ALIVE[target_unit] then
 				ai_units_inside_blob[target_unit] = nil
 				ai_units_inside[target_unit] = nil
 			elseif not inside_this_frame[target_unit] then

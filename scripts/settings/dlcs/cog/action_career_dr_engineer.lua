@@ -7,7 +7,6 @@ local BOT_THREAT_AREA_H = 2
 local BOT_THREAT_AREA_D = 6
 local MAX_SHOTS_PER_FRAME = 3
 local FREE_ABILITY_AMMO_TIME = 10
-local unit_animation_set_variable = Unit.animation_set_variable
 local unit_set_flow_variable = Unit.set_flow_variable
 local unit_flow_event = Unit.flow_event
 
@@ -19,9 +18,7 @@ ActionCareerDREngineer.init = function (self, world, item_name, is_server, owner
 	self.buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	self.weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
 	self.ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
-	self._attack_speed_anim_var_1p = Unit.animation_find_variable(first_person_unit, "attack_speed")
 	self._attack_speed_anim_var_3p = Unit.animation_find_variable(owner_unit, "attack_speed")
-	self._barrel_spin_anim_var_1p = Unit.animation_find_variable(first_person_unit, "barrel_spin_speed")
 	self._time_to_shoot = 0
 	self._last_avoidance_t = 0
 	self._free_ammo_t = 0
@@ -73,7 +70,7 @@ ActionCareerDREngineer._update_attack_speed = function (self, t)
 		self._attack_speed_mod = ActionUtils.get_action_time_scale(self.owner_unit, self.current_action)
 
 		self:_update_animation_speed(self._current_rps * self._attack_speed_mod)
-		unit_animation_set_variable(self.first_person_unit, self._barrel_spin_anim_var_1p, self._attack_speed_mod)
+		self.first_person_extension:animation_set_variable("barrel_spin_speed", self._attack_speed_mod)
 
 		self._calculated_attack_speed = true
 	end
@@ -210,7 +207,7 @@ ActionCareerDREngineer._update_animation_speed = function (self, shots_per_secon
 	local anim_time_scale = self._base_anim_speed * shots_per_second
 	anim_time_scale = math.clamp(anim_time_scale, NetworkConstants.animation_variable_float.min, NetworkConstants.animation_variable_float.max)
 
-	unit_animation_set_variable(self.first_person_unit, self._attack_speed_anim_var_1p, anim_time_scale)
+	self.first_person_extension:animation_set_variable("attack_speed", anim_time_scale)
 	Managers.state.network:anim_set_variable_float(self.owner_unit, "attack_speed", anim_time_scale)
 end
 

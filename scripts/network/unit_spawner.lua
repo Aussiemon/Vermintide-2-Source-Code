@@ -243,6 +243,7 @@ UnitSpawner.remove_units_marked_for_deletion = function (self)
 	local pending_extension_adds_list_n = self.pending_extension_adds_list_n
 	local total_number_of_deleted_units = 0
 	local entity_manager = self.entity_manager
+	local event_manager = Managers.state.event
 	local world = self.world
 	local world_delete_units_function = self.world_delete_units
 	local temp_deleted_units_list = self.temp_deleted_units_list
@@ -265,6 +266,7 @@ UnitSpawner.remove_units_marked_for_deletion = function (self)
 			pending_extension_adds_list_n = pending_extension_adds_list_n - 1
 		end
 
+		event_manager:unregister_referenced_all(unit)
 		entity_manager:unregister_units(temp_deleted_units_list, number_of_deleted_units)
 
 		for i = 1, number_of_deleted_units do

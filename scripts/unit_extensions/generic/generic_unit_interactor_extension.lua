@@ -274,13 +274,16 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 			end
 
 			if best_unit then
-				local target_extension = ScriptUnit.extension(best_unit, "interactable_system")
-				local target_interaction_type = target_extension:interaction_type()
-				local can_interact, fail_reason, interaction_type = self:can_interact(best_unit, target_interaction_type)
+				local target_extension = ScriptUnit.has_extension(best_unit, "interactable_system")
 
-				if can_interact then
-					interaction_context.interactable_unit = best_unit
-					interaction_context.interaction_type = interaction_type
+				if target_extension then
+					local target_interaction_type = target_extension:interaction_type()
+					local can_interact, fail_reason, interaction_type = self:can_interact(best_unit, target_interaction_type)
+
+					if can_interact then
+						interaction_context.interactable_unit = best_unit
+						interaction_context.interaction_type = interaction_type
+					end
 				end
 			end
 		end

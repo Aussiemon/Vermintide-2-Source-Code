@@ -2,20 +2,20 @@ local stagger_types = require("scripts/utils/stagger_types")
 breed_data = {
 	detection_radius = 10,
 	walk_speed = 2.5,
-	leave_walk_distance = 1,
 	enter_walk_distance = 0.1,
+	bone_lod_level = 1,
 	has_inventory = true,
 	ai_toughness = 1,
-	animation_sync_rpc = "rpc_sync_anim_state_7",
 	scale_death_push = 1,
+	animation_sync_rpc = "rpc_sync_anim_state_7",
+	death_reaction = "ai_default",
 	is_always_spawnable = true,
 	opt_base_unit = "units/beings/enemies/skaven_clan_rat/chr_skaven_slave_baked",
-	death_reaction = "ai_default",
+	smart_object_template = "default_clan_rat",
 	dialogue_source_name = "skaven_slave",
 	attack_general_sound_event = "Play_slave_rat_attack_husk_vce",
 	slot_template = "skaven_horde",
 	aoe_height = 1.2,
-	bone_lod_level = 1,
 	has_running_attack = true,
 	stagger_resistance = 1,
 	patrol_detection_radius = 10,
@@ -49,7 +49,7 @@ breed_data = {
 	passive_walk_speed = 2,
 	horde_behavior = "horde_rat",
 	unit_template = "ai_unit_clan_rat",
-	smart_object_template = "default_clan_rat",
+	leave_walk_distance = 1,
 	stagger_duration_mod = 1,
 	perception = "perception_regular",
 	player_locomotion_constrain_radius = 0.7,
@@ -253,6 +253,7 @@ breed_data = {
 		j_rightforearm = 0.15,
 		j_tail2 = 0.05
 	},
+	infighting = InfightingSettings.small,
 	max_health = BreedTweaks.max_health.slave_rat,
 	bloodlust_health = BreedTweaks.bloodlust_health.skaven_horde,
 	diff_stagger_resist = BreedTweaks.diff_stagger_resist.slave_rat,
@@ -266,6 +267,9 @@ breed_data = {
 	wwise_voices = {
 		"slave_james",
 		"slave_magnus"
+	},
+	status_effect_settings = {
+		category = "small"
 	},
 	debug_color = {
 		255,

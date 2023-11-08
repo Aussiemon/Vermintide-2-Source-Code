@@ -35,6 +35,24 @@ for i = 1, #weapon_template_files_names do
 
 	if weapon_templates then
 		for template_name, template in pairs(weapon_templates) do
+			local actions = template.actions
+			local required_projectile_unit_templates = {}
+			template.required_projectile_unit_templates = required_projectile_unit_templates
+
+			for _, sub_actions in pairs(actions) do
+				for _, sub_action_data in pairs(sub_actions) do
+					local projectile_info = sub_action_data.projectile_info
+
+					if projectile_info then
+						local projectile_units_template = projectile_info.projectile_units_template
+
+						if projectile_units_template then
+							required_projectile_unit_templates[projectile_units_template] = projectile_info.use_weapon_skin == true
+						end
+					end
+				end
+			end
+
 			Weapons[template_name] = template
 		end
 	end
@@ -73,9 +91,15 @@ end
 
 local function add_dot_network_synced(dot_template_name, hit_unit, attacker_unit, damage_source, power_level, source_attacker_unit)
 	if ScriptUnit.has_extension(hit_unit, "buff_system") then
+		table.clear(buff_params)
+
+		buff_params.attacker_unit = attacker_unit
+		buff_params.damage_source = damage_source
+		buff_params.power_level = power_level
+		buff_params.source_attacker_unit = source_attacker_unit
 		local buff_system = Managers.state.entity:system("buff_system")
 
-		buff_system:add_buff(hit_unit, dot_template_name, attacker_unit, false, power_level, source_attacker_unit)
+		buff_system:add_buff_synced(hit_unit, dot_template_name, BuffSyncType.All, buff_params)
 
 		if source_attacker_unit then
 			local breed = AiUtils.unit_breed(hit_unit)
@@ -102,8 +126,8 @@ Dots = {
 
 		local do_dot = true
 		local breed = AiUtils.unit_breed(target_unit)
-		local dummy_unit_armor = Unit.get_data(target_unit, "armor")
-		local breed_armor = ActionUtils.get_target_armor(hit_zone_name, breed, dummy_unit_armor)
+		local armor_override = Unit.get_data(target_unit, "armor")
+		local breed_armor = ActionUtils.get_target_armor(hit_zone_name, breed, armor_override)
 
 		if breed_armor == 2 then
 			local boost_curve = BoostCurves[target_settings.boost_curve_type]
@@ -169,23 +193,22 @@ Dots = {
 		return true
 	end
 }
-DotTypeLookup = {
-	weapon_bleed_dot_whc = "poison_dot",
-	burning_dot_fire_grenade = "burning_dot",
-	weapon_bleed_dot_dagger = "poison_dot",
-	weapon_bleed_dot_maidenguard = "poison_dot",
-	burning_3W_dot_force_fire = "burning_dot",
-	arrow_poison_dot = "poison_dot",
+DotTypeLookup = DotTypeLookup or {
+	burning_dot_unchained_push = "burning_dot",
 	burning_dot = "burning_dot",
+	burning_dot_3tick = "burning_dot",
+	arrow_poison_dot = "poison_dot",
+	weapon_bleed_dot_whc = "poison_dot",
+	burning_dot_1tick = "burning_dot",
+	weapon_bleed_dot_maidenguard = "poison_dot",
 	beam_burning_dot = "burning_dot",
-	burning_1W_dot_force_fire = "burning_dot",
-	burning_flamethrower_dot = "burning_dot",
-	burning_1W_dot = "burning_dot",
-	burning_1W_dot_unchained_push = "burning_dot",
-	aoe_poison_dot = "poison_dot",
-	burning_dot_fire_grenade_force_fire = "burning_dot",
-	burning_3W_dot = "burning_dot",
+	weapon_bleed_dot_dagger = "poison_dot",
+	burning_dot_fire_grenade = "burning_dot",
 	corpse_explosion_default = "poison_dot",
+	burning_flamethrower_dot = "burning_dot",
+	aoe_poison_dot = "poison_dot",
+	sienna_necromancer_4_3_dot = "burning_dot",
+	death_staff_dot = "burning_dot",
 	chaos_zombie_explosion = "poison_dot"
 }
 

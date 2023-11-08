@@ -168,6 +168,45 @@ local terror_event_blueprints = {
 			flow_event_name = "farmlands_barn_boss_dead"
 		}
 	},
+	farmlands_minotaur_spawn = {
+		{
+			"set_master_event_running",
+			name = "farmlands_boss_barn"
+		},
+		{
+			"spawn_at_raw",
+			spawner_id = "farmlands_rat_ogre",
+			breed_name = "beastmen_minotaur"
+		},
+		{
+			"delay",
+			duration = 1
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_event_breed("beastmen_minotaur") == 1
+			end
+		},
+		{
+			"delay",
+			duration = 1
+		},
+		{
+			"flow_event",
+			flow_event_name = "farmlands_barn_boss_spawned"
+		},
+		{
+			"continue_when",
+			condition = function (t)
+				return count_event_breed("beastmen_minotaur") < 1
+			end
+		},
+		{
+			"flow_event",
+			flow_event_name = "farmlands_barn_boss_dead"
+		}
+	},
 	farmlands_spawn_guards = {
 		{
 			"control_pacing",

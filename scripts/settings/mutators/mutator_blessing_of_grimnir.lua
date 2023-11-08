@@ -10,13 +10,13 @@ local function buff_all_players(buff_name)
 	local side = Managers.state.side:get_side_from_name("heroes")
 	local current_player_units = side.PLAYER_UNITS
 	local num_current_player_units = #current_player_units
-	local unit_alive = AiUtils.unit_alive
+	local health_alive = HEALTH_ALIVE
 	local buff_system = Managers.state.entity:system("buff_system")
 	local server_controlled = false
 
 	for i = 1, num_current_player_units do
 		local unit = current_player_units[i]
-		local is_alive = unit_alive(unit)
+		local is_alive = health_alive[unit]
 
 		if is_alive then
 			buff_system:add_buff(unit, buff_name, unit, server_controlled)

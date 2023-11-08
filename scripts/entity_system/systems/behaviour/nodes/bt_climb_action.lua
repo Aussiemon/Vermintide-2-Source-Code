@@ -140,7 +140,6 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if blackboard.climb_state == "moving_to_within_smartobject_range" then
-		local dist = Vector3.distance_squared(blackboard.climb_entrance_pos:unbox(), unit_position)
 		local target_dir = Vector3.normalize(navigation_extension:desired_velocity())
 
 		if Vector3.length(Vector3.flat(target_dir)) < 0.05 and Vector3.dot(target_dir, Vector3.normalize(blackboard.climb_exit_pos:unbox() - unit_position)) > 0.99 then
@@ -149,7 +148,7 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 			blackboard.climb_moving_to_enter_entrance_timeout = nil
 		end
 
-		if dist < 1 or blackboard.climb_moving_to_enter_entrance_timeout and blackboard.climb_moving_to_enter_entrance_timeout < t then
+		if blackboard.is_in_smartobject_range or blackboard.climb_moving_to_enter_entrance_timeout and blackboard.climb_moving_to_enter_entrance_timeout < t then
 			locomotion_extension:set_wanted_velocity(Vector3.zero())
 			locomotion_extension:set_movement_type("script_driven")
 			navigation_extension:set_enabled(false)
@@ -165,6 +164,8 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 				return "failed"
 			end
 		elseif script_data.ai_debug_smartobject then
+			local dist = Vector3.distance_squared(blackboard.climb_entrance_pos:unbox(), unit_position)
+
 			QuickDrawer:circle(blackboard.climb_entrance_pos:unbox(), math.max(dist - 1, 0.5), Vector3.up())
 		end
 	end

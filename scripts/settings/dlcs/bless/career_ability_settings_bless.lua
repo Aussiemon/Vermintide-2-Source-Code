@@ -40,6 +40,7 @@ PassiveAbilitySettings.wh_priest = {
 	},
 	passive_ability_classes = {
 		{
+			name = "wh_priest",
 			ability_class = PassiveAbilityWarriorPriest,
 			init_data = {
 				resource_per_breed = {

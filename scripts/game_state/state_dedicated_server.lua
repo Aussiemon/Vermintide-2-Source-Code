@@ -241,6 +241,7 @@ StateDedicatedServer.setup_enemy_package_loader = function (self, game_server)
 	local peer_id = Network.peer_id()
 
 	Managers.level_transition_handler.enemy_package_loader:network_context_created(game_server, peer_id, peer_id)
+	Managers.level_transition_handler.transient_package_loader:network_context_created(game_server, peer_id, peer_id)
 end
 
 StateDedicatedServer.setup_global_managers = function (self, game_server)

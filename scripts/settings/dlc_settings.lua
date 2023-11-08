@@ -233,6 +233,18 @@ DLCSettings = DLCSettings or {
 			sound = "scripts/settings/dlcs/bless/bless_sound_settings"
 		}
 	},
+	shovel = {
+		localization = "localization/shovel",
+		package_name = "resource_packages/dlcs/shovel",
+		additional_settings = {
+			equipment = "scripts/settings/dlcs/shovel/shovel_equipment_settings",
+			ai = "scripts/settings/dlcs/shovel/shovel_ai_settings",
+			common = "scripts/settings/dlcs/shovel/shovel_common_settings",
+			buff = "scripts/settings/dlcs/shovel/buff_settings_shovel",
+			sound = "scripts/settings/dlcs/shovel/shovel_sound_settings",
+			achievements = "scripts/settings/dlcs/shovel/shovel_achievements_settings"
+		}
+	},
 	grudge_marks = {
 		package_name = "resource_packages/dlcs/grudge_marks",
 		additional_settings = {
@@ -258,6 +270,7 @@ DLCSettings = DLCSettings or {
 		}
 	},
 	geheimnisnacht_2021 = {
+		localization = "localization/geheimnisnacht_2023",
 		package_name = "resource_packages/dlcs/geheimnisnacht_2021",
 		additional_settings = {
 			common = "scripts/settings/dlcs/geheimnisnacht_2021/geheimnisnacht_2021_common_settings",

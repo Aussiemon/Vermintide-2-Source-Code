@@ -89,6 +89,8 @@ GenericHealthExtension.reset = function (self)
 	pdArray.set_empty(self.damage_buffers[2])
 	self:set_max_health(self.unmodified_max_health)
 	table.clear(self.last_damage_data)
+
+	HEALTH_ALIVE[self.unit] = true
 end
 
 GenericHealthExtension.hot_join_sync = function (self, peer_id)
@@ -104,7 +106,7 @@ GenericHealthExtension.hot_join_sync = function (self, peer_id)
 
 		network_transmit:send_rpc("rpc_sync_damage_taken", peer_id, go_id, is_level_unit, false, damage, state_id)
 
-		if not self:is_alive() then
+		if self.dead then
 			local damage_amount = 0
 			local hit_zone_id = NetworkLookup.hit_zones.full
 			local damage_type_id = NetworkLookup.damage_types.sync_health
@@ -149,7 +151,7 @@ GenericHealthExtension.is_alive = function (self)
 end
 
 GenericHealthExtension.client_predicted_is_alive = function (self)
-	return self:is_alive() and not self.predicted_dead
+	return not self.dead and not self.predicted_dead
 end
 
 GenericHealthExtension.current_health_percent = function (self)
@@ -297,12 +299,38 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	self:save_kill_feed_data(attacker_unit, damage_table, hit_zone_name, damage_type, damage_source_name, source_attacker_unit)
 	DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
 
+	local min_health = 0
+	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+	if buff_extension then
+		if buff_extension:has_buff_perk("ignore_death") then
+			min_health = 1
+		else
+			min_health = 0
+		end
+	end
+
 	if not self:get_is_invincible() and not self.dead then
 		local damage_mod = math.min(damage_amount, self._damage_cap_per_hit)
+
+		if min_health > 0 then
+			local current_health = self:current_health()
+
+			if current_health <= damage_mod then
+				damage_mod = current_health - min_health
+			end
+		end
+
 		self.damage = self.damage + damage_mod
 		self.predicted_damage = math.max(self.predicted_damage - damage_mod, 0)
 
 		if self:_should_die() and (self.is_server or not unit_id) then
+			local breed = Unit.get_data(unit, "breed")
+
+			if breed and breed.name == "skaven_poison_wind_globadier" then
+				printf("[HON-43348] Globadier (%s) died. damage_table:\n\t%s", Unit.get_data(unit, "globadier_43348"), table.tostring(damage_table))
+			end
+
 			local death_system = Managers.state.entity:system("death_system")
 
 			death_system:kill_unit(unit, damage_table)
@@ -314,8 +342,6 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	if attacker_buff_extension and damage_source_name == "dot_debuff" then
 		attacker_buff_extension:trigger_procs("on_dot_damage_dealt", unit, source_attacker_unit, damage_type, damage_source_name)
 	end
-
-	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 	if buff_extension and damage_amount > 0 and damage_source_name ~= "temporary_health_degen" then
 		buff_extension:trigger_procs("on_damage_taken", attacker_unit, damage_amount, damage_type, attack_type)
@@ -386,6 +412,7 @@ end
 GenericHealthExtension.set_dead = function (self)
 	self.damage = self.health
 	self.dead = true
+	HEALTH_ALIVE[self.unit] = nil
 end
 
 GenericHealthExtension.has_assist_shield = function (self)
@@ -439,7 +466,7 @@ GenericHealthExtension.save_kill_feed_data = function (self, attacker_unit, dama
 	if damage_type ~= "temporary_health_degen" and damage_type ~= "knockdown_bleed" and current_health > 0 then
 		local attacker_unit = source_attacker_unit or AiUtils.get_actual_attacker_unit(attacker_unit)
 
-		if AiUtils.unit_alive(attacker_unit) then
+		if HEALTH_ALIVE[attacker_unit] then
 			local breed = Unit.get_data(attacker_unit, "breed")
 			local ai_suicide = attacker_unit == unit and breed and not breed.is_player
 

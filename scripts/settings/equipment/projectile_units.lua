@@ -36,6 +36,7 @@ ProjectileUnits.spear = {
 	projectile_unit_name = "units/weapons/player/spear_projectile/spear_3ps"
 }
 ProjectileUnits.burning_head = {
+	transient_package_loader_ignore = true,
 	projectile_unit_name = "units/weapons/player/wpn_burning_head/wpn_burning_head_3ps"
 }
 ProjectileUnits.bullet_temp = {
@@ -47,5 +48,14 @@ ProjectileUnits.grenade = {
 ProjectileUnits.grenade_fire = {
 	projectile_unit_name = "units/weapons/player/wpn_emp_grenade_03_t1/wpn_emp_grenade_03_t1_3p"
 }
+ProjectileUnits.necromancer_trapped_soul = {
+	projectile_unit_name = "units/beings/player/bright_wizard_necromancer/talents/trapped_soul_skull"
+}
 
 DLCUtils.merge("projectile_units", ProjectileUnits)
+
+ProjectileUnitsFromUnitName = ProjectileUnitsFromUnitName or {}
+
+for key, data in pairs(ProjectileUnits) do
+	ProjectileUnitsFromUnitName[data.projectile_unit_name] = key
+end

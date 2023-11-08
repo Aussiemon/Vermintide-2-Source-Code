@@ -138,5 +138,7 @@ ProfileRequester.rpc_request_profile_reply = function (self, channel_id, local_p
 		end
 	end
 
-	Testify:respond_to_request("set_player_profile")
+	if script_data.testify then
+		Testify:respond_to_request("set_player_profile")
+	end
 end

@@ -15,6 +15,11 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 	self._career_index = career_index
 	self._career_name = career_data.name
 	self._profile_name = profile.display_name
+
+	if not DEDICATED_SERVER and self._profile_name == "bright_wizard" then
+		GlobalShaderFlags.set_global_shader_flag("NECROMANCER_CAREER_REMAP", self._career_name == "bw_necromancer")
+	end
+
 	self._career_data = career_data
 	self._breed = career_data.breed or profile.breed
 	local num_abilities = #career_data.activated_ability
@@ -56,6 +61,7 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 	local num_passive_abilities = passive_ability_classes and #passive_ability_classes or 0
 	self._passive_abilities = {}
 	self._passive_abilities_update = {}
+	self._passive_abilities_by_name = {}
 	self._num_passive_abilities = num_passive_abilities
 
 	for i = 1, num_passive_abilities do
@@ -67,6 +73,8 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 		if passive_ability and passive_ability.update then
 			self._passive_abilities_update[i] = passive_ability
 		end
+
+		self._passive_abilities_by_name[ability_data.name] = passive_ability
 	end
 
 	self._num_passive_abilities_update = #self._passive_abilities_update
@@ -697,4 +705,8 @@ CareerExtension.get_passive_ability = function (self, ability_id)
 	local passive_abilities = self._passive_abilities
 
 	return passive_abilities and passive_abilities[ability_id or 1]
+end
+
+CareerExtension.get_passive_ability_by_name = function (self, ability_name)
+	return self._passive_abilities_by_name[ability_name]
 end

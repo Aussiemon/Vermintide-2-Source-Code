@@ -25,6 +25,10 @@ TagQueryDatabase.add_object_context = function (self, object, context_name, cont
 	object_context_list[context_name] = context
 end
 
+TagQueryDatabase.get_object_context = function (self, object)
+	return self.contexts_by_object[object]
+end
+
 TagQueryDatabase.remove_object = function (self, object)
 	self.contexts_by_object[object] = nil
 end
@@ -242,7 +246,7 @@ TagQueryDatabase.debug_test_query = function (self, concept, source, test_query,
 
 	local query_context = query.query_context
 	local query_source = query_context.source
-	local user_context_list = self.contexts_by_object[query_source]
+	local user_context_list = table.clone(self.contexts_by_object[query_source])
 
 	for key, value in pairs(test_query.query_context) do
 		print(string.format("\t%-15s: %-15s", key, tostring(value)))

@@ -1184,6 +1184,12 @@ Colors.color_definitions = {
 		50,
 		100
 	},
+	bw_necromancer = {
+		255,
+		1,
+		100,
+		67
+	},
 	empire_soldier_tutorial = {
 		255,
 		36,

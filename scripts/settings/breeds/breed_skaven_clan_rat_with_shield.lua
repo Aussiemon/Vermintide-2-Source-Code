@@ -252,6 +252,7 @@ local breed_data = {
 		poison_well = true,
 		wizard_destructible = true
 	},
+	infighting = InfightingSettings.small,
 	max_health = BreedTweaks.max_health.clan_rat_with_shield,
 	bloodlust_health = BreedTweaks.bloodlust_health.skaven_roamer,
 	diff_stagger_resist = BreedTweaks.diff_stagger_resist.clan_rat,
@@ -267,6 +268,9 @@ local breed_data = {
 		"james_medium",
 		"magnus_medium",
 		"shield_rat_low"
+	},
+	status_effect_settings = {
+		category = "small"
 	},
 	debug_color = {
 		255,

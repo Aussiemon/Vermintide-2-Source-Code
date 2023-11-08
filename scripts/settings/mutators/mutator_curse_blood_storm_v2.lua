@@ -223,7 +223,7 @@ local DISTANCE_TO_FORBIDDEN_POSITION_LIST = 10
 
 return {
 	description = "curse_blood_storm_desc",
-	package_name = "resource_packages/mutators/mutator_curse_blood_storm",
+	curse_package_name = "resource_packages/mutators/mutator_curse_blood_storm",
 	display_name = "curse_blood_storm_name",
 	icon = "deus_curse_khorne_01",
 	server_start_function = function (context, data)

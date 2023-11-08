@@ -1,25 +1,25 @@
 local breed_data = {
-	stagger_resistance = 3,
+	base_unit = "units/beings/enemies/chaos_sorcerer_corruptor/chr_chaos_sorcerer_corruptor",
 	is_resurrectable = false,
 	target_selection = "pick_corruptor_target",
 	unit_template = "ai_unit_chaos_corruptor_sorcerer",
 	no_stagger_duration = true,
-	armor_category = 1,
 	race = "chaos",
 	animation_sync_rpc = "rpc_sync_anim_state_8",
 	perception = "perception_pack_master",
 	is_always_spawnable = true,
 	controllable = true,
 	debug_spawn_category = "Specials",
-	stagger_threshold_light = 0.5,
-	weapon_reach = 15,
 	death_sound_event = "chaos_sorcerer_corrupt_death",
+	weapon_reach = 15,
+	stagger_threshold_light = 0.5,
 	is_of_interest_func = "is_of_interest_to_corruptor",
 	perception_continuous = "SET_TO_NIL",
 	behavior = "chaos_corruptor_sorcerer",
-	base_unit = "units/beings/enemies/chaos_sorcerer_corruptor/chr_chaos_sorcerer_corruptor",
 	dialogue_source_name = "chaos_corruptor_sorcerer",
 	threat_value = 8,
+	stagger_resistance = 3,
+	armor_category = 1,
 	max_health = BreedTweaks.max_health.corruptor_sorcerer,
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_special,
 	stagger_duration = BreedTweaks.stagger_duration.sorcerer,
@@ -129,6 +129,13 @@ local breed_data = {
 		dwarf_ranger = "chaos_sorcerer_plague_targeting_dwarf",
 		wood_elf = "chaos_sorcerer_plague_targeting_elf",
 		bright_wizard = "chaos_sorcerer_plague_targeting_wizard"
+	},
+	status_effect_settings = {
+		category = "medium",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire,
+			StatusEffectNames.poisoned
+		})
 	},
 	disabled = Development.setting("disable_plague_sorcerer") or false,
 	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t)

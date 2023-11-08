@@ -403,7 +403,7 @@ BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 	local action_data = self._tree_node.action_data
 	local target_unit = action_data.destroy_object and blackboard.breakable_object or blackboard.target_unit
 
-	if not AiUtils.unit_alive(target_unit) then
+	if not HEALTH_ALIVE[target_unit] then
 		return true
 	end
 

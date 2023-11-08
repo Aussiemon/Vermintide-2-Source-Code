@@ -1,3 +1,5 @@
+require("scripts/entity_system/systems/buff/buff_sync_type")
+
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local buff_tweak_data = {
 	bardin_ironbreaker_ability_cooldown_on_hit = {
@@ -348,14 +350,16 @@ TalentBuffTemplates.dwarf_ranger = {
 		activation_effect = "fx/screenspace_potion_03",
 		buffs = {
 			{
-				update_func = "update_bardin_ironbreaker_activated_ability",
+				icon = "bardin_ironbreaker_activated_ability",
 				stat_buff = "damage_taken",
 				name = "bardin_ironbreaker_activated_ability",
-				remove_buff_func = "end_bardin_ironbreaker_activated_ability",
 				refresh_durations = true,
+				remove_buff_func = "end_bardin_ironbreaker_activated_ability",
 				max_stacks = 1,
-				icon = "bardin_ironbreaker_activated_ability",
-				perk = buff_perks.reduced_hit_react,
+				update_func = "update_bardin_ironbreaker_activated_ability",
+				perks = {
+					buff_perks.reduced_hit_react
+				},
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability.multiplier_damage_taken
 			}
 		}
@@ -391,7 +395,9 @@ TalentBuffTemplates.dwarf_ranger = {
 				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = buff_perks.tank_healing
+				perks = {
+					buff_perks.tank_healing
+				}
 			}
 		}
 	},
@@ -403,7 +409,9 @@ TalentBuffTemplates.dwarf_ranger = {
 				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = buff_perks.smiter_healing
+				perks = {
+					buff_perks.smiter_healing
+				}
 			}
 		}
 	},
@@ -441,10 +449,12 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				buff_to_add = "bardin_ironbreaker_drakefire_attack_speed",
-				update_func = "activate_buff_stacks_based_on_overcharge_chunks",
 				stat_buff = "attack_speed_drakefire",
 				max_stacks = 10,
-				perk = buff_perks.overcharge_no_slow
+				update_func = "activate_buff_stacks_based_on_overcharge_chunks",
+				perks = {
+					buff_perks.overcharge_no_slow
+				}
 			}
 		}
 	},
@@ -661,14 +671,16 @@ TalentBuffTemplates.dwarf_ranger = {
 		activation_sound = "hud_gameplay_stance_tank_activate",
 		buffs = {
 			{
-				update_func = "update_bardin_ironbreaker_activated_ability",
+				icon = "bardin_ironbreaker_activated_ability",
 				stat_buff = "damage_taken",
 				name = "bardin_ironbreaker_activated_ability_duration",
-				remove_buff_func = "end_bardin_ironbreaker_activated_ability",
 				refresh_durations = true,
+				remove_buff_func = "end_bardin_ironbreaker_activated_ability",
 				max_stacks = 1,
-				icon = "bardin_ironbreaker_activated_ability",
-				perk = buff_perks.reduced_hit_react,
+				update_func = "update_bardin_ironbreaker_activated_ability",
+				perks = {
+					buff_perks.reduced_hit_react
+				},
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.multiplier_damage_taken
 			}
 		}
@@ -732,7 +744,9 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_slayer_passive_uninterruptible_heavy = {
 		buffs = {
 			{
-				perk = buff_perks.uninterruptible_heavy
+				perks = {
+					buff_perks.uninterruptible_heavy
+				}
 			}
 		}
 	},
@@ -740,7 +754,9 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				max_stacks = 1,
-				perk = buff_perks.uninterruptible
+				perks = {
+					buff_perks.uninterruptible
+				}
 			}
 		}
 	},
@@ -771,7 +787,9 @@ TalentBuffTemplates.dwarf_ranger = {
 				max_stacks = 1,
 				remove_buff_func = "end_slayer_activated_ability",
 				refresh_durations = true,
-				perk = buff_perks.no_ranged_knockback
+				perks = {
+					buff_perks.no_ranged_knockback
+				}
 			}
 		}
 	},
@@ -780,11 +798,13 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
+				max_targets = 5,
 				bonus = 0.25,
-				perk = buff_perks.linesman_healing
+				perks = {
+					buff_perks.linesman_healing
+				}
 			}
 		}
 	},
@@ -796,7 +816,9 @@ TalentBuffTemplates.dwarf_ranger = {
 				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = buff_perks.smiter_healing
+				perks = {
+					buff_perks.smiter_healing
+				}
 			}
 		}
 	},
@@ -949,7 +971,9 @@ TalentBuffTemplates.dwarf_ranger = {
 				max_stacks = 1,
 				icon = "bardin_slayer_activated_ability_leap_damage",
 				stat_buff = "power_level",
-				perk = buff_perks.bloody_mess
+				perks = {
+					buff_perks.bloody_mess
+				}
 			}
 		}
 	},
@@ -1029,32 +1053,27 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_activated_ability = {
 		buffs = {
 			{
-				sound_to_play = "Play_career_ability_bardin_ranger_enter",
+				icon = "bardin_ranger_activated_ability",
 				name = "bardin_ranger_activated_ability",
 				buff_area_buff = "bardin_ranger_activated_ability_buff",
-				refresh_buff_area_position = true,
+				area_unit_name = "units/hub_elements/empty",
 				enter_area_func = "enter_buff_area",
-				refresh_durations = true,
 				apply_buff_func = "play_sound_synced",
 				buff_self = true,
-				area_unit_name = "units/hub_elements/empty",
 				area_radius = 8,
-				icon = "bardin_ranger_activated_ability",
 				buff_area = true,
-				max_stacks = 1,
+				sound_to_play = "Play_career_ability_bardin_ranger_enter",
 				exit_area_func = "exit_buff_area"
 			}
 		}
 	},
 	bardin_ranger_activated_ability_buff = {
-		deactivation_effect = "fx/screenspace_ranger_skill_02",
 		buffs = {
 			{
-				remove_buff_func = "ranger_activated_ability_buff_remove",
-				continuous_effect = "fx/screenspace_ranger_skill_01",
-				max_stacks = 1,
+				apply_buff_func = "ranger_activated_ability_buff",
 				icon = "bardin_ranger_activated_ability",
-				apply_buff_func = "ranger_activated_ability_buff"
+				status_effect = "invis_ranger",
+				remove_buff_func = "ranger_activated_ability_buff_remove"
 			}
 		}
 	},
@@ -1063,11 +1082,13 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
+				max_targets = 5,
 				bonus = 0.25,
-				perk = buff_perks.linesman_healing
+				perks = {
+					buff_perks.linesman_healing
+				}
 			}
 		}
 	},
@@ -1078,7 +1099,9 @@ TalentBuffTemplates.dwarf_ranger = {
 				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = buff_perks.tank_healing
+				perks = {
+					buff_perks.tank_healing
+				}
 			}
 		}
 	},
@@ -1191,17 +1214,15 @@ TalentBuffTemplates.dwarf_ranger = {
 				icon = "bardin_ranger_activated_ability",
 				name = "bardin_ranger_activated_ability",
 				smoke_buff = "bardin_ranger_smoke_attack_buff",
-				area_unit_name = "units/hub_elements/empty",
-				enter_area_func = "enter_buff_area",
-				refresh_durations = true,
-				refresh_buff_area_position = false,
-				buff_self = true,
 				update_func = "bardin_ranger_smoke_buff",
-				area_radius = 7,
+				enter_area_func = "enter_buff_area",
 				buff_area_buff = "bardin_ranger_activated_ability_buff",
+				buff_self = true,
+				area_radius = 7,
 				buff_area = true,
-				max_stacks = 1,
-				exit_area_func = "exit_buff_area"
+				area_unit_name = "units/hub_elements/empty",
+				exit_area_func = "exit_buff_area",
+				buff_sync_type = BuffSyncType.All
 			}
 		}
 	},
@@ -1219,19 +1240,17 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ranger_smoke_heal = {
 		buffs = {
 			{
-				area_unit_name = "units/hub_elements/empty",
+				update_func = "bardin_ranger_smoke_buff",
 				name = "bardin_ranger_activated_ability",
 				smoke_buff = "bardin_ranger_smoke_heal_buff",
-				update_func = "bardin_ranger_smoke_buff",
 				enter_area_func = "enter_buff_area",
-				refresh_durations = true,
-				refresh_buff_area_position = false,
-				buff_self = true,
 				buff_area_buff = "bardin_ranger_activated_ability_buff",
+				buff_self = true,
 				area_radius = 7,
 				buff_area = true,
-				max_stacks = 1,
-				exit_area_func = "exit_buff_area"
+				area_unit_name = "units/hub_elements/empty",
+				exit_area_func = "exit_buff_area",
+				buff_sync_type = BuffSyncType.LocalAndServer
 			}
 		}
 	},
@@ -1251,19 +1270,15 @@ TalentBuffTemplates.dwarf_ranger = {
 				exit_area_func = "exit_buff_area",
 				name = "bardin_ranger_activated_ability",
 				buff_area_buff = "bardin_ranger_activated_ability_buff",
-				area_unit_name = "units/hub_elements/empty",
 				enter_area_func = "enter_buff_area",
-				refresh_durations = true,
-				refresh_buff_area_position = false,
+				remove_buff_func = "remove_buff_local",
 				buff_self = true,
 				area_radius = 7,
+				buff_to_remove = "bardin_ranger_activated_ability_buff",
 				buff_area = true,
-				max_stacks = 1,
+				area_unit_name = "units/hub_elements/empty",
 				icon = "bardin_ranger_activated_ability",
-				unlimited = true,
-				buffs_to_remove_on_remove = {
-					"bardin_ranger_activated_ability_buff"
-				}
+				unlimited = true
 			}
 		}
 	},
@@ -1281,7 +1296,9 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				max_stacks = 1,
 				icon = "bardin_ranger_ability_free_grenade",
-				perk = buff_perks.free_grenade
+				perks = {
+					buff_perks.free_grenade
+				}
 			}
 		}
 	}

@@ -1,5 +1,4 @@
 SpecialsPacing = class(SpecialsPacing)
-local ai_utils_unit_alive = AiUtils.unit_alive
 
 SpecialsPacing.init = function (self, world, nav_world, nav_tag_volume_handler, specials_side)
 	self._level = LevelHelper:current_level(world)
@@ -316,7 +315,7 @@ SpecialsPacing.specials_by_slots = function (self, t, specials_settings, method_
 			end
 		end
 
-		if slot.state == "alive" and not ai_utils_unit_alive(slot.unit) then
+		if slot.state == "alive" and not HEALTH_ALIVE[slot.unit] then
 			local breed_name, health_modifier = SpecialsPacing.select_breed_functions[method_data.select_next_breed](slots, specials_settings, method_data, self._state_data)
 			local breed = Breeds[breed_name]
 			local time = t + ConflictUtils.random_interval(method_data.spawn_cooldown)

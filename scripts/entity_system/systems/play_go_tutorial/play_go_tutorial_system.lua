@@ -290,7 +290,7 @@ end
 
 PlayGoTutorialSystem._update_ai_units = function (self)
 	for i, data in pairs(self._spawned_ai_units) do
-		if Unit.alive(data.ai_unit) and not ScriptUnit.extension(data.ai_unit, "health_system"):is_alive() then
+		if not HEALTH_ALIVE[data.ai_unit] then
 			if data.outline_id then
 				local outline_extension = ScriptUnit.extension(data.ai_unit, "outline_system")
 
@@ -486,7 +486,7 @@ PlayGoTutorialSystem.register_dodge = function (self, dodge_direction)
 end
 
 PlayGoTutorialSystem.register_push = function (self, hit_unit)
-	if self._tutorial_started and Unit.alive(hit_unit) and ScriptUnit.extension(hit_unit, "health_system"):is_alive() then
+	if self._tutorial_started and HEALTH_ALIVE[hit_unit] then
 		Unit.flow_event(self._tutorial_unit, "lua_pushed_enemy")
 	end
 end

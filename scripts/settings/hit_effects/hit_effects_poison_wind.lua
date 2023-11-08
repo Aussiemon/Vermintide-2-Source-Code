@@ -345,7 +345,6 @@ HitEffectsPoisonWind = {
 	},
 	burning_stab_fencer_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -359,12 +358,12 @@ HitEffectsPoisonWind = {
 			distal_force = 30,
 			vertical_force = 0,
 			lateral_force = 0
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burning_tank_death = {
 		inherits = "default_death",
 		do_dismember = false,
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank"
@@ -377,7 +376,8 @@ HitEffectsPoisonWind = {
 			distal_force = 10,
 			vertical_force = 0,
 			lateral_force = 30
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	heavy_stab_fencer_death = {
 		inherits = "default_death",
@@ -670,6 +670,7 @@ HitEffectsPoisonWind = {
 			damage_type = {
 				"arrow_sniper",
 				"arrow_carbine",
+				"elven_magic_arrow_carbine",
 				"arrow_machinegun",
 				"arrow_shotgun",
 				"bolt_sniper",
@@ -690,7 +691,8 @@ HitEffectsPoisonWind = {
 				"arrow_sniper",
 				"arrow_carbine",
 				"arrow_machinegun",
-				"arrow_shotgun"
+				"arrow_shotgun",
+				"elven_magic_arrow_carbine"
 			}
 		},
 		animations = {
@@ -781,34 +783,26 @@ HitEffectsPoisonWind = {
 			damage_type = "burninating"
 		}
 	},
-	burn_death = {
-		flow_event = "burn",
+	burninating_death = {
+		inherits = "burninating",
 		extra_conditions = {
-			death = true,
-			damage_type = {
-				"burninating",
-				"burn"
-			}
+			death = true
 		},
 		animations = {
 			"death"
 		}
 	},
-	burn_death_force_fire = {
-		flow_event = "burn_death_force_fire",
+	burn_death = {
 		extra_conditions = {
 			death = true,
-			damage_type = {
-				"burn_force_fire",
-				"burninating_force_fire"
-			}
+			damage_type = "burn"
 		},
 		animations = {
 			"death"
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burn_sniper_death = {
-		flow_event = "burn",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -818,6 +812,7 @@ HitEffectsPoisonWind = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -825,7 +820,6 @@ HitEffectsPoisonWind = {
 		}
 	},
 	burn_shotgun_death = {
-		flow_event = "burn",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -835,6 +829,7 @@ HitEffectsPoisonWind = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 30,
 			vertical_force = 30,
@@ -842,7 +837,6 @@ HitEffectsPoisonWind = {
 		}
 	},
 	burn_machinegun_death = {
-		flow_event = "burn",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -852,6 +846,7 @@ HitEffectsPoisonWind = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
 			vertical_force = 10,
@@ -868,17 +863,27 @@ HitEffectsPoisonWind = {
 		}
 	},
 	arrow_poison_dot = {
-		flow_event = "poisoned",
 		extra_conditions = {
 			damage_type = {
 				"arrow_poison_dot",
-				"aoe_poison_dot"
+				"aoe_poison_dot",
+				"poison"
 			}
 		}
 	},
+	poison_death = {
+		extra_conditions = {
+			death = true,
+			damage_type = {
+				"poison"
+			}
+		},
+		timed_status = StatusEffectNames.poisoned,
+		animations = {
+			"ragdoll"
+		}
+	},
 	arrow_poison_dot_death = {
-		inherits = "arrow_poison_dot",
-		flow_event = "poisoned",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -955,11 +960,11 @@ HitEffectsPoisonWind = {
 	fire_grenade_death = {
 		inherits = "default",
 		explosion_push = true,
-		flow_event = "burn",
 		extra_conditions = {
 			death = true,
 			damage_type = "fire_grenade"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 50,
 			vertical_force = 50,
@@ -972,11 +977,11 @@ HitEffectsPoisonWind = {
 	fire_grenade_glance_death = {
 		inherits = "default",
 		explosion_push = true,
-		flow_event = "burn",
 		extra_conditions = {
 			death = true,
 			damage_type = "fire_grenade_glance"
 		},
+		timed_status = StatusEffectNames.burning,
 		animations = {
 			"ragdoll"
 		},
@@ -1009,7 +1014,6 @@ HitEffectsPoisonWind = {
 	},
 	drakegun_shot_death = {
 		inherits = "default",
-		flow_event = "burn",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1023,7 +1027,8 @@ HitEffectsPoisonWind = {
 			distal_force = 60,
 			vertical_force = 10,
 			lateral_force = 0
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	drakegun_glance = {
 		inherits = "default",

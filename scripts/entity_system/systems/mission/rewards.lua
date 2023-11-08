@@ -184,33 +184,6 @@ Rewards._mission_results = function (self, game_won, extra_mission_results)
 		table.insert(mission_results, 1, mission_failed_reward)
 	end
 
-	if game_mode_key == "versus" then
-		local settings = Managers.state.game_mode:settings()
-		local experience_settings = settings.experience
-		local mechanism = Managers.mechanism:game_mechanism()
-		local first_prev_hero_score = mechanism:previous_hero_score(1)
-		local last_prev_hero_score = mechanism:previous_hero_score(2)
-		local num_obj_completed_first_round = first_prev_hero_score and first_prev_hero_score.num_completed_objectives or 0
-		local num_obj_completed_last_round = last_prev_hero_score and last_prev_hero_score.num_completed_objectives or 0
-		local objective_system = Managers.state.entity:system("versus_objective_system")
-		local total_main_objectives = objective_system:num_main_objectives()
-		local xp_all_objectives_completed = experience_settings.complete_all_objectives
-		local first_round_xp = num_obj_completed_first_round / total_main_objectives * xp_all_objectives_completed
-		local last_round_xp = num_obj_completed_last_round and num_obj_completed_last_round / total_main_objectives * xp_all_objectives_completed or 0
-		local total_objective_xp = math.ceil(first_round_xp + last_round_xp)
-		mission_results[#mission_results + 1] = {
-			text = "versus_mission_completed",
-			experience = experience_settings.complete_match
-		}
-
-		if total_objective_xp > 0 then
-			mission_results[#mission_results + 1] = {
-				text = "versus_mission_objectives_completed",
-				experience = total_objective_xp
-			}
-		end
-	end
-
 	if extra_mission_results then
 		for _, extra_mission_result in ipairs(extra_mission_results) do
 			extra_mission_result.experience = extra_mission_result.experience * self:experience_multiplier()
@@ -352,6 +325,10 @@ Rewards.get_rewards = function (self)
 	local loot = loot_interface:get_loot(loot_id)
 
 	return loot, self._end_of_level_rewards_arguments
+end
+
+Rewards.get_end_of_level_rewards_arguments = function (self)
+	return self._end_of_level_rewards_arguments
 end
 
 Rewards.get_mission_results = function (self)

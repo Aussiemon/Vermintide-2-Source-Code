@@ -95,4 +95,4 @@ settings.buff_function_templates = {
 	end
 }
 settings.proc_functions = {}
-settings.max_stacks_functions = {}
+settings.stacking_buff_functions = {}

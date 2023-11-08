@@ -135,6 +135,10 @@ PickupSystem.on_add_extension = function (self, world, unit, extension_name, ext
 
 				limited_owned_pickups[peer_id].units[#limited_owned_pickups[peer_id].units + 1] = unit
 			end
+
+			if self.is_server then
+				Managers.level_transition_handler.transient_package_loader:add_unit(unit)
+			end
 		end
 
 		if extension_name == "LifeTimePickupUnitExtension" or extension_name == "LimitedOwnedPickupUnitExtension" or extension_name == "PlayerTeleportingPickupExtension" or extension_name == "PickupUnitExtension" then
@@ -159,6 +163,8 @@ PickupSystem.on_remove_extension = function (self, unit, extension_name, ...)
 			self._teleporting_pickups[unit] = nil
 		elseif extension_name == "LifeTimePickupUnitExtension" then
 			self._life_time_pickups[unit] = nil
+		elseif extension_name == "LimitedOwnedPickupUnitExtension" and self.is_server then
+			Managers.level_transition_handler.transient_package_loader:remove_unit(unit)
 		end
 
 		if extension_name == "LifeTimePickupUnitExtension" or extension_name == "PlayerTeleportingPickupExtension" or extension_name == "PickupUnitExtension" then
@@ -827,7 +833,9 @@ PickupSystem._spawn_specified_pickups = function (self)
 	end
 end
 
-PickupSystem.update = function (self, dt, t)
+PickupSystem.update = function (self, context, t)
+	local dt = context.dt
+
 	if self.is_server then
 		self:_update_life_time_pickups(dt, t)
 		self:_update_teleporting_pickups(dt, t)
@@ -1022,7 +1030,7 @@ PickupSystem._check_teleporting_pickup_line_of_sight = function (self, unit)
 	for _, player in pairs(Managers.player:players()) do
 		local player_unit = player.player_unit
 
-		if Unit.alive(player_unit) and ScriptUnit.extension(player_unit, "health_system"):is_alive() then
+		if HEALTH_ALIVE[player_unit] then
 			local head_height_pos = POSITION_LOOKUP[player_unit] + Vector3(0, 0, HEAD_HEIGHT)
 			local diff = pos - head_height_pos
 			local length = Vector3.length(diff)
@@ -1051,7 +1059,7 @@ PickupSystem._teleport_pickup = function (self, unit)
 	for _, player in pairs(Managers.player:human_players()) do
 		local player_unit = player.player_unit
 
-		if Unit.alive(player_unit) and ScriptUnit.extension(player_unit, "health_system"):is_alive() then
+		if HEALTH_ALIVE[player_unit] then
 			new_pos = ScriptUnit.extension(player_unit, "locomotion_system"):last_position_on_navmesh() + Vector3(0, 0, TELEPORT_Z_OFFSET)
 
 			break
@@ -1157,8 +1165,15 @@ PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, posit
 		table.merge(extension_init_data, additional_data)
 	end
 
+	local pickup_unit, pickup_unit_go_id = nil
 	local unit_name = pickup_settings.unit_name
-	local pickup_unit, pickup_unit_go_id = Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
+	local spawn_override_func = pickup_settings.spawn_override_func
+
+	if spawn_override_func then
+		pickup_unit, pickup_unit_go_id = spawn_override_func(pickup_settings, extension_init_data, position, rotation)
+	else
+		pickup_unit, pickup_unit_go_id = Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
+	end
 
 	self:_update_limited_limited_owned_pickups(pickup_settings, pickup_name, position, rotation, with_physics, spawn_type, owner_peer_id)
 

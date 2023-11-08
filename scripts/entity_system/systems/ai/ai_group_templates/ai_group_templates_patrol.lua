@@ -129,7 +129,7 @@ end
 function update_animation_triggered_sounds(group, t)
 	local source_unit = group.wwise_source_unit
 
-	if not AiUtils.unit_alive(source_unit) then
+	if not HEALTH_ALIVE[source_unit] then
 		pick_sound_source_unit(group)
 
 		source_unit = group.wwise_source_unit
@@ -187,7 +187,7 @@ function remove_dead_units(group)
 	for i = num_indexed_members, 1, -1 do
 		local unit = indexed_members[i]
 
-		if not AiUtils.unit_alive(unit) then
+		if not HEALTH_ALIVE[unit] then
 			table.remove(indexed_members, i)
 
 			num_indexed_members = num_indexed_members - 1
@@ -198,7 +198,7 @@ function remove_dead_units(group)
 				local blackboard = BLACKBOARDS[unit]
 				local previous_attacker = blackboard.previous_attacker
 
-				if AiUtils.unit_alive(previous_attacker) then
+				if HEALTH_ALIVE[previous_attacker] then
 					killing_player = previous_attacker
 				end
 			end
@@ -486,7 +486,7 @@ function init_group(nav_world, group, world, t)
 	local is_spline_patrol = group.group_type == "spline_patrol"
 
 	for unit, _ in pairs(group.members) do
-		if AiUtils.unit_alive(unit) then
+		if HEALTH_ALIVE[unit] then
 			local blackboard = BLACKBOARDS[unit]
 			blackboard.only_trust_your_own_eyes = is_spline_patrol
 			local breed = blackboard.breed
@@ -1154,7 +1154,8 @@ function check_for_players(group, nav_world, t, dt)
 	local use_controlled_advance = group.use_controlled_advance
 	local someone_is_climbing = false
 	local side = group.side
-	local VALID_ENEMIES = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
+	local enemy_units = side.enemy_units_lookup
+	local valid_players = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
 
 	for i = 1, num_indexed_members do
 		local unit = indexed_members[i]
@@ -1165,9 +1166,12 @@ function check_for_players(group, nav_world, t, dt)
 			someone_is_climbing = true
 		end
 
-		local valid_player = VALID_ENEMIES[target_unit]
+		local target_blackboard = BLACKBOARDS[target_unit]
+		local is_player = target_blackboard and target_blackboard.is_player
+		local is_valid = nil
+		is_valid = is_player and valid_players[target_unit] or enemy_units[target_unit] and HEALTH_ALIVE[target_unit]
 
-		if valid_player then
+		if is_valid then
 			group_targets[target_unit] = true
 		elseif target_unit then
 			group_targets[target_unit] = nil
@@ -1344,7 +1348,7 @@ function controlled_advance(nav_world, group, t, dt)
 			local group_targets = group.target_units
 
 			for target_unit, _ in pairs(group_targets) do
-				if AiUtils.unit_alive(target_unit) then
+				if HEALTH_ALIVE[target_unit] then
 					local target_pos = POSITION_LOOKUP[target_unit]
 					local distance_sq = Vector3_distance_squared(unit_pos, target_pos)
 
@@ -1469,7 +1473,7 @@ function enter_state_combat(group, t)
 		local anchor = anchors[i]
 		local target_unit = anchor.target_unit
 
-		if AiUtils.unit_alive(target_unit) then
+		if HEALTH_ALIVE[target_unit] then
 			local anchor_units = anchor.units
 
 			for j, unit in pairs(anchor_units) do

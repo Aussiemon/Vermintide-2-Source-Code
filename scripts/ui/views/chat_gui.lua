@@ -240,10 +240,6 @@ ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock
 		end
 	end
 
-	if IS_WINDOWS and self.chat_closed ~= closed then
-		Window.set_ime_enabled(not closed)
-	end
-
 	if menu_active then
 		if self.chat_closed and not closed then
 			self:menu_open()
@@ -483,9 +479,12 @@ ChatGui.block_input = function (self)
 		"mouse"
 	}, 1, "chat_input", "ChatGui")
 	self:_show_cursor()
+	Window.set_ime_enabled(true)
 end
 
 ChatGui.unblock_input = function (self)
+	Window.set_ime_enabled(false)
+
 	if self.input_manager then
 		self.input_manager:release_input({
 			"keyboard",

@@ -4,6 +4,7 @@ HuskTalentExtension.init = function (self, extension_init_context, unit, extensi
 	self._unit = unit
 	self.world = extension_init_context.world
 	self.is_server = Managers.player.is_server
+	self.is_husk = extension_init_data.is_husk
 	self.player = extension_init_data.player
 	self._profile_index = extension_init_data.profile_index
 	self._talent_buff_ids = {}
@@ -26,13 +27,15 @@ end
 HuskTalentExtension.set_talent_ids = function (self, talent_ids)
 	self._talent_ids = talent_ids
 
-	if not self._initial_talent_sync_completed then
-		self._initial_talent_sync_completed = true
+	if self.is_server or not self.is_husk then
+		if not self._initial_talent_sync_completed then
+			self._initial_talent_sync_completed = true
 
-		Managers.state.event:trigger("on_initial_talents_synced", self)
+			Managers.state.event:trigger("on_initial_talents_synced", self)
+		end
+
+		Managers.state.event:trigger("on_talents_changed", self._unit, self)
 	end
-
-	Managers.state.event:trigger("on_talents_changed", self._unit, self)
 end
 
 local params = {}
@@ -60,8 +63,6 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 
 	self:_clear_buffs_from_talents()
 
-	local talent_buff_ids = self._talent_buff_ids
-
 	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
 		local talent_data = Talents[hero_name][talent_id]
@@ -70,7 +71,7 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 			local buffs = talent_data.buffs
 			local buffer = talent_data.buffer
 
-			if player.local_player and (not buffer or buffer == "client") or self.is_server and buffer == "server" or (self.is_server or player.local_player) and buffer == "both" then
+			if player.local_player and (not buffer or buffer == "client") or self.is_server and buffer == "server" or (self.is_server or player.local_player) and buffer == "both" or buffer == "all" then
 				local num_buffs = buffs and #buffs or 0
 
 				if num_buffs > 0 then

@@ -1,3 +1,5 @@
+require("scripts/unit_extensions/default_player_unit/third_person_idle_fullbody_animation_control")
+
 PlayerHuskLocomotionExtension = class(PlayerHuskLocomotionExtension)
 local POSITION_LOOKUP = POSITION_LOOKUP
 
@@ -39,6 +41,8 @@ PlayerHuskLocomotionExtension.init = function (self, extension_init_context, uni
 		self._nav_traverse_logic = GwNavTraverseLogic.create(self._nav_world, nav_cost_map_cost_table)
 		self._nav_cost_map_cost_table = nav_cost_map_cost_table
 	end
+
+	self.third_person_idle_fullbody_animation_control = ThirdPersonIdleFullbodyAnimationControl:new(unit)
 end
 
 PlayerHuskLocomotionExtension.destroy = function (self)
@@ -66,6 +70,8 @@ end
 
 PlayerHuskLocomotionExtension.extensions_ready = function (self, world, unit)
 	self.status_extension = ScriptUnit.extension(self.unit, "status_system")
+
+	self.third_person_idle_fullbody_animation_control:extensions_ready(world, unit)
 end
 
 PlayerHuskLocomotionExtension.add_external_velocity = function (self, velocity, upper_limit)
@@ -120,15 +126,10 @@ PlayerHuskLocomotionExtension.update = function (self, unit, input, dt, context,
 		return
 	end
 
-	if self.game and self.id then
-		local health_extension = ScriptUnit.extension(unit, "health_system")
-		local is_alive = health_extension:is_alive()
+	if self.game and self.id and HEALTH_ALIVE[unit] then
+		local movement_state = "onground"
 
-		if is_alive then
-			local movement_state = "onground"
-
-			self:update_movement(dt, unit, movement_state)
-		end
+		self:update_movement(dt, unit, movement_state)
 	end
 
 	local is_on_ladder, ladder_unit = self.status_extension:get_is_on_ladder()
@@ -138,6 +139,7 @@ PlayerHuskLocomotionExtension.update = function (self, unit, input, dt, context,
 	end
 
 	self:_update_last_position_on_navmesh()
+	self.third_person_idle_fullbody_animation_control:update(t)
 end
 
 PlayerHuskLocomotionExtension.last_position_on_navmesh = function (self)

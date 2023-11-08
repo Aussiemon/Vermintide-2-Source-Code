@@ -55,7 +55,7 @@ local function shuffled_players(side)
 	for i = 1, #players do
 		local unit = players[i]
 
-		if ALIVE[unit] and ScriptUnit.extension(unit, "health_system"):is_alive() then
+		if HEALTH_ALIVE[unit] then
 			unit_list[#unit_list + 1] = unit
 		end
 	end

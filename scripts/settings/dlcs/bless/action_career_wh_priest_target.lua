@@ -79,7 +79,7 @@ ActionCareerWHPriestTarget.client_owner_post_update = function (self, dt, t, wor
 	local is_bot = self.is_bot
 	local outline_system = self._outline_system
 
-	if current_target and not AiUtils.unit_alive(current_target) then
+	if current_target and not HEALTH_ALIVE[current_target] then
 		self:_mark_target(nil)
 
 		current_target = nil
@@ -186,21 +186,17 @@ ActionCareerWHPriestTarget._target_ally_from_crosshair = function (self)
 	for i = 1, num_friendly_units do
 		local friendly_unit = friendly_units[i]
 
-		if friendly_unit ~= self.owner_unit then
-			local target_health_extension = friendly_unit and ALIVE[friendly_unit] and ScriptUnit.has_extension(friendly_unit, "health_system")
+		if friendly_unit ~= self.owner_unit and HEALTH_ALIVE[friendly_unit] then
+			local is_valid, dot_value, distance_sq = self:_check_cone_from_crosshair(player_position, player_direction, friendly_unit, range_sq, dot_threshold)
 
-			if target_health_extension and target_health_extension:is_alive() then
-				local is_valid, dot_value, distance_sq = self:_check_cone_from_crosshair(player_position, player_direction, friendly_unit, range_sq, dot_threshold)
+			if is_valid and best_dot_value <= dot_value then
+				best_dot_value = dot_value
+				best_distance = distance_sq
 
-				if is_valid and best_dot_value <= dot_value then
-					best_dot_value = dot_value
-					best_distance = distance_sq
-
-					if distance_sq < range_sq then
-						best_target = friendly_unit
-					else
-						best_target = nil
-					end
+				if distance_sq < range_sq then
+					best_target = friendly_unit
+				else
+					best_target = nil
 				end
 			end
 		end

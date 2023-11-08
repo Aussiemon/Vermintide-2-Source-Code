@@ -2342,22 +2342,33 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 					pass_type = "option_tooltip",
 					text_id = "tooltip_text",
 					content_check_function = function (ui_content)
-						if ui_content.disabled then
+						if not ui_content.highlight_hotspot.is_hover or Managers.input:is_device_active("gamepad") then
 							return false
 						end
 
-						return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
+						if not ui_content.disabled then
+							return ui_content.tooltip_text
+						else
+							return not ui_content.disabled_tooltip_text
+						end
 					end
 				},
 				{
+					style_id = "disabled_tooltip_text",
 					pass_type = "option_tooltip",
 					text_id = "disabled_tooltip_text",
 					content_check_function = function (ui_content)
-						if not ui_content.disabled then
+						if not ui_content.disabled or not ui_content.highlight_hotspot.is_hover or Managers.input:is_device_active("gamepad") then
 							return false
 						end
 
-						return ui_content.disabled_tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
+						if ui_content.overriden_reason then
+							ui_content.disabled_tooltip_text = ui_content.overriden_reason
+						end
+
+						if ui_content.disabled_tooltip_text then
+							return true
+						end
 					end
 				},
 				{
@@ -2444,10 +2455,19 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 							style.text_color = style.default_color
 						end
 
-						local current_option = content.options_texts[content.current_selection]
+						if content._last_selection ~= content.current_selection or content._last_overriden_setting ~= content.overriden_setting then
+							content._last_selection = content.current_selection
+							content._last_overriden_setting = content.overriden_setting
+							local option_text = Utf8.upper(content.options_texts[content.current_selection])
+							local overriden_setting = content.overriden_setting
 
-						if content.selected_option ~= current_option then
-							content.selected_option = current_option
+							if overriden_setting then
+								local override_color = content.disabled and style.override_color or style.default_color
+								local disabled_color = style.disabled_color
+								content.selected_option = string.format("{#color(%d,%d,%d,%d)}%s {#color(%d,%d,%d,%d);strike(true)}%s{#strike(false)}", override_color[2], override_color[3], override_color[4], override_color[1], option_text, disabled_color[2], disabled_color[3], disabled_color[4], disabled_color[1], Utf8.upper(overriden_setting))
+							else
+								content.selected_option = option_text
+							end
 						end
 
 						if content.selected_option == nil then
@@ -2566,7 +2586,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 			options_texts = options_texts,
 			options_values = options_values,
 			tooltip_text = tooltip_text,
-			disabled_tooltip_text = disabled_tooltip_text or tooltip_text,
+			disabled_tooltip_text = disabled_tooltip_text and Localize(disabled_tooltip_text),
 			arrow = {
 				texture_id = "drop_down_menu_arrow",
 				uvs = {
@@ -2655,6 +2675,18 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 					base_offset[3] + 20
 				}
 			},
+			disabled_tooltip_text = {
+				localize = false,
+				offset = {
+					base_offset[1],
+					base_offset[2],
+					base_offset[3]
+				},
+				size = {
+					DROP_DOWN_WIDGET_SIZE[1],
+					DROP_DOWN_WIDGET_SIZE[2]
+				}
+			},
 			hotspot = {
 				offset = {
 					base_offset[1] + DROP_DOWN_WIDGET_SIZE[1] - INPUT_FIELD_WIDTH,
@@ -2734,7 +2766,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 				default_color = Colors.get_color_table_with_alpha("font_default", 255),
 				hover_color = Colors.get_color_table_with_alpha("font_default", 255),
 				disabled_color = Colors.get_color_table_with_alpha("font_default", 50),
-				upper_case = not ignore_upper_case
+				override_color = Colors.get_color_table_with_alpha("font_default", 155)
 			},
 			selected_bg = {
 				masked = true,
@@ -2963,10 +2995,19 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				{
 					pass_type = "local_offset",
 					offset_function = function (ui_scenegraph, ui_style, ui_content, ui_renderer)
-						local selection_text = ui_content.options_texts[ui_content.current_selection]
+						if ui_content._last_selection ~= ui_content.current_selection or ui_content._last_overriden_setting ~= ui_content.overriden_setting then
+							ui_content._last_selection = ui_content.current_selection
+							ui_content._last_overriden_setting = ui_content.overriden_setting
+							local option_text = Utf8.upper(ui_content.options_texts[ui_content.current_selection])
+							local overriden_setting = ui_content.overriden_setting
 
-						if selection_text ~= ui_content.selection_text then
-							ui_content.selection_text = selection_text
+							if overriden_setting then
+								local override_color = ui_style.selection_text.override_color
+								local disabled_color = ui_style.selection_text.disabled_color
+								ui_content.selection_text = string.format("{#color(%d,%d,%d,%d)}%s {#color(%d,%d,%d,%d);strike(true)}%s{#strike(false)}", override_color[2], override_color[3], override_color[4], override_color[1], option_text, disabled_color[2], disabled_color[3], disabled_color[4], disabled_color[1], Utf8.upper(overriden_setting))
+							else
+								ui_content.selection_text = option_text
+							end
 						end
 					end
 				},
@@ -2994,13 +3035,32 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 					pass_type = "option_tooltip",
 					text_id = "tooltip_text",
 					content_check_function = function (ui_content)
-						return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
-					end,
-					content_change_function = function (ui_content)
-						if ui_content.disabled then
-							ui_content.tooltip_text = ui_content.tooltip_text_disabled
+						if not ui_content.highlight_hotspot.is_hover or Managers.input:is_device_active("gamepad") then
+							return false
+						end
+
+						if not ui_content.disabled then
+							return ui_content.tooltip_text
 						else
-							ui_content.tooltip_text = ui_content.tooltip_text_enabled
+							return not ui_content.disabled_tooltip_text
+						end
+					end
+				},
+				{
+					style_id = "disabled_tooltip_text",
+					pass_type = "option_tooltip",
+					text_id = "disabled_tooltip_text",
+					content_check_function = function (ui_content)
+						if not ui_content.disabled or not ui_content.highlight_hotspot.is_hover or Managers.input:is_device_active("gamepad") then
+							return false
+						end
+
+						if ui_content.overriden_reason then
+							ui_content.disabled_tooltip_text = ui_content.overriden_reason
+						end
+
+						if ui_content.disabled_tooltip_text then
+							return true
 						end
 					end
 				},
@@ -3165,8 +3225,8 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 		content = {
 			left_arrow = "settings_arrow_normal",
 			right_arrow_hover = "settings_arrow_clicked",
-			left_arrow_hover = "settings_arrow_clicked",
 			right_arrow = "settings_arrow_normal",
+			left_arrow_hover = "settings_arrow_clicked",
 			selection_text = "",
 			highlight_texture = "playerlist_hover",
 			rect_masked = "rect_masked",
@@ -3204,8 +3264,7 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				}
 			},
 			tooltip_text = tooltip_text,
-			tooltip_text_enabled = tooltip_text,
-			tooltip_text_disabled = disabled_tooltip_text or tooltip_text,
+			disabled_tooltip_text = disabled_tooltip_text and Localize(disabled_tooltip_text),
 			current_selection = selected_option,
 			options_texts = options_texts,
 			options_values = options_values,
@@ -3252,6 +3311,18 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 					0,
 					0,
 					base_offset[3] + 20
+				}
+			},
+			disabled_tooltip_text = {
+				localize = false,
+				offset = {
+					base_offset[1],
+					base_offset[2],
+					base_offset[3]
+				},
+				size = {
+					STEPPER_WIDGET_SIZE[1],
+					STEPPER_WIDGET_SIZE[2]
 				}
 			},
 			left_arrow = {
@@ -3354,7 +3425,6 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				disabled_color = Colors.get_color_table_with_alpha("font_default", 50)
 			},
 			selection_text = {
-				upper_case = true,
 				font_size = 16,
 				horizontal_alignment = "center",
 				dynamic_font = true,
@@ -3367,7 +3437,8 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				highlight_color = Colors.get_color_table_with_alpha("font_default", 255),
 				default_color = Colors.get_color_table_with_alpha("font_default", 255),
-				disabled_color = Colors.get_color_table_with_alpha("font_default", 50)
+				disabled_color = Colors.get_color_table_with_alpha("font_default", 50),
+				override_color = Colors.get_color_table_with_alpha("font_default", 155)
 			},
 			debug_middle_line = {
 				offset = {

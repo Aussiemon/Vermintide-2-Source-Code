@@ -13,6 +13,7 @@ HitEffectsShadowSkull = {
 				"shot_repeating_handgun",
 				"arrow_sniper",
 				"arrow_carbine",
+				"elven_magic_arrow_carbine",
 				"arrow_machinegun",
 				"arrow_shotgun",
 				"bolt_sniper",

@@ -50,14 +50,14 @@ PlayFabMirrorAdventure._set_inital_career_data_weaves = function (self, career_n
 end
 
 PlayFabMirrorAdventure._check_weaves_loadout = function (self)
-	local read_only_data = self._read_only_data
-	local characters_data = cjson.decode(read_only_data[self._characters_data_key])
+	local characters_data_string = self:get_read_only_data(self._characters_data_key)
+	local characters_data = cjson.decode(characters_data_string)
 	local broken_slots_data = {}
 
 	for character_name, character_data in pairs(characters_data) do
 		for career_name, career_data in pairs(character_data.careers) do
 			local weave_name = "weaves_loadout_" .. career_name
-			local weave_loadout_string = read_only_data[weave_name]
+			local weave_loadout_string = self:get_read_only_data(weave_name)
 			local weave_loadout = cjson.decode(weave_loadout_string)
 			local broken_slots = self:_set_inital_career_data_weaves(career_name, weave_loadout, {
 				"slot_melee",
@@ -91,6 +91,5 @@ PlayFabMirrorAdventure.fix_weaves_career_data_request_cb = function (self, resul
 
 	local data = function_result.character_starting_gear
 
-	table.merge(self._read_only_data, data)
-	table.merge(self._read_only_data_mirror, data)
+	self:merge_read_only_data(data, true)
 end

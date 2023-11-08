@@ -1513,6 +1513,7 @@ weapon_template.right_hand_unit = "units/weapons/player/wpn_empire_short_sword/w
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.brw_hammer
 weapon_template.display_unit = "units/weapons/weapon_display/display_1h_hammer_wizard"
 weapon_template.wield_anim = "to_brw_hammer"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/melee/brw_hammer"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "MACE_1H"
 weapon_template.max_fatigue_points = 6

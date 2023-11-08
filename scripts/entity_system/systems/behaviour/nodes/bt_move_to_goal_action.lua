@@ -10,7 +10,7 @@ BTMoveToGoalAction.name = "BTMoveToGoalAction"
 
 BTMoveToGoalAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = self._tree_node.action_data
-	blackboard.time_to_next_evaluate = t + 0.5
+	blackboard.time_to_next_evaluate = t + (blackboard.action.eval_time or 0.5)
 	blackboard.time_to_next_friend_alert = t + 0.3
 	local goal_destination = blackboard.goal_destination:unbox()
 
@@ -87,14 +87,21 @@ BTMoveToGoalAction.run = function (self, unit, blackboard, t, dt)
 			in_patrol = ai_group_extension.in_patrol
 		end
 
+		local action = blackboard.action
+
 		if not in_patrol then
 			local unit_position = POSITION_LOOKUP[unit]
 			local goal_destination = blackboard.goal_destination:unbox()
 			local distance_to_goal_sq = Vector3.distance_squared(unit_position, goal_destination)
+			local goal_margin = action.goal_margin or 0.75
 
-			if distance_to_goal_sq < 0.5625 then
+			if distance_to_goal_sq < goal_margin * goal_margin then
 				blackboard.goal_destination = nil
 			end
+		end
+
+		if action.move_speed_func then
+			action.move_speed_func(unit, blackboard)
 		end
 	end
 
@@ -103,7 +110,21 @@ BTMoveToGoalAction.run = function (self, unit, blackboard, t, dt)
 
 	if blackboard.time_to_next_evaluate < t or navigation_extension:has_reached_destination() then
 		should_evaluate = "evaluate"
-		blackboard.time_to_next_evaluate = t + 0.5
+		blackboard.time_to_next_evaluate = t + (blackboard.action.eval_time or 0.5)
+	end
+
+	if blackboard.new_move_to_goal then
+		if blackboard.goal_destination then
+			local goal_destination = blackboard.goal_destination:unbox()
+
+			navigation_extension:move_to(goal_destination)
+
+			if unit == script_data.debug_unit then
+				QuickDrawer:sphere(goal_destination, 1, Colors.get("yellow"))
+			end
+		end
+
+		blackboard.new_move_to_goal = nil
 	end
 
 	return "running", should_evaluate

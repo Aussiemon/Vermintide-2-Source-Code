@@ -20,6 +20,7 @@ ObjectiveSystem.init = function (self, entity_system_creation_context, system_na
 	self._sub_objectives = {}
 	self._objectives_by_name = {}
 	self._activated = false
+	self._all_objectives_completed = false
 	self._total_num_main_objectives = 0
 	self._num_completed_main_objectives = 0
 	self._num_completed_sub_objectives = 0
@@ -132,6 +133,7 @@ ObjectiveSystem._server_activate_objectives = function (self, objective_sets)
 		self:_activate_objectives(current_objectives)
 
 		self._activated = true
+		self._all_objectives_completed = false
 	end
 end
 
@@ -166,6 +168,7 @@ ObjectiveSystem._client_activate_objectives = function (self, objective_sets)
 		self:_activate_objectives(current_objectives)
 
 		self._activated = true
+		self._all_objectives_completed = false
 	end
 end
 
@@ -207,6 +210,7 @@ ObjectiveSystem._activate_objectives = function (self, objectives, parent_object
 			if objective_extension then
 				if objective_extension.activate then
 					objective_extension:activate(nil, objective_data)
+					Managers.state.event:trigger("obj_objective_activated", objective_extension, objective_name, parent_objective)
 				end
 
 				if objective_extension.is_optional and objective_extension:is_optional() then
@@ -222,6 +226,8 @@ ObjectiveSystem._activate_objectives = function (self, objectives, parent_object
 					else
 						self._main_objectives[#self._main_objectives + 1] = objective_extension
 					end
+				else
+					self._current_num_sub_objectives = self._current_num_sub_objectives + 1
 				end
 			end
 		end
@@ -243,7 +249,7 @@ ObjectiveSystem.on_add_extension = function (self, world, unit, extension_name, 
 end
 
 ObjectiveSystem.update = function (self, context, t)
-	if not self._activated or Managers.state.game_mode:is_game_mode_ended() then
+	if not self._activated or self._all_objectives_completed or Managers.state.game_mode:is_game_mode_ended() then
 		return
 	end
 
@@ -291,6 +297,7 @@ ObjectiveSystem.game_object_destroyed = function (self, game_object_id)
 	if not self._server then
 		extension:complete()
 		LevelHelper:flow_event(self._world, event_name)
+		Managers.state.event:trigger("obj_" .. event_name, self._num_completed_main_objectives, self._current_num_completed_main_objectives, extension)
 	end
 
 	if table.size(self._main_objectives) < 1 and table.size(self._sub_objectives) < 1 then
@@ -357,14 +364,17 @@ end
 
 ObjectiveSystem._update_client = function (self, dt, t)
 	local main_objectives = self._main_objectives
-	local sub_objectives = self._sub_objectives
 
 	for _, extension in pairs(main_objectives) do
 		extension:update(dt, t)
 	end
 
+	local sub_objectives = self._sub_objectives
+
 	for _, extension in pairs(sub_objectives) do
-		extension:update(dt, t)
+		if extension.update then
+			extension:update(dt, t)
+		end
 	end
 end
 
@@ -438,7 +448,7 @@ ObjectiveSystem._update_activate_objectives = function (self)
 
 		self._current_objective_index = next_objective_index
 	else
-		self._activated = false
+		self._all_objectives_completed = true
 	end
 end
 
@@ -454,11 +464,13 @@ ObjectiveSystem._complete_objective = function (self, id, extension, objects_to_
 		self._last_main_objective_completed = extension
 
 		LevelHelper:flow_event(self._world, "main_objective_completed")
+		Managers.state.event:trigger("obj_main_objective_completed", self._num_completed_main_objectives, self._current_num_completed_main_objectives, extension)
 	else
 		self._num_completed_sub_objectives = self._num_completed_sub_objectives + 1
 		self._current_num_completed_sub_objectives = self._current_num_completed_sub_objectives + 1
 
 		LevelHelper:flow_event(self._world, "sub_objective_completed")
+		Managers.state.event:trigger("obj_sub_objective_completed", self._num_completed_main_objectives, self._current_num_completed_main_objectives, extension)
 	end
 
 	if not extension.keep_alive then
@@ -469,10 +481,16 @@ end
 ObjectiveSystem._complete_parent_objective = function (self, data)
 	self._num_completed_main_objectives = self._num_completed_main_objectives + 1
 	self._current_num_completed_main_objectives = self._current_num_completed_main_objectives + 1
+
+	Managers.state.event:trigger("obj_parent_objective_completed", self._num_completed_main_objectives, self._current_num_completed_main_objectives, data)
 end
 
 ObjectiveSystem.is_active = function (self)
-	return self._activated
+	return self._activated and not self._all_objectives_completed
+end
+
+ObjectiveSystem.all_objectives_completed = function (self)
+	return self._all_objectives_completed
 end
 
 ObjectiveSystem.hot_join_sync = function (self, sender)

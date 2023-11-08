@@ -14,6 +14,7 @@ TargetOverrideExtension.init = function (self, extension_init_context, unit, ext
 		stagger_types.medium
 	}
 	self._side = extension_init_data.side
+	self._broadphase_categories = self._side.enemy_broadphase_categories
 end
 
 TargetOverrideExtension.destroy = function (self)
@@ -26,7 +27,7 @@ TargetOverrideExtension.taunt = function (self, radius, duration, do_stagger, ta
 	local taunt_end_time = t + duration
 	local position = POSITION_LOOKUP[self_unit]
 	local result_table = self._result_table
-	local num_ai_units = AiUtils.broadphase_query(position, radius, result_table)
+	local num_ai_units = AiUtils.broadphase_query(position, radius, result_table, self._broadphase_categories)
 
 	for i = 1, num_ai_units do
 		local ai_unit = result_table[i]
@@ -66,7 +67,7 @@ TargetOverrideExtension.update = function (self, unit, input, dt, context, t)
 	if not is_disabled and not is_invisible then
 		local ai_system = Managers.state.entity:system("ai_system")
 		local ai_slot_system = Managers.state.entity:system("ai_slot_system")
-		local num_ai_units = AiUtils.broadphase_query(position, radius, result_table)
+		local num_ai_units = AiUtils.broadphase_query(position, radius, result_table, self._broadphase_categories)
 
 		for i = 1, num_ai_units do
 			local ai_unit = result_table[i]

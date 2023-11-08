@@ -41,7 +41,7 @@ return {
 					local radius = data.light_radius
 					local pos = POSITION_LOOKUP[player]
 
-					if ScriptUnit.has_extension(unit, "buff_system") and AiUtils.unit_alive(unit) then
+					if ScriptUnit.has_extension(unit, "buff_system") and HEALTH_ALIVE[unit] then
 						local unit_pos = POSITION_LOOKUP[unit]
 						local dist_sq = Vector3.distance_squared(pos, unit_pos)
 
@@ -95,7 +95,7 @@ return {
 		end
 
 		for buffed_unit, _ in pairs(buffed_units) do
-			if not AiUtils.unit_alive(buffed_unit) then
+			if not HEALTH_ALIVE[buffed_unit] then
 				dead_units[#dead_units + 1] = buffed_unit
 			end
 		end
@@ -176,7 +176,7 @@ return {
 				local unit_pos = POSITION_LOOKUP[unit]
 				local scalar = 1
 
-				if not faded_units[unit] and AiUtils.unit_alive(unit) then
+				if not faded_units[unit] and HEALTH_ALIVE[unit] then
 					fade_system:set_min_fade(unit, scalar)
 
 					faded_units[unit] = scalar
@@ -205,13 +205,13 @@ return {
 				local effect_unit = linked_units[unit]
 				local effect_unit_visible = linked_units_visibility[unit]
 
-				if dist_sq < radius * radius or not AiUtils.unit_alive(unit) then
+				if dist_sq < radius * radius or not HEALTH_ALIVE[unit] then
 					scalar = 0
 
 					if effect_unit and effect_unit_visible then
 						local breed = Unit.get_data(unit, "breed")
 
-						if breed and breed.name == "skaven_warpfire_thrower" and AiUtils.unit_alive(unit) then
+						if breed and breed.name == "skaven_warpfire_thrower" and HEALTH_ALIVE[unit] then
 							Unit.flow_event(unit, "enable_vfx")
 						end
 
@@ -254,7 +254,7 @@ return {
 		end
 
 		for faded_unit, _ in pairs(faded_units) do
-			if not AiUtils.unit_alive(faded_unit) then
+			if not HEALTH_ALIVE[faded_unit] then
 				dead_units[#dead_units + 1] = faded_unit
 			end
 		end

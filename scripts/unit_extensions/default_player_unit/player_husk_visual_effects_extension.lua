@@ -46,8 +46,12 @@ PlayerHuskVisualEffectsExtension._set_overcharge_flow_values = function (self)
 	local overcharge_extension = self.overcharge_extension
 	local anim_blend_overcharge = overcharge_extension:get_anim_blend_overcharge()
 
-	self:_set_character_overcharge(anim_blend_overcharge)
-	self:_set_weapons_overcharge(anim_blend_overcharge)
+	if self._last_anim_blend_overcharge ~= anim_blend_overcharge then
+		self._last_anim_blend_overcharge = anim_blend_overcharge
+
+		self:_set_character_overcharge(anim_blend_overcharge)
+		self:_set_weapons_overcharge(anim_blend_overcharge)
+	end
 
 	if self.overcharge_threshold_changed then
 		self:_set_character_overcharge_threshold()

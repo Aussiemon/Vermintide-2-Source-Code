@@ -1,5 +1,396 @@
 StoreDlcSettings = {
 	{
+		store_texture = "gui/1080p/single_textures/dlc_store/shovel/dlc_store_banner_shovel",
+		name = "store_shovel_title",
+		dlc_name = "shovel",
+		store_texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel",
+		information_text = "store_shovel_desc",
+		store_page_url = "https://store.steampowered.com/app/2585630",
+		slideshow_texture = "store_slideshow_dlc_shovel",
+		slideshow_text = "store_shovel_desc",
+		layout = {
+			{
+				id = "header_video",
+				type = "dlc_header_video",
+				settings = {
+					sound_event = "Play_hud_menu_area_helmgart",
+					set_loop = true,
+					masked_material_name = "video_masked",
+					material_name = "video_default",
+					resource = "video/career_videos/sienna/bw_necromancer"
+				}
+			},
+			{
+				id = "dlc_logo",
+				type = "dlc_logo",
+				settings = {
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/dlc_store_logo_shovel"
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "store_shovel_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_4",
+				type = "dlc_feature_horizontal",
+				settings = {
+					text = "dlc_shovel_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_04",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				id = "dlc_feature_1",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_shovel_slate_01_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_01",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_shovel_slate_02_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_02",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_03",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			}
+		},
+		layout_console = {
+			{
+				id = "header_video",
+				type = "dlc_header_video",
+				settings = {
+					sound_event = "Play_hud_menu_area_helmgart",
+					set_loop = true,
+					masked_material_name = "video_masked",
+					material_name = "video_default",
+					resource = "video/career_videos/sienna/bw_necromancer"
+				}
+			},
+			{
+				id = "dlc_logo",
+				type = "dlc_logo",
+				settings = {
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/dlc_store_logo_shovel"
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "store_shovel_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_1",
+				type = "dlc_feature_horizontal",
+				settings = {
+					text = "dlc_shovel_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_04",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				id = "dlc_feature_5",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_shovel_upgrade_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_upgrade_04",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_4",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_shovel_upgrade_slate_04_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_upgrade_05",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_6",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_shovel_upgrade_slate_05_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_upgrade_06",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_7",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_shovel_upgrade_slate_01_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_upgrade_01",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_upgrade_slate_02_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_upgrade_02",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_upgrade_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_upgrade_03",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			}
+		}
+	},
+	{
+		store_texture = "gui/1080p/single_textures/dlc_store/shovel/dlc_store_banner_shovel_upgrade",
+		name = "store_shovel_upgrade_title",
+		store_page_url = "https://store.steampowered.com/app/2585640",
+		store_texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel",
+		information_text = "store_shovel_upgrade_desc",
+		dlc_name = "shovel_upgrade",
+		slideshow_texture = "store_slideshow_dlc_shovel_upgrade",
+		slideshow_text = "store_shovel_upgrade_desc",
+		available_platforms = {
+			"win32"
+		},
+		layout = {
+			{
+				id = "header_video",
+				type = "dlc_header_video",
+				settings = {
+					sound_event = "Play_hud_menu_area_helmgart",
+					set_loop = true,
+					masked_material_name = "video_masked",
+					material_name = "video_default",
+					resource = "video/career_videos/sienna/bw_necromancer"
+				}
+			},
+			{
+				id = "dlc_logo",
+				type = "dlc_logo",
+				settings = {
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/dlc_store_logo_shovel"
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "store_shovel_upgrade_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				id = "dlc_feature_5",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_shovel_upgrade_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_upgrade_04",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_4",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_shovel_upgrade_slate_04_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_upgrade_05",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_6",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_shovel_upgrade_slate_05_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_upgrade_06",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_1",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_shovel_upgrade_slate_01_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_upgrade_01",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_upgrade_slate_02_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_upgrade_02",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_upgrade_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/shovel/slate_shovel_upgrade_03",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/shovel/store_dlc_icons_shovel"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			}
+		}
+	},
+	{
 		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_q2_2023_hat_collection",
 		name = "display_name_q2_2023_hat_collection",
 		slideshow_texture = "store_slideshow_bundle_five_career_bundle_0004",

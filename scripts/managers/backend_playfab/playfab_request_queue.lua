@@ -256,7 +256,9 @@ PlayFabRequestQueue.playfab_request_success_cb = function (self, success_callbac
 		local function_to_wait_for = Testify:poll_request("wait_for_playfab_response")
 
 		if function_to_wait_for and function_to_wait_for == request.FunctionName then
-			Testify:respond_to_request("wait_for_playfab_response", request.FunctionName)
+			Testify:respond_to_request("wait_for_playfab_response", {
+				request.FunctionName
+			}, 1)
 		end
 	end
 end

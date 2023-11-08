@@ -286,6 +286,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 			profile_index = profile_index
 		},
 		talent_system = {
+			is_husk = false,
 			player = self,
 			profile_index = profile_index
 		},
@@ -317,6 +318,9 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 		},
 		target_override_system = {
 			side = side
+		},
+		ai_commander_system = {
+			player = self
 		}
 	}
 	local using_ghost_mode_system = Managers.mechanism:mechanism_setting("using_ghost_mode_system")

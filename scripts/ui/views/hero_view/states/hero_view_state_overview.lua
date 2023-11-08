@@ -504,6 +504,14 @@ HeroViewStateOverview.on_exit = function (self, params)
 			self:disable_ingame_overlay()
 		end
 	end
+
+	local player = Managers.player:local_player()
+
+	if player and player:career_name() == "bw_necromancer" then
+		GlobalShaderFlags.set_global_shader_flag("NECROMANCER_CAREER_REMAP", true)
+	else
+		GlobalShaderFlags.set_global_shader_flag("NECROMANCER_CAREER_REMAP", false)
+	end
 end
 
 HeroViewStateOverview._close_active_windows = function (self)
@@ -625,6 +633,26 @@ HeroViewStateOverview.post_update = function (self, dt, t)
 
 	if self._new_state then
 		self:_close_active_windows()
+	end
+
+	local request = self._equip_request
+
+	if request then
+		self._equip_request = nil
+		local slot_type = request.slot_type
+		local slot_name = request.slot_name
+		local backend_id = request.backend_id
+		local unit = request.unit
+
+		if slot_type == "melee" or slot_type == "ranged" then
+			local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
+
+			inventory_extension:create_equipment_in_slot(slot_name, backend_id)
+		elseif slot_type == "hat" or slot_type == "trinket" or slot_type == "ring" or slot_type == "necklace" then
+			local attachment_extension = ScriptUnit.extension(unit, "attachment_system")
+
+			attachment_extension:create_attachment_in_slot(slot_name, backend_id)
+		end
 	end
 end
 
@@ -954,24 +982,18 @@ HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_name
 	BackendUtils.set_loadout_item(backend_id, career_name, slot_name)
 
 	if not self:is_bot_career() then
-		if slot_type == "melee" or slot_type == "ranged" then
-			local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
-
-			inventory_extension:create_equipment_in_slot(slot_name, backend_id)
-		elseif slot_type == "hat" then
-			local attachment_extension = ScriptUnit.extension(unit, "attachment_system")
-
-			attachment_extension:create_attachment_in_slot(slot_name, backend_id)
-		elseif slot_type == "trinket" or slot_type == "ring" or slot_type == "necklace" then
-			local attachment_extension = ScriptUnit.extension(unit, "attachment_system")
-
-			attachment_extension:create_attachment_in_slot(slot_name, backend_id)
-		elseif slot_type == "frame" then
+		if slot_type == "frame" then
 			local frame_data = ItemHelper.get_template_by_item_name(item_data.key)
-			local frame_name = frame_data.name
 			local cosmetic_system = Managers.state.entity:system("cosmetic_system")
 
-			cosmetic_system:set_equipped_frame(unit, frame_name)
+			cosmetic_system:set_equipped_frame(unit, frame_data.name)
+		elseif slot_type ~= "skin" then
+			self._equip_request = {
+				slot_type = slot_type,
+				slot_name = slot_name,
+				backend_id = backend_id,
+				unit = unit
+			}
 		end
 	elseif slot_type == "hat" then
 		self.skin_sync_id = self.skin_sync_id + 1

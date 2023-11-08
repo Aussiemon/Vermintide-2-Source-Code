@@ -15,6 +15,7 @@ ActionCharge.init = function (self, world, item_name, is_server, owner_unit, dam
 	self.overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 	self.first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 	self.weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
+	self.ammo_extension = ScriptUnit.has_extension(weapon_unit, "ammo_system")
 	self._rumble_effect_id = nil
 end
 
@@ -46,6 +47,7 @@ ActionCharge.client_owner_start_action = function (self, new_action, t)
 	self.charge_complete_time = self.charge_time + t
 	self.overcharge_timer = 0
 	self.ability_charge_timer = 0
+	self.ammo_consumption_timer = 0
 
 	if not new_action.vent_overcharge then
 		Unit.flow_event(self.first_person_unit, "lua_charge_start")
@@ -144,6 +146,15 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 	local charge_time = self.charge_time
 	local charge_complete_time = self.charge_complete_time
 	local full_charge_time = charge_complete_time - t
+
+	if current_action.ammo_charge then
+		local ammo_extension = self.ammo_extension
+
+		if not ammo_extension or ammo_extension:current_ammo() < 1 then
+			return
+		end
+	end
+
 	local overcharge_type = current_action.overcharge_type
 	local current_charge_time = nil
 
@@ -196,6 +207,20 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 		end
 	end
 
+	if current_action.ammo_charge then
+		self.ammo_consumption_timer = self.ammo_consumption_timer + dt
+
+		if self.ammo_consumption_timer >= current_action.charge_time / current_action.ammo_per_clip then
+			local ammo_extension = self.ammo_extension
+
+			if ammo_extension then
+				ammo_extension:use_ammo(1)
+			end
+
+			self.ammo_consumption_timer = 0
+		end
+	end
+
 	local charge_anim_variable = current_action.charge_anim_variable
 
 	if charge_anim_variable then
@@ -236,6 +261,12 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 			self.first_person_extension:play_hud_sound_event(self.charge_ready_sound_event)
 
 			self.charge_ready_sound_event = nil
+		end
+
+		if charge_level >= 1 and self.charge_flow_event_left_weapon and self.left_unit then
+			Unit.flow_event(self.left_unit, self.charge_flow_event_left_weapon)
+
+			self.charge_flow_event_left_weapon = nil
 		end
 	end
 

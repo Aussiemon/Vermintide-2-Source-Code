@@ -1480,6 +1480,7 @@ weapon_template.left_hand_unit = "units/weapons/player/wpn_emp_pistol_01_t1/wpn_
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.pistol.left
 weapon_template.display_unit = "units/weapons/weapon_display/display_fencing_swords"
 weapon_template.wield_anim = "to_fencing_sword"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/melee/fencing_sword"
 weapon_template.reload_event = "reload"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "FENCING_SWORD_1H"

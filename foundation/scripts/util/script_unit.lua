@@ -195,3 +195,19 @@ ScriptUnit.restore_scene_graph = function (unit, link_table)
 		end
 	end
 end
+
+ScriptUnit.set_material_variable = function (unit, material_variable, value, include_children)
+	if type(value) == "number" then
+		Unit.set_scalar_for_materials(unit, material_variable, value, include_children)
+	elseif type(value) == "table" then
+		local num_values = #value
+
+		if num_values == 2 then
+			Unit.set_vector2_for_materials(unit, material_variable, Vector2(value[1], value[2]), include_children)
+		elseif num_values == 3 then
+			Unit.set_vector3_for_materials(unit, material_variable, Vector3(value[1], value[2], value[3]), include_children)
+		else
+			Unit.set_vector4_for_materials(unit, material_variable, Color(value[1], value[2], value[3], value[4]), include_children)
+		end
+	end
+end

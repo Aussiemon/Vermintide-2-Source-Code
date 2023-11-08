@@ -61,13 +61,23 @@ BTSuicideRunAction.update_target_position = function (self, unit, blackboard, ai
 	local target_unit = blackboard.target_unit
 
 	if ALIVE[target_unit] and not stop then
-		local whereabouts_extension = ScriptUnit.extension(target_unit, "whereabouts_system")
-		local last_position_on_navmesh = whereabouts_extension:last_position_on_navmesh()
+		local whereabouts_extension = ScriptUnit.has_extension(target_unit, "whereabouts_system")
 
-		if last_position_on_navmesh then
+		if whereabouts_extension then
+			local last_position_on_navmesh = whereabouts_extension:last_position_on_navmesh()
+
 			ai_navigation:move_to(last_position_on_navmesh)
 
 			return
+		else
+			local pos = POSITION_LOOKUP[target_unit]
+			local success, z = GwNavQueries.triangle_from_position(ai_navigation:nav_world(), pos, 5, 5)
+
+			if success then
+				ai_navigation:move_to(Vector3(pos[1], pos[2], z))
+
+				return
+			end
 		end
 	end
 

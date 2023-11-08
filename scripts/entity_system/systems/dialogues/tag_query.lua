@@ -93,3 +93,23 @@ TagQuery.OP = TagQuery.OP or {
 		end
 	})
 }
+TagQuery.FilterOP = TagQuery.FilterOP or {
+	EQ = function (a, b)
+		return a == b
+	end,
+	NEQ = function (a, b)
+		return a ~= b
+	end,
+	LT = function (a, b)
+		return a < b
+	end,
+	GT = function (a, b)
+		return b < a
+	end,
+	LTEQ = function (a, b)
+		return a <= b
+	end,
+	GTEQ = function (a, b)
+		return b <= a
+	end
+}

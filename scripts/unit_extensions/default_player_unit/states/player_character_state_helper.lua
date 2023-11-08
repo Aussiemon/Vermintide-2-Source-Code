@@ -784,7 +784,7 @@ CharacterStateHelper.wield_input = function (input_extension, inventory_extensio
 	local wielded_slot_name = equipment.wielded_slot
 	local current_slot = slots_by_name[wielded_slot_name]
 	local current_slot_wield_input = current_slot.wield_input
-	local slot_to_wield = nil
+	local slot_to_wield, swap_from_storage_type = nil
 
 	if CharacterStateHelper.get_buffered_input("wield_switch", input_extension, nil, nil, nil, wielded_slot_name == "slot_melee") then
 		if current_slot.name ~= "slot_melee" then
@@ -805,6 +805,15 @@ CharacterStateHelper.wield_input = function (input_extension, inventory_extensio
 
 					break
 				end
+			end
+
+			local wield_input_alt = slot.wield_input_alt
+
+			if wield_input_alt and CharacterStateHelper.get_buffered_input(wield_input_alt, input_extension, nil, nil, nil, wielded_slot_name == "slot_melee") and (slot ~= current_slot or inventory_extension:can_swap_from_storage(slot.name, SwapFromStorageType.LowestUnwieldPrio)) then
+				slot_to_wield = slot.name
+				swap_from_storage_type = SwapFromStorageType.LowestUnwieldPrio
+
+				break
 			end
 		end
 	end
@@ -855,7 +864,7 @@ CharacterStateHelper.wield_input = function (input_extension, inventory_extensio
 		slot_to_wield = nil
 	end
 
-	return slot_to_wield, scroll_value
+	return slot_to_wield, scroll_value, swap_from_storage_type
 end
 
 local empty_table = {}

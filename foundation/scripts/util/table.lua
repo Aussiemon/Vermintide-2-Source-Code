@@ -136,6 +136,25 @@ table.merge_recursive = function (dest, source)
 	end
 end
 
+table.merge_varargs = function (args, num_args, ...)
+	local merged = {
+		unpack(args, 1, num_args)
+	}
+	local num_varargs = select("#", ...)
+
+	for i = 1, num_varargs do
+		merged[num_args + i] = select(i, ...)
+	end
+
+	return merged, num_args + num_varargs
+end
+
+table.pack = function (...)
+	return {
+		...
+	}, select("#", ...)
+end
+
 table.append_recursive = function (dest, source)
 	for key, value in pairs(source) do
 		local is_table = type(value) == "table"
@@ -536,8 +555,8 @@ table.tostring = function (t, max_depth, skip_private)
 	return table.concat(_table_tostring_array(t, 1, max_depth or 1, skip_private))
 end
 
-table.set = function (list)
-	local set = {}
+table.set = function (list, set)
+	set = set or {}
 
 	for _, l in ipairs(list) do
 		set[l] = true
@@ -587,6 +606,20 @@ table.keys = function (t, out)
 	for key in pairs(t) do
 		n = n + 1
 		out[n] = key
+	end
+
+	return out, n
+end
+
+table.keys_if = function (t, out, conditional_func)
+	out = out or {}
+	local n = 0
+
+	for key, val in pairs(t) do
+		if conditional_func(key, val) then
+			n = n + 1
+			out[n] = key
+		end
 	end
 
 	return out, n
@@ -824,7 +857,7 @@ end
 table.recursive_readonlytable = function (t)
 	setmetatable(t, {
 		__newindex = function (table, key, value)
-			error("Trying to modify read only table. (debug only assert)")
+			error("Trying to modify read only table.")
 		end
 	})
 
@@ -953,6 +986,34 @@ table.sort_span = function (t, start_index, end_index, sort_func)
 	_quicksort(t, start_index, end_index, sort_func)
 end
 
+table.array_average = function (t, max_num, next_val)
+	if next_val then
+		local idx = math.index_wrapper((t.index or 0) + 1, max_num)
+		t[idx] = next_val
+		t.index = idx
+	end
+
+	local num_elements = #t
+	local sum = 0
+	local min = 0
+	local max = 0
+
+	for i = 1, num_elements do
+		local d = t[i]
+		sum = sum + d
+
+		if d < min then
+			min = d or min
+		end
+
+		if max < d then
+			max = d or max
+		end
+	end
+
+	return sum / num_elements, min, max
+end
+
 table.enum_lookup = function (...)
 	local arr = {
 		...
@@ -961,4 +1022,35 @@ table.enum_lookup = function (...)
 	local enum = table.ordered_enum(unpack(lookup))
 
 	return enum, lookup
+end
+
+table.insert_unique = function (t, value, index)
+	local _ = table.find(t, value) or index and table.insert(t, index, value) or table.insert(t, value)
+end
+
+table.remove_array_value = function (t, value)
+	local iter_i = 1
+	local move_i = 1
+	local n = #t
+
+	while iter_i <= n do
+		if t[iter_i] == value then
+			t[iter_i] = nil
+		else
+			move_i = move_i + 1
+		end
+
+		iter_i = iter_i + 1
+		t[move_i] = t[iter_i]
+	end
+
+	return t
+end
+
+table.fill = function (t, n, value)
+	for i = 1, n do
+		t[i] = value
+	end
+
+	return t
 end

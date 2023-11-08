@@ -4,10 +4,43 @@ local function geheimnisnacht_2021_event_spawn_function(unit, breed, optional_da
 	buff_system:add_buff(unit, "geheimnisnacht_2021_event_cultist_buff", unit)
 end
 
+local function setup_altar_chaos_warrior(optional_data, difficulty, breed_name, event, difficulty_tweak, enhancement_list)
+	local names = {
+		"shockwave",
+		"ignore_death_aura"
+	}
+	local base_grudgemark_name = "elite_base"
+	local grudge_mark_name = names[math.random(1, #names)]
+	local list = optional_data.enhancements or {}
+	list[#list + 1] = BreedEnhancements[base_grudgemark_name]
+	list[#list + 1] = BreedEnhancements[grudge_mark_name]
+	optional_data.enhancements = list
+
+	return optional_data
+end
+
+local function size_chaos_warrior(breed, extension_init_data, optional_data, spawn_pos, spawn_rot)
+	return
+end
+
 GenericTerrorEvents.geheimnisnacht_2021_event = {
 	{
 		"set_master_event_running",
 		name = "geheimnisnacht_2021_event"
+	},
+	{
+		"spawn",
+		{
+			1,
+			1
+		},
+		breed_name = "chaos_warrior",
+		pre_spawn_func = setup_altar_chaos_warrior,
+		optional_data = {
+			spawn_chance = 1,
+			spawned_func = AiUtils.magic_entrance_optional_spawned_func,
+			prepare_func = size_chaos_warrior
+		}
 	},
 	{
 		"one_of",

@@ -139,6 +139,7 @@ local rpcs = {
 	"rpc_set_current_mechanism_state",
 	"rpc_level_load_started",
 	"rpc_carousel_set_local_match",
+	"rpc_carousel_update_set_count",
 	"rpc_carousel_set_private_lobby",
 	"rpc_dedicated_or_player_hosted_search",
 	"rpc_reserved_slots_count",
@@ -672,18 +673,6 @@ GameMechanismManager.get_players_session_score = function (self, statistics_db, 
 	return scoreboard
 end
 
-GameMechanismManager.save_current_score_information = function (self, game_won)
-	if self._game_mechanism.save_current_score_information then
-		self._game_mechanism:save_current_score_information(game_won)
-	end
-end
-
-GameMechanismManager.score_information = function (self)
-	if self._game_mechanism.score_information then
-		return self._game_mechanism:score_information()
-	end
-end
-
 GameMechanismManager.get_prior_state = function (self)
 	return self._game_mechanism:get_prior_state()
 end
@@ -849,6 +838,17 @@ GameMechanismManager.rpc_set_current_mechanism_state = function (self, channel_i
 	fassert(state_name, "No corresponding state_name for state_id (mechanism:%s)", self._mechanism_key)
 	print("Received new state from server", state_name)
 	self._game_mechanism:set_current_state(state_name)
+end
+
+GameMechanismManager.rpc_carousel_update_set_count = function (self, channel_id, set, last_set)
+	fassert(not self._is_server, "Server handles the set internally, this should only end up on clients.")
+	print("Received set from server ", set)
+
+	if last_set then
+		self._game_mechanism:set_should_start_next_set(false)
+	else
+		self._game_mechanism:update_set_count_clients(set)
+	end
 end
 
 GameMechanismManager.rpc_carousel_set_local_match = function (self, channel_id, local_match)

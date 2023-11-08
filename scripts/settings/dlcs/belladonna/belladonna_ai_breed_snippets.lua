@@ -8,33 +8,39 @@ AiBreedSnippets.on_beastmen_bestigor_spawn = function (unit, blackboard)
 	blackboard.num_charges_targeting_target = 0
 	blackboard.target_is_charged = false
 	blackboard.aggro_list = {}
-	local allowed_layers = {
-		planks = 1,
-		bot_ratling_gun_fire = 1,
-		doors = 1,
-		bot_poison_wind = 1,
-		fire_grenade = 1
-	}
-	local navtag_layer_cost_table = GwNavTagLayerCostTable.create()
+	local breed = blackboard.breed
 
-	table.merge(allowed_layers, NAV_TAG_VOLUME_LAYER_COST_AI)
-	AiUtils.initialize_cost_table(navtag_layer_cost_table, allowed_layers)
+	if breed.use_charge_nav_layers then
+		local allowed_layers = {
+			planks = 1,
+			bot_ratling_gun_fire = 1,
+			doors = 1,
+			bot_poison_wind = 1,
+			fire_grenade = 1
+		}
+		local navtag_layer_cost_table = GwNavTagLayerCostTable.create()
 
-	local nav_cost_map_cost_table = GwNavCostMap.create_tag_cost_table()
+		table.merge(allowed_layers, NAV_TAG_VOLUME_LAYER_COST_AI)
+		AiUtils.initialize_cost_table(navtag_layer_cost_table, allowed_layers)
 
-	AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table)
+		local nav_cost_map_cost_table = GwNavCostMap.create_tag_cost_table()
 
-	local charge_traverse_logic = GwNavTraverseLogic.create(blackboard.nav_world, nav_cost_map_cost_table)
+		AiUtils.initialize_nav_cost_map_cost_table(nav_cost_map_cost_table)
 
-	GwNavTraverseLogic.set_navtag_layer_cost_table(charge_traverse_logic, navtag_layer_cost_table)
+		local charge_traverse_logic = GwNavTraverseLogic.create(blackboard.nav_world, nav_cost_map_cost_table)
 
-	blackboard.charge_nav_cost_map_cost_table = nav_cost_map_cost_table
-	blackboard.charge_traverse_logic = charge_traverse_logic
-	blackboard.charge_navtag_layer_cost_table = navtag_layer_cost_table
+		GwNavTraverseLogic.set_navtag_layer_cost_table(charge_traverse_logic, navtag_layer_cost_table)
+
+		blackboard.charge_nav_cost_map_cost_table = nav_cost_map_cost_table
+		blackboard.charge_traverse_logic = charge_traverse_logic
+		blackboard.charge_navtag_layer_cost_table = navtag_layer_cost_table
+	end
 end
 
 AiBreedSnippets.on_beastmen_bestigor_update = function (unit, blackboard, t)
-	if blackboard.charge_astar_data and not blackboard.charge_state and Unit.alive(blackboard.target_unit) then
+	local traverse_logic = blackboard.charge_traverse_logic or blackboard.navigation_extension:traverse_logic()
+
+	if traverse_logic and blackboard.charge_astar_data and not blackboard.charge_state and Unit.alive(blackboard.target_unit) then
 		local data = blackboard.charge_astar_data
 		local astar = data.astar
 
@@ -65,7 +71,7 @@ AiBreedSnippets.on_beastmen_bestigor_update = function (unit, blackboard, t)
 				local width = 7
 				local new_astar = GwNavAStar.create(nav_world)
 
-				GwNavAStar.start_with_propagation_box(new_astar, nav_world, POSITION_LOOKUP[unit], wanted_position, width, blackboard.charge_traverse_logic)
+				GwNavAStar.start_with_propagation_box(new_astar, nav_world, POSITION_LOOKUP[unit], wanted_position, width, traverse_logic)
 
 				data.astar = new_astar
 				data.astar_timer = t + 1
@@ -241,13 +247,13 @@ AiBreedSnippets.on_beastmen_standard_bearer_husk_spawn = function (unit)
 end
 
 AiBreedSnippets.on_beastmen_standard_bearer_update = function (unit, blackboard, t)
-	if AiUtils.unit_alive(blackboard.standard_unit) then
+	if HEALTH_ALIVE[blackboard.standard_unit] then
 		local self_position = POSITION_LOOKUP[unit]
 		local standard_position = Unit.local_position(blackboard.standard_unit, 0)
 		local distance_to_standard = Vector3.distance(self_position, standard_position)
 		blackboard.distance_to_standard = distance_to_standard
 
-		if AiUtils.unit_alive(blackboard.target_unit) then
+		if HEALTH_ALIVE[blackboard.target_unit] then
 			local target_position = POSITION_LOOKUP[blackboard.target_unit]
 			blackboard.target_distance_to_standard = Vector3.distance(target_position, standard_position)
 		end

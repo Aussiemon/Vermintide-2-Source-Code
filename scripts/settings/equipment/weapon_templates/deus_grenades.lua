@@ -1,13 +1,15 @@
 local weapon_template_frag = {
-	max_fatigue_points = 4,
-	right_hand_unit = "units/weapons/player/wpn_emp_grenade_01_t1/wpn_emp_grenade_01_t1",
 	crosshair_style = "default",
-	dodge_speed = 1,
+	max_fatigue_points = 4,
 	left_hand_unit = "units/weapons/player/wpn_emp_grenade_01_t1/wpn_emp_grenade_lighter_01_t1",
 	gui_texture = "hud_consumable_icon_grenade",
 	dodge_distance = 1,
 	wield_anim = "to_grenade",
+	load_state_machine = false,
 	dodge_count = 3,
+	right_hand_unit = "units/weapons/player/wpn_emp_grenade_01_t1/wpn_emp_grenade_01_t1",
+	dodge_speed = 1,
+	state_machine = "units/beings/player/first_person_base/state_machines/common",
 	can_give_other = true,
 	actions = {
 		action_one = {
@@ -224,6 +226,7 @@ holy_hand_grenade.actions.action_one.throw = {
 	allowed_chain_actions = {},
 	projectile_info = Projectiles.holy_hand_grenade,
 	impact_data = {
+		grenade = true,
 		no_stop_on_friendly_fire = true
 	},
 	timed_data = {

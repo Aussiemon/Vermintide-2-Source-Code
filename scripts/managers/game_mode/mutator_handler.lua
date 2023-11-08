@@ -351,6 +351,25 @@ MutatorHandler.damage_taken = function (self, attacked_unit, attacker_unit, dama
 	end
 end
 
+MutatorHandler.pre_ai_spawned = function (self, breed, optional_data)
+	local is_server = self._is_server
+
+	if not is_server then
+		return
+	end
+
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+
+	for _, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if template.server.pre_ai_spawned_function then
+			template.server.pre_ai_spawned_function(mutator_context, mutator_data, breed, optional_data)
+		end
+	end
+end
+
 MutatorHandler.ai_spawned = function (self, spawned_unit)
 	local mutator_context = self._mutator_context
 	local active_mutators = self._active_mutators
@@ -366,6 +385,25 @@ MutatorHandler.ai_spawned = function (self, spawned_unit)
 
 		if has_local_client then
 			template.client.ai_spawned_function(mutator_context, mutator_data, spawned_unit)
+		end
+	end
+end
+
+MutatorHandler.post_ai_spawned = function (self, ai_unit, breed, optional_data)
+	local is_server = self._is_server
+
+	if not is_server then
+		return
+	end
+
+	local mutator_context = self._mutator_context
+	local active_mutators = self._active_mutators
+
+	for _, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if template.server.post_ai_spawned_function then
+			template.server.post_ai_spawned_function(mutator_context, mutator_data, ai_unit, breed, optional_data)
 		end
 	end
 end

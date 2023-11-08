@@ -287,7 +287,7 @@ UISettings = UISettings or {
 	use_ps4_input_icons = IS_PS4 or Application.user_setting("gamepad_use_ps4_style_input_icons"),
 	breed_textures = {
 		skaven_ratling_gunner = "unit_frame_portrait_enemy_ratling_gunner",
-		chaos_berzerker = "unit_frame_portrait_enemy_savage",
+		pet_skeleton_dual_wield = "unit_frame_portrait_pet_skeleton",
 		skaven_warpfire_thrower = "unit_frame_portrait_enemy_warpfire",
 		chaos_exalted_champion_warcamp = "unit_frame_portrait_enemy_chaos_warrior",
 		skaven_poison_wind_globadier = "unit_frame_portrait_enemy_poison_wind",
@@ -297,25 +297,30 @@ UISettings = UISettings or {
 		chaos_vortex_sorcerer = "unit_frame_portrait_enemy_sorcerer_vortex",
 		hero_es_questingknight = "small_unit_frame_portrait_kruber_questingknight",
 		vs_rat_ogre = "unit_frame_portrait_enemy_rat_ogre",
+		chaos_fanatic = "unit_frame_portrait_enemy_fanatic",
 		skaven_storm_vermin_champion = "unit_frame_portrait_enemy_stormvermin",
-		chaos_vortex = "unit_frame_portrait_enemy_sorcerer_vortex",
 		hero_wh_bountyhunter = "small_unit_frame_portrait_victor_bountyhunter",
-		beastmen_standard_bearer = "unit_frame_portrait_enemy_standard_bearer",
+		pet_skeleton = "unit_frame_portrait_pet_skeleton",
 		skaven_stormfiend_demo = "unit_frame_portrait_enemy_stormfiend",
-		vs_warpfire_thrower = "unit_frame_portrait_enemy_warpfire",
+		pet_skeleton_with_shield = "unit_frame_portrait_pet_skeleton",
+		beastmen_standard_bearer = "unit_frame_portrait_enemy_standard_bearer",
+		hero_bw_necromancer = "small_unit_frame_portrait_sienna_necromancer",
+		hero_we_maidenguard = "small_unit_frame_portrait_kerillian_maidenguard",
+		chaos_zombie = "unit_frame_portrait_enemy_plague_zombie",
+		hero_bw_unchained = "small_unit_frame_portrait_sienna_unchained",
 		skaven_plague_monk = "unit_frame_portrait_enemy_plague_monk",
 		hero_dr_slayer = "small_unit_frame_portrait_bardin_slayer",
-		hero_we_maidenguard = "small_unit_frame_portrait_kerillian_maidenguard",
-		hero_es_huntsman = "small_unit_frame_portrait_kruber_huntsman",
-		hero_es_knight = "small_unit_frame_portrait_kruber_knight",
-		chaos_fanatic = "unit_frame_portrait_enemy_fanatic",
-		chaos_zombie = "unit_frame_portrait_enemy_plague_zombie",
 		chaos_troll = "unit_frame_portrait_enemy_chaos_troll",
 		chaos_spawn = "unit_frame_portrait_enemy_chaos_spawn",
+		hero_es_huntsman = "small_unit_frame_portrait_kruber_huntsman",
 		chaos_exalted_sorcerer_drachenfels = "unit_frame_portrait_enemy_sorcerer_drachenfels",
 		vs_stormfiend = "unit_frame_portrait_enemy_stormfiend",
 		skaven_storm_vermin = "unit_frame_portrait_enemy_stormvermin",
+		hero_es_knight = "small_unit_frame_portrait_kruber_knight",
 		chaos_marauder = "unit_frame_portrait_enemy_chaos_marauder",
+		vs_warpfire_thrower = "unit_frame_portrait_enemy_warpfire",
+		chaos_vortex = "unit_frame_portrait_enemy_sorcerer_vortex",
+		pet_skeleton_armored = "unit_frame_portrait_pet_skeleton",
 		skaven_clan_rat_with_shield = "unit_frame_portrait_enemy_clanrat",
 		chaos_exalted_champion_norsca = "unit_frame_portrait_enemy_chaos_warrior",
 		skaven_loot_rat = "unit_frame_portrait_enemy_lootrat",
@@ -346,7 +351,7 @@ UISettings = UISettings or {
 		skaven_storm_vermin_with_shield = "unit_frame_portrait_enemy_stormvermin",
 		hero_we_waywatcher = "small_unit_frame_portrait_kerillian_waywatcher",
 		hero_bw_adept = "small_unit_frame_portrait_sienna_adept",
-		hero_bw_unchained = "small_unit_frame_portrait_sienna_unchained",
+		chaos_berzerker = "unit_frame_portrait_enemy_savage",
 		chaos_marauder_with_shield = "unit_frame_portrait_enemy_chaos_marauder",
 		hero_dr_engineer = "small_unit_frame_portrait_bardin_engineer",
 		chaos_tentacle = "unit_frame_portrait_enemy_chaos_sorcerer",
@@ -892,6 +897,12 @@ UISettings.inventory_consumable_slot_colors = {
 		0
 	}
 }
+UISettings.additional_inventory_slot_angles = {
+	default = 0,
+	potion_damage_boost_01 = math.degrees_to_radians(-45),
+	potion_speed_boost_01 = math.degrees_to_radians(-45),
+	potion_cooldown_reduction_01 = math.degrees_to_radians(-45)
+}
 
 DLCUtils.merge("inventory_consumable_slot_colors", UISettings.inventory_consumable_slot_colors)
 
@@ -1313,6 +1324,14 @@ UISettings.dlc_order_data = {
 		display_name = "store_bless_upgrade_title"
 	},
 	{
+		dlc = "shovel",
+		display_name = "store_shovel_title"
+	},
+	{
+		dlc = "shovel_upgrade",
+		display_name = "store_shovel_upgrade_title"
+	},
+	{
 		dlc = "q1_ranger_bundle",
 		display_name = "display_name_q1_ranger_bundle"
 	},
@@ -1431,6 +1450,14 @@ UISettings.dlc_order_data = {
 	{
 		dlc = "q2_2023_hat_collection",
 		display_name = "display_name_q2_2023_hat_collection"
+	},
+	{
+		dlc = "shovel",
+		display_name = "store_shovel_title"
+	},
+	{
+		dlc = "shovel_upgrade",
+		display_name = "store_shovel_upgrade_title"
 	}
 }
 local pc_button_icon = {

@@ -159,7 +159,7 @@ achievements.bless_saved_by_perk = {
 	on_timed_event = function (statistics_db, stats_id, template_data, event_data)
 		local victim_unit = event_data
 
-		if AiUtils.unit_alive(victim_unit) then
+		if HEALTH_ALIVE[victim_unit] then
 			statistics_db:increment_stat(stats_id, "bless_saved_by_perk")
 
 			template_data.timer_handles[victim_unit] = nil

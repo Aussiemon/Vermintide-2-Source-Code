@@ -307,7 +307,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 	if new_action then
 		local action_settings = self:get_action(new_action, new_sub_action, actions)
-		action_settings, new_action, new_sub_action = ActionUtils.resolve_action_selector(action_settings, talent_extension, buff_extension, self)
+		action_settings, new_action, new_sub_action = ActionUtils.resolve_action_selector(action_settings, talent_extension, buff_extension, self, owner_unit)
 		local action_kind = action_settings.kind
 
 		if not self.actions[action_kind] then
@@ -512,19 +512,13 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 				anim_time_scale = anim_time_scale * 1.2
 			end
 
-			local first_person_variable_id = nil
-			local hero_player = true
+			first_person_extension:animation_set_variable("attack_speed", anim_time_scale)
 
 			if CharacterStateHelper.is_enemy_character(owner_unit) then
-				first_person_variable_id = 1
-				hero_player = false
-			end
+				local first_person_variable_id = 1
 
-			if hero_player then
-				first_person_variable_id = Unit.animation_find_variable(first_person_unit, "attack_speed")
+				Unit.animation_set_variable(first_person_unit, first_person_variable_id, anim_time_scale)
 			end
-
-			Unit.animation_set_variable(first_person_unit, first_person_variable_id, anim_time_scale)
 
 			if not looping_event or looping_event and not self._looping_anim_event_started then
 				Unit.animation_event(first_person_unit, event)
@@ -536,7 +530,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 			if not script_data.disable_third_person_weapon_animation_events then
 				local third_person_variable_id = nil
-				hero_player = true
+				local hero_player = true
 
 				if CharacterStateHelper.is_enemy_character(owner_unit) then
 					third_person_variable_id = 1
@@ -916,7 +910,7 @@ WeaponUnitExtension._find_chain_action = function (self, actions, allowed_chain_
 		local action_name = found_chain_info.action
 		local sub_action_name = found_chain_info.sub_action
 		found_action_settings = actions[action_name][sub_action_name]
-		found_action_settings, action_name, sub_action_name = ActionUtils.resolve_action_selector(found_action_settings, self._talent_extension, self._buff_extension, self)
+		found_action_settings, action_name, sub_action_name = ActionUtils.resolve_action_selector(found_action_settings, self._talent_extension, self._buff_extension, self, self.unit)
 		local current_action_settings = self.current_action_settings
 
 		if current_action_settings and not self:_is_before_end_time(found_chain_info, t) then

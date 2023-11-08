@@ -133,7 +133,6 @@ require("scripts/unit_extensions/human/player_bot_unit/player_bot_input")
 require("scripts/unit_extensions/human/player_bot_unit/player_bot_navigation")
 require("scripts/unit_extensions/default_player_unit/talents/talent_extension")
 require("scripts/unit_extensions/default_player_unit/talents/husk_talent_extension")
-require("scripts/unit_extensions/default_player_unit/talents/client_husk_talent_extension")
 require("scripts/unit_extensions/default_player_unit/careers/career_extension")
 require("scripts/unit_extensions/weapons/area_damage/area_damage_extension")
 require("scripts/unit_extensions/weapons/area_damage/timed_explosion_extension")
@@ -256,26 +255,15 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 	self:_add_system("projectile_system", ProjectileSystem, entity_system_creation_context)
 	self:_add_system("mutator_item_system", MutatorItemSystem, entity_system_creation_context)
 	self:_add_system("weave_loadout_system", WeaveLoadoutSystem, entity_system_creation_context)
-
-	if Managers.mechanism:current_mechanism_name() == "versus" then
-		self:_add_system("ghost_mode_system", GhostModeSystem, entity_system_creation_context)
-		self:_add_system("versus_item_spawner_system", VersusItemSpawnerSystem, entity_system_creation_context)
-	end
-
+	self.entity_manager:add_ignore_extensions({
+		"VersusVolumeObjectiveExtension",
+		"VersusInteractObjectiveExtension",
+		"VersusPayloadObjectiveExtension",
+		"VersusSocketObjectiveExtension",
+		"VersusTargetObjectiveExtension",
+		"VersusMissionObjectiveExtension"
+	})
 	self:_add_system("world_marker_system", WorldMarkerSystem, entity_system_creation_context)
-
-	if GameSettingsDevelopment.disable_carousel then
-		self.entity_manager:add_ignore_extensions({
-			"VersusVolumeObjectiveExtension",
-			"VersusInteractObjectiveExtension",
-			"VersusPayloadObjectiveExtension",
-			"VersusSocketObjectiveExtension",
-			"VersusTargetObjectiveExtension",
-			"VersusMissionObjectiveExtension"
-		})
-	else
-		self:_add_system("versus_objective_system", VersusObjectiveSystem, entity_system_creation_context)
-	end
 
 	if DEDICATED_SERVER then
 		self.entity_manager:add_ignore_extensions({
@@ -310,7 +298,8 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 		"PlayerUnitVisualEffectsExtension",
 		"PlayerHuskVisualEffectsExtension"
 	}, nil, nil, nil, dont_run_on_dedicated_server)
-	self:_add_system("ai_slot_system", AISlotSystem, entity_system_creation_context)
+	self:_add_system("ai_slot_system", AISlotSystem2, entity_system_creation_context)
+	self:_add_system("ai_commander_system", AICommanderSystem, entity_system_creation_context)
 	self:_add_system("area_damage_system", AreaDamageSystem, entity_system_creation_context)
 	self:_add_system("death_system", DeathSystem, entity_system_creation_context)
 	self:_add_system("interactor_system", InteractionSystem, entity_system_creation_context)

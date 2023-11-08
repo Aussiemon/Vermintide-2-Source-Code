@@ -689,6 +689,24 @@ local function create_slot_widget(index, total_amount)
 				},
 				{
 					pass_type = "texture",
+					style_id = "secondary_texture_icon",
+					texture_id = "secondary_texture_icon",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return content.secondary_texture_icon
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "secondary_texture_icon_glow",
+					texture_id = "secondary_texture_icon_glow",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content, style)
+						return content.secondary_texture_icon
+					end
+				},
+				{
+					pass_type = "texture",
 					style_id = "texture_selected",
 					texture_id = "texture_selected",
 					retained_mode = RETAINED_MODE_ENABLED
@@ -794,13 +812,13 @@ local function create_slot_widget(index, total_amount)
 			texture_selected_up_arrow_glow = "hud_icon_up_glow",
 			texture_background = "hud_inventory_slot_bg_01",
 			use_count_text = "",
-			can_swap_text = "+",
+			texture_selected = "hud_inventory_slot_selection",
 			texture_selected_up_arrow = "hud_icon_up",
 			texture_selected_right_arrow_glow = "hud_icon_right_glow",
 			visible = true,
 			has_additional_slots = false,
 			texture_frame = "hud_inventory_slot",
-			texture_selected = "hud_inventory_slot_selection",
+			can_swap_text = "+",
 			texture_icon = "journal_icon_02",
 			is_filled = false,
 			texture_arrow = "console_consumable_icon_arrow_02",
@@ -911,6 +929,44 @@ local function create_slot_widget(index, total_amount)
 					0,
 					0,
 					5
+				}
+			},
+			secondary_texture_icon = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				texture_size = {
+					slot_icon_size[1] * 0.6,
+					slot_icon_size[2] * 0.6
+				},
+				color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					5,
+					0,
+					5
+				}
+			},
+			secondary_texture_icon_glow = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "right",
+				texture_size = {
+					slot_icon_size[1] * 0.6,
+					slot_icon_size[2] * 0.6
+				},
+				color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					5,
+					0,
+					4
 				}
 			},
 			texture_selected_left_arrow = {

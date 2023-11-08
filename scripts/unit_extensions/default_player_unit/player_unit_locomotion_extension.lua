@@ -1,10 +1,11 @@
 require("scripts/helpers/mover_helper")
+require("scripts/unit_extensions/default_player_unit/third_person_idle_fullbody_animation_control")
 
 PlayerUnitLocomotionExtension = class(PlayerUnitLocomotionExtension)
 IS_NEW_FRAME = false
 local POSITION_LOOKUP = POSITION_LOOKUP
 local MAX_MOVE_SPEED = 99.9999
-local MOVE_SPEED_ANIM_LERP_TIME = 0.3
+local MOVE_SPEED_ANIM_LERP_TIME = 0.15
 
 PlayerUnitLocomotionExtension.set_new_frame = function ()
 	IS_NEW_FRAME = true
@@ -78,6 +79,7 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 	self._climb_entrance = nil
 	self._climb_exit = nil
 	self.wanted_position = Vector3Box()
+	self.third_person_idle_fullbody_animation_control = ThirdPersonIdleFullbodyAnimationControl:new(unit)
 end
 
 PlayerUnitLocomotionExtension.set_mover_filter_property = function (self, property, bool)
@@ -214,15 +216,11 @@ PlayerUnitLocomotionExtension.small_sample_size_average_velocity = function (sel
 	return self._small_sample_size_average_velocity:unbox()
 end
 
-PlayerUnitLocomotionExtension.extensions_ready = function (self)
+PlayerUnitLocomotionExtension.extensions_ready = function (self, world, unit)
 	self.first_person_extension = ScriptUnit.extension(self.unit, "first_person_system")
-	local first_person_unit = self.first_person_extension and self.first_person_extension.first_person_unit
-
-	if first_person_unit then
-		self._move_speed_anim_var_1p = Unit.animation_find_variable(first_person_unit, "move_speed")
-	end
-
 	self.status_extension = ScriptUnit.extension(self.unit, "status_system")
+
+	self.third_person_idle_fullbody_animation_control:extensions_ready(world, unit)
 end
 
 PlayerUnitLocomotionExtension.last_position_on_navmesh = function (self)
@@ -306,13 +304,9 @@ PlayerUnitLocomotionExtension.post_update = function (self, unit, input, dt, con
 	end
 
 	self.anim_move_speed = move_speed_lerp_val
-	local first_person_unit = self.first_person_extension and self.first_person_extension.first_person_unit
 
-	if first_person_unit and self._move_speed_anim_var_1p then
-		local fp_move_speed = self.on_ground and move_speed_lerp_val or 0
-
-		Unit.animation_set_variable(first_person_unit, self._move_speed_anim_var_1p, math.min(fp_move_speed, MAX_MOVE_SPEED))
-	end
+	self.first_person_extension:animation_set_variable("move_speed", math.min(move_speed_lerp_val, MAX_MOVE_SPEED), true)
+	self.third_person_idle_fullbody_animation_control:update(t)
 
 	if script_data.debug_player_skeletons then
 		local bones = Unit.bones(unit)
@@ -465,7 +459,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 			for i = 1, num_ai_units do
 				local ai_unit = ai_units[i]
 				local breed = ScriptUnit.extension(ai_unit, "ai_system")._breed
-				local is_alive = ScriptUnit.extension(ai_unit, "health_system"):is_alive()
+				local is_alive = HEALTH_ALIVE[ai_unit]
 				local ai_extension = ScriptUnit.extension(ai_unit, "ai_system")
 
 				if is_alive and ai_extension.player_locomotion_constrain_radius ~= nil and not no_clip_filter[breed.armor_category] then
@@ -511,7 +505,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 
 			for i = 1, num_ai_units do
 				local ai_unit = ai_units[i]
-				local is_alive = ScriptUnit.extension(ai_unit, "health_system"):is_alive()
+				local is_alive = HEALTH_ALIVE[ai_unit]
 				local ai_extension = ScriptUnit.extension(ai_unit, "ai_system")
 
 				if is_alive and ai_extension.player_locomotion_constrain_radius ~= nil then
@@ -994,6 +988,10 @@ PlayerUnitLocomotionExtension.teleport_to = function (self, pos, rot)
 
 	if rot ~= nil then
 		self.first_person_extension:set_rotation(rot)
+	end
+
+	if IS_WINDOWS and not self.player.bot_player then
+		Application.reset_dlss()
 	end
 
 	self:move_to_non_intersecting_position()

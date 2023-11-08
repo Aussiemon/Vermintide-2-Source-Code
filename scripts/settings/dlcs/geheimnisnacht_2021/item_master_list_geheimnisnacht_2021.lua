@@ -6,7 +6,7 @@ ItemMasterList.wpn_geheimnisnacht_2021_side_objective = {
 	inventory_icon = "icons_placeholder",
 	left_hand_unit = "units/weapons/player/pup_ritual_site_01/wpn_ritual_site_01",
 	rarity = "plentiful",
-	gamepad_hud_icon = "hud_icon_grimoire",
+	gamepad_hud_icon = "hud_icon_geheimnisnacht_2021",
 	hud_icon = "hud_inventory_icon_geheimnisnacht_2021",
 	item_type = "potion",
 	can_wield = CanWieldAllItemTemplates
@@ -232,6 +232,125 @@ ItemMasterList.es_1h_sword_shield_skin_03_runed_03 = {
 		"es_knight",
 		"es_mercenary"
 	}
+}
+ItemMasterList.we_longbow_skin_06_runed_03 = {
+	description = "we_longbow_skin_06_runed_03_description",
+	rarity = "unique",
+	display_name = "we_longbow_skin_06_runed_03_name",
+	inventory_icon = "icon_wpn_we_bow_03_t2_runed_03",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	left_hand_unit = "units/weapons/player/wpn_we_bow_03_t2/wpn_we_bow_03_t2_runed_01",
+	template = "longbow_template_1",
+	hud_icon = "weapon_generic_icon_staff_3",
+	display_unit = "units/weapons/weapon_display/display_bow",
+	item_type = "weapon_skin",
+	matching_item_key = "we_longbow",
+	can_wield = {
+		"we_shade",
+		"we_maidenguard",
+		"we_waywatcher"
+	}
+}
+ItemMasterList.wh_crossbow_skin_04_runed_03 = {
+	description = "wh_crossbow_skin_04_runed_03_description",
+	rarity = "unique",
+	display_name = "wh_crossbow_skin_04_runed_03_name",
+	inventory_icon = "icon_wpn_emp_crossbow_03_t2_runed_03",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	left_hand_unit = "units/weapons/player/wpn_emp_crossbow_03_t2/wpn_emp_crossbow_03_t2_runed_01",
+	template = "crossbow_template_1",
+	hud_icon = "weapon_generic_icon_crossbow",
+	display_unit = "units/weapons/weapon_display/display_rifle",
+	item_type = "weapon_skin",
+	matching_item_key = "wh_crossbow",
+	can_wield = {
+		"wh_zealot",
+		"wh_bountyhunter",
+		"wh_captain"
+	}
+}
+ItemMasterList.bw_spear_staff_skin_04_runed_03 = {
+	description = "bw_spear_staff_skin_04_runed_03_description",
+	rarity = "unique",
+	display_name = "bw_spear_staff_skin_04_runed_03_name",
+	inventory_icon = "icon_wpn_brw_spear_staff_04_runed_03",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
+	right_hand_unit = "units/weapons/player/wpn_brw_spear_staff_04/wpn_brw_spear_staff_04_runed_01",
+	template = "staff_spark_spear_template_1",
+	hud_icon = "weapon_generic_icon_staff_3",
+	display_unit = "units/weapons/weapon_display/display_staff",
+	item_type = "weapon_skin",
+	matching_item_key = "bw_skullstaff_spear",
+	can_wield = {
+		"bw_scholar",
+		"bw_adept",
+		"bw_unchained"
+	}
+}
+ItemMasterList.dw_handgun_skin_02_runed_03 = {
+	description = "dw_handgun_skin_02_runed_03_description",
+	rarity = "unique",
+	display_name = "dw_handgun_skin_02_runed_03_name",
+	inventory_icon = "icon_wpn_dw_handgun_01_t2_runed_03",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_dw_handgun_01_t2/wpn_dw_handgun_01_t2_runed_01",
+	template = "handgun_template_1",
+	hud_icon = "weapon_generic_icon_staff_3",
+	display_unit = "units/weapons/weapon_display/display_rifle",
+	item_type = "weapon_skin",
+	matching_item_key = "dr_handgun",
+	can_wield = {
+		"dr_ironbreaker",
+		"dr_ranger"
+	}
+}
+ItemMasterList.es_repeating_handgun_skin_02_runed_03 = {
+	description = "es_repeating_handgun_skin_02_runed_03_description",
+	rarity = "unique",
+	display_name = "es_repeating_handgun_skin_02_runed_03_name",
+	inventory_icon = "icon_wpn_emp_handgun_repeater_t2_runed_03",
+	slot_type = "weapon_skin",
+	information_text = "information_weapon_skin",
+	right_hand_unit = "units/weapons/player/wpn_emp_handgun_repeater_t2/wpn_emp_handgun_repeater_t2_runed_01",
+	template = "repeating_handgun_template_1",
+	hud_icon = "weapon_generic_icon_staff_3",
+	display_unit = "units/weapons/weapon_display/display_rifle",
+	item_type = "weapon_skin",
+	matching_item_key = "es_repeating_handgun",
+	can_wield = {
+		"es_huntsman",
+		"es_knight",
+		"es_mercenary"
+	}
+}
+ItemMasterList.frame_geheimnisnacht_04 = {
+	description = "frame_0112_description",
+	temporary_template = "frame_geheimnisnacht_04",
+	display_name = "frame_0112_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_geheimnisnacht_04",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
+ItemMasterList.frame_geheimnisnacht_05 = {
+	description = "frame_0113_description",
+	temporary_template = "frame_geheimnisnacht_05",
+	display_name = "frame_0113_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_geheimnisnacht_05",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
 }
 ItemMasterList.frame_0110 = {
 	description = "frame_0110_description",

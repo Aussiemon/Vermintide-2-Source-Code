@@ -67,7 +67,7 @@ BTPackMasterEscortRatOgreAction.run = function (self, unit, blackboard, t, dt)
 
 	local ogre_blackboard = BLACKBOARDS[escort_slot.ogre]
 
-	if ogre_blackboard.is_angry or blackboard.previous_attacker or not AiUtils.unit_alive(ogre) then
+	if ogre_blackboard.is_angry or blackboard.previous_attacker or not HEALTH_ALIVE[ogre] then
 		local breed = blackboard.breed
 		local ai_simple = ScriptUnit.extension(unit, "ai_system")
 

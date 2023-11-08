@@ -179,7 +179,7 @@ BTAttackAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	navigation_extension:set_enabled(true)
 	navigation_extension:set_max_speed(default_move_speed)
 
-	if blackboard.move_state ~= "idle" and AiUtils.unit_alive(unit) then
+	if blackboard.move_state ~= "idle" and HEALTH_ALIVE[unit] then
 		blackboard.move_state = "idle"
 	end
 

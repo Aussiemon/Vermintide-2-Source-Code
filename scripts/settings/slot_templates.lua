@@ -30,6 +30,9 @@ SlotTypeSettings = {
 		dialogue_surrounded_count = 2
 	}
 }
+local dummy_data = {
+	disable_slot_search = true
+}
 SlotTemplates = {
 	normal = {
 		skaven_horde = {
@@ -85,7 +88,8 @@ SlotTemplates = {
 			slot_type = "large",
 			avoid_slots_behind_overwhelmed_target = false,
 			min_wait_queue_distance = 3
-		}
+		},
+		boss = dummy_data
 	},
 	hard = {
 		skaven_horde = {
@@ -141,7 +145,8 @@ SlotTemplates = {
 			slot_type = "large",
 			avoid_slots_behind_overwhelmed_target = false,
 			min_wait_queue_distance = 3
-		}
+		},
+		boss = dummy_data
 	},
 	harder = {
 		skaven_horde = {
@@ -197,7 +202,8 @@ SlotTemplates = {
 			slot_type = "large",
 			avoid_slots_behind_overwhelmed_target = false,
 			min_wait_queue_distance = 3
-		}
+		},
+		boss = dummy_data
 	},
 	hardest = {
 		skaven_horde = {
@@ -253,7 +259,8 @@ SlotTemplates = {
 			slot_type = "large",
 			avoid_slots_behind_overwhelmed_target = false,
 			min_wait_queue_distance = 3
-		}
+		},
+		boss = dummy_data
 	},
 	cataclysm = {
 		skaven_horde = {
@@ -280,6 +287,7 @@ SlotTemplates = {
 			avoid_slots_behind_overwhelmed_target = false,
 			min_wait_queue_distance = 3
 		},
+		skaven_boss = dummy_data,
 		chaos_horde = {
 			abandon_slot_when_blocked = false,
 			abandon_slot_when_staggered = true,
@@ -309,7 +317,8 @@ SlotTemplates = {
 			slot_type = "large",
 			avoid_slots_behind_overwhelmed_target = false,
 			min_wait_queue_distance = 3
-		}
+		},
+		boss = dummy_data
 	},
 	cataclysm_2 = {
 		skaven_horde = {
@@ -365,7 +374,8 @@ SlotTemplates = {
 			slot_type = "large",
 			avoid_slots_behind_overwhelmed_target = false,
 			min_wait_queue_distance = 3
-		}
+		},
+		boss = dummy_data
 	},
 	cataclysm_3 = {
 		skaven_horde = {
@@ -421,7 +431,8 @@ SlotTemplates = {
 			slot_type = "large",
 			avoid_slots_behind_overwhelmed_target = false,
 			min_wait_queue_distance = 3
-		}
+		},
+		boss = dummy_data
 	}
 }
 

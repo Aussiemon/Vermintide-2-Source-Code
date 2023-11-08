@@ -111,6 +111,25 @@ CommonPopupSettings.bless = {
 		}
 	}
 }
+CommonPopupSettings.shovel = {
+	body_text = "upsell_popup_shovel_body",
+	title_text = "upsell_popup_new_career_title",
+	ok_button_text = "menu_close",
+	button_text = "upsell_popup_shovel_button",
+	popup_type = "upsell",
+	class_name = "UpsellPopup",
+	background_texture = "shovel_upsell_popup_bg",
+	definitions = local_require("scripts/ui/dlc_upsell/upsell_popup_definitions"),
+	input_desc = {
+		actions = {
+			{
+				input_action = "confirm",
+				priority = 1,
+				description_text = "upsell_popup_shovel_button"
+			}
+		}
+	}
+}
 CommonPopupSettings.belakor = {
 	popup_type = "reminder",
 	button_text = "menu_accept",

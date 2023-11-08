@@ -2171,7 +2171,7 @@ UITooltipPasses = {
 							local highest_compared_power_level = 0
 
 							for _, item_to_check in ipairs(pass_data.items) do
-								if item_to_check.backend_id ~= item.backend_id and highest_compared_power_level < item_to_check.power_level then
+								if item_to_check.backend_id ~= item.backend_id and highest_compared_power_level < (item_to_check.power_level or -1) then
 									highest_compared_power_level = item_to_check.power_level
 								end
 							end
@@ -3657,6 +3657,7 @@ UITooltipPasses = {
 				return 0
 			end
 
+			local style_id = pass_definition.style_id
 			local alpha_multiplier = pass_data.alpha_multiplier
 			local alpha = 255 * alpha_multiplier
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
@@ -3671,6 +3672,9 @@ UITooltipPasses = {
 			local title_text_shadow_style = style.title_text_shadow
 			local text_pass_data = data.text_pass_data
 			text_pass_data.text_id = text_id
+			local localize = not style_id or ui_style.localize
+			title_text_style.localize = localize
+			title_text_shadow_style.localize = localize
 			local text_size = data.text_size
 			local text_width = size[1] - frame_margin * 2
 			text_size[1] = text_width
@@ -3902,7 +3906,8 @@ UITooltipPasses = {
 
 			if ui_style and ui_style.localize then
 				title = Localize(title)
-				description = Localize(description)
+				local description_values = additional_option_data.description_values
+				description = UIUtils.format_localized_description(description, description_values)
 			end
 
 			local total_height = frame_margin * 0.5

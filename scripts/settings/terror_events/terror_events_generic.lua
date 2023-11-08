@@ -3,6 +3,54 @@ local function count_bosses_alive()
 end
 
 GenericTerrorEvents = {
+	encampment = {
+		{
+			"spawn_encampment",
+			unit_compositions_id = 1,
+			encampment_id = 1,
+			optional_pos = {
+				0,
+				0,
+				0
+			}
+		}
+	},
+	encampment2 = {
+		{
+			"spawn_encampment",
+			unit_compositions_id = 1,
+			encampment_id = 6,
+			optional_pos = {
+				0,
+				0,
+				0
+			}
+		}
+	},
+	encampment3 = {
+		{
+			"spawn_encampment",
+			unit_compositions_id = 1,
+			encampment_id = 7,
+			optional_pos = {
+				0,
+				0,
+				0
+			}
+		}
+	},
+	encampment4 = {
+		{
+			"spawn_encampment",
+			unit_compositions_id = 1,
+			encampment_id = 8,
+			optional_pos = {
+				0,
+				0,
+				0
+			}
+		}
+	},
 	boss_event_rat_ogre = {
 		{
 			"create_boss_door_group",

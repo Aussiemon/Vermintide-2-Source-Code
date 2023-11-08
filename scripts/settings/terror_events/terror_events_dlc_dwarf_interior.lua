@@ -686,7 +686,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			limit_spawners = 4,
+			limit_spawners = 8,
 			spawner_id = "brewery_event_hard_c",
 			composition_type = "storm_vermin_shields_small"
 		},
@@ -731,7 +731,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			limit_spawners = 4,
+			limit_spawners = 8,
 			spawner_id = "brewery_event_hard_d",
 			composition_type = "storm_vermin_shields_small"
 		},
@@ -864,13 +864,13 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			limit_spawners = 4,
+			limit_spawners = 8,
 			spawner_id = "brewery_event",
 			composition_type = "storm_vermin_shields_small"
 		},
 		{
 			"delay",
-			duration = 5
+			duration = 10
 		},
 		{
 			"continue_when",
@@ -1083,7 +1083,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 40,
 			condition = function (t)
-				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_storm_vermin_commander") < 3
+				return count_event_breed("skaven_clan_rat") < 3 and count_event_breed("skaven_storm_vermin_commander") < 3 and count_event_breed("skaven_ratling_gunner", "skaven_warpfire_thrower", "skaven_poison_wind_globadier", "skaven_pack_master") < 1
 			end
 		},
 		{
@@ -1159,7 +1159,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			limit_spawners = 2,
+			limit_spawners = 4,
 			spawner_id = "tunnel_B_extra_spawn",
 			composition_type = "event_small"
 		},
@@ -1169,7 +1169,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			limit_spawners = 2,
+			limit_spawners = 4,
 			spawner_id = "tunnel_B_extra_spawn",
 			composition_type = "plague_monks_medium"
 		},
@@ -1179,7 +1179,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			limit_spawners = 2,
+			limit_spawners = 4,
 			spawner_id = "tunnel_B_extra_spawn",
 			composition_type = "event_extra_spice_medium"
 		},
@@ -1225,7 +1225,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"event_horde",
-			limit_spawners = 2,
+			limit_spawners = 8,
 			spawner_id = "tunnel_C_extra_spawn",
 			composition_type = "event_medium_shield"
 		},

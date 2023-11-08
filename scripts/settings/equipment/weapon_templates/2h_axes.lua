@@ -1177,6 +1177,7 @@ local weapon_template = {
 	right_hand_attachment_node_linking = AttachmentNodeLinking.two_handed_melee_weapon,
 	display_unit = "units/weapons/weapon_display/display_2h_axes",
 	wield_anim = "to_2h_hammer",
+	state_machine = "units/beings/player/first_person_base/state_machines/melee/2h_hammer",
 	buff_type = "MELEE_2H",
 	weapon_type = "AXE_2H",
 	max_fatigue_points = 6,

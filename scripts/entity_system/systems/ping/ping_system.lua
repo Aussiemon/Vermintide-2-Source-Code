@@ -492,9 +492,11 @@ PingSystem._add_unit_ping = function (self, pinger_unit, pinged_unit, flash, pin
 	local sender_player = Managers.player:unit_owner(pinger_unit)
 
 	if sender_player and sender_player.local_player then
+		local ai_system = Managers.state.entity:system("ai_system")
+		local attributes = ai_system:get_attributes(pinged_unit)
 		local breed = Unit.get_data(pinged_unit, "breed")
 
-		if breed and breed.boss then
+		if breed and breed.boss or attributes.grudge_marked then
 			Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", pinged_unit, "ping")
 		end
 	end
@@ -650,52 +652,55 @@ PingSystem._play_ping_vo = function (self, pinger_unit, pinged_unit, ping_type, 
 	local event_data = FrameTable.alloc_table()
 	local dialogue_input = ScriptUnit.extension_input(pinger_unit, "dialogue_system")
 	event_data.is_ping = true
-	local is_enemy = Managers.state.side:is_enemy(pinger_unit, pinged_unit)
-	local is_dummy = Unit.get_data(pinged_unit, "is_dummy")
 
-	if is_enemy and not is_dummy then
-		local bb = BLACKBOARDS[pinged_unit]
+	if pinged_unit and Unit.alive(pinged_unit) then
+		local vo_event_name = nil
+		local is_enemy = Managers.state.side:is_enemy(pinger_unit, pinged_unit)
 
-		if bb then
-			local breed = bb.breed
-			local breed_name = breed.name
-			local pinged_unit_pos = POSITION_LOOKUP[pinged_unit] or Unit.world_position(pinged_unit, 0)
-			local pinged_unit_pos_flat = Vector3.flat(pinged_unit_pos)
-			local pinger_unit_pos = POSITION_LOOKUP[pinger_unit]
-			local pinger_unit_pos_flat = Vector3.flat(pinger_unit_pos)
-			event_data.enemy_tag = breed_name
-			event_data.enemy_unit = pinged_unit
-			event_data.distance = Vector3.distance(pinged_unit_pos_flat, pinger_unit_pos_flat)
+		if is_enemy then
+			local bb = BLACKBOARDS[pinged_unit]
 
-			dialogue_input:trigger_networked_dialogue_event("seen_enemy", event_data)
+			if bb then
+				local breed = bb.breed
+				local breed_name = breed.name
+				local pinged_unit_pos = POSITION_LOOKUP[pinged_unit] or Unit.world_position(pinged_unit, 0)
+				local pinged_unit_pos_flat = Vector3.flat(pinged_unit_pos)
+				local pinger_unit_pos = POSITION_LOOKUP[pinger_unit]
+				local pinger_unit_pos_flat = Vector3.flat(pinger_unit_pos)
+				event_data.enemy_tag = breed_name
+				event_data.enemy_unit = pinged_unit
+				event_data.distance = Vector3.distance(pinged_unit_pos_flat, pinger_unit_pos_flat)
+
+				dialogue_input:trigger_networked_dialogue_event("seen_enemy", event_data)
+			end
+
+			return
 		end
 
-		return
-	end
+		local status_extension = ScriptUnit.has_extension(pinged_unit, "status_system")
 
-	local status_extension = ScriptUnit.has_extension(pinged_unit, "status_system")
+		if status_extension then
+			local event = status_extension:disabled_vo_reason()
 
-	if status_extension then
-		local event = status_extension:disabled_vo_reason()
+			if event then
+				event_data.source_name = ScriptUnit.extension(pinger_unit, "dialogue_system").context.player_profile
+				event_data.target_name = ScriptUnit.extension(pinged_unit, "dialogue_system").context.player_profile
 
-		if event then
-			event_data.source_name = ScriptUnit.extension(pinger_unit, "dialogue_system").context.player_profile
-			event_data.target_name = ScriptUnit.extension(pinged_unit, "dialogue_system").context.player_profile
+				dialogue_input:trigger_networked_dialogue_event(event, event_data)
+			end
 
-			dialogue_input:trigger_networked_dialogue_event(event, event_data)
+			return
 		end
 
-		return
-	end
+		local lookat_tag = Unit.get_data(pinged_unit, "lookat_tag")
 
-	local lookat_tag = Unit.get_data(pinged_unit, "lookat_tag")
+		if lookat_tag then
+			event_data.item_tag = lookat_tag or Unit.debug_name(pinged_unit)
 
-	if lookat_tag then
-		event_data.item_tag = lookat_tag or Unit.debug_name(pinged_unit)
+			dialogue_input:trigger_networked_dialogue_event("seen_item", event_data)
 
-		dialogue_input:trigger_networked_dialogue_event("seen_item", event_data)
-
-		return
+			return
+		end
 	end
 end
 

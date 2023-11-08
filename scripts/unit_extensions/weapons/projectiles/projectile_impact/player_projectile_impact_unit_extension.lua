@@ -122,7 +122,7 @@ PlayerProjectileImpactUnitExtension._do_raycast = function (self, unit, from, to
 		local hit_normal = hit[INDEX_NORMAL]
 		local hit_actor = hit[INDEX_ACTOR]
 		local hit_unit = Actor.unit(hit_actor)
-		local valid = self:_valid_target(unit, hit_unit)
+		local valid = self:_valid_target(unit, hit_unit, self._owner_unit)
 
 		if valid then
 			local num_actors = Unit.num_actors(hit_unit)
@@ -170,7 +170,7 @@ PlayerProjectileImpactUnitExtension.update_sphere_sweep = function (self, unit, 
 			local hit_normal = hit.normal
 			local hit_actor = hit.actor
 			local hit_unit = Actor.unit(hit_actor)
-			local valid = self:_valid_target(unit, hit_unit)
+			local valid = self:_valid_target(unit, hit_unit, self.owner_unit)
 
 			if valid then
 				local num_actors = Unit.num_actors(hit_unit)
@@ -193,8 +193,8 @@ PlayerProjectileImpactUnitExtension.update_sphere_sweep = function (self, unit, 
 	end
 end
 
-PlayerProjectileImpactUnitExtension._valid_target = function (self, unit, hit_unit)
-	if unit == hit_unit or Unit.is_frozen(hit_unit) then
+PlayerProjectileImpactUnitExtension._valid_target = function (self, unit, hit_unit, owner_unit)
+	if unit == hit_unit or owner_unit == hit_unit or Unit.is_frozen(hit_unit) then
 		return false
 	end
 

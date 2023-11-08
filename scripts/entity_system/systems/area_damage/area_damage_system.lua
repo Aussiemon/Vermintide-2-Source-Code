@@ -12,7 +12,9 @@ local RPCS = {
 	"rpc_abort_damage_blob",
 	"rpc_damage_wave_set_state",
 	"rpc_create_damage_wave",
-	"rpc_create_thornsister_push_wave"
+	"rpc_create_thornsister_push_wave",
+	"rpc_necromancer_create_curse_weave",
+	"rpc_necromancer_create_curse_area"
 }
 local extensions = {
 	"AreaDamageExtension",
@@ -62,6 +64,10 @@ AreaDamageSystem.on_add_extension = function (self, world, unit, extension_name,
 		self.num_liquid_extensions = new_index
 	end
 
+	if extension.is_transient and self.is_server then
+		Managers.level_transition_handler.transient_package_loader:add_unit(unit, extension.transient_name_override)
+	end
+
 	return extension
 end
 
@@ -79,6 +85,10 @@ AreaDamageSystem.on_remove_extension = function (self, unit, extension_name)
 		liquid_extension_indexes[last_extension] = extension_index
 		liquid_extension_indexes[extension] = nil
 		self.num_liquid_extensions = num_liquid_extensions - 1
+	end
+
+	if extension.is_transient and self.is_server then
+		Managers.level_transition_handler.transient_package_loader:remove_unit(unit)
 	end
 
 	AreaDamageSystem.super.on_remove_extension(self, unit, extension_name)
@@ -316,31 +326,33 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 		local item_data = rawget(ItemMasterList, damage_source)
 
 		if breed and item_data and not IGNORED_ITEM_TYPES_FOR_BUFFS[item_data.item_type] then
-			local attack_type = explosion_data.attack_type or "aoe"
+			local attack_type = "aoe"
 
 			if item_data and item_data.item_type == "grenade" then
-				attack_type = item_data.item_type
+				attack_type = "grenade"
 			end
 
-			local send_to_server = false
+			if not explosion_template.ignore_buffs then
+				local send_to_server = false
 
-			if attacker_player and attacker_player.remote then
-				local peer_id = attacker_player.peer_id
-				local attack_type_id = NetworkLookup.buff_attack_types[explosion_data.attack_type or "aoe"]
-				local network_manager = Managers.state.network
-				local attacker_unit_id = network_manager:unit_game_object_id(attacker_unit)
-				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
-				local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
-				local buff_weapon_type_id = NetworkLookup.buff_weapon_types["n/a"]
-				local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+				if attacker_player and attacker_player.remote then
+					local peer_id = attacker_player.peer_id
+					local attack_type_id = NetworkLookup.buff_attack_types[attack_type]
+					local network_manager = Managers.state.network
+					local attacker_unit_id = network_manager:unit_game_object_id(attacker_unit)
+					local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
+					local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
+					local buff_weapon_type_id = NetworkLookup.buff_weapon_types["n/a"]
+					local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-				RPC.rpc_buff_on_attack(channel_id, attacker_unit_id, hit_unit_id, attack_type_id, is_critical_strike and allow_critical_proc or false, hit_zone_id, 1, buff_weapon_type_id)
-				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, target_number, send_to_server, "n/a")
-			elseif attacker_player then
-				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, target_number, send_to_server, "n/a")
+					RPC.rpc_buff_on_attack(channel_id, attacker_unit_id, hit_unit_id, attack_type_id, is_critical_strike and allow_critical_proc or false, hit_zone_id, 1, buff_weapon_type_id)
+					DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, target_number, send_to_server, "n/a")
+				elseif attacker_player then
+					DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, target_number, send_to_server, "n/a")
+				end
 			end
 
-			if not explosion_template.no_aggro and not breed.is_player then
+			if not explosion_template.no_aggro and not breed.cannot_be_aggroed then
 				AiUtils.aggro_unit_of_enemy(hit_unit, attacker_unit)
 			end
 		end
@@ -382,7 +394,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 
 		DamageUtils.add_damage_network_player(damage_profile, target_index, actual_power_level, hit_unit, attacker_unit, hit_zone_name, impact_position, hit_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, source_attacker_unit)
 
-		local target_alive = AiUtils.unit_alive(hit_unit)
+		local target_alive = HEALTH_ALIVE[hit_unit]
 
 		if target_alive then
 			DamageUtils.stagger_ai(t, damage_profile, target_index, actual_power_level, hit_unit, attacker_unit, hit_zone_name, hit_direction, boost_curve_multiplier, is_critical_strike, shield_blocked, damage_source, source_attacker_unit)
@@ -390,7 +402,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 			explosion_data.on_death_func(hit_unit)
 		end
 
-		DamageUtils.apply_dot(damage_profile, target_index, full_power_level, hit_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, explosion_template, source_attacker_unit)
+		DamageUtils.apply_dot(damage_profile, target_index, full_power_level, hit_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, explosion_data, source_attacker_unit)
 
 		if push_speed and DamageUtils.is_player_unit(hit_unit) then
 			local status_extension = ScriptUnit.extension(hit_unit, "status_system")
@@ -559,6 +571,90 @@ AreaDamageSystem.rpc_create_thornsister_push_wave = function (self, channel_id, 
 	}
 
 	damage_wave_extension:launch_wave(nil, optional_target_position, optional_data)
+end
+
+AreaDamageSystem.rpc_necromancer_create_curse_weave = function (self, channel_id, source_unit_id, position, wave_direction, num_instances)
+	local source_unit = self.unit_storage:unit(source_unit_id)
+
+	if not source_unit then
+		return
+	end
+
+	local unit_name = "units/hub_elements/empty"
+	local damage_wave_template = "necromancer_curse_wave"
+	local talent_extension = ScriptUnit.has_extension(source_unit, "talent_system")
+
+	if talent_extension and talent_extension:has_talent("sienna_necromancer_6_3") then
+		damage_wave_template = "necromancer_curse_wave_linger"
+	end
+
+	local wave_template = DamageWaveTemplates.templates[damage_wave_template]
+	local extension_init_data = {
+		area_damage_system = {
+			player_units_inside = {},
+			ai_hit_by_wavefront = {}
+		}
+	}
+	local num_waves = wave_template.num_waves
+	local spawn_separation_dist = wave_template.spawn_separation_dist
+	local target_separation_dist = wave_template.target_separation_dist
+	local wave_distance = (wave_template.max_speed + wave_template.start_speed * 0.5) * wave_template.time_of_life
+	local talent_extension = ScriptUnit.extension(source_unit, "talent_system")
+	local has_circle_talent = false
+
+	if has_circle_talent then
+		local step = 2 * math.pi / num_waves
+
+		for i = 0, num_waves - 1 do
+			local angle = i * step
+			local direction = Quaternion.rotate(Quaternion.axis_angle(Vector3.up(), angle), wave_direction)
+			local spawn_position = position + direction * spawn_separation_dist
+			local target_position = position + direction * wave_distance
+			local damage_wave_extension = self:_create_damage_wave(source_unit, spawn_position, damage_wave_template, unit_name, extension_init_data)
+
+			damage_wave_extension:launch_wave(nil, target_position)
+		end
+	else
+		local rotation = Quaternion.look(wave_direction, Vector3.up())
+		local right = Quaternion.right(rotation)
+
+		for i = -(num_waves * 0.5) + 0.5, num_waves * 0.5 - 0.5 do
+			local spawn_position = position + right * i * spawn_separation_dist
+			local target_position = position + right * i * target_separation_dist + wave_direction * wave_distance
+
+			if script_data.debug_necromancer_curse_wave then
+				QuickDrawerStay:sphere(spawn_position, 0.5, Colors.get("yellow"))
+				QuickDrawerStay:sphere(target_position, 0.5, Colors.get("green"))
+			end
+
+			local damage_wave_extension = self:_create_damage_wave(source_unit, spawn_position, damage_wave_template, unit_name, extension_init_data)
+
+			damage_wave_extension:launch_wave(nil, target_position)
+		end
+	end
+end
+
+AreaDamageSystem.rpc_necromancer_create_curse_area = function (self, channel_id, source_unit_id, position, wave_direction, num_instances)
+	local source_unit = self.unit_storage:unit(source_unit_id)
+
+	if not source_unit then
+		return
+	end
+
+	local world = self.world
+	local owner_unit = self.unit_storage:unit(source_unit_id)
+	local explosion_template = ExplosionTemplates.sienna_necromancer_curse_area
+
+	if explosion_template.explosion then
+		local is_husk = true
+		local is_server = Managers.state.network.is_server
+
+		DamageUtils.create_explosion(world, owner_unit, position, Quaternion.identity(), explosion_template, 1, "career_ability", is_server, is_husk, source_unit, false, nil, source_unit)
+	end
+
+	if explosion_template.aoe then
+		DamageUtils.create_aoe(world, owner_unit, position, "career_ability", explosion_template)
+	end
 end
 
 AreaDamageSystem.rpc_add_damage_wave_fx = function (self, channel_id, damage_wave_unit_id, position, rotation, fx_idx, name_index)

@@ -1008,10 +1008,16 @@ function flow_callback_material_dissolve_chr_inventory(params)
 	assert(params.inventory_type, "[flow_callback_material_dissolve_chr_inventory] You need to specify inventory type")
 
 	local unit = params.unit
-	local outfit_items = Unit.get_data(unit, params.inventory_type .. "_items") or {}
+	local inventory_items = {}
 
-	for i = 1, #outfit_items do
-		params.unit = outfit_items[i]
+	if params.inventory_type == "weapon" then
+		inventory_items = Unit.get_data(unit, "other_items") or {}
+	else
+		inventory_items = Unit.get_data(unit, params.inventory_type .. "_items") or {}
+	end
+
+	for i = 1, #inventory_items do
+		params.unit = inventory_items[i]
 
 		flow_callback_material_dissolve(params)
 	end
@@ -1112,12 +1118,39 @@ function flow_callback_material_fade_chr_inventory(params)
 	assert(params.inventory_type, "[flow_callback_material_fade_chr_inventory] You need to specify inventory type")
 
 	local unit = params.unit
-	local outfit_items = Unit.get_data(unit, params.inventory_type .. "_items") or {}
+	local inventory_items = {}
 
-	for i = 1, #outfit_items do
-		params.unit = outfit_items[i]
+	if params.inventory_type == "weapon" then
+		inventory_items = Unit.get_data(unit, "other_items") or {}
+	else
+		inventory_items = Unit.get_data(unit, params.inventory_type .. "_items") or {}
+	end
+
+	for i = 1, #inventory_items do
+		params.unit = inventory_items[i]
 
 		flow_callback_material_fade(params)
+	end
+end
+
+function flow_callback_visibility_chr_inventory(params)
+	assert(params.unit, "[flow_callback_visibility_chr_inventory] You need to specify the Unit")
+
+	local parent_unit = params.unit
+	local visibility = params.visibility
+	local items = {}
+
+	for _, v in ipairs({
+		"outfit",
+		"stump",
+		"helmet",
+		"other"
+	}) do
+		items = Unit.get_data(parent_unit, v .. "_items") or {}
+
+		for i = 1, #items do
+			Unit.set_unit_visibility(items[i], visibility)
+		end
 	end
 end
 
@@ -1215,7 +1248,6 @@ function flow_callback_chr_editor_inventory_spawn(params)
 	if inventory_configuration ~= nil then
 		local outfit_items = Unit.get_data(unit, "outfit_items") or {}
 		local helmet_items = Unit.get_data(unit, "helmet_items") or {}
-		local shield_items = Unit.get_data(unit, "shield_items") or {}
 		local other_items = Unit.get_data(unit, "other_items") or {}
 
 		for i = 1, #inventory_configuration.items do
@@ -1256,9 +1288,7 @@ function flow_callback_chr_editor_inventory_spawn(params)
 
 			local item_unit_template_name = item.unit_extension_template or "ai_inventory_item"
 
-			if item_unit_template_name == "ai_shield_unit" then
-				table.insert(shield_items, item_unit)
-			elseif item_unit_template_name == "ai_helmet_unit" then
+			if item_unit_template_name == "ai_helmet_unit" then
 				table.insert(helmet_items, item_unit)
 			elseif item_unit_template_name == "ai_outfit_unit" then
 				table.insert(outfit_items, item_unit)
@@ -1277,7 +1307,6 @@ function flow_callback_chr_editor_inventory_spawn(params)
 
 		Unit.set_data(unit, "outfit_items", outfit_items)
 		Unit.set_data(unit, "helmet_items", helmet_items)
-		Unit.set_data(unit, "shield_items", shield_items)
 		Unit.set_data(unit, "other_items", other_items)
 	end
 
@@ -1291,7 +1320,6 @@ function flow_callback_chr_editor_inventory_unspawn(params)
 	local world = Unit.world(unit)
 	local outfit_items = Unit.get_data(unit, "outfit_items") or {}
 	local helmet_items = Unit.get_data(unit, "helmet_items") or {}
-	local shield_items = Unit.get_data(unit, "shield_items") or {}
 	local other_items = Unit.get_data(unit, "other_items") or {}
 
 	for i = 1, #outfit_items do
@@ -1302,17 +1330,12 @@ function flow_callback_chr_editor_inventory_unspawn(params)
 		World.destroy_unit(world, helmet_items[i])
 	end
 
-	for i = 1, #shield_items do
-		World.destroy_unit(world, shield_items[i])
-	end
-
 	for i = 1, #other_items do
 		World.destroy_unit(world, other_items[i])
 	end
 
 	Unit.set_data(unit, "outfit_items", {})
 	Unit.set_data(unit, "helmet_items", {})
-	Unit.set_data(unit, "shield_items", {})
 	Unit.set_data(unit, "other_items", {})
 
 	return {
@@ -1323,26 +1346,10 @@ end
 function flow_callback_chr_editor_inventory_drop(params)
 	local unit = params.unit
 	local world = Unit.world(unit)
-	local shield_items = Unit.get_data(unit, "shield_items") or {}
 	local other_items = Unit.get_data(unit, "other_items") or {}
 
 	for i = 1, #other_items do
 		local item_unit = other_items[i]
-		local node_linking_data = Unit.get_data(item_unit, "node_linking_data") or {}
-
-		if node_linking_data then
-			unlink_attachment(node_linking_data, world, item_unit)
-			Unit.flow_event(item_unit, "lua_dropped")
-
-			local actor = Unit.create_actor(item_unit, "rp_dropped")
-
-			Actor.add_angular_velocity(actor, Vector3(math.random(), math.random(), math.random()) * 5)
-			Actor.add_velocity(actor, optional_drop_direction or Vector3(2 * math.random() - 0.5, 2 * math.random() - 0.5, 4.5))
-		end
-	end
-
-	for i = 1, #shield_items do
-		local item_unit = shield_items[i]
 		local node_linking_data = Unit.get_data(item_unit, "node_linking_data") or {}
 
 		if node_linking_data then
@@ -1379,16 +1386,10 @@ function flow_callback_chr_enemy_inventory_send_event(params)
 		Unit.flow_event(helmet_items[i], event)
 	end
 
-	local shield_items = Unit.get_data(unit, "shield_items") or {}
+	local stump_items = Unit.get_data(unit, "stump_items") or {}
 
-	for i = 1, #shield_items do
-		Unit.flow_event(shield_items[i], event)
-	end
-
-	local shield_items = Unit.get_data(unit, "stump_items") or {}
-
-	for i = 1, #shield_items do
-		Unit.flow_event(shield_items[i], event)
+	for i = 1, #stump_items do
+		Unit.flow_event(stump_items[i], event)
 	end
 
 	local other_items = Unit.get_data(unit, "other_items") or {}

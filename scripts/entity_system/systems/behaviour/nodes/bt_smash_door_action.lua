@@ -126,12 +126,9 @@ BTSmashDoorAction.StateInit.on_enter = function (self, params)
 end
 
 BTSmashDoorAction.StateInit.update = function (self, dt, t)
-	local unit = self.unit
 	local blackboard = self.blackboard
-	local unit_position = POSITION_LOOKUP[unit]
-	local distance_squared = Vector3.distance_squared(self.entrance_pos:unbox(), unit_position)
 
-	if distance_squared < 1 then
+	if blackboard.is_in_smartobject_range then
 		local locomotion_extension = blackboard.locomotion_extension
 
 		locomotion_extension:set_wanted_velocity(Vector3.zero())
@@ -220,9 +217,8 @@ end
 BTSmashDoorAction.StateOpening.update = function (self, dt, t)
 	local blackboard = self.blackboard
 	local target_unit = self.target_unit
-	local health_extension = ScriptUnit.extension(target_unit, "health_system")
 
-	if not health_extension:is_alive() then
+	if not HEALTH_ALIVE[target_unit] then
 		return BTSmashDoorAction.StateMovingToSmartObjectExit
 	end
 
@@ -260,10 +256,9 @@ end
 BTSmashDoorAction.StateAttacking.update = function (self, dt, t)
 	local blackboard = self.blackboard
 	local target_unit = self.target_unit
-	local health_extension = ScriptUnit.extension(target_unit, "health_system")
 	local door_extension = ScriptUnit.extension(target_unit, "door_system")
 
-	if not health_extension:is_alive() or door_extension:is_open() and not door_extension:is_opening() then
+	if not HEALTH_ALIVE[target_unit] or door_extension:is_open() and not door_extension:is_opening() then
 		if door_extension.move_to_exit_when_opened then
 			return BTSmashDoorAction.StateMovingToSmartObjectExit
 		else
@@ -344,6 +339,14 @@ BTSmashDoorAction.StateMovingToSmartObjectExit.update = function (self, dt, t)
 end
 
 BTSmashDoorAction.anim_cb_damage = function (self, unit, blackboard)
+	if blackboard.smash_door.target_unit then
+		local action = blackboard.action
+
+		AiUtils.damage_target(blackboard.smash_door.target_unit, unit, action, action.damage)
+	end
+end
+
+BTSmashDoorAction.anim_cb_attack_overlap_done = function (self, unit, blackboard)
 	if blackboard.smash_door.target_unit then
 		local action = blackboard.action
 

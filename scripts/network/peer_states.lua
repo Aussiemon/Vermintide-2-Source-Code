@@ -176,6 +176,8 @@ PeerStates.Loading = {
 
 		self.game_started = false
 		self.is_ingame = nil
+
+		Managers.level_transition_handler.transient_package_loader:hot_join_sync(self.peer_id)
 	end,
 	rpc_is_ingame = function (self)
 		print("[PSM] Got rpc_is_ingame in PeerStates.Loading, is that ok?")

@@ -151,7 +151,7 @@ achievements.woods_wall_kill_grind = {
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return statistics_db:get_persistent_stat(stats_id, "woods_wall_kill") > 500
+		return statistics_db:get_persistent_stat(stats_id, "woods_wall_kill") >= 500
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local damage_data = event_data[register_kill_damage_data]
@@ -273,7 +273,7 @@ achievements.woods_triple_lift = {
 		local num_vortexed_units = 0
 
 		for unit, data in pairs(template_data.lifted_units) do
-			if AiUtils.unit_alive(unit) then
+			if HEALTH_ALIVE[unit] then
 				local bb = BLACKBOARDS[unit]
 
 				if bb and bb.in_vortex_state and (bb.in_vortex_state == "in_vortex_init" or bb.in_vortex_state == "in_vortex") then
@@ -447,7 +447,7 @@ achievements.woods_chaos_pinata = {
 			template_data.lifted_units[lifted_unit] = {}
 
 			for unit, data in pairs(template_data.lifted_units) do
-				if not AiUtils.unit_alive(unit) then
+				if not HEALTH_ALIVE[unit] then
 					template_data.lifted_units[unit] = nil
 				end
 			end
@@ -743,7 +743,7 @@ achievements.woods_bleed_boss = {
 
 			if victim_breed.boss then
 				for unit, damage_total in pairs(template_data.target_bosses) do
-					if not AiUtils.unit_alive(unit) then
+					if not HEALTH_ALIVE[unit] then
 						template_data.target_bosses[unit] = nil
 
 						if template_data.target_max_healths and template_data.target_max_healths[unit] then

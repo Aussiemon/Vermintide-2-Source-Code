@@ -96,7 +96,7 @@ AIShieldUserExtension.can_block_attack = function (self, attacker_unit, trueflig
 	local unit = self._unit
 	local can_block = self.is_blocking
 
-	if not can_block or not AiUtils.unit_alive(unit) then
+	if not can_block or not HEALTH_ALIVE[unit] then
 		return false
 	end
 

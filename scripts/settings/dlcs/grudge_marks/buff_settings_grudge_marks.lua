@@ -48,6 +48,20 @@ settings.buff_templates = {
 			}
 		}
 	},
+	grudge_mark_elite_health = {
+		buffs = {
+			{
+				multiplier = 2,
+				name = "grudge_mark_health",
+				stat_buff = "max_health"
+			},
+			{
+				remove_buff_func = "ai_update_max_health",
+				name = "grudge_mark_health_update",
+				apply_buff_func = "ai_update_max_health"
+			}
+		}
+	},
 	grudge_mark_damage = {
 		buffs = {
 			{
@@ -137,7 +151,9 @@ settings.buff_templates = {
 		buffs = {
 			{
 				name = "grudge_mark_ranged_immune",
-				perk = buff_perks.invulnerable_ranged
+				perks = {
+					buff_perks.invulnerable_ranged
+				}
 			}
 		}
 	},
@@ -158,9 +174,11 @@ settings.buff_templates = {
 		activation_sound = "enemy_grudge_shield_start",
 		buffs = {
 			{
-				name = "grudge_mark_periodic_shield_buff",
 				duration = 5,
-				perk = buff_perks.invulnerable,
+				name = "grudge_mark_periodic_shield_buff",
+				perks = {
+					buff_perks.invulnerable
+				},
 				particles = {
 					{
 						orphaned_policy = "stop",
@@ -318,7 +336,9 @@ settings.buff_templates = {
 				name = "grudge_mark_crushing_blow",
 				buff_func = "ai_crushing_blow",
 				event = "on_damage_dealt",
-				perk = buff_perks.ai_unblockable
+				perks = {
+					buff_perks.ai_unblockable
+				}
 			},
 			{
 				remove_buff_func = "ai_remove_hit_sfx",
@@ -520,6 +540,37 @@ settings.buff_templates = {
 				duration = 5
 			}
 		}
+	},
+	grudge_mark_shockwave_attacks = {
+		buffs = {
+			{
+				event = "minion_attack_used",
+				name = "grudge_mark_shockwave_attacks",
+				buff_func = "grudge_mark_shockwave"
+			}
+		}
+	},
+	grudge_mark_ignore_death_aura = {
+		buffs = {
+			{
+				buff_to_add = "grudge_mark_ignore_death_buff",
+				name = "grudge_mark_ignore_death_aura",
+				remove_buff_func = "grudge_mark_ignore_death_aura_cleanup",
+				radius = 4,
+				update_func = "grudge_mark_ignore_death_aura_update",
+				update_frequency = 1
+			}
+		}
+	},
+	grudge_mark_ignore_death_buff = {
+		buffs = {
+			{
+				name = "grudge_mark_ignore_death_buff",
+				perks = {
+					buff_perks.ignore_death
+				}
+			}
+		}
 	}
 }
 settings.buff_function_templates = {
@@ -640,7 +691,7 @@ settings.buff_function_templates = {
 							enhancement_name = "intangible_mirror"
 						end
 
-						enhancements[#enhancements + 1] = BreedEnhancements.boss[enhancement_name]
+						enhancements[#enhancements + 1] = BreedEnhancements[enhancement_name]
 					end
 				end
 
@@ -706,17 +757,17 @@ settings.buff_function_templates = {
 										health_extension:force_set_wounded()
 									end
 								end
+
+								local death_extension = ScriptUnit.extension(ai_unit, "death_system")
+
+								death_extension:override_death_behavior(0, "fx/mutator_death_03")
+
+								local death_system = Managers.state.entity:system("death_system")
+
+								death_system:set_death_reaction_template(ai_unit, "despawn")
 							end,
 							enhancements = enhancements,
-							name_index = name_index,
-							prepare_func = ConflictUtils.override_extension_init_data,
-							extension_init_data = {
-								death_system = {
-									death_reaction_template = "despawn",
-									play_effect = "fx/mutator_death_03",
-									despawn_after_time = 0
-								}
-							}
+							name_index = name_index
 						}
 						local target_position = ConflictUtils.get_closest_position(mirror_pos, side.ENEMY_PLAYER_AND_BOT_POSITIONS)
 						local rot = ConflictUtils.look_at_position_flat(mirror_pos, target_position)
@@ -787,15 +838,12 @@ settings.buff_function_templates = {
 
 		buff.timer = t + frequency
 
-		if is_server() and ALIVE[unit] then
+		if is_server() and HEALTH_ALIVE[unit] then
 			local health_extension = ScriptUnit.has_extension(unit, "health_system")
+			local max_health = health_extension:get_max_health()
+			local amount_to_heal = max_health * buff.template.part_healed_of_max_heath
 
-			if health_extension and health_extension:is_alive() then
-				local max_health = health_extension:get_max_health()
-				local amount_to_heal = max_health * buff.template.part_healed_of_max_heath
-
-				health_extension:add_heal(unit, amount_to_heal, nil, "leech")
-			end
+			health_extension:add_heal(unit, amount_to_heal, nil, "leech")
 		end
 	end,
 	apply_curse_to_nearby_players = function (unit, buff, params, world)
@@ -1010,6 +1058,63 @@ settings.buff_function_templates = {
 				end
 			end
 		end
+	end,
+	grudge_mark_ignore_death_aura_update = function (unit, buff, params)
+		local side = Managers.state.side.side_by_unit[unit]
+		local broadphase_categories = side.ally_broadphase_categories
+		local nearby_allies = FrameTable.alloc_table()
+		local position = POSITION_LOOKUP[unit]
+		local radius = buff.template.radius
+		local num_allies = AiUtils.broadphase_query(position, radius, nearby_allies, broadphase_categories)
+		local buff_name = buff.template.buff_to_add
+		local inside_this_frame = FrameTable.alloc_table()
+		local inside_allies = buff.inside_allies or {}
+		buff.inside_allies = inside_allies
+
+		for i = 1, num_allies do
+			local ally_unit = nearby_allies[i]
+
+			if ally_unit ~= unit then
+				local buff_extension = ScriptUnit.has_extension(ally_unit, "buff_system")
+
+				if buff_extension then
+					if not inside_allies[ally_unit] then
+						inside_allies[ally_unit] = buff_extension:add_buff(buff_name)
+					end
+
+					inside_this_frame[ally_unit] = true
+				end
+			end
+		end
+
+		for ally_unit, buff_id in pairs(inside_allies) do
+			if not inside_this_frame[ally_unit] then
+				local buff_extension = ScriptUnit.has_extension(ally_unit, "buff_system")
+
+				if buff_extension then
+					buff_extension:remove_buff(buff_id)
+				end
+
+				inside_allies[ally_unit] = nil
+			end
+		end
+	end,
+	grudge_mark_ignore_death_aura_cleanup = function (unit, buff, params)
+		local inside_allies = buff.inside_allies
+
+		if not inside_allies then
+			return
+		end
+
+		for ally_unit, buff_id in pairs(inside_allies) do
+			local buff_extension = ScriptUnit.has_extension(ally_unit, "buff_system")
+
+			if buff_extension then
+				buff_extension:remove_buff(buff_id)
+			end
+		end
+
+		buff.inside_allies = nil
 	end
 }
 settings.proc_functions = {
@@ -1203,6 +1308,19 @@ settings.proc_functions = {
 			end
 		end
 	end,
-	ai_create_explosion = settings.buff_function_templates.ai_create_explosion
+	ai_create_explosion = settings.buff_function_templates.ai_create_explosion,
+	grudge_mark_shockwave = function (owner_unit, buff, params, world)
+		local damage_source = "grenade_frag_01"
+		local explosion_template = ExplosionTemplates.grudge_mark_shockwave
+		local explosion_position = POSITION_LOOKUP[owner_unit]
+
+		DamageUtils.create_explosion(world, owner_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, owner_unit, false)
+
+		local attacker_unit_id = Managers.state.unit_storage:go_id(owner_unit)
+		local explosion_template_id = NetworkLookup.explosion_templates[explosion_template.name]
+		local damage_source_id = NetworkLookup.damage_sources[damage_source]
+
+		Managers.state.network.network_transmit:send_rpc_clients("rpc_create_explosion", attacker_unit_id, false, explosion_position, Quaternion.identity(), explosion_template_id, 1, damage_source_id, 0, false, attacker_unit_id)
+	end
 }
-settings.max_stacks_functions = {}
+settings.stacking_buff_functions = {}

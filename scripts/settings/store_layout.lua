@@ -10,6 +10,9 @@ if not StoreLayoutConfig then
 		},
 		pages = {},
 		structure = {},
+		global_shader_flag_overrides = {
+			NECROMANCER_CAREER_REMAP = false
+		},
 		structure = {
 			featured = 1,
 			bundles = 1,
@@ -129,8 +132,11 @@ if not StoreLayoutConfig then
 	StoreLayoutConfig.pages.cosmetics = {
 		sound_event_enter = "Play_hud_store_category_cosmetics",
 		layout = "category",
+		item_filter = "item_type ~= bundle",
 		display_name = "menu_store_panel_title_cosmetics",
-		item_filter = "item_type ~= bundle"
+		global_shader_flag_overrides = {
+			NECROMANCER_CAREER_REMAP = false
+		}
 	}
 	StoreLayoutConfig.pages.discount_tab = {
 		sound_event_enter = "Play_hud_store_category_cosmetics",

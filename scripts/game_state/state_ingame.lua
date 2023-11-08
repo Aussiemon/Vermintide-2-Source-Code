@@ -57,6 +57,7 @@ require("scripts/managers/achievements/achievement_manager")
 require("scripts/managers/quest/quest_manager")
 require("scripts/managers/badge/badge_manager")
 require("scripts/managers/challenges/challenge_manager")
+require("scripts/managers/status_effect/status_effect_manager")
 require("scripts/utils/fps_reporter")
 require("scripts/utils/ping_reporter")
 require("scripts/managers/side/side_manager")
@@ -534,20 +535,6 @@ StateIngame.on_enter = function (self)
 		realm = realm
 	})
 
-	if game_mode == "versus" then
-		local game_mode = Managers.state.game_mode:game_mode()
-		local win_con = game_mode:win_conditions()
-		local round = 1
-		local win_condition = nil
-
-		if win_con:is_final_round() then
-			win_condition = win_con:previous_num_objectives_completed() + 1
-			round = 2
-		end
-
-		Managers.telemetry_events:versus_round_started(player_id, round, win_condition)
-	end
-
 	if self.network_server then
 		self.network_server:on_game_entered(network_manager)
 	elseif self.network_client then
@@ -847,7 +834,11 @@ StateIngame.update = function (self, dt, main_t)
 		Managers.eac:update(dt, t)
 	end
 
-	Managers.state.blood:update(dt, t)
+	if not DEDICATED_SERVER then
+		Managers.state.blood:update(dt, t)
+		Managers.state.status_effect:update(dt, t)
+	end
+
 	Managers.state.world_interaction:update(dt, t)
 
 	if Managers.state.controller_features then
@@ -1789,6 +1780,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	self:_teardown_world()
 	ScriptUnit.check_all_units_deleted()
 	level_transition_handler.enemy_package_loader:unload_enemy_packages(application_shutdown)
+	level_transition_handler.transient_package_loader:unload_all_packages(application_shutdown)
 	self.statistics_db:unregister_network_event_delegate()
 	Managers.time:unregister_timer("game")
 
@@ -1841,6 +1833,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 
 		Managers.deed:network_context_destroyed()
 		level_transition_handler.enemy_package_loader:network_context_destroyed()
+		level_transition_handler.transient_package_loader:network_context_destroyed()
 		Managers.party:network_context_destroyed()
 
 		local loading_context = self.parent.loading_context
@@ -1970,7 +1963,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	self.network_event_delegate = nil
 
 	if application_shutdown or self.release_level_resources then
-		level_transition_handler:release_level_resources(self.level_key)
+		level_transition_handler:release_level_resources()
 	end
 
 	Managers.transition:show_loading_icon()
@@ -2255,6 +2248,7 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 		Managers.state.blood = BloodManager:new(self.world)
 	end
 
+	Managers.state.status_effect = StatusEffectManager:new(self.world)
 	Managers.state.performance_title = PerformanceTitleManager:new(self.network_transmit, self.statistics_db, is_server)
 
 	Managers.state.performance_title:register_rpcs(network_event_delegate)

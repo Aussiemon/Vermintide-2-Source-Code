@@ -799,19 +799,17 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 				local passive_ability_data = career_settings.passive_ability
 				local activated_ability_data = career_settings.activated_ability[1]
 				local activated_display_name = activated_ability_data.display_name
-				local activated_description = activated_ability_data.description
 				local activated_icon = activated_ability_data.icon
 
 				self:_set_widget_text("player_ability_name", Localize(activated_display_name))
-				self:_set_widget_text("player_ability_description", Localize(activated_description))
+				self:_set_widget_text("player_ability_description", UIUtils.get_ability_description(activated_ability_data))
 				self:_set_simple_widget_texture("player_ability_icon", activated_icon)
 
 				local passive_display_name = passive_ability_data.display_name
-				local passive_description = passive_ability_data.description
 				local passive_icon = passive_ability_data.icon
 
 				self:_set_widget_text("player_passive_name", Localize(passive_display_name))
-				self:_set_widget_text("player_passive_description", Localize(passive_description))
+				self:_set_widget_text("player_passive_description", UIUtils.get_ability_description(passive_ability_data))
 				self:_set_simple_widget_texture("player_passive_icon", passive_icon)
 				self:_set_widget_text("player_career_name", Localize(career_display_name))
 				self:_create_player_portrait(portrait_frame_name, portrait_image, player_level_text)

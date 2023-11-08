@@ -43,6 +43,7 @@ LinkerTransportationExtension.init = function (self, extension_init_context, uni
 	self.takes_party = Unit.get_data(unit, "transportation_data", "takes_party")
 	self.return_to_start = Unit.get_data(unit, "transportation_data", "return_to_start")
 	self.transported_units = {}
+	self.transported_ai_units = {}
 	self.has_nav_obstacles = false
 	local bounding_box_mesh_name = Unit.get_data(unit, "transportation_data", "bounding_box_mesh")
 
@@ -183,34 +184,70 @@ LinkerTransportationExtension._link_all_transported_units = function (self, inte
 
 	if self.takes_party then
 		local player_and_bot_units = self._side.PLAYER_AND_BOT_UNITS
+		local num_transported_ai_units = 0
+		local transported_ai_units = self.transported_ai_units
 
 		for i = 1, #player_and_bot_units do
 			local unit = player_and_bot_units[i]
 
-			if unit_alive(unit) and unit ~= interactor_unit then
-				local status_ext = ScriptUnit.extension(unit, "status_system")
-				local player = Managers.player:owner(unit)
-				local is_dead = status_ext:is_dead()
-				local is_inside_transportation_unit = self:_is_inside_transportation_unit(unit)
-				local is_disabled = status_ext:is_disabled()
+			if unit_alive(unit) then
+				if unit ~= interactor_unit then
+					local status_ext = ScriptUnit.extension(unit, "status_system")
+					local player = Managers.player:owner(unit)
+					local is_dead = status_ext:is_dead()
+					local is_inside_transportation_unit = self:_is_inside_transportation_unit(unit)
+					local is_disabled = status_ext:is_disabled()
 
-				if not is_dead and is_inside_transportation_unit then
-					num_transported_units = num_transported_units + 1
-					transported_units[num_transported_units] = unit
+					if not is_dead and is_inside_transportation_unit then
+						num_transported_units = num_transported_units + 1
+						transported_units[num_transported_units] = unit
 
-					self:_link_transported_unit(unit)
-				elseif self:_is_bot(player) and not is_disabled then
-					num_transported_units = num_transported_units + 1
-					transported_units[num_transported_units] = player.player_unit
+						self:_link_transported_unit(unit)
+					elseif self:_is_bot(player) and not is_disabled then
+						num_transported_units = num_transported_units + 1
+						transported_units[num_transported_units] = player.player_unit
 
-					self:_link_transported_unit(player.player_unit, true)
-				elseif player.local_player and not is_dead and not is_disabled and not is_inside_transportation_unit then
-					num_transported_units = num_transported_units + 1
-					transported_units[num_transported_units] = player.player_unit
+						self:_link_transported_unit(player.player_unit, true)
+					elseif player.local_player and not is_dead and not is_disabled and not is_inside_transportation_unit then
+						num_transported_units = num_transported_units + 1
+						transported_units[num_transported_units] = player.player_unit
 
-					self:_link_transported_unit(player.player_unit, true)
+						self:_link_transported_unit(player.player_unit, true)
+					end
+				end
+
+				if self.is_server then
+					local commander_extension = ScriptUnit.extension(unit, "ai_commander_system")
+
+					if commander_extension then
+						local pets = commander_extension:get_controlled_units()
+
+						for pet_unit in pairs(pets) do
+							num_transported_ai_units = num_transported_ai_units + 1
+							transported_ai_units[pet_unit] = num_transported_ai_units
+
+							self:add_transporting_ai_unit(pet_unit, num_transported_ai_units)
+						end
+					end
 				end
 			end
+		end
+
+		if self.is_server and num_transported_ai_units > 0 then
+			local unit_storage = Managers.state.network.unit_storage
+			local units_to_sync = Script.new_array(num_transported_ai_units)
+			local slots_to_sync = Script.new_array(num_transported_ai_units)
+			local unit_idx = 0
+
+			for ai_unit, slot_id in pairs(transported_ai_units) do
+				unit_idx = unit_idx + 1
+				units_to_sync[unit_idx] = unit_storage:go_id(ai_unit)
+				slots_to_sync[unit_idx] = slot_id
+			end
+
+			local level_id = Level.unit_index(LevelHelper:current_level(self.world), self.unit)
+
+			Managers.state.network.network_transmit:send_rpc_clients("rpc_add_transporting_ai_units", level_id, units_to_sync, slots_to_sync)
 		end
 	end
 
@@ -249,7 +286,7 @@ LinkerTransportationExtension.update_units_inside_oobb = function (self)
 
 	for _, data in pairs(units_inside_oobb) do
 		for u, _ in pairs(data.units) do
-			if not AiUtils.unit_alive(u) then
+			if not HEALTH_ALIVE[u] then
 				data.units[u] = nil
 				data.count = data.count - 1
 			end
@@ -265,7 +302,7 @@ LinkerTransportationExtension.update_units_inside_oobb = function (self)
 		if not self:_is_bot(player) then
 			local u = player.player_unit
 
-			if AiUtils.unit_alive(u) then
+			if HEALTH_ALIVE[u] then
 				local u_pos = Unit.world_position(u, 0)
 				local is_inside = math.point_is_inside_oobb(u_pos, oobb_pose, oobb_size)
 				location.human[u] = is_inside
@@ -282,7 +319,7 @@ LinkerTransportationExtension.update_units_inside_oobb = function (self)
 	for i = 1, num_nearby_ai_units do
 		local u = nearby_ai_units[i]
 
-		if AiUtils.unit_alive(u) then
+		if HEALTH_ALIVE[u] then
 			local u_pos = Unit.world_position(u, 0)
 			local is_inside = math.point_is_inside_oobb(u_pos, oobb_pose, oobb_size)
 			location.ai[u] = is_inside
@@ -427,6 +464,10 @@ LinkerTransportationExtension.post_update = function (self, unit, input, dt, con
 
 		self:_unlink_all_transported_units()
 	end
+
+	if self.story_state == "moving_forward" then
+		self:_update_transported_ai_positions()
+	end
 end
 
 LinkerTransportationExtension._update_local_player_position = function (self)
@@ -542,6 +583,13 @@ LinkerTransportationExtension._unlink_all_transported_units = function (self)
 		end
 	end
 
+	for ai_unit in pairs(self.transported_ai_units) do
+		if unit_alive(ai_unit) then
+			self:remove_transporting_ai_unit(ai_unit)
+		end
+	end
+
+	table.clear(self.transported_ai_units)
 	Unit.flow_event(self.unit, "deactivate_collision")
 end
 
@@ -616,4 +664,101 @@ end
 
 LinkerTransportationExtension.assign_position_to_bot = function (self)
 	return Unit.world_position(self.unit, 0)
+end
+
+local AI_SLOT_SIZE = 0.5
+
+LinkerTransportationExtension.get_ai_slot = function (self, slot_id)
+	local unit = self.unit
+
+	if not self._ai_slot_offsets then
+		local min, max = nil
+
+		for i = 1, 3 do
+			if Unit.has_node(unit, "elevator_slot_0" .. i) then
+				local node = Unit.node(unit, "elevator_slot_0" .. i)
+				local position = Unit.local_position(unit, node)
+
+				if not min then
+					min = position
+					max = position
+				else
+					min = Vector3.min(min, position)
+					max = Vector3.max(max, position)
+				end
+			end
+		end
+
+		local box_shrink = 0.7
+		local center = Vector3.lerp(min, max, 0.5)
+		local from_center = Vector3.normalize(max - center) * box_shrink
+		min = min + from_center
+		max = max - from_center
+		local size = max - min
+		local slots_x = math.ceil(size.x / AI_SLOT_SIZE)
+		local slots_y = math.ceil(size.y / AI_SLOT_SIZE)
+		self._ai_slot_offsets = {
+			offset_start = Vector3Box(min),
+			num_slots_x = slots_x,
+			num_slots_y = slots_y
+		}
+	end
+
+	local offset_start = self._ai_slot_offsets.offset_start:unbox()
+	local slot_x = slot_id % self._ai_slot_offsets.num_slots_x
+	local slot_y = math.floor(slot_id / self._ai_slot_offsets.num_slots_x) % self._ai_slot_offsets.num_slots_y
+	local pose = Unit.world_pose(unit, 0)
+	local position = Matrix4x4.transform(pose, offset_start + Vector3(slot_x * AI_SLOT_SIZE, slot_y * AI_SLOT_SIZE, 0))
+
+	return position
+end
+
+LinkerTransportationExtension.add_transporting_ai_unit = function (self, unit, slot_id)
+	if not self._transporting then
+		return
+	end
+
+	if self.is_server then
+		local blackboard = BLACKBOARDS[unit]
+
+		if blackboard then
+			blackboard.is_transported = self
+			blackboard.transport_slot_id = slot_id
+		end
+	end
+
+	self.transported_ai_units[unit] = slot_id
+end
+
+LinkerTransportationExtension.remove_transporting_ai_unit = function (self, unit)
+	if self.is_server then
+		local blackboard = BLACKBOARDS[unit]
+
+		if blackboard then
+			blackboard.is_transported = nil
+			blackboard.transport_slot_id = nil
+		end
+	end
+
+	self.transported_ai_units[unit] = nil
+end
+
+LinkerTransportationExtension._update_transported_ai_positions = function (self)
+	for ai_unit, slot_id in pairs(self.transported_ai_units) do
+		if ALIVE[ai_unit] then
+			local slot_position = self:get_ai_slot(slot_id)
+			local locomotion_ext = ScriptUnit.has_extension(ai_unit, "locomotion_system")
+
+			if locomotion_ext then
+				local rotation = Unit.world_rotation(ai_unit, 0)
+				local velocity = slot_position - POSITION_LOOKUP[ai_unit]
+
+				locomotion_ext:teleport_to(slot_position, rotation, velocity, true)
+			else
+				Unit.set_local_position(ai_unit, 0, slot_position)
+			end
+		else
+			self.transported_ai_units[ai_unit] = nil
+		end
+	end
 end

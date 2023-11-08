@@ -9,12 +9,19 @@ GenericDeathExtension.init = function (self, extension_init_context, unit, exten
 	self.network_type = is_husk and "husk" or "unit"
 	self.is_alive = true
 	self.unit = unit
-	self.death_reaction_template = extension_init_data.death_reaction_template or Unit.get_data(unit, "death_reaction")
 	self.extension_init_data = extension_init_data
 	self.wall_nail_data = {}
 	self.second_hit_ragdoll = not extension_init_data.disable_second_hit_ragdoll
+end
 
-	fassert(self.death_reaction_template, "Missing death reaction template in unit data or extension init data.")
+GenericDeathExtension.freeze = function (self)
+	self.play_effect = nil
+	self.despawn_after_time = nil
+end
+
+GenericDeathExtension.override_death_behavior = function (self, despawn_after_time, play_effect)
+	self.despawn_after_time = despawn_after_time
+	self.play_effect = play_effect
 end
 
 GenericDeathExtension.force_end = function (self)

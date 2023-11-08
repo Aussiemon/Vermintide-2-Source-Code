@@ -89,13 +89,8 @@ AiHuskBaseExtension.breed = function (self)
 end
 
 AiHuskBaseExtension.update = function (self, unit, input, dt, context)
-	if self.broadphase_id then
-		local health_extension = ScriptUnit.has_extension(unit, "health_system")
-		local is_alive = health_extension and health_extension:is_alive()
-
-		if is_alive then
-			Broadphase.move(self.broadphase, self.broadphase_id, POSITION_LOOKUP[unit])
-		end
+	if self.broadphase_id and HEALTH_ALIVE[unit] then
+		Broadphase.move(self.broadphase, self.broadphase_id, POSITION_LOOKUP[unit])
 	end
 end
 

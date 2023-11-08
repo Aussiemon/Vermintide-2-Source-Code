@@ -187,11 +187,13 @@ DamageWaveHuskExtension.set_wave_arrived = function (self, unit)
 		WwiseUtils.trigger_unit_event(world, impact_wave_sound, unit)
 	end
 
-	local rotation = Unit.local_rotation(unit, 0)
-
-	World.stop_spawning_particles(world, self.running_wave_fx_id)
+	if self.running_wave_fx_id then
+		World.stop_spawning_particles(world, self.running_wave_fx_id)
+	end
 
 	if self.fx_name_arrived then
+		local rotation = Unit.local_rotation(unit, 0)
+
 		World.create_particles(world, self.fx_name_arrived, position_lookup[unit], rotation)
 	end
 

@@ -240,6 +240,7 @@ weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.rifle
 weapon_template.display_unit = "units/weapons/weapon_display/display_1h_handguns"
 weapon_template.wield_anim = "to_handgun"
 weapon_template.wield_anim_no_ammo = "to_handgun_noammo"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/ranged/handgun"
 weapon_template.crosshair_style = "default"
 weapon_template.reload_event = "reload"
 weapon_template.buff_type = "RANGED"

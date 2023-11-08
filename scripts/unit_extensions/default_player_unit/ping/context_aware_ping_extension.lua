@@ -305,75 +305,71 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 					if ping_ext then
 						local ghost_mode_ext = ScriptUnit.has_extension(hit_unit, "ghost_mode_system")
 
-						if not ghost_mode_ext or not ghost_mode_ext:is_in_ghost_mode() then
-							local health_ext = ScriptUnit.has_extension(hit_unit, "health_system")
+						if (not ghost_mode_ext or not ghost_mode_ext:is_in_ghost_mode()) and distance > 0.05 then
 							local status_ext = ScriptUnit.has_extension(hit_unit, "status_system")
 							local is_pickup = ScriptUnit.has_extension(hit_unit, "pickup_system")
-							local is_alive = health_ext and health_ext:is_alive()
 							local breed = Unit.get_data(hit_unit, "breed")
 							local has_breed = breed ~= nil
+							local is_alive = HEALTH_ALIVE[hit_unit]
+							local half_width, half_height = nil
 
-							if distance > 0.05 then
-								local half_width, half_height = nil
+							if is_pickup then
+								local _, half_extents = Unit.box(hit_unit, true)
+								half_width = half_extents.x * 0.75
+								half_height = half_extents.z * 0.75
+							elseif has_breed then
+								half_height = (breed.aoe_height or DEFAULT_BREED_AOE_HEIGHT) * 0.5
+								half_width = breed.aoe_radius or DEFAULT_BREED_AOE_RADIUS
+							elseif status_ext then
+								local _, half_extents = Unit.box(hit_unit, true)
+								half_width = half_extents.x * 0.75
+								half_height = half_extents.z
+							else
+								half_width = 0.25
+								half_height = 0.25
+							end
 
-								if is_pickup then
-									local _, half_extents = Unit.box(hit_unit, true)
-									half_width = half_extents.x * 0.75
-									half_height = half_extents.z * 0.75
-								elseif has_breed then
-									half_height = (breed.aoe_height or DEFAULT_BREED_AOE_HEIGHT) * 0.5
-									half_width = breed.aoe_radius or DEFAULT_BREED_AOE_RADIUS
-								elseif status_ext then
-									local _, half_extents = Unit.box(hit_unit, true)
-									half_width = half_extents.x * 0.75
-									half_height = half_extents.z
-								else
-									half_width = 0.25
-									half_height = 0.25
-								end
+							local hit_unit_center_pos = Unit.local_position(hit_unit, 0) + Vector3(0, 0, half_height)
+							local hit_offset = hit_position - hit_unit_center_pos
+							local x_diff = math.abs(Vector3.dot(hit_offset, camera_right))
+							local y_diff = math.abs(Vector3.dot(hit_offset, camera_up))
+							local epsilon = 0.01
+							local direct_hit = x_diff <= half_width + epsilon and y_diff <= half_height + epsilon
+							local utility = nil
 
-								local hit_unit_center_pos = Unit.local_position(hit_unit, 0) + Vector3(0, 0, half_height)
-								local hit_offset = hit_position - hit_unit_center_pos
-								local x_diff = math.abs(Vector3.dot(hit_offset, camera_right))
-								local y_diff = math.abs(Vector3.dot(hit_offset, camera_up))
-								local epsilon = 0.01
-								local direct_hit = x_diff <= half_width + epsilon and y_diff <= half_height + epsilon
-								local utility = nil
+							if direct_hit then
+								utility = math.huge
+							else
+								local angle_width = math.atan(half_width / distance)
+								local angle_height = math.atan(half_height / distance)
+								local angle_x_diff = math.atan(x_diff / distance)
+								local angle_y_diff = math.atan(y_diff / distance)
+								local x_offset = math.max(angle_x_diff - angle_width, epsilon) / math.log(angle_width)
+								local y_offset = math.max(angle_y_diff - angle_height, epsilon) / math.log(angle_width)
+								utility = 1 / (x_offset * y_offset)
+							end
 
-								if direct_hit then
-									utility = math.huge
-								else
-									local angle_width = math.atan(half_width / distance)
-									local angle_height = math.atan(half_height / distance)
-									local angle_x_diff = math.atan(x_diff / distance)
-									local angle_y_diff = math.atan(y_diff / distance)
-									local x_offset = math.max(angle_x_diff - angle_width, epsilon) / math.log(angle_width)
-									local y_offset = math.max(angle_y_diff - angle_height, epsilon) / math.log(angle_width)
-									utility = 1 / (x_offset * y_offset)
-								end
+							local is_enemy = has_breed and Managers.state.side:is_enemy(self._unit, hit_unit)
+							local is_incapacitated_player = status_ext and status_ext:is_disabled()
 
-								local is_enemy = has_breed and Managers.state.side:is_enemy(self._unit, hit_unit)
-								local is_incapacitated_player = status_ext and status_ext:is_disabled()
+							if (ping_ext.always_pingable or is_pickup or is_alive and (is_enemy or is_incapacitated_player)) and not darkness_system:is_in_darkness(hit_position) and best_ping_utility < utility then
+								ping_unit = hit_unit
+								ping_unit_distance = distance
+								best_ping_utility = utility
+								position = hit_position
+							end
 
-								if (ping_ext.always_pingable or is_pickup or is_alive and (is_enemy or is_incapacitated_player)) and not darkness_system:is_in_darkness(hit_position) and best_ping_utility < utility then
-									ping_unit = hit_unit
-									ping_unit_distance = distance
-									best_ping_utility = utility
-									position = hit_position
-								end
+							local is_valid_social_wheel_pickup = false
 
-								local is_valid_social_wheel_pickup = false
+							if is_pickup then
+								local pickup_settings = is_pickup:get_pickup_settings()
+								is_valid_social_wheel_pickup = pickup_settings.slot_name or pickup_settings.type == "ammo"
+							end
 
-								if is_pickup then
-									local pickup_settings = is_pickup:get_pickup_settings()
-									is_valid_social_wheel_pickup = pickup_settings.slot_name or pickup_settings.type == "ammo"
-								end
-
-								if (is_valid_social_wheel_pickup and distance <= INTERACT_RAY_DISTANCE or is_alive and status_ext) and best_social_utility < utility then
-									social_wheel_unit = hit_unit
-									social_wheel_unit_distance = distance
-									best_social_utility = utility
-								end
+							if (is_valid_social_wheel_pickup and distance <= INTERACT_RAY_DISTANCE or is_alive and status_ext) and best_social_utility < utility then
+								social_wheel_unit = hit_unit
+								social_wheel_unit_distance = distance
+								best_social_utility = utility
 							end
 						end
 					elseif not Unit.get_data(hit_unit, "breed") then

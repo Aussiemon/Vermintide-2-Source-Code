@@ -81,6 +81,8 @@ local function generate_non_refreshable_potion_template(potion_name)
 	weapon_template.left_hand_unit = "units/weapons/player/wpn_potion_buff/wpn_potion_buff"
 	weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.potion
 	weapon_template.wield_anim = "to_potion"
+	weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/common"
+	weapon_template.load_state_machine = false
 	weapon_template.gui_texture = "hud_consumable_icon_potion"
 	weapon_template.max_fatigue_points = 4
 	weapon_template.can_give_other = true

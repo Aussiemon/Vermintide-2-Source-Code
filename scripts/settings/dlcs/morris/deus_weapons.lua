@@ -292,6 +292,12 @@ DeusWeapons = DeusWeapons or {
 	deus_wh_hammer_book = {
 		base_item = "wh_hammer_book"
 	},
+	deus_bw_ghost_scythe = {
+		base_item = "bw_ghost_scythe"
+	},
+	deus_bw_necromancy_staff = {
+		base_item = "bw_necromancy_staff"
+	},
 	deus_wh_fencing_sword_unique1 = {
 		base_item = "wh_fencing_sword",
 		archetypes = {
@@ -1444,6 +1450,10 @@ DeusDefaultLoadout = DeusDefaultLoadout or {
 		slot_ranged = "deus_bw_deus_01",
 		slot_melee = "deus_bw_flame_sword"
 	},
+	bw_necromancer = {
+		slot_ranged = "deus_bw_necromancy_staff",
+		slot_melee = "deus_bw_ghost_scythe"
+	},
 	dr_ironbreaker = {
 		slot_ranged = "deus_dr_deus_01",
 		slot_melee = "deus_dr_shield_hammer"
@@ -1529,10 +1539,12 @@ DeusStartingWeaponTypeMapping = DeusStartingWeaponTypeMapping or {
 	we_dual_wield_sword_dagger = "deus_we_dual_wield_sword_dagger",
 	wh_hammer_book = "deus_wh_hammer_book",
 	wh_repeating_pistols = "deus_wh_repeating_pistols",
+	bw_ghost_scythe = "deus_bw_ghost_scythe",
 	es_sword_shield = "deus_es_sword_shield",
 	we_spear = "deus_we_spear",
 	es_longbow = "deus_es_longbow",
 	dr_shield_axe = "deus_dr_shield_axe",
+	bw_necromancy_staff = "deus_bw_necromancy_staff",
 	es_halberd = "deus_es_halberd",
 	es_dual_wield_hammer_sword = "deus_es_dual_wield_hammer_sword",
 	we_longbow = "deus_we_longbow",
@@ -2061,6 +2073,18 @@ DeusWeaponGroups = DeusWeaponGroups or {
 		default = "deus_wh_hammer_book",
 		slot_type = "melee",
 		can_wield = ItemMasterList.wh_hammer_book.can_wield,
+		items_per_rarity = {}
+	},
+	bw_ghost_scythe = {
+		default = "deus_bw_ghost_scythe",
+		slot_type = "melee",
+		can_wield = ItemMasterList.bw_ghost_scythe.can_wield,
+		items_per_rarity = {}
+	},
+	bw_necromancy_staff = {
+		default = "deus_bw_necromancy_staff",
+		slot_type = "ranged",
+		can_wield = ItemMasterList.bw_necromancy_staff.can_wield,
 		items_per_rarity = {}
 	}
 }

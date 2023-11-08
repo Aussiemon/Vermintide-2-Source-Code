@@ -3,7 +3,7 @@ require("scripts/unit_extensions/default_player_unit/inventory/gear_utils")
 require("scripts/managers/backend/backend_utils")
 
 SimpleInventoryExtension = class(SimpleInventoryExtension)
-SwapFromStorageType = SwapFromStorageType or CreateStrictEnumTable("First", "Unique", "Same", "SameOrAny")
+SwapFromStorageType = SwapFromStorageType or CreateStrictEnumTable("First", "Unique", "Same", "SameOrAny", "UnwieldPrio", "LowestUnwieldPrio")
 local consumable_slots = {
 	"slot_potion",
 	"slot_grenade",
@@ -117,6 +117,25 @@ SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 		end
 	end
 
+	local career_settings = career_extension:career_settings()
+
+	if career_settings.additional_inventory then
+		for slot_name, slot_items in pairs(career_settings.additional_inventory) do
+			for i = 1, #slot_items do
+				local item_data = ItemMasterList[slot_items[i]]
+				local slot_data = self:get_slot_data(slot_name)
+
+				if slot_data then
+					local skip_resync = true
+
+					self:store_additional_item(slot_name, item_data, skip_resync)
+				else
+					self:add_equipment(slot_name, item_data)
+				end
+			end
+		end
+	end
+
 	Unit.set_data(self._first_person_unit, "equipment", self._equipment)
 
 	if profile.default_wielded_slot then
@@ -217,6 +236,8 @@ SimpleInventoryExtension.game_object_initialized = function (self, unit, unit_go
 				self:_send_rpc_add_equipment_buffs(unit_go_id, slot_id, backend_id)
 			end
 		end
+
+		self:swap_equipment_from_storage(slot_name, SwapFromStorageType.UnwieldPrio, slot_data.item_data)
 	end
 
 	local wielded_slot = equipment.wielded_slot
@@ -501,6 +522,12 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 		if right_weapon then
 			right_weapon:on_unwield("right")
 		end
+
+		local wielded_slot_data = equipment.slots[equipment.wielded_slot]
+
+		if wielded_slot_data then
+			self:swap_equipment_from_storage(equipment.wielded_slot, SwapFromStorageType.UnwieldPrio, wielded_slot_data.item_data)
+		end
 	end
 
 	self:_stop_all_weapon_fx()
@@ -548,7 +575,7 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 
 	self:_spawn_attached_units(item_template.first_person_attached_units)
 
-	if slot_name == "slot_melee" or slot_name == "slot_ranged" then
+	if slot_name == "slot_melee" or slot_name == "slot_ranged" or item_template.is_utility_weapon then
 		self._previously_wielded_weapon_slot = slot_name
 	end
 
@@ -656,7 +683,21 @@ SimpleInventoryExtension.has_inventory_item = function (self, slot_name, item_na
 		local item_data = slot_data.item_data
 		local name = item_data.name
 
-		return name == item_name
+		if item_name == name then
+			return true
+		end
+	end
+
+	local additional_items = self:get_additional_items(slot_name)
+
+	if additional_items then
+		for additional_item_idx = 1, #additional_items do
+			local additional_item_data = additional_items[additional_item_idx]
+
+			if item_name == additional_item_data.name then
+				return true
+			end
+		end
 	end
 
 	return false
@@ -1180,6 +1221,15 @@ SimpleInventoryExtension.create_equipment_in_slot = function (self, slot_id, bac
 	end
 
 	self:destroy_slot(slot_id, true)
+
+	if slot_id == self._equipment.wielded_slot then
+		local default_state_machine = self._profile.default_state_machine
+
+		if default_state_machine then
+			self.first_person_extension:set_state_machine(default_state_machine)
+		end
+	end
+
 	self:_queue_item_spawn(slot_id, item_data, item_units.skin, ammo_percent)
 
 	local talent_extension = self.talent_extension
@@ -1529,11 +1579,14 @@ SimpleInventoryExtension.check_and_drop_pickups = function (self, drop_reason, o
 							local additional_item_data = additional_items[additional_item_idx]
 							local additional_item_template = BackendUtils.get_item_template(additional_item_data)
 							local additional_pickup_data = additional_item_template.pickup_data
-							local position, random_direction = get_pickup_drop_pos_dir(drop_position, override_dir, i)
 
-							drop_pickup(unit, additional_pickup_data, position, random_direction)
+							if additional_pickup_data then
+								local position, random_direction = get_pickup_drop_pos_dir(drop_position, override_dir, i)
 
-							i = i + 1
+								drop_pickup(unit, additional_pickup_data, position, random_direction)
+
+								i = i + 1
+							end
 						end
 					end
 				elseif slot_name == "slot_level_event" then
@@ -1689,7 +1742,7 @@ end
 
 SimpleInventoryExtension._wield_slot = function (self, equipment, slot_data, unit_1p, unit_3p, buff_extension)
 	Unit.flow_event(unit_1p, "lua_unwield")
-	Unit.animation_event(unit_1p, "unwield")
+	self.first_person_extension:animation_event("unwield")
 
 	if equipment.right_hand_wielded_unit then
 		Unit.flow_event(equipment.right_hand_wielded_unit, "lua_unwield")
@@ -1760,22 +1813,10 @@ SimpleInventoryExtension._wield_slot = function (self, equipment, slot_data, uni
 	local career_extension = ScriptUnit.extension(unit_3p, "career_system")
 	local career_index = career_extension:career_index()
 
-	if Unit.animation_has_variable(unit_1p, "career_index") then
-		local variable_index = Unit.animation_find_variable(unit_1p, "career_index")
-
-		Unit.animation_set_variable(unit_1p, variable_index, career_index)
-	end
-
 	if Unit.animation_has_variable(unit_3p, "career_index") then
 		local variable_index = Unit.animation_find_variable(unit_3p, "career_index")
 
 		Unit.animation_set_variable(unit_3p, variable_index, career_index)
-	end
-
-	if Unit.animation_has_variable(unit_1p, "profile_index") then
-		local variable_index = Unit.animation_find_variable(unit_1p, "profile_index")
-
-		Unit.animation_set_variable(unit_1p, variable_index, career_index)
 	end
 
 	local item_template = BackendUtils.get_item_template(item_data)
@@ -1860,17 +1901,23 @@ SimpleInventoryExtension._wield_slot = function (self, equipment, slot_data, uni
 			end
 		end
 
+		local state_machine = item_template.state_machine
+		state_machine = state_machine or self._profile.default_state_machine
+
+		if state_machine then
+			self.first_person_extension:set_state_machine(state_machine)
+		end
+
 		if play_wield_animation then
 			if Unit.animation_has_variable(unit_1p, "animation_variation_id") then
 				local weapon_skin_data = WeaponSkins.skins[slot_data.skin]
 				local weapon_skin_anim_overrides = weapon_skin_data and weapon_skin_data.action_anim_overrides
 				local animation_variation_id = weapon_skin_anim_overrides and weapon_skin_anim_overrides.animation_variation_id or 0
-				local animation_variation_param = Unit.animation_find_variable(unit_1p, "animation_variation_id")
 
-				Unit.animation_set_variable(unit_1p, animation_variation_param, animation_variation_id)
+				self.first_person_extension:animation_set_variable("animation_variation_id", animation_variation_id, true)
 			end
 
-			Unit.animation_event(unit_1p, wield_anim)
+			self.first_person_extension:animation_event(wield_anim)
 		end
 
 		if slot_data.right_unit_1p then
@@ -2143,18 +2190,46 @@ SimpleInventoryExtension.get_additional_item_swap_id = function (self, stored_it
 					break
 				end
 			end
+		elseif swap_type == SwapFromStorageType.UnwieldPrio then
+			local highest_prio = current_item and (current_item.unwield_prio or 0) or -1
+			local highest_prio_id = nil
+
+			for i = 1, #stored_items do
+				local prio = stored_items[i].unwield_prio or 0
+
+				if highest_prio < prio then
+					highest_prio = prio
+					highest_prio_id = i
+				end
+			end
+
+			return highest_prio_id
+		elseif swap_type == SwapFromStorageType.LowestUnwieldPrio then
+			local lowest_prio = current_item and (current_item.unwield_prio or 0) or math.huge
+			local lowest_prio_id = nil
+
+			for i = 1, #stored_items do
+				local prio = stored_items[i].unwield_prio or 0
+
+				if lowest_prio > prio then
+					lowest_prio = prio
+					lowest_prio_id = i
+				end
+			end
+
+			return lowest_prio_id
 		end
 	end
 
 	return item_id
 end
 
-SimpleInventoryExtension.can_swap_from_storage = function (self, slot_name, swap_type, current_item)
+SimpleInventoryExtension.can_swap_from_storage = function (self, slot_name, swap_type, optional_compare_item)
 	if self:has_additional_items(slot_name) then
 		swap_type = swap_type or SwapFromStorageType.First
-		current_item = current_item or self:get_item_data(slot_name)
+		optional_compare_item = optional_compare_item or self:get_item_data(slot_name)
 		local stored_items = self:get_additional_items(slot_name)
-		local item_id = self:get_additional_item_swap_id(stored_items, swap_type, current_item)
+		local item_id = self:get_additional_item_swap_id(stored_items, swap_type, optional_compare_item)
 
 		return stored_items[item_id] ~= nil, item_id, stored_items
 	end
@@ -2162,8 +2237,8 @@ SimpleInventoryExtension.can_swap_from_storage = function (self, slot_name, swap
 	return false
 end
 
-SimpleInventoryExtension.swap_equipment_from_storage = function (self, slot_name, swap_type, current_item)
-	local can_swap, item_id, stored_items = self:can_swap_from_storage(slot_name, swap_type, current_item)
+SimpleInventoryExtension.swap_equipment_from_storage = function (self, slot_name, swap_type, optional_compare_item)
+	local can_swap, item_id, stored_items = self:can_swap_from_storage(slot_name, swap_type, optional_compare_item)
 
 	if can_swap then
 		local stored_item = stored_items[item_id]
@@ -2175,9 +2250,9 @@ SimpleInventoryExtension.swap_equipment_from_storage = function (self, slot_name
 		if current_item then
 			self:store_additional_item(slot_name, current_item.item_data, true)
 			self:destroy_slot(slot_name)
-		else
-			self:_resync_stored_items(slot_name)
 		end
+
+		self:_resync_stored_items(slot_name)
 
 		local resync_data = {
 			slot_id = slot_name,

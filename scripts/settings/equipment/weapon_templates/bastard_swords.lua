@@ -1441,6 +1441,7 @@ weapon_template.right_hand_unit = "units/weapons/player/wpn_greatsword/wpn_great
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.two_handed_melee_weapon
 weapon_template.display_unit = "units/weapons/weapon_display/display_2h_swords"
 weapon_template.wield_anim = "to_bastard_sword"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/melee/bastard_sword"
 weapon_template.max_fatigue_points = 6
 weapon_template.dodge_count = 3
 weapon_template.buff_type = "MELEE_2H"

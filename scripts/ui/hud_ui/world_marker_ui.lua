@@ -2,6 +2,8 @@ require("scripts/ui/hud_ui/world_marker_templates/world_marker_template_ping")
 require("scripts/ui/hud_ui/world_marker_templates/world_marker_template_text_box")
 require("scripts/ui/hud_ui/world_marker_templates/world_marker_template_news_feed")
 require("scripts/ui/hud_ui/world_marker_templates/world_marker_template_store")
+require("scripts/ui/hud_ui/world_marker_templates/world_marker_template_pet_nameplate")
+require("scripts/ui/hud_ui/world_marker_templates/world_marker_template_pet_cancel")
 
 local temp_array_markers_to_remove = {}
 local temp_marker_raycast_queue = {}

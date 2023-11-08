@@ -9,7 +9,7 @@ local function has_end_zone_extension_name(end_zone_name, end_zone_extension)
 end
 
 local EndZoneExtensionTestify = {
-	is_end_zone_activated = function (end_zone_name, end_zone_extension)
+	is_end_zone_activated = function (end_zone_extension, end_zone_name)
 		if not has_end_zone_extension_name(end_zone_name, end_zone_extension) then
 			return Testify.RETRY
 		end
@@ -18,7 +18,7 @@ local EndZoneExtensionTestify = {
 	end
 }
 
-EndZoneExtensionTestify.teleport_player_to_end_zone_position = function (end_zone_name, end_zone_extension)
+EndZoneExtensionTestify.teleport_player_to_end_zone_position = function (end_zone_extension, end_zone_name)
 	if not has_end_zone_extension_name(end_zone_name, end_zone_extension) then
 		return Testify.RETRY
 	end

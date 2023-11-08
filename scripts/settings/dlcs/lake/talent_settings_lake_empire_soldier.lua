@@ -100,7 +100,9 @@ local talent_buff_templates = {
 	markus_questing_knight_perk_power_block = {
 		buffs = {
 			{
-				perk = buff_perks.power_block
+				perks = {
+					buff_perks.power_block
+				}
 			}
 		}
 	},
@@ -110,7 +112,9 @@ local talent_buff_templates = {
 				event = "on_stagger",
 				name = "vanguard",
 				buff_func = "heal_stagger_targets_on_melee",
-				perk = buff_perks.tank_healing
+				perks = {
+					buff_perks.tank_healing
+				}
 			}
 		}
 	},
@@ -120,7 +124,9 @@ local talent_buff_templates = {
 				event = "on_kill",
 				name = "bloodlust",
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
-				perk = buff_perks.smiter_healing
+				perks = {
+					buff_perks.smiter_healing
+				}
 			}
 		}
 	},

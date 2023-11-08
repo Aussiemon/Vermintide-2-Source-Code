@@ -304,7 +304,11 @@ HeroWindowWeaveForgeOverview._create_item_previewer = function (self, viewport_w
 		3,
 		0
 	}
-	local item_previewer = LootItemUnitPreviewer:new(item, preview_position, world, viewport, nil, invert_start_rotation)
+	local unique_id = nil
+	local invert_start_rotation = invert_start_rotation
+	local display_unit_key, use_highest_mip_levels, delayed_spawn = nil
+	local career_name_override = self._career_name
+	local item_previewer = LootItemUnitPreviewer:new(item, preview_position, world, viewport, unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels, delayed_spawn, career_name_override)
 	local callback = callback(self, "cb_unit_spawned_item_preview", item_previewer, item_key)
 
 	item_previewer:register_spawn_callback(callback)

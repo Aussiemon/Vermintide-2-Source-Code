@@ -11,7 +11,7 @@ RangedBuffTypes = {
 	RANGED = true,
 	RANGED_ABILITY = true
 }
-AttackTypes = table.enum("light_attack", "heavy_attack", "action_push", "projectile", "instant_projectile", "grenade")
+AttackTypes = table.enum("light_attack", "heavy_attack", "action_push", "projectile", "instant_projectile", "heavy_instant_projectile", "grenade")
 MeleeAttackTypes = {
 	[AttackTypes.light_attack] = true,
 	[AttackTypes.heavy_attack] = true
@@ -19,133 +19,140 @@ MeleeAttackTypes = {
 RangedAttackTypes = {
 	[AttackTypes.projectile] = true,
 	[AttackTypes.instant_projectile] = true,
+	[AttackTypes.heavy_instant_projectile] = true,
 	[AttackTypes.grenade] = true
 }
 StatBuffApplicationMethods = {
-	stagger_distance = "stacking_multiplier",
-	power_level_frenzy = "stacking_multiplier",
+	deus_coins_greed = "stacking_multiplier",
+	dummy_stagger = "stacking_bonus",
 	gromril_cooldown = "stacking_bonus",
-	max_health_alive = "stacking_multiplier",
-	clip_size = "stacking_multiplier",
-	headshot_damage = "stacking_multiplier",
-	grenade_extra_shot = "stacking_bonus",
-	vent_damage = "stacking_multiplier",
-	reduced_overcharge_from_passive = "stacking_multiplier",
-	first_melee_hit_damage = "stacking_multiplier",
-	increased_weapon_damage_ranged_to_wounded = "stacking_multiplier",
-	not_consume_grenade = "proc",
-	increased_weapon_damage_melee_1h = "stacking_multiplier",
-	damage_taken_to_overcharge = "stacking_multiplier",
+	headshot_multiplier = "stacking_multiplier",
+	increased_max_targets = "stacking_bonus",
+	power_level_ranged = "stacking_multiplier",
+	protection_chaos = "stacking_multiplier",
+	max_damage_taken_from_boss_or_elite = "min",
+	debuff_armoured = "stacking_bonus",
+	attack_speed_drakefire = "stacking_multiplier",
+	increased_balefire_dot_duration = "stacking_multiplier",
+	power_level_large = "stacking_multiplier",
+	critical_strike_effectiveness = "stacking_multiplier",
+	critical_strike_chance_melee = "stacking_bonus",
 	protection_gutter_runner = "stacking_multiplier",
-	not_consume_potion = "proc",
-	fatigue_regen = "stacking_multiplier",
-	curse_protection = "stacking_multiplier",
-	damage_taken_kd = "stacking_multiplier",
+	power_level_armoured = "stacking_multiplier",
+	vent_speed = "stacking_multiplier",
+	power_level_melee_cleave = "stacking_multiplier",
+	power_level_critical_strike = "stacking_multiplier",
 	damage_taken_elites = "stacking_multiplier",
 	damage_taken = "stacking_multiplier_multiplicative",
-	increase_luck = "stacking_multiplier",
-	power_level_melee_cleave = "stacking_multiplier",
+	damage_taken_kd = "stacking_multiplier",
+	not_consume_potion = "proc",
 	reduced_overcharge = "stacking_multiplier",
-	projectile_bounces = "stacking_bonus",
-	extra_shot = "stacking_bonus",
-	heal_self_on_heal_other = "proc",
+	critical_strike_chance_ranged = "stacking_bonus",
+	increased_weapon_damage_melee_1h = "stacking_multiplier",
+	not_consume_grenade = "proc",
 	faster_revive = "stacking_multiplier",
-	grimoire_max_health = "stacking_multiplier",
-	damage_taken_ranged = "stacking_multiplier",
+	push_power = "stacking_multiplier",
+	grenade_extra_shot = "stacking_bonus",
 	block_cost = "stacking_multiplier",
 	applied_stagger_distance = "stacking_multiplier",
 	timed_block_cost = "stacking_multiplier",
-	vent_speed = "stacking_multiplier",
-	hit_mass_reduction = "stacking_multiplier",
-	power_level_armoured = "stacking_multiplier",
-	critical_strike_chance_ranged = "stacking_bonus",
-	critical_strike_chance = "stacking_bonus",
-	critical_strike_effectiveness = "stacking_multiplier",
-	block_angle = "stacking_multiplier",
-	increased_max_targets = "stacking_bonus",
-	max_overcharge = "stacking_multiplier",
-	healing_received = "stacking_multiplier",
-	reduced_non_burn_damage = "stacking_multiplier",
+	push_range = "stacking_bonus",
+	reduced_overcharge_from_passive = "stacking_multiplier",
+	clip_size = "stacking_multiplier",
+	first_melee_hit_damage = "stacking_multiplier",
+	increased_weapon_damage_ranged_to_wounded = "stacking_multiplier",
+	attack_intensity_reset = "stacking_multiplier",
+	faster_respawn = "stacking_multiplier",
+	life_essence = "stacking_multiplier",
+	max_controlled_pets = "stacking_bonus_and_multiplier",
+	attack_intensity_decay = "stacking_multiplier",
 	reload_speed = "stacking_multiplier",
 	stun_duration = "stacking_multiplier",
 	cooldown_regen = "stacking_multiplier",
-	activated_cooldown = "stacking_multiplier",
-	increased_weapon_damage_heavy_attack = "stacking_multiplier",
-	push_power = "stacking_multiplier",
-	push_range = "stacking_bonus",
-	no_push_fatigue_cost = "proc",
 	power_level_chaos = "stacking_multiplier",
-	reduced_spread = "stacking_multiplier",
-	power_level = "stacking_multiplier",
-	reduced_spread_moving = "stacking_multiplier",
-	protection_chaos = "stacking_multiplier",
-	critical_strike_chance_melee = "stacking_bonus",
+	health_curse = "stacking_bonus",
+	increased_damage_to_balefire = "stacking_multiplier",
 	increased_weapon_damage_melee = "stacking_multiplier",
-	counter_push_power = "stacking_multiplier",
-	flat_power_level = "stacking_bonus",
-	attack_speed_drakefire = "stacking_multiplier",
-	max_health = "stacking_multiplier",
-	max_damage_taken_from_boss_or_elite = "min",
-	headshot_vulnerability = "stacking_multiplier",
+	power_level = "stacking_multiplier",
+	hit_force = "stacking_multiplier",
 	coop_stamina = "proc",
-	power_level_ranged = "stacking_multiplier",
-	faster_respawn = "stacking_multiplier",
-	headshot_multiplier = "stacking_multiplier",
-	protection_skaven = "stacking_multiplier",
-	power_level_melee = "stacking_multiplier",
-	increased_weapon_damage_ranged = "stacking_multiplier",
-	non_headshot_damage = "stacking_multiplier",
-	attack_intensity_decay = "stacking_multiplier",
-	protection_aoe = "stacking_multiplier",
-	potion_duration = "stacking_multiplier",
-	max_health_kd = "stacking_multiplier",
-	total_ammo = "stacking_multiplier",
-	attack_intensity_reset = "stacking_multiplier",
-	reduced_ranged_charge_time = "stacking_multiplier",
-	grenade_radius = "stacking_multiplier",
-	unbalanced_damage_dealt = "stacking_multiplier",
-	overcharge_regen = "stacking_multiplier",
+	extra_wounds = "stacking_bonus",
 	unbalanced_damage_taken = "stacking_bonus",
-	impact_vulnerability = "stacking_multiplier",
-	reduced_spread_shot = "stacking_multiplier",
+	increased_weapon_damage_ranged = "stacking_multiplier",
+	protection_aoe = "stacking_multiplier",
+	max_health_kd = "stacking_multiplier",
+	grenade_radius = "stacking_multiplier",
+	overcharge_regen = "stacking_multiplier",
+	grimoire_max_health = "stacking_multiplier",
 	overcharge_damage_immunity = "proc",
-	full_charge_boost = "stacking_multiplier",
-	dummy_stagger = "stacking_bonus",
-	increased_burn_damage = "stacking_multiplier",
-	max_fatigue = "stacking_bonus",
 	power_level_impact = "stacking_multiplier",
-	power_level_unarmoured = "stacking_multiplier",
-	shield_break_proc = "proc",
-	attack_speed = "stacking_multiplier",
-	increased_move_speed_while_aiming = "stacking_multiplier",
-	deus_coins_greed = "stacking_multiplier",
-	max_damage_taken = "min",
-	power_level_large = "stacking_multiplier",
-	protection_pack_master = "stacking_multiplier",
+	curse_protection = "stacking_multiplier",
 	increased_weapon_damage = "stacking_multiplier",
-	not_consume_medpack = "proc",
-	debuff_armoured = "stacking_bonus",
-	throw_speed_increase = "stacking_multiplier",
 	outer_block_angle = "stacking_multiplier",
-	hit_mass_amount = "stacking_multiplier",
-	increased_weapon_damage_melee_2h = "stacking_multiplier",
 	damage_dealt = "stacking_multiplier",
-	stagger_resistance = "stacking_multiplier",
 	increased_weapon_damage_poisoned_or_bleeding = "stacking_multiplier",
 	reduced_spread_hit = "stacking_multiplier",
 	power_level_super_armour = "stacking_multiplier",
-	hit_force = "stacking_multiplier",
-	health_curse = "stacking_bonus",
 	protection_ratling_gunner = "stacking_multiplier",
-	extra_wounds = "stacking_bonus",
+	max_damage_taken = "min",
+	movement_speed = "stacking_multiplier",
+	shield_break_proc = "proc",
+	full_charge_boost = "stacking_multiplier",
+	pet_life_time = "stacking_multiplier",
+	attack_intensity_threshold = "stacking_multiplier",
+	power_level_frenzy = "stacking_multiplier",
+	stagger_distance = "stacking_multiplier",
+	max_health_alive = "stacking_multiplier",
+	headshot_damage = "stacking_multiplier",
+	vent_damage = "stacking_multiplier",
+	counter_push_power = "stacking_multiplier",
+	damage_taken_to_overcharge = "stacking_multiplier",
+	fatigue_regen = "stacking_multiplier",
+	block_angle = "stacking_multiplier",
+	increase_luck = "stacking_multiplier",
+	hit_mass_amount = "stacking_multiplier",
+	max_health = "stacking_multiplier",
+	projectile_bounces = "stacking_bonus",
+	extra_shot = "stacking_bonus",
+	heal_self_on_heal_other = "proc",
+	stagger_resistance = "stacking_multiplier",
+	damage_taken_ranged = "stacking_multiplier",
+	unbalanced_damage_dealt = "stacking_multiplier",
+	hit_mass_reduction = "stacking_multiplier",
+	critical_strike_chance = "stacking_bonus",
+	max_overcharge = "stacking_multiplier",
+	reduced_non_burn_damage = "stacking_multiplier",
+	activated_cooldown = "stacking_multiplier",
+	increased_weapon_damage_heavy_attack = "stacking_multiplier",
+	no_push_fatigue_cost = "proc",
+	reduced_spread = "stacking_multiplier",
+	reduced_spread_moving = "stacking_multiplier",
+	increased_burn_dot_damage = "stacking_multiplier",
+	non_headshot_damage = "stacking_multiplier",
+	flat_power_level = "stacking_bonus",
+	reduced_spread_shot = "stacking_multiplier",
+	healing_received = "stacking_multiplier",
+	protection_skaven = "stacking_multiplier",
+	power_level_melee = "stacking_multiplier",
+	potion_duration = "stacking_multiplier",
+	total_ammo = "stacking_multiplier",
+	reduced_ranged_charge_time = "stacking_multiplier",
+	impact_vulnerability = "stacking_multiplier",
+	max_fatigue = "stacking_bonus",
+	power_level_unarmoured = "stacking_multiplier",
+	attack_speed = "stacking_multiplier",
+	increased_move_speed_while_aiming = "stacking_multiplier",
+	protection_pack_master = "stacking_multiplier",
+	headshot_vulnerability = "stacking_multiplier",
+	not_consume_medpack = "proc",
+	increased_weapon_damage_melee_2h = "stacking_multiplier",
 	backstab_multiplier = "stacking_bonus",
 	protection_poison_wind = "stacking_multiplier",
-	movement_speed = "stacking_multiplier",
+	throw_speed_increase = "stacking_multiplier",
 	ranged_additional_penetrations = "stacking_bonus",
 	power_level_skaven = "stacking_multiplier",
 	damage_taken_burning_enemy = "stacking_multiplier",
 	shielding_player_by_assist = "proc",
-	attack_intensity_threshold = "stacking_multiplier",
 	power_level_ranged_drakefire = "stacking_multiplier"
 }
 WeaponSpecificStatBuffs = {}
@@ -224,6 +231,9 @@ ProcEvents = {
 	"on_visible",
 	"on_invisible",
 	"on_body_pushed",
+	"on_controlled_unit_added",
+	"on_controlled_unit_removed",
+	"on_controlled_unit_death",
 	"on_death",
 	"on_attack_blocked",
 	"on_damage_dealt",
@@ -244,7 +254,9 @@ ProcEvents = {
 	"on_extra_ability_consumed",
 	"on_crouch",
 	"on_gromril_armour_removed",
-	"on_broke_shield"
+	"on_broke_shield",
+	"on_pet_spawned",
+	"minion_attack_used"
 }
 
 local function make_proc_param_lookup(...)
@@ -586,9 +598,8 @@ ProcFunctions = {
 	end,
 	unbalance_debuff_on_stagger = function (owner_unit, buff, params)
 		local hit_unit = params[1]
-		local is_dummy = Unit.get_data(hit_unit, "is_dummy")
 
-		if ALIVE[owner_unit] and (is_dummy or Unit.alive(hit_unit)) and Managers.player.is_server then
+		if ALIVE[owner_unit] and Unit.alive(hit_unit) and Managers.player.is_server then
 			local buff_extension = ScriptUnit.extension(hit_unit, "buff_system")
 
 			if buff_extension then
@@ -636,7 +647,7 @@ ProcFunctions = {
 		local hit_zone_name = params[3]
 		local attack_type = params[2]
 
-		if ALIVE[owner_unit] and hit_zone_name == "head" and (attack_type == "projectile" or attack_type == "instant_projectile") then
+		if ALIVE[owner_unit] and hit_zone_name == "head" and (attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "heavy_instant_projectile") then
 			local buff_template = buff.template
 			local heal_amount = buff_template.bonus
 
@@ -1108,7 +1119,7 @@ ProcFunctions = {
 		local attack_type = params[2]
 		local hit_zone_name = params[3]
 
-		if ALIVE[owner_unit] and ALIVE[hit_unit] and (attack_type == "instant_projectile" or attack_type == "projectile") and (hit_zone_name == "left_leg" or hit_zone_name == "right_leg") then
+		if ALIVE[owner_unit] and ALIVE[hit_unit] and (attack_type == "instant_projectile" or attack_type == "projectile" or attack_type == "heavy_instant_projectile") and (hit_zone_name == "left_leg" or hit_zone_name == "right_leg") then
 			local buff_extension = ScriptUnit.extension(hit_unit, "buff_system")
 
 			buff_extension:add_buff("es_movement_speed_debuff")
@@ -1119,10 +1130,10 @@ ProcFunctions = {
 		local attack_type = params[2]
 		local hit_zone_name = nil
 		local breed = AiUtils.unit_breed(target_unit)
-		local dummy_unit_armor = Unit.get_data(target_unit, "armor")
-		local armor_type = ActionUtils.get_target_armor(hit_zone_name, breed, dummy_unit_armor)
+		local armor_override = Unit.get_data(target_unit, "armor")
+		local armor_type = ActionUtils.get_target_armor(hit_zone_name, breed, armor_override)
 
-		if attack_type and (attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "aoe") and ALIVE[owner_unit] then
+		if attack_type and (attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "aoe" or attack_type == "heavy_instant_projectile") and ALIVE[owner_unit] then
 			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
 			if armor_type == 1 then
@@ -1242,7 +1253,7 @@ ProcFunctions = {
 			local require_alive_enemy = template.require_alive_enemy
 			local target_enemy = params[4]
 
-			if require_alive_enemy and not AiUtils.unit_alive(target_enemy) then
+			if require_alive_enemy and not HEALTH_ALIVE[target_enemy] then
 				return
 			end
 
@@ -1738,7 +1749,7 @@ ProcFunctions = {
 		local hit_unit_buff_extension = ScriptUnit.has_extension(hit_unit, "buff_system")
 		local owner_unit_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
 
-		if attack_type and (attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "aoe") then
+		if attack_type and (attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "aoe" or attack_type == "heavy_instant_projectile") then
 			if hit_unit_buff_extension:has_buff_type("consecutive_shot_debuff") and target_number == 1 then
 				owner_unit_buff_extension:add_buff("consecutive_shot_buff")
 			end
@@ -1893,7 +1904,7 @@ ProcFunctions = {
 				return
 			end
 
-			if attack_type ~= "instant_projectile" and attack_type ~= "projectile" or not unmodifed then
+			if attack_type ~= "instant_projectile" and attack_type ~= "projectile" and attack_type ~= "heavy_instant_projectile" or not unmodifed then
 				return
 			end
 
@@ -1921,13 +1932,7 @@ ProcFunctions = {
 				return
 			end
 
-			local is_dummy = false
-
-			if hit_unit then
-				is_dummy = Unit.get_data(hit_unit, "is_dummy")
-			end
-
-			if attack_type ~= "instant_projectile" and attack_type ~= "projectile" or not unmodifed and not is_dummy then
+			if attack_type ~= "instant_projectile" and attack_type ~= "projectile" and attack_type ~= "heavy_instant_projectile" or not unmodifed then
 				return
 			end
 
@@ -1939,13 +1944,7 @@ ProcFunctions = {
 		end
 	end,
 	add_buff_local = function (owner_unit, buff, params)
-		if Unit.alive(owner_unit) then
-			local template = buff.template
-			local buff_name = template.buff_to_add
-			local buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
-
-			buff_extension:add_buff(buff_name)
-		end
+		BuffFunctionTemplates.functions.add_buff_local(owner_unit, buff, params)
 	end,
 	add_buff_on_first_target_hit_range = function (owner_unit, buff, params)
 		if ALIVE[owner_unit] then
@@ -1956,7 +1955,7 @@ ProcFunctions = {
 				return
 			end
 
-			if attack_type ~= "instant_projectile" and attack_type ~= "projectile" then
+			if attack_type ~= "instant_projectile" and attack_type ~= "projectile" and attack_type ~= "heavy_instant_projectile" then
 				return
 			end
 
@@ -2190,7 +2189,7 @@ ProcFunctions = {
 			local buff_template = buff.template
 			local proc_chance = buff_template.proc_chance
 
-			if math.random() <= proc_chance and ai_buff_extension and ai_buff_extension:has_buff_perk("burning") then
+			if math.random() <= proc_chance and (ai_buff_extension and ai_buff_extension:has_buff_perk(buff_perks.burning) or ai_buff_extension:has_buff_perk(buff_perks.burning_balefire) or ai_buff_extension:has_buff_perk(buff_perks.burning_elven_magic)) then
 				local career_extension = ScriptUnit.has_extension(owner_unit, "career_system")
 				local area_damage_system = Managers.state.entity:system("area_damage_system")
 				local position = POSITION_LOOKUP[killed_unit]
@@ -2526,32 +2525,12 @@ ProcFunctions = {
 			end
 		end
 	end,
-	end_ranger_activated_ability = function (owner_unit, buff, params)
-		if ALIVE[owner_unit] then
-			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
-			local ranger_activated_ability_buff = buff_extension:get_non_stacking_buff("bardin_ranger_activated_ability")
-			local ranger_smoke_attack = buff_extension:get_non_stacking_buff("bardin_ranger_smoke_attack")
-			local ranger_smoke_heal = buff_extension:get_non_stacking_buff("bardin_ranger_smoke_heal")
-
-			if ranger_activated_ability_buff then
-				buff_extension:remove_buff(ranger_activated_ability_buff.id)
-			end
-
-			if ranger_smoke_attack then
-				buff_extension:remove_buff(ranger_smoke_attack.id)
-			end
-
-			if ranger_smoke_heal then
-				buff_extension:remove_buff(ranger_smoke_heal.id)
-			end
-		end
-	end,
 	exit_buff_area = function (leaving_unit, owner_unit, template, buff_area_unit, source_unit)
 		local buff_name = template.buff_area_buff
 		local buff_extension = ScriptUnit.has_extension(leaving_unit, "buff_system")
 
 		if buff_extension then
-			local area_buff = buff_extension:get_non_stacking_buff(buff_name)
+			local area_buff = buff_extension:get_buff_type(buff_name)
 
 			if area_buff then
 				local buff_system = Managers.state.entity:system("buff_system")
@@ -2811,7 +2790,7 @@ ProcFunctions = {
 		local is_melee = false
 		local is_ranged = false
 
-		if attack_type == "projectile" or attack_type == "instant_projectile" then
+		if attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "heavy_instant_projectile" then
 			local t = Managers.time:time("game")
 
 			if not buff.t then
@@ -2955,7 +2934,7 @@ ProcFunctions = {
 			local ammo_extension = GearUtils.get_ammo_extension(right_unit_1p, left_unit_1p)
 			local ammo_bonus_fraction = buff_template.ammo_bonus_fraction
 
-			if ammo_extension and (attack_type == "instant_projectile" or attack_type == "projectile") then
+			if ammo_extension and (attack_type == "instant_projectile" or attack_type == "projectile" or attack_type == "heavy_instant_projectile") then
 				local ammo_amount = math.max(math.round(ammo_extension:max_ammo() * ammo_bonus_fraction), 1)
 
 				if target_number == 1 then
@@ -3003,7 +2982,7 @@ ProcFunctions = {
 		local attack_type = params[2]
 		local hit_zone_name = params[3]
 
-		if ALIVE[owner_unit] and hit_zone_name == "head" and (attack_type == "instant_projectile" or attack_type == "projectile") then
+		if ALIVE[owner_unit] and hit_zone_name == "head" and (attack_type == "instant_projectile" or attack_type == "projectile" or attack_type == "heavy_instant_projectile") then
 			local weapon_slot = "slot_ranged"
 			local ammo_amount = buff.bonus
 			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
@@ -3202,7 +3181,7 @@ ProcFunctions = {
 		local hit_zone_name = params[3]
 		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 
-		if ALIVE[owner_unit] and hit_zone_name == "head" and (attack_type == "instant_projectile" or attack_type == "projectile") then
+		if ALIVE[owner_unit] and hit_zone_name == "head" and (attack_type == "instant_projectile" or attack_type == "projectile" or attack_type == "heavy_instant_projectile") then
 			buff_extension:add_buff("markus_huntsman_headshots_increase_reload_speed_buff")
 		end
 	end,
@@ -3210,7 +3189,7 @@ ProcFunctions = {
 		local attack_type = params[2]
 		local hit_zone_name = params[3]
 
-		if ALIVE[owner_unit] and hit_zone_name == "head" and (attack_type == "instant_projectile" or attack_type == "projectile") then
+		if ALIVE[owner_unit] and hit_zone_name == "head" and (attack_type == "instant_projectile" or attack_type == "projectile" or attack_type == "heavy_instant_projectile") then
 			local ranged_buff_type = params[5]
 
 			if ranged_buff_type and ranged_buff_type == "RANGED_ABILITY" then
@@ -3582,7 +3561,7 @@ ProcFunctions = {
 		local valid_attack = nil
 
 		if RangedBuffTypes[buff_type] then
-			valid_attack = attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "aoe"
+			valid_attack = attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "aoe" or attack_type == "heavy_instant_projectile"
 		else
 			valid_attack = attack_type == "light_attack" or attack_type == "heavy_attack"
 		end
@@ -3617,7 +3596,7 @@ ProcFunctions = {
 		if ALIVE[killed_unit] then
 			local killed_unit_buff_extension = ScriptUnit.has_extension(killed_unit, "buff_system")
 
-			if killed_unit_buff_extension and killed_unit_buff_extension:has_buff_perk("burning") then
+			if killed_unit_buff_extension and killed_unit_buff_extension:has_buff_perk(buff_perks.burning) or killed_unit_buff_extension:has_buff_perk(buff_perks.burning_balefire) or killed_unit_buff_extension:has_buff_perk(buff_perks.burning_elven_magic) then
 				local t = Managers.time:time("game")
 				local cooldown_timer = buff.cooldown_timer
 
@@ -3863,7 +3842,7 @@ ProcFunctions = {
 				if not attack_type or attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
 					return
 				end
-			elseif required_weapon_type == "ranged" and (not attack_type or attack_type ~= "instant_projectile" and attack_type ~= "projectile") then
+			elseif required_weapon_type == "ranged" and (not attack_type or attack_type ~= "instant_projectile" and attack_type ~= "projectile" or attack_type == "heavy_instant_projectile") then
 				return
 			end
 
@@ -3929,11 +3908,105 @@ ProcFunctions = {
 			first_person_extension:play_hud_sound_event(sound_to_play, nil, false)
 		end
 	end,
+	ignore_death_func = function (owner_unit, buff, params)
+		if not is_server() then
+			return
+		end
+
+		if not ALIVE[owner_unit] then
+			return
+		end
+
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+		local already_invulnerable = buff_extension:has_buff_perk("invulnerable")
+
+		if already_invulnerable then
+			return
+		end
+
+		local template = buff.template
+		local health_extension = ScriptUnit.has_extension(owner_unit, "health_system")
+		local health_threshold = template.health_threshold
+		local current_health = health_extension:current_health()
+		local max_health = health_extension:get_max_health()
+		local damage_amount = params[2]
+
+		if damage_amount <= 0 then
+			return
+		end
+
+		local percent_health_after_damage = (current_health - damage_amount) / max_health
+
+		if percent_health_after_damage <= 0 and buff_extension:has_buff_perk("ignore_death") then
+			return
+		end
+
+		local damage_source = params[3]
+
+		if percent_health_after_damage < health_threshold and damage_source ~= "life_tap" then
+			local condition_func = template.condition_func
+			local player = Managers.player:owner(owner_unit)
+
+			if condition_func and not condition_func(player, buff, params) then
+				return
+			end
+
+			local damage_to_deal = current_health - damage_amount > 1 and damage_amount or current_health - 1
+
+			DamageUtils.add_damage_network(owner_unit, owner_unit, damage_to_deal, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, owner_unit)
+
+			local buffs_to_add = template.buffs_to_add
+			local buff_system = Managers.state.entity:system("buff_system")
+
+			for i = 1, #buffs_to_add do
+				local buff_to_add = buffs_to_add[i]
+
+				buff_system:add_buff(owner_unit, buff_to_add, owner_unit, false)
+			end
+		end
+	end,
+	remove_controlled_unit_on_death = function (owner_unit, buff, params)
+		if not buff.removed_controlled_unit then
+			buff.removed_controlled_unit = true
+			local commander_unit = buff.source_attacker_unit
+			local commander_extension = ScriptUnit.extension(commander_unit, "ai_commander_system")
+			local skip_sync = true
+			local skip_buff_removal = false
+
+			commander_extension:remove_controlled_unit(owner_unit, skip_sync, skip_buff_removal)
+		end
+	end,
+	apply_dot_on_hit = function (owner_unit, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local damage_profile, target_index = nil
+		local career_extension = ScriptUnit.has_extension(owner_unit, "career_system")
+		local full_power_level = career_extension and career_extension:get_career_power_level() or DefaultPowerLevel
+		local hit_unit = params[1]
+		local hit_zone_name = nil
+		local damage_source = "buff"
+		local boost_curve_multiplier = nil
+		local is_critical_strike = false
+		local explosion_data = nil
+		local source_attacker_unit = buff.source_attacker_unit or owner_unit
+		local custom_dot = FrameTable.alloc_table()
+		custom_dot.dot_template_name = buff.template.dot_template_name
+
+		DamageUtils.apply_dot(damage_profile, target_index, full_power_level, hit_unit, owner_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, explosion_data, source_attacker_unit, custom_dot)
+	end,
 	dummy_function = function (owner_unit, buff, params)
 		return true
+	end,
+	add_buff_synced = function (owner_unit, buff, params)
+		BuffFunctionTemplates.functions.add_buff_synced(owner_unit, buff, params)
+	end,
+	remove_buff_synced = function (owner_unit, buff, params)
+		BuffFunctionTemplates.functions.remove_buff_synced(owner_unit, buff, params)
 	end
 }
-MaxStackFunctions = {
+StackingBuffFunctions = {
 	add_remove_buffs = function (unit, sub_buff_template, new_buff_params)
 		if ALIVE[unit] then
 			local max_stack_data = sub_buff_template.max_stack_data
@@ -3990,9 +4063,22 @@ MaxStackFunctions = {
 		if ALIVE[unit] then
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 			local buff_stacks = buff_extension:get_stacking_buff(sub_buff_template.name)
-			local oldest_buff = buff_stacks[1]
 
-			if oldest_buff then
+			if buff_stacks then
+				local oldest_buff_t = -math.huge
+				local oldest_buff = nil
+				local t = Managers.time:time("game")
+
+				for i = 1, #buff_stacks do
+					local buff = buff_stacks[i]
+					local time_spanned = t - buff.start_time
+
+					if oldest_buff_t < time_spanned then
+						oldest_buff = buff
+						oldest_buff_t = time_spanned
+					end
+				end
+
 				buff_extension:remove_buff(oldest_buff.id)
 			end
 		end
@@ -4003,7 +4089,22 @@ MaxStackFunctions = {
 		if ALIVE[unit] then
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 			local burn_buffs = buff_extension:get_stacking_buff(sub_buff_template.name)
-			local oldest_buff = burn_buffs and burn_buffs[1]
+			local oldest_buff = nil
+
+			if burn_buffs then
+				local oldest_buff_t = -math.huge
+				local t = Managers.time:time("game")
+
+				for i = 1, #burn_buffs do
+					local buff = burn_buffs[i]
+					local time_spanned = t - buff.start_time
+
+					if oldest_buff_t < time_spanned then
+						oldest_buff = buff
+						oldest_buff_t = time_spanned
+					end
+				end
+			end
 
 			if oldest_buff then
 				if not Unit.alive(oldest_buff.source_attacker_unit or oldest_buff.attacker_unit) then
@@ -4035,6 +4136,18 @@ MaxStackFunctions = {
 		end
 
 		return true
+	end,
+	add_buff_synced = function (unit, sub_buff_template, new_buff_params)
+		local dummy_buff = FrameTable.alloc_table()
+		dummy_buff.template = sub_buff_template
+
+		BuffFunctionTemplates.functions.add_buff_synced(unit, dummy_buff, new_buff_params)
+	end,
+	remove_buff_synced = function (unit, sub_buff_template, new_buff_params)
+		local dummy_buff = FrameTable.alloc_table()
+		dummy_buff.template = sub_buff_template
+
+		BuffFunctionTemplates.functions.remove_buff_synced(unit, dummy_buff, new_buff_params)
 	end
 }
 PotionSpreadTrinketTemplates = {
@@ -4055,22 +4168,17 @@ PotionSpreadTrinketTemplates = {
 	}
 }
 TrinketSpreadDistance = 10
-InfiniteBurnDotLookup = {
-	burning_3W_dot = "burning_3W_dot_infinite",
-	burning_dot = "burning_dot_infinite",
-	burning_1W_dot = "burning_1W_dot_infinite",
-	burning_flamethrower_dot = "burning_flamethrower_dot_infinite",
-	beam_burning_dot = "beam_burning_dot_infinite"
-}
 BuffTemplates = {
 	end_zone_invincibility = {
 		buffs = {
 			{
-				refresh_durations = true,
-				name = "end_zone_invincibility",
 				duration = 1,
+				name = "end_zone_invincibility",
 				max_stacks = 1,
-				perk = buff_perks.invulnerable
+				refresh_durations = true,
+				perks = {
+					buff_perks.invulnerable
+				}
 			}
 		}
 	},
@@ -4082,7 +4190,9 @@ BuffTemplates = {
 				refresh_durations = true,
 				max_stacks = 1,
 				icon = "potion_buff_01",
-				perk = buff_perks.potion_armor_penetration
+				perks = {
+					buff_perks.potion_armor_penetration
+				}
 			}
 		}
 	},
@@ -4172,7 +4282,9 @@ BuffTemplates = {
 				debuff = true,
 				max_stacks = 1,
 				icon = "buff_icon_grimoire_health_debuff",
-				perk = buff_perks.twitch_grimoire
+				perks = {
+					buff_perks.twitch_grimoire
+				}
 			}
 		}
 	},
@@ -4185,7 +4297,9 @@ BuffTemplates = {
 				duration = 60,
 				max_stacks = 1,
 				icon = "markus_huntsman_activated_ability",
-				perk = buff_perks.bloody_mess
+				perks = {
+					buff_perks.bloody_mess
+				}
 			}
 		}
 	},
@@ -4193,7 +4307,9 @@ BuffTemplates = {
 		buffs = {
 			{
 				name = "heavy_attack_shield_break",
-				perk = buff_perks.shield_break
+				perks = {
+					buff_perks.shield_break
+				}
 			}
 		}
 	},
@@ -4229,7 +4345,9 @@ BuffTemplates = {
 				max_stacks = 1,
 				name = "blightreaper_curse",
 				apply_buff_func = "convert_permanent_to_temporary_health",
-				perk = buff_perks.disable_permanent_heal
+				perks = {
+					buff_perks.disable_permanent_heal
+				}
 			}
 		}
 	},
@@ -4244,7 +4362,9 @@ BuffTemplates = {
 				refresh_durations = true,
 				max_stacks = 1,
 				icon = "potion_buff_01",
-				perk = buff_perks.potion_armor_penetration
+				perks = {
+					buff_perks.potion_armor_penetration
+				}
 			}
 		}
 	},
@@ -4302,7 +4422,9 @@ BuffTemplates = {
 				name = "invulnerability_potion",
 				max_stacks = 1,
 				refresh_durations = true,
-				perk = buff_perks.invulnerable
+				perks = {
+					buff_perks.invulnerable
+				}
 			}
 		}
 	},
@@ -4317,7 +4439,9 @@ BuffTemplates = {
 				refresh_durations = true,
 				max_stacks = 1,
 				icon = "potion_buff_01",
-				perk = buff_perks.potion_armor_penetration
+				perks = {
+					buff_perks.potion_armor_penetration
+				}
 			}
 		}
 	},
@@ -4375,7 +4499,9 @@ BuffTemplates = {
 				name = "invulnerability_potion_increased",
 				max_stacks = 1,
 				refresh_durations = true,
-				perk = buff_perks.invulnerable
+				perks = {
+					buff_perks.invulnerable
+				}
 			}
 		}
 	},
@@ -4390,7 +4516,9 @@ BuffTemplates = {
 				refresh_durations = true,
 				max_stacks = 1,
 				icon = "potion_buff_01",
-				perk = buff_perks.potion_armor_penetration
+				perks = {
+					buff_perks.potion_armor_penetration
+				}
 			}
 		}
 	},
@@ -4448,7 +4576,9 @@ BuffTemplates = {
 				name = "invulnerability_potion_reduced",
 				max_stacks = 1,
 				refresh_durations = true,
-				perk = buff_perks.invulnerable
+				perks = {
+					buff_perks.invulnerable
+				}
 			}
 		}
 	},
@@ -4459,7 +4589,9 @@ BuffTemplates = {
 				name = "grimoire_health_debuff",
 				icon = "buff_icon_grimoire_health_debuff",
 				debuff = true,
-				perk = buff_perks.skaven_grimoire
+				perks = {
+					buff_perks.skaven_grimoire
+				}
 			}
 		}
 	},
@@ -4838,17 +4970,14 @@ BuffTemplates = {
 			{
 				duration = 3,
 				name = "arrow poison dot",
-				start_flow_event = "poisoned",
-				end_flow_event = "poisoned_end",
-				death_flow_event = "poisoned_death",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.6,
 				time_between_dot_damages = 0.6,
 				damage_profile = "poison_direct",
 				update_func = "apply_dot_damage",
-				reapply_buff_func = "reapply_dot_damage",
-				perk = buff_perks.poisoned
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.6,
+				perks = {
+					buff_perks.poisoned
+				}
 			}
 		}
 	},
@@ -4857,17 +4986,14 @@ BuffTemplates = {
 			{
 				duration = 3,
 				name = "aoe poison dot",
-				start_flow_event = "poisoned",
-				end_flow_event = "poisoned_end",
-				death_flow_event = "poisoned_death",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
 				damage_profile = "poison",
 				update_func = "apply_dot_damage",
-				reapply_buff_func = "reapply_dot_damage",
-				perk = buff_perks.poisoned
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.75,
+				perks = {
+					buff_perks.poisoned
+				}
 			}
 		}
 	},
@@ -4884,7 +5010,9 @@ BuffTemplates = {
 				hit_zone = "neck",
 				damage_profile = "bleed",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.bleeding
+				perks = {
+					buff_perks.bleeding
+				}
 			}
 		}
 	},
@@ -4901,7 +5029,9 @@ BuffTemplates = {
 				hit_zone = "neck",
 				damage_profile = "bleed",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.bleeding
+				perks = {
+					buff_perks.bleeding
+				}
 			}
 		}
 	},
@@ -4918,7 +5048,9 @@ BuffTemplates = {
 				hit_zone = "neck",
 				damage_profile = "bleed_maidenguard",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.bleeding
+				perks = {
+					buff_perks.bleeding
+				}
 			}
 		}
 	},
@@ -4953,7 +5085,9 @@ BuffTemplates = {
 				update_func = "apply_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 1,
-				perk = buff_perks.poisoned
+				perks = {
+					buff_perks.poisoned
+				}
 			},
 			{
 				multiplier = 0.5,
@@ -4970,56 +5104,15 @@ BuffTemplates = {
 			{
 				duration = 3,
 				name = "burning_dot",
-				end_flow_event = "smoke",
-				start_flow_event = "burn",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
-			}
-		}
-	},
-	burning_dot_force_fire = {
-		buffs = {
-			{
-				duration = 3,
-				name = "burning_dot",
-				end_flow_event = "smoke",
-				start_flow_event = "burn_force_fire",
-				death_flow_event = "burn_death_force_fire",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.75,
-				time_between_dot_damages = 0.75,
-				damage_type = "burninating_force_fire",
-				damage_profile = "burning_dot_force_fire",
-				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
-			}
-		}
-	},
-	burning_dot_infinite = {
-		buffs = {
-			{
-				end_flow_event = "smoke",
-				name = "infinite_burning_dot",
-				start_flow_event = "burn_infinity",
-				death_flow_event = "burn_death",
-				on_max_stacks_overflow_func = "reapply_infinite_burn",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.75,
-				time_between_dot_damages = 0.75,
-				max_stacks = 1,
-				damage_type = "burninating",
-				damage_profile = "burning_dot",
-				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
+				perks = {
+					buff_perks.burning
+				}
 			}
 		}
 	},
@@ -5028,37 +5121,15 @@ BuffTemplates = {
 			{
 				duration = 3,
 				name = "beam_burning_dot",
-				end_flow_event = "smoke",
-				start_flow_event = "burn",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 1,
 				time_between_dot_damages = 1,
 				damage_type = "burninating",
 				damage_profile = "beam_burning_dot",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
-			}
-		}
-	},
-	beam_burning_dot_infinite = {
-		buffs = {
-			{
-				end_flow_event = "smoke",
-				name = "infinite_burning_dot",
-				start_flow_event = "burn_infinity",
-				death_flow_event = "burn_death",
-				on_max_stacks_overflow_func = "reapply_infinite_burn",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1,
-				time_between_dot_damages = 1,
-				max_stacks = 1,
-				damage_type = "burninating",
-				damage_profile = "beam_burning_dot",
-				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
+				perks = {
+					buff_perks.burning
+				}
 			}
 		}
 	},
@@ -5067,39 +5138,17 @@ BuffTemplates = {
 			{
 				duration = 1.5,
 				name = "burning_flamethrower_dot",
-				end_flow_event = "smoke",
-				start_flow_event = "burn",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.65,
-				time_between_dot_damages = 0.65,
+				max_stacks = 1,
 				refresh_durations = true,
-				damage_type = "burninating",
-				damage_profile = "flamethrower_burning_dot",
-				update_func = "apply_dot_damage",
-				max_stacks = 1,
-				perk = buff_perks.burning
-			}
-		}
-	},
-	burning_flamethrower_dot_infinite = {
-		buffs = {
-			{
-				end_flow_event = "smoke",
-				name = "infinite_burning_dot",
-				start_flow_event = "burn_infinity",
-				death_flow_event = "burn_death",
-				on_max_stacks_overflow_func = "reapply_infinite_burn",
-				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 0.65,
 				time_between_dot_damages = 0.65,
-				max_stacks = 1,
 				damage_type = "burninating",
 				damage_profile = "flamethrower_burning_dot",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
+				perks = {
+					buff_perks.burning
+				}
 			}
 		}
 	},
@@ -5108,19 +5157,17 @@ BuffTemplates = {
 			{
 				leave_linger_time = 0.25,
 				name = "sienna_adept_ability_trail",
-				end_flow_event = "smoke",
-				start_flow_event = "burn",
+				max_stacks = 1,
 				on_max_stacks_overflow_func = "reapply_buff",
-				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 0.25,
-				death_flow_event = "burn_death",
 				time_between_dot_damages = 0.25,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
-				max_stacks = 1,
-				perk = buff_perks.burning
+				perks = {
+					buff_perks.burning
+				}
 			}
 		}
 	},
@@ -5129,194 +5176,87 @@ BuffTemplates = {
 			{
 				duration = 6,
 				name = "burning_dot_fire_grenade",
-				end_flow_event = "smoke",
-				start_flow_event = "burn",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 1,
 				time_between_dot_damages = 1,
 				damage_type = "burninating",
 				damage_profile = "burning_dot_firegrenade",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
+				perks = {
+					buff_perks.burning
+				}
 			}
 		}
 	},
-	burning_dot_fire_grenade_force_fire = {
+	burning_dot_1tick = {
+		buffs = {
+			{
+				duration = 2,
+				name = "burning_dot_1tick",
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1.5,
+				time_between_dot_damages = 1.5,
+				damage_type = "burninating",
+				damage_profile = "burning_dot",
+				update_func = "apply_dot_damage",
+				perks = {
+					buff_perks.burning
+				}
+			}
+		}
+	},
+	burning_dot_unchained_push = {
 		buffs = {
 			{
 				duration = 6,
-				name = "burning_dot_fire_grenade",
-				end_flow_event = "smoke",
-				start_flow_event = "burn_force_fire",
-				death_flow_event = "burn_death_force_fire",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1,
-				time_between_dot_damages = 1,
-				damage_type = "burninating_force_fire",
-				damage_profile = "burning_dot_firegrenade_force_fire",
-				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
-			}
-		}
-	},
-	burning_1W_dot = {
-		buffs = {
-			{
-				duration = 2,
-				name = "burning_1W_dot",
-				end_flow_event = "smoke",
-				start_flow_event = "burn",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1.5,
-				time_between_dot_damages = 1.5,
-				damage_type = "burninating",
-				damage_profile = "burning_dot",
-				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
-			}
-		}
-	},
-	burning_1W_dot_force_fire = {
-		buffs = {
-			{
-				duration = 2,
-				name = "burning_1W_dot",
-				end_flow_event = "smoke",
-				start_flow_event = "burn_force_fire",
-				death_flow_event = "burn_death_force_fire",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1.5,
-				time_between_dot_damages = 1.5,
-				damage_type = "burninating_force_fire",
-				damage_profile = "burning_dot_force_fire",
-				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
-			}
-		}
-	},
-	burning_1W_dot_unchained_push = {
-		buffs = {
-			{
-				duration = 6,
-				name = "burning_1W_dot_unchained_push",
-				end_flow_event = "smoke",
-				start_flow_event = "burn",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
+				name = "burning_dot_unchained_push",
+				max_stacks = 1,
+				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 2,
 				time_between_dot_damages = 2,
-				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
-				max_stacks = 1,
-				perk = buff_perks.burning
+				perks = {
+					buff_perks.burning
+				}
 			}
 		}
 	},
-	burning_1W_dot_unchained_pulse = {
+	burning_dot_unchained_pulse = {
 		buffs = {
 			{
 				duration = 2,
-				name = "burning_1W_dot_unchained_pulse",
-				end_flow_event = "smoke",
-				start_flow_event = "burn",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
+				name = "burning_dot_unchained_pulse",
+				max_stacks = 1,
+				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 2,
 				time_between_dot_damages = 2,
-				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
-				max_stacks = 1,
-				perk = buff_perks.burning
+				perks = {
+					buff_perks.burning
+				}
 			}
 		}
 	},
-	burning_1W_dot_infinite = {
-		buffs = {
-			{
-				end_flow_event = "smoke",
-				name = "infinite_burning_dot",
-				start_flow_event = "burn_infinity",
-				death_flow_event = "burn_death",
-				on_max_stacks_overflow_func = "reapply_infinite_burn",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1.5,
-				time_between_dot_damages = 1.5,
-				max_stacks = 1,
-				damage_type = "burninating",
-				damage_profile = "burning_dot",
-				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
-			}
-		}
-	},
-	burning_3W_dot = {
+	burning_dot_3tick = {
 		buffs = {
 			{
 				duration = 3,
-				name = "burning_3W_dot",
-				end_flow_event = "smoke",
-				start_flow_event = "burn",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
+				name = "burning_dot_3tick",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 1,
 				time_between_dot_damages = 1,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
-			}
-		}
-	},
-	burning_3W_dot_force_fire = {
-		buffs = {
-			{
-				duration = 3,
-				name = "burning_3W_dot",
-				end_flow_event = "smoke",
-				start_flow_event = "burn_force_fire",
-				death_flow_event = "burn_death_force_fire",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1,
-				time_between_dot_damages = 1,
-				damage_type = "burninating_force_fire",
-				damage_profile = "burning_dot_force_fire",
-				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
-			}
-		}
-	},
-	burning_3W_dot_infinite = {
-		buffs = {
-			{
-				end_flow_event = "smoke",
-				name = "infinite_burning_dot",
-				start_flow_event = "burn_infinity",
-				death_flow_event = "burn_death",
-				on_max_stacks_overflow_func = "reapply_infinite_burn",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1,
-				time_between_dot_damages = 1,
-				max_stacks = 1,
-				damage_type = "burninating",
-				damage_profile = "burning_dot",
-				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
+				perks = {
+					buff_perks.burning
+				}
 			}
 		}
 	},
@@ -5465,7 +5405,9 @@ BuffTemplates = {
 				buff_func = "heal_finesse_damage_on_melee",
 				event = "on_hit",
 				bonus = 2,
-				perk = buff_perks.ninja_healing
+				perks = {
+					buff_perks.ninja_healing
+				}
 			}
 		}
 	},
@@ -5476,7 +5418,9 @@ BuffTemplates = {
 				multiplier = 0.2,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = buff_perks.smiter_healing
+				perks = {
+					buff_perks.smiter_healing
+				}
 			}
 		}
 	},
@@ -5487,7 +5431,9 @@ BuffTemplates = {
 				multiplier = 0.25,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = buff_perks.tank_healing
+				perks = {
+					buff_perks.tank_healing
+				}
 			}
 		}
 	},
@@ -5499,7 +5445,9 @@ BuffTemplates = {
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
 				bonus = 0.75,
-				perk = buff_perks.linesman_healing
+				perks = {
+					buff_perks.linesman_healing
+				}
 			}
 		}
 	},
@@ -5533,7 +5481,9 @@ BuffTemplates = {
 				name = "linesman_unbalance",
 				max_stacks = 1,
 				display_multiplier = 0.4,
-				perk = buff_perks.linesman_stagger_damage
+				perks = {
+					buff_perks.linesman_stagger_damage
+				}
 			}
 		}
 	},
@@ -5543,7 +5493,9 @@ BuffTemplates = {
 				max_display_multiplier = 0.4,
 				name = "smiter_unbalance",
 				display_multiplier = 0.2,
-				perk = buff_perks.smiter_stagger_damage
+				perks = {
+					buff_perks.smiter_stagger_damage
+				}
 			}
 		}
 	},
@@ -5553,7 +5505,9 @@ BuffTemplates = {
 				max_display_multiplier = 0.4,
 				name = "finesse_unbalance",
 				display_multiplier = 0.2,
-				perk = buff_perks.finesse_stagger_damage
+				perks = {
+					buff_perks.finesse_stagger_damage
+				}
 			}
 		}
 	},
@@ -5645,11 +5599,10 @@ BuffTemplates = {
 	mutator_player_dot = {
 		buffs = {
 			{
-				update_func = "apply_dot_damage",
 				name = "mutator player dot",
 				time_between_dot_damages = 10,
 				damage_profile = "mutator_player_dot",
-				remove_buff_func = "remove_dot_damage",
+				update_func = "apply_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 10
 			}
@@ -5739,13 +5692,12 @@ BuffTemplates = {
 			{
 				sound_event = "Play_winds_fire_gameplay_fire_damage_player",
 				name = "mutator_fire_player_dot",
-				update_func = "apply_dot_damage",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1,
 				time_between_dot_damages = 1,
+				update_func = "apply_dot_damage",
 				damage_profile = "mutator_player_dot",
-				icon = "buff_icon_mutator_ticking_bomb"
+				icon = "buff_icon_mutator_ticking_bomb",
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1
 			}
 		}
 	},
@@ -5753,16 +5705,12 @@ BuffTemplates = {
 		activation_sound = "Play_enemy_on_fire_loop",
 		buffs = {
 			{
-				start_flow_event = "burn",
 				name = "mutator_fire_enemy_dot",
-				end_flow_event = "smoke",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 1,
 				time_between_dot_damages = 1,
 				damage_profile = "mutator_player_dot",
-				update_func = "apply_dot_damage"
+				update_func = "apply_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1
 			}
 		}
 	},
@@ -5787,7 +5735,9 @@ BuffTemplates = {
 				name = "mutator_light_debuff",
 				icon = "buff_icon_mutator_icon_slayer_curse",
 				debuff = true,
-				perk = buff_perks.mutator_curse
+				perks = {
+					buff_perks.mutator_curse
+				}
 			},
 			{
 				multiplier = 0.015,
@@ -5844,7 +5794,9 @@ BuffTemplates = {
 				refresh_durations = true,
 				max_stacks = 1,
 				duration = 8,
-				perk = buff_perks.potion_armor_penetration
+				perks = {
+					buff_perks.potion_armor_penetration
+				}
 			},
 			{
 				multiplier = 0.5,
@@ -6797,6 +6749,9 @@ BuffTemplates = {
 						9,
 						1
 					}
+				},
+				perks = {
+					buff_perks.burning_warpfire
 				}
 			}
 		}
@@ -6874,6 +6829,9 @@ BuffTemplates = {
 						9,
 						4
 					}
+				},
+				perks = {
+					buff_perks.burning_warpfire
 				}
 			}
 		}
@@ -6951,6 +6909,9 @@ BuffTemplates = {
 						9,
 						4
 					}
+				},
+				perks = {
+					buff_perks.burning_warpfire
 				}
 			}
 		}
@@ -8286,6 +8247,9 @@ BuffTemplates = {
 						8.5,
 						6
 					}
+				},
+				perks = {
+					buff_perks.burning_warpfire
 				}
 			}
 		}
@@ -8360,6 +8324,9 @@ BuffTemplates = {
 						5,
 						1
 					}
+				},
+				perks = {
+					buff_perks.burning_warpfire
 				}
 			}
 		}
@@ -8606,7 +8573,9 @@ BuffTemplates = {
 		buffs = {
 			{
 				name = "weapon_trait_uninterruptible",
-				perk = buff_perks.uninterruptible
+				perks = {
+					buff_perks.uninterruptible
+				}
 			}
 		}
 	},
@@ -8614,7 +8583,9 @@ BuffTemplates = {
 		buffs = {
 			{
 				name = "weapon_trait_riposte",
-				perk = buff_perks.uninterruptible
+				perks = {
+					buff_perks.uninterruptible
+				}
 			}
 		}
 	},
@@ -8795,12 +8766,11 @@ BuffTemplates = {
 	bloodlust_debuff = {
 		buffs = {
 			{
-				update_func = "apply_dot_damage",
 				name = "bloodlust_debuff",
 				time_between_dot_damages = 1,
 				icon = "troll_vomit_debuff",
 				damage_profile = "bloodlust_debuff",
-				remove_buff_func = "remove_dot_damage",
+				update_func = "apply_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 1
 			}
@@ -8821,7 +8791,9 @@ BuffTemplates = {
 				path_to_movement_setting_to_modify = {
 					"move_speed"
 				},
-				perk = buff_perks.root
+				perks = {
+					buff_perks.root
+				}
 			}
 		}
 	},
@@ -8868,12 +8840,14 @@ BuffTemplates = {
 	twitch_vote_buff_critical_strikes = {
 		buffs = {
 			{
-				duration = 20,
-				name = "twitch_vote_buff_critical_strikes",
 				refresh_durations = true,
+				name = "twitch_vote_buff_critical_strikes",
 				icon = "victor_bountyhunter_passive",
 				max_stacks = 1,
-				perk = buff_perks.guaranteed_crit
+				duration = 20,
+				perks = {
+					buff_perks.guaranteed_crit
+				}
 			}
 		}
 	},
@@ -8914,6 +8888,16 @@ BuffTemplates = {
 				apply_buff_func = "apply_twitch_pulsating_waves"
 			}
 		}
+	},
+	commandeered_unit_tracker = {
+		buffs = {
+			{
+				event = "on_death",
+				name = "commandeered_unit_tracker",
+				remove_buff_func = "remove_controlled_unit",
+				buff_func = "remove_controlled_unit_on_death"
+			}
+		}
 	}
 }
 
@@ -8936,12 +8920,13 @@ table.merge_recursive(BuffTemplates, WeaveProperties.buff_templates)
 table.merge_recursive(BuffTemplates, WeaveTraits.buff_templates)
 DLCUtils.merge("buff_templates", BuffTemplates)
 DLCUtils.merge("proc_functions", ProcFunctions)
-DLCUtils.merge("max_stacks_functions", MaxStackFunctions)
-DLCUtils.merge("infinite_burn_dot_lookup", InfiniteBurnDotLookup)
+DLCUtils.merge("stacking_buff_functions", StackingBuffFunctions)
 DLCUtils.map_list("add_sub_buffs_to_core_buffs", function (data)
 	local buffs = BuffTemplates[data.buff_name].buffs
 	buffs[#buffs + 1] = data.sub_buff_to_add
 end)
+BuffUtils.generate_balefire_burn_variants(BuffTemplates)
+BuffUtils.generate_infinite_burn_variants(BuffTemplates)
 
 local override_descriptions = {
 	proc_chance = true

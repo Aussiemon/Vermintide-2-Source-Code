@@ -147,7 +147,7 @@ DeusBelakorTotemExtension.is_despawned = function (self)
 end
 
 DeusBelakorTotemExtension.update = function (self, unit, input, dt, context, t)
-	if not self._health_ext:is_alive() then
+	if not HEALTH_ALIVE[unit] then
 		if not self._dead then
 			Managers.state.achievement:trigger_event("register_totem_state_change", self._unit, false)
 

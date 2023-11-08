@@ -16,7 +16,7 @@ PlayerUtils = {
 		for i = 1, #players do
 			local unit = players[i]
 
-			if ALIVE[unit] and ScriptUnit.extension(unit, "health_system"):is_alive() then
+			if HEALTH_ALIVE[unit] then
 				unit_list_n = unit_list_n + 1
 				unit_list[unit_list_n] = unit
 			end

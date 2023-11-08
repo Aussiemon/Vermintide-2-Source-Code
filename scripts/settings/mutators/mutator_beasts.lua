@@ -34,13 +34,22 @@ return {
 
 		if data.update_timer > 1 then
 			data.update_timer = 0
+			local host_player = Managers.player:local_player()
+			local host_unit = host_player and host_player.player_unit
+
+			if not host_unit then
+				return
+			end
+
+			local side = Managers.state.side.side_by_unit[host_unit]
+			local enemy_broadphase_categories = side.enemy_broadphase_categories
 
 			for _, totem in ipairs(data.totems) do
 				if totem.active then
 					table.clear(data.ai_units_broadphase_result)
 
 					local position = POSITION_LOOKUP[totem.unit]
-					local num_ai_units = AiUtils.broadphase_query(position, data.radius, data.ai_units_broadphase_result)
+					local num_ai_units = AiUtils.broadphase_query(position, data.radius, data.ai_units_broadphase_result, enemy_broadphase_categories)
 
 					for i = 1, num_ai_units do
 						local ai_unit = data.ai_units_broadphase_result[i]
@@ -72,7 +81,7 @@ return {
 			local to_remove = {}
 
 			for ai_unit, buff_id in pairs(data.old_ai_units_inside) do
-				if (not data.ai_units_inside[ai_unit] or not AiUtils.unit_alive(ai_unit)) and Unit.alive(ai_unit) and data.buff_system:has_server_controlled_buff(ai_unit, buff_id) then
+				if (not data.ai_units_inside[ai_unit] or not HEALTH_ALIVE[ai_unit]) and Unit.alive(ai_unit) and data.buff_system:has_server_controlled_buff(ai_unit, buff_id) then
 					data.buff_system:remove_server_controlled_buff(ai_unit, buff_id)
 
 					to_remove[#to_remove + 1] = ai_unit

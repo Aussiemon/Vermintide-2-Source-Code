@@ -104,9 +104,7 @@ AimTemplates.player = {
 				aim_direction = Quaternion.forward(rotation)
 			end
 
-			local block_anim_variable = PlayerUnitMovementSettings.block.aim_direction_pitch_function(aim_direction.z)
-
-			Unit.animation_set_variable(unit, data.aim_direction_pitch_var, block_anim_variable)
+			Unit.animation_set_variable(unit, data.aim_direction_pitch_var, math.clamp(Quaternion.pitch(Quaternion.look(aim_direction)), -1, 1))
 
 			local min_head_look_z = data.status_extension:is_crouching() and -3 or data.min_head_lookat_z
 			local aim_direction_scaled = aim_direction * 3
@@ -190,10 +188,7 @@ AimTemplates.player = {
 				local new_target = from_pos + aim_direction_scaled
 
 				Unit.animation_set_constraint_target(unit, data.aim_constraint_anim_var, new_target)
-
-				local anim_variable = PlayerUnitMovementSettings.block.aim_direction_pitch_function(Vector3.normalize(aim_direction_scaled).z)
-
-				Unit.animation_set_variable(unit, Unit.animation_find_variable(unit, "aim_direction_pitch"), anim_variable)
+				Unit.animation_set_variable(unit, Unit.animation_find_variable(unit, "aim_direction_pitch"), math.clamp(pitch, -1, 1))
 			else
 				Unit.animation_set_constraint_target(unit, data.aim_constraint_anim_var, from_pos + aim_direction_scaled)
 			end
@@ -251,9 +246,7 @@ AimTemplates.enemy_character = {
 				aim_direction = Quaternion.forward(rotation)
 			end
 
-			local block_anim_variable = PlayerUnitMovementSettings.block.aim_direction_pitch_function(aim_direction.z)
-
-			Unit.animation_set_variable(unit, data.aim_direction_pitch_var, block_anim_variable)
+			Unit.animation_set_variable(unit, data.aim_direction_pitch_var, math.clamp(Quaternion.pitch(Quaternion.look(aim_direction)), -1, 1))
 
 			local aim_direction_scaled = aim_direction * 3
 			local aim_from_pos = Unit.world_position(unit, Unit.node(unit, "camera_attach"))
@@ -316,10 +309,7 @@ AimTemplates.enemy_character = {
 				local new_target = from_pos + aim_direction_scaled
 
 				Unit.animation_set_constraint_target(unit, data.aim_constraint_anim_var, new_target)
-
-				local anim_variable = PlayerUnitMovementSettings.block.aim_direction_pitch_function(Vector3.normalize(aim_direction_scaled).z)
-
-				Unit.animation_set_variable(unit, Unit.animation_find_variable(unit, "aim_direction_pitch"), anim_variable)
+				Unit.animation_set_variable(unit, Unit.animation_find_variable(unit, "aim_direction_pitch"), math.clamp(pitch, -1, 1))
 			else
 				Unit.animation_set_constraint_target(unit, data.aim_constraint_anim_var, from_pos + aim_direction_scaled)
 			end
@@ -502,23 +492,6 @@ AimTemplates.warpfire_thrower = {
 
 			if game and go_id then
 				GameSession.set_game_object_field(game, go_id, "aim_target", aim_target)
-
-				local target_unit = blackboard.target_unit
-				local previous_target_unit = blackboard.previous_target_unit
-				local have_new_target = target_unit ~= previous_target_unit
-				local target_go_id = unit_storage:go_id(target_unit)
-
-				if have_new_target and target_go_id then
-					local warpfire_data = blackboard.warpfire_data
-					local blob_unit = warpfire_data and warpfire_data.blob_unit
-					local blob_id = blob_unit and unit_storage:go_id(blob_unit)
-
-					if blob_id then
-						target_go_id = blob_id
-					end
-
-					GameSession.set_game_object_field(game, go_id, "target_unit_id", target_go_id)
-				end
 			end
 		end,
 		leave = function (unit, data)
@@ -599,14 +572,7 @@ AimTemplates.chaos_warrior = {
 			local have_new_target = target_unit ~= previous_aim_target_unit
 
 			if have_new_target then
-				local game = Managers.state.network:game()
-				local go_id = Managers.state.unit_storage:go_id(unit)
-				local target_go_id = Managers.state.unit_storage:go_id(target_unit)
 				data.previous_aim_target_unit = target_unit
-
-				if game and go_id and target_go_id then
-					GameSession.set_game_object_field(game, go_id, "target_unit_id", target_go_id)
-				end
 			end
 		end,
 		leave = function (unit, data)
@@ -727,13 +693,7 @@ AimTemplates.chaos_marauder = {
 				end
 
 				if target_unit ~= previous_aim_target_unit then
-					local target_go_id = Managers.state.unit_storage:go_id(target_unit)
-
-					if game and go_id and target_go_id then
-						GameSession.set_game_object_field(game, go_id, "target_unit_id", target_go_id)
-
-						data.previous_aim_target_unit = target_unit
-					end
+					data.previous_aim_target_unit = target_unit
 				end
 			elseif data.is_using_head_constraint then
 				data.is_using_head_constraint = false
@@ -869,12 +829,7 @@ AimTemplates.stormfiend = {
 				end
 
 				if target_unit ~= previous_aim_target_unit then
-					local target_go_id = Managers.state.unit_storage:go_id(target_unit)
 					data.previous_aim_target_unit = target_unit
-
-					if game and go_id and target_go_id then
-						GameSession.set_game_object_field(game, go_id, "target_unit_id", target_go_id)
-					end
 				end
 			elseif data.is_using_head_constraint then
 				data.is_using_head_constraint = false

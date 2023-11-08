@@ -431,7 +431,7 @@ LiquidAreaDamageTemplates = {
 			do_direct_damage_player = true,
 			linearized_flow = false,
 			fx_name_rim = "fx/wpnfx_lamp_oil_remains_rim",
-			damage_type = "burninating_force_fire",
+			damage_type = "burn",
 			sfx_name_start = "Play_props_lamp_oil_fire",
 			end_pressure = 2,
 			fx_name_filled = "fx/wpnfx_lamp_oil_remains",
@@ -583,7 +583,7 @@ LiquidAreaDamageTemplates = {
 			below = 30,
 			starting_pressure = 15,
 			do_direct_damage_player = false,
-			damage_buff_template_name = "burning_1W_dot",
+			damage_buff_template_name = "burning_dot_1tick",
 			linearized_flow = false,
 			fx_name_rim = "fx/chr_unchained_living_bomb_lingering",
 			liquid_spread_function = "pour_spread",
@@ -661,7 +661,7 @@ LiquidAreaDamageTemplates = {
 			below = 30,
 			starting_pressure = 15,
 			do_direct_damage_player = false,
-			damage_buff_template_name = "burning_1W_dot",
+			damage_buff_template_name = "burning_dot_1tick",
 			linearized_flow = false,
 			fx_name_rim = "fx/chr_unchained_living_bomb_lingering",
 			liquid_spread_function = "pour_spread",
@@ -748,7 +748,7 @@ LiquidAreaDamageTemplates = {
 	bile_troll_vomit_init = function (self, t)
 		local troll_unit = self._source_attacker_unit
 
-		if AiUtils.unit_alive(troll_unit) then
+		if HEALTH_ALIVE[troll_unit] then
 			local world = self._world
 			local tongue_node = Unit.node(troll_unit, "j_tongue_01")
 			local tongue_pos = Unit.world_position(troll_unit, tongue_node)
@@ -768,7 +768,7 @@ LiquidAreaDamageTemplates = {
 	nurgle_noxious_init = function (self, t)
 		local unit = self._source_attacker_unit
 
-		if AiUtils.unit_alive(unit) then
+		if HEALTH_ALIVE[unit] then
 			local world = self._world
 			local node = Unit.node(unit, "j_spine")
 			local pos = Unit.world_position(unit, node)
@@ -796,7 +796,7 @@ LiquidAreaDamageTemplates = {
 	bile_troll_vomit_update = function (self, t, dt)
 		local vomit_unit = self._vomit_unit
 		local troll_unit = self._source_attacker_unit
-		local source_unit_is_alive = AiUtils.unit_alive(troll_unit)
+		local source_unit_is_alive = HEALTH_ALIVE[troll_unit]
 		local firing_time_deadline = self._firing_time_deadline
 
 		if source_unit_is_alive and vomit_unit ~= nil and t < firing_time_deadline then

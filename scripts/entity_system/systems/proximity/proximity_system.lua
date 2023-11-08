@@ -414,7 +414,7 @@ ProximitySystem.physics_async_update = function (self, context, t)
 					for i = 1, num_nearby_units do
 						local nearby_unit = nearby_units[i]
 						nearby_units[i] = nil
-						local is_alive = ScriptUnit.extension(nearby_unit, "health_system"):is_alive()
+						local is_alive = HEALTH_ALIVE[nearby_unit]
 
 						if nearby_unit ~= unit and is_alive and enemy_units_lookup[nearby_unit] then
 							local nearby_unit_pos = POSITION_LOOKUP[nearby_unit]
@@ -551,19 +551,17 @@ ProximitySystem._update_nearby_boss = function (self)
 	end
 
 	local num_units = Broadphase.query(self.enemy_broadphase, player_position, 3, broadphase_result)
-	local closest_distance = math.huge
+	local ai_system = Managers.state.entity:system("ai_system")
 
 	for i = 1, num_units do
 		local unit = broadphase_result[i]
 		local breed = Unit.get_data(unit, "breed")
+		local attributes = ai_system:get_attributes(unit)
 
-		if breed and breed.boss and not breed.server_controlled_health_bar then
-			local distance = Vector3.distance_squared(POSITION_LOOKUP[unit], player_position)
+		if breed and breed.boss and not breed.server_controlled_health_bar or attributes.grudge_marked then
+			self.closest_boss_unit = unit
 
-			if distance < closest_distance then
-				closest_distance = distance
-				self.closest_boss_unit = unit
-			end
+			break
 		end
 	end
 end

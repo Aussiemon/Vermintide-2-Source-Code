@@ -788,6 +788,7 @@ CareerSettings = {
 		portrait_image_picking = "picking_portrait_victor_zealot",
 		package_name = "resource_packages/careers/wh_zealot",
 		preview_idle_animation = "career_idle_03",
+		sound_character = "witch_hunter_zealot",
 		preview_animation = "career_select_03",
 		icon = "icons_placeholder",
 		talent_tree_index = 1,
@@ -800,7 +801,6 @@ CareerSettings = {
 		category_image = "category_icon_victor_zealot",
 		portrait_thumbnail = "portrait_victor_zealot_thumbnail",
 		sort_order = 3,
-		sound_character = "witch_hunter_zealot",
 		breed = PlayerBreeds.hero_wh_zealot,
 		item_types = {},
 		activated_ability = ActivatedAbilitySettings.wh_1,
@@ -825,13 +825,9 @@ CareerSettings = {
 		is_unlocked_function = local_is_unlocked_function,
 		is_dlc_unlocked = local_is_dlc_unlocked,
 		override_available_for_mechanism = local_override_available_for_mechanism,
-		fp_anim_setup = function (fp_unit)
-			if Unit.animation_has_variable(fp_unit, "is_zealot") then
-				local variable_index = Unit.animation_find_variable(fp_unit, "is_zealot")
-
-				Unit.animation_set_variable(fp_unit, variable_index, 1)
-			end
-		end,
+		animation_variables = {
+			is_zealot = 1
+		},
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"

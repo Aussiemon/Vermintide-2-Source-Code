@@ -7,7 +7,9 @@ settings.buff_templates = {
 				name = "slayer_curse_debuff",
 				icon = "buff_icon_mutator_icon_slayer_curse",
 				debuff = true,
-				perk = buff_perks.slayer_curse
+				perks = {
+					buff_perks.slayer_curse
+				}
 			}
 		}
 	},

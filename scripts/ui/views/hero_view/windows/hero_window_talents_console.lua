@@ -1,3 +1,5 @@
+require("scripts/ui/hud_ui/scrollbar_ui")
+
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_talents_console_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
@@ -73,8 +75,22 @@ HeroWindowTalentsConsole.on_exit = function (self, params)
 	end
 end
 
+HeroWindowTalentsConsole._inject_additional_scenegraph_definitions = function (self, scenegraph_definition)
+	for _, career_settings in pairs(CareerSettings) do
+		if career_settings.additional_ui_info_file then
+			local additional_ui_definitions = local_require(career_settings.additional_ui_info_file)
+
+			for name, data in pairs(additional_ui_definitions.scenegraph_definition_to_inject) do
+				scenegraph_definition[name] = data
+			end
+		end
+	end
+end
+
 HeroWindowTalentsConsole.create_ui_elements = function (self, params, offset)
-	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
+	self:_inject_additional_scenegraph_definitions(scenegraph_definition)
+
+	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
 	local widgets_by_name = {}
 
@@ -86,6 +102,8 @@ HeroWindowTalentsConsole.create_ui_elements = function (self, params, offset)
 
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
+	self._additional_widgets = {}
+	self._additional_widgets_by_name = {}
 	local input_service = Managers.input:get_service("hero_view")
 	local gui_layer = UILayer.default + 30
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 5, gui_layer, generic_input_actions.default, true)
@@ -93,10 +111,10 @@ HeroWindowTalentsConsole.create_ui_elements = function (self, params, offset)
 	self._menu_input_description:set_input_description(nil)
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
-	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
+	self.ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
 
 	if offset then
-		local window_position = self.ui_scenegraph.window.local_position
+		local window_position = self._ui_scenegraph.window.local_position
 		window_position[1] = window_position[1] + offset[1]
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
@@ -135,7 +153,7 @@ HeroWindowTalentsConsole.update = function (self, dt, t)
 	self:_update_animations(dt)
 	self:_handle_gamepad_input(dt, t)
 	self:_handle_input(dt, t)
-	self:draw(dt)
+	self:draw(dt, t)
 end
 
 HeroWindowTalentsConsole.post_update = function (self, dt, t)
@@ -284,10 +302,10 @@ HeroWindowTalentsConsole._set_talent_selected = function (self, row, column)
 	self.parent:update_talent_sync()
 end
 
-HeroWindowTalentsConsole.draw = function (self, dt)
+HeroWindowTalentsConsole.draw = function (self, dt, t)
 	local ui_renderer = self.ui_renderer
 	local ui_top_renderer = self.ui_top_renderer
-	local ui_scenegraph = self.ui_scenegraph
+	local ui_scenegraph = self._ui_scenegraph
 	local input_service = self:_input_service()
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 
@@ -305,10 +323,18 @@ HeroWindowTalentsConsole.draw = function (self, dt)
 		end
 	end
 
+	for _, widget in ipairs(self._additional_widgets) do
+		UIRenderer.draw_widget(ui_top_renderer, widget)
+	end
+
 	UIRenderer.end_pass(ui_top_renderer)
 
 	if gamepad_active then
 		self._menu_input_description:draw(ui_top_renderer, dt)
+	end
+
+	if self._scrollbar then
+		self._scrollbar:update(dt, t, ui_top_renderer, input_service, self.render_settings)
 	end
 end
 
@@ -533,7 +559,7 @@ end
 
 HeroWindowTalentsConsole._populate_career_info = function (self, initialize)
 	local ui_renderer = self.ui_renderer
-	local ui_scenegraph = self.ui_scenegraph
+	local ui_scenegraph = self._ui_scenegraph
 	local hero_name = self.hero_name
 	local career_index = self.career_index
 	local profile_index = FindProfileIndex(hero_name)
@@ -552,16 +578,14 @@ HeroWindowTalentsConsole._populate_career_info = function (self, initialize)
 	local passive_ability_data = career_settings.passive_ability
 	local activated_ability_data = career_settings.activated_ability[1]
 	local passive_display_name = passive_ability_data.display_name
-	local passive_description = passive_ability_data.description
 	local passive_icon = passive_ability_data.icon
 	local activated_display_name = activated_ability_data.display_name
-	local activated_description = activated_ability_data.description
 	local activated_icon = activated_ability_data.icon
 	widgets_by_name.passive_title_text.content.text = Localize(passive_display_name)
-	widgets_by_name.passive_description_text.content.text = Localize(passive_description)
+	widgets_by_name.passive_description_text.content.text = UIUtils.get_ability_description(passive_ability_data)
 	widgets_by_name.passive_icon.content.texture_id = passive_icon
 	widgets_by_name.active_title_text.content.text = Localize(activated_display_name)
-	widgets_by_name.active_description_text.content.text = Localize(activated_description)
+	widgets_by_name.active_description_text.content.text = UIUtils.get_ability_description(activated_ability_data)
 	widgets_by_name.active_icon.content.texture_id = activated_icon
 	local passive_perks = passive_ability_data.perks
 	local total_perks_height = 0
@@ -580,7 +604,7 @@ HeroWindowTalentsConsole._populate_career_info = function (self, initialize)
 
 		if data then
 			local display_name = Localize(data.display_name)
-			local description = Localize(data.description)
+			local description = UIUtils.get_perk_description(data)
 			local title_text_style = style.title_text
 			local description_text_style = style.description_text
 			local description_text_shadow_style = style.description_text_shadow
@@ -594,6 +618,36 @@ HeroWindowTalentsConsole._populate_career_info = function (self, initialize)
 		end
 
 		content.visible = data ~= nil
+	end
+
+	self:_setup_additional_career_info(career_settings, total_perks_height)
+end
+
+HeroWindowTalentsConsole._setup_additional_career_info = function (self, career_settings)
+	if career_settings.additional_ui_info_file then
+		local additional_info_definitions = local_require(career_settings.additional_ui_info_file)
+		local scroll_area_scenegraph_id = "scrollbar_window"
+		local scroll_area_anchor_scenegraph_id = "scrollbar_anchor"
+		local height = self._ui_scenegraph[scroll_area_scenegraph_id].size[2]
+		local base_offset = {
+			0,
+			-height,
+			0
+		}
+		local scroll_height = 0
+		self._additional_widgets, self._additional_widgets_by_name, scroll_height = additional_info_definitions.setup(scroll_area_scenegraph_id, base_offset)
+		local optional_scroll_area_hotspot_widget = nil
+		local enable_auto_scroll = true
+		self._scrollbar = ScrollbarUI:new(self._ui_scenegraph, scroll_area_scenegraph_id, scroll_area_anchor_scenegraph_id, scroll_height, enable_auto_scroll, optional_scroll_area_hotspot_widget)
+	else
+		table.clear(self._additional_widgets)
+		table.clear(self._additional_widgets_by_name)
+
+		if self._scrollbar then
+			self._scrollbar:destroy(self._ui_scenegraph)
+		end
+
+		self._scrollbar = nil
 	end
 end
 

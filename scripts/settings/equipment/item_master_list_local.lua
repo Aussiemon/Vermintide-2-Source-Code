@@ -428,8 +428,8 @@ ItemMasterList.victor_bountyhunter_career_skill_weapon = {
 	left_hand_unit = "units/weapons/player/wpn_emp_shotgun/wpn_emp_shotgun",
 	can_wield = {}
 }
-ItemMasterList.training_dummy = {
-	temporary_template = "training_dummy",
+ItemMasterList.training_dummy_bob = {
+	temporary_template = "training_dummy_bob",
 	slot_type = "healthkit",
 	is_local = true,
 	inventory_icon = "icons_placeholder",
@@ -440,24 +440,12 @@ ItemMasterList.training_dummy = {
 	item_type = "inventory_item",
 	can_wield = CanWieldAllItemTemplates
 }
-ItemMasterList.training_dummy_armored = {
-	temporary_template = "training_dummy_armored",
+ItemMasterList.training_dummy_armored_bob = {
+	temporary_template = "training_dummy_armored_bob",
 	slot_type = "healthkit",
 	is_local = true,
 	inventory_icon = "icons_placeholder",
 	left_hand_unit = "units/gameplay/training_dummy/wpn_training_dummy_armored",
-	rarity = "plentiful",
-	gamepad_hud_icon = "consumables_icon_defence",
-	hud_icon = "consumables_icon_defence",
-	item_type = "inventory_item",
-	can_wield = CanWieldAllItemTemplates
-}
-ItemMasterList.training_dummy_skaven = {
-	temporary_template = "training_dummy_skaven",
-	slot_type = "healthkit",
-	is_local = true,
-	inventory_icon = "icons_placeholder",
-	left_hand_unit = "units/gameplay/training_dummy/training_dummy_skaven/wpn_training_dummy_skaven",
 	rarity = "plentiful",
 	gamepad_hud_icon = "consumables_icon_defence",
 	hud_icon = "consumables_icon_defence",

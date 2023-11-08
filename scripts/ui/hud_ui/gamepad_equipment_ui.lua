@@ -363,14 +363,26 @@ local verified_widgets = {}
 
 GamePadEquipmentUI._update_equipment_lookup = function (self, equipment, inventory_extension)
 	self._equipment_lookup = self._equipment_lookup or {}
+	self._equipment_lookup.additional_items_lookup = self._equipment_lookup.additional_items_lookup or {}
 	local equipment_lookup = self._equipment_lookup
 	equipment_lookup.wielded_slot = equipment.wielded_slot
+	local additional_items_lookup = equipment_lookup.additional_items_lookup
+	local additional_items_table = inventory_extension:get_additional_items_table()
 	local item_template = nil
 	local equipment_slots = equipment.slots
 
 	for slot_name, _ in pairs(allowed_equipment_slots) do
 		item_template = equipment_slots[slot_name] and equipment_slots[slot_name].item_template
 		equipment_lookup[slot_name] = item_template and item_template.name
+		local slot_additional_items = additional_items_table and additional_items_table[slot_name]
+
+		if slot_additional_items then
+			local additional_items = slot_additional_items.items
+			local item_data = additional_items[1]
+			additional_items_lookup[slot_name] = item_data and item_data.key
+		else
+			additional_items_lookup[slot_name] = nil
+		end
 	end
 
 	local ranged_slot_data = equipment_slots.slot_ranged
@@ -405,7 +417,9 @@ GamePadEquipmentUI._check_equipment_changed = function (self, equipment, invento
 
 	local item_template, item_name, saved_item_name = nil
 	local equipment_slots = equipment.slots
+	local additional_items_table = inventory_extension:get_additional_items_table()
 	local equipment_lookup = self._equipment_lookup
+	local additional_items_lookup = equipment_lookup.additional_items_lookup
 
 	for slot_name, _ in pairs(allowed_equipment_slots) do
 		local slot_data = equipment_slots[slot_name]
@@ -417,6 +431,20 @@ GamePadEquipmentUI._check_equipment_changed = function (self, equipment, invento
 			self:_update_equipment_lookup(equipment, inventory_extension)
 
 			return true
+		end
+
+		local slot_additional_items = additional_items_table[slot_name]
+
+		if slot_additional_items then
+			local additional_items = slot_additional_items.items
+			local additional_item = additional_items[1]
+			local additional_item_name = additional_item and additional_item.key
+
+			if additional_items_lookup[slot_name] ~= additional_item_name then
+				self:_update_equipment_lookup(equipment, inventory_extension)
+
+				return true
+			end
 		end
 	end
 
@@ -590,6 +618,64 @@ GamePadEquipmentUI._sync_player_equipment = function (self)
 
 					if content.can_swap ~= can_swap then
 						content.can_swap = can_swap
+
+						self:_set_widget_dirty(widget)
+					end
+				end
+			elseif slot_name == "slot_potion" and item_data and widget_id > 0 then
+				local hud_slot = added_items[widget_id]
+				local widget = hud_slot and hud_slot.widget
+
+				if widget then
+					local content = widget.content
+					local style = widget.style
+					local additional_items = inventory_extension:get_additional_items(slot_name)
+
+					if additional_items then
+						local next_additional_item = additional_items[1]
+
+						if next_additional_item then
+							local hud_icon = next_additional_item.gamepad_hud_icon
+							content.secondary_texture_icon = hud_icon
+							content.secondary_texture_icon_glow = hud_icon .. "_glow"
+							local inventory_consumable_slot_colors = UISettings.inventory_consumable_slot_colors
+							local default_background_color = {
+								255,
+								0,
+								0,
+								0
+							}
+							local default_glow_color = {
+								255,
+								255,
+								255,
+								255
+							}
+							local slot_background_color = inventory_consumable_slot_colors[next_additional_item.key]
+
+							if slot_background_color then
+								style.secondary_texture_icon.color = slot_background_color
+								style.secondary_texture_icon_glow.color = {
+									255,
+									0,
+									0,
+									0
+								}
+							else
+								style.secondary_texture_icon.color = default_background_color
+								style.secondary_texture_icon_glow.color = default_glow_color
+							end
+
+							self:_set_widget_dirty(widget)
+						else
+							content.secondary_texture_icon = nil
+							content.secondary_texture_icon_glow = nil
+
+							self:_set_widget_dirty(widget)
+						end
+					else
+						content.secondary_texture_icon = nil
+						content.secondary_texture_icon_glow = nil
 
 						self:_set_widget_dirty(widget)
 					end

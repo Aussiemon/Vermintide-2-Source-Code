@@ -1,3 +1,5 @@
+require("foundation/scripts/util/table")
+
 local SIGNALS = {
 	current_request = "current_request",
 	request = "request",
@@ -11,6 +13,18 @@ Testify = {
 	RETRY = newproxy(false)
 }
 local __raw_print = print
+local cjson_decode = cjson.decode
+local cjson_encode = cjson.encode
+local coroutine_resume = coroutine.resume
+local coroutine_yield = coroutine.yield
+local string_format = string.format
+local table_dump = table.dump
+local table_keys = table.keys
+local table_merge_varargs = table.merge_varargs
+local table_pack = table.pack
+local table_size = table.size
+local tostring = tostring
+local unpack = unpack
 
 Testify.init = function (self)
 	self._requests = {}
@@ -46,7 +60,7 @@ Testify.update = function (self, dt, t)
 	end
 
 	if self._test_case then
-		local success, result, end_suite = coroutine.resume(self._test_case, dt, t)
+		local success, result, end_suite = coroutine_resume(self._test_case, dt, t)
 
 		if not success then
 			error(debug.traceback(self._test_case, result))
@@ -63,9 +77,8 @@ Testify.update = function (self, dt, t)
 end
 
 Testify.make_request = function (self, request_name, ...)
-	local request_parameters = {
-		...
-	}
+	local request_parameters, num_parameters = table_pack(...)
+	request_parameters.length = num_parameters
 
 	self:_print("Requesting %s", request_name)
 
@@ -76,9 +89,7 @@ Testify.make_request = function (self, request_name, ...)
 end
 
 Testify.make_request_to_runner = function (self, request_name, ...)
-	local request_parameters = {
-		...
-	}
+	local request_parameters = table_pack(...)
 
 	self:_print("Requesting %s to the Testify Runner", request_name)
 
@@ -86,10 +97,10 @@ Testify.make_request_to_runner = function (self, request_name, ...)
 	self._responses[request_name] = nil
 	local request = {
 		name = request_name,
-		parameter = request_parameters
+		parameters = request_parameters
 	}
 
-	Testify:_signal(SIGNALS.request, cjson.encode(request))
+	self:_signal(SIGNALS.request, cjson_encode(request))
 
 	return self:_wait_for_response(request_name)
 end
@@ -98,12 +109,14 @@ Testify._wait_for_response = function (self, request_name)
 	self:_print("Waiting for response %s", request_name)
 
 	while true do
-		coroutine.yield()
+		coroutine_yield()
 
 		local response = self._responses[request_name]
 
-		if response ~= nil then
-			return unpack(response)
+		if response then
+			local response_length = response.length
+
+			return unpack(response, 1, response_length)
 		end
 	end
 end
@@ -112,15 +125,15 @@ Testify.poll_requests_through_handler = function (self, callback_table, ...)
 	local RETRY = Testify.RETRY
 
 	for request, callback in pairs(callback_table) do
-		local args = Testify:poll_request(request)
+		local request_args, num_request_args = self:poll_request(request)
 
-		if args then
-			local ret = {
-				callback(unpack(args), ...)
-			}
+		if request_args then
+			local poll_args, num_poll_args = table_pack(...)
+			local merged_args, num_merged_args = table_merge_varargs(poll_args, num_poll_args, unpack(request_args))
+			local responses, num_responses = table_pack(callback(unpack(merged_args, 1, num_merged_args)))
 
-			if ret[1] ~= RETRY then
-				Testify:respond_to_request(request, ret)
+			if responses[1] ~= RETRY then
+				self:respond_to_request(request, responses, num_responses)
 			end
 
 			return
@@ -129,25 +142,30 @@ Testify.poll_requests_through_handler = function (self, callback_table, ...)
 end
 
 Testify.poll_request = function (self, request_name)
-	return self._requests[request_name]
+	local request_arguments = self._requests[request_name]
+
+	if request_arguments then
+		local num_request_arguments = request_arguments.length
+
+		return request_arguments, num_request_arguments
+	end
 end
 
-Testify.respond_to_request = function (self, request_name, response_value)
+Testify.respond_to_request = function (self, request_name, responses, num_responses)
+	if responses then
+		responses.length = num_responses or #responses
+	end
+
 	self:_print("Responding to %s", request_name)
 
 	self._requests[request_name] = nil
-	self._responses[request_name] = response_value
+	self._responses[request_name] = responses
 end
 
-Testify.respond_to_runner_request = function (self, request_name, response_value)
-	local value = {
-		response_value
-	}
-
-	self:_print("Responding to %s", request_name)
-
-	self._requests[request_name] = nil
-	self._responses[request_name] = value
+Testify.respond_to_runner_request = function (self, request_name, responses, num_responses)
+	self:respond_to_request(request_name, {
+		responses
+	}, num_responses)
 end
 
 Testify.print_test_case_marker = function (self)
@@ -155,9 +173,9 @@ Testify.print_test_case_marker = function (self)
 end
 
 Testify.inspect = function (self)
-	printf("[Testify] Test case running? %s", self._test_case ~= nil)
-	table.dump(self._requests, "[Testify] Requests", 2)
-	table.dump(self._responses, "[Testify] Responses", 2)
+	self:_print("Test case running? %s", self._thread ~= nil)
+	table_dump(self._requests, "[Testify] Requests", 2)
+	table_dump(self._responses, "[Testify] Responses", 2)
 end
 
 Testify._set_time_scale = function (self)
@@ -198,7 +216,7 @@ Testify._signal = function (self, signal, message, print_signal)
 end
 
 Testify._print = function (self, ...)
-	if Development.parameter("debug_testify") then
+	if script_data.debug_testify then
 		printf("[Testify] %s", string.format(...))
 	end
 end

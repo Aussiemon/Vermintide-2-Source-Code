@@ -564,22 +564,6 @@ local function create_status_widget(texture, offset)
 	}
 end
 
-local server_name_text_style = {
-	font_size = 16,
-	upper_case = false,
-	localize = false,
-	use_shadow = false,
-	word_wrap = false,
-	horizontal_alignment = "left",
-	vertical_alignment = "center",
-	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
 local widget_definitions = {
 	window = UIWidgets.create_simple_texture("matchmaking_window", "window"),
 	loading_icon = UIWidgets.create_simple_texture("matchmaking_icon", "loading_icon"),

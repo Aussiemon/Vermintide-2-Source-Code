@@ -2,6 +2,7 @@ CareerActionNames.wood_elf[#CareerActionNames.wood_elf + 1] = "action_career_we_
 PlayerBreeds.hero_we_thornsister = {
 	is_hero = true,
 	name = "hero_we_thornsister",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -9,7 +10,10 @@ PlayerBreeds.hero_we_thornsister = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 CareerSettings.we_thornsister = {
 	profile_name = "wood_elf",
@@ -90,6 +94,11 @@ CareerSettings.we_thornsister = {
 
 		return nil
 	end,
+	requires_packages = {
+		wall_units = {
+			"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01"
+		}
+	},
 	item_slot_types_by_slot_name = {
 		slot_melee = {
 			"melee"

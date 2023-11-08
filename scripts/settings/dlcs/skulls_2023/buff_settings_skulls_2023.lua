@@ -404,7 +404,7 @@ settings.proc_functions = {
 		end
 	end
 }
-settings.max_stacks_functions = {
+settings.stacking_buff_functions = {
 	skulls_2023_buff_refresh = function (owner_unit, sub_buff_template)
 		if ALIVE[owner_unit] then
 			local buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")

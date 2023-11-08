@@ -512,7 +512,7 @@ achievements.cog_bomb_grind = {
 			return false
 		end
 
-		if damage_type == "burninating" then
+		if damage_type == "burninating" or damage_type == "burn" then
 			local attacker = damage_data[DamageDataIndex.ATTACKER]
 			local liquid_extension = ScriptUnit.has_extension(attacker, "area_damage_system")
 
@@ -520,7 +520,7 @@ achievements.cog_bomb_grind = {
 				return false
 			end
 
-			if liquid_extension.explosion_template_name ~= "fire_grenade" or liquid_extension.explosion_template_name ~= "frag_fire_grenade" or damage_type ~= "burninating" then
+			if liquid_extension.explosion_template_name ~= "fire_grenade" or liquid_extension.explosion_template_name ~= "frag_fire_grenade" then
 				return false
 			end
 		end
@@ -1033,6 +1033,17 @@ achievements.cog_kill_register = {
 		end
 	end
 }
+achievements.cog_missing_cog = {
+	required_dlc = "cog",
+	name = "achv_cog_missing_cog_name",
+	allow_in_inn = true,
+	display_completion_ui = true,
+	icon = "achievement_trophy_cog_missing_cog",
+	desc = "achv_cog_missing_cog_desc",
+	completed = function (statistics_db, stats_id)
+		return statistics_db:get_persistent_stat(stats_id, "cog_missing_cog") > 0
+	end
+}
 local act_1_levels = GameActs.act_1
 local act_2_levels = GameActs.act_2
 local act_3_levels = GameActs.act_3
@@ -1070,7 +1081,6 @@ add_weapon_kills_per_breeds_challenge(achievements, "cog_hammer_kill_hale", {
 }, {
 	"chaos_exalted_sorcerer"
 }, 1, nil, "cog_upgrade", false, nil, nil)
-add_event_challenge(achievements, "cog_missing_cog", "achievement_trophy_cog_missing_cog", nil, "cog", nil, nil)
 
 local main_game_levels = HelmgartLevels
 local difficulties = {

@@ -25,7 +25,7 @@ BTMountUnitAction.enter = function (self, unit, blackboard, t)
 	if mounted_data then
 		local mount_unit = mounted_data.mount_unit
 
-		if AiUtils.unit_alive(mount_unit) then
+		if HEALTH_ALIVE[mount_unit] then
 			local mount_position = POSITION_LOOKUP[mount_unit]
 			local mount_rotation = Unit.local_rotation(mount_unit, 0)
 
@@ -60,7 +60,7 @@ BTMountUnitAction.run = function (self, unit, blackboard, t, dt)
 		if mounted_data then
 			local mount_unit = mounted_data.mount_unit
 
-			if AiUtils.unit_alive(mount_unit) then
+			if HEALTH_ALIVE[mount_unit] then
 				local mount_blackboard = BLACKBOARDS[mount_unit]
 				mount_blackboard.mounting_finished = true
 				mount_blackboard.linked_unit = unit

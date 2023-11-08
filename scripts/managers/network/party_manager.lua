@@ -96,10 +96,12 @@ PartyManager.clear = function (self, sync_to_clients)
 	self._parties = {}
 	self._party_by_name = {}
 	self._num_parties = 0
+	self._num_game_participating_parties = 0
 	self._undecided_party = self:_register_party({
 		party_id = 0,
 		name = "undecided",
 		num_open_slots = 0,
+		game_participating = false,
 		num_slots = 64,
 		tags = {}
 	})
@@ -152,6 +154,7 @@ PartyManager._register_party = function (self, def)
 		num_used_slots = 0,
 		party_id = def.party_id,
 		name = def.name,
+		game_participating = def.game_participating == nil and true or def.game_participating,
 		num_open_slots = num_slots,
 		num_slots = num_slots,
 		slots = slots,
@@ -175,6 +178,10 @@ PartyManager.register_parties = function (self, party_definitions)
 		self._parties[party_id] = party
 		self._party_by_name[party_name] = party
 		self._num_parties = self._num_parties + 1
+
+		if party.game_participating then
+			self._num_game_participating_parties = self._num_game_participating_parties + 1
+		end
 	end
 
 	self._cleared = false
@@ -378,6 +385,10 @@ PartyManager.get_num_parties = function (self)
 	return self._num_parties
 end
 
+PartyManager.get_num_game_participating_parties = function (self)
+	return self._num_game_participating_parties
+end
+
 PartyManager.assign_peer_to_party = function (self, peer_id, local_player_id, wanted_party_id, optional_slot_id, is_bot)
 	is_bot = not not is_bot
 	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
@@ -551,7 +562,7 @@ PartyManager._find_first_empty_slot_id = function (self, party)
 	ferror("No empty slot in party %s", party.name)
 end
 
-PartyManager.get_least_filled_party = function (self, ignore_bots, ignore_spectator_party)
+PartyManager.get_least_filled_party = function (self, ignore_bots, ignore_none_game_participating_party)
 	local parties = self._parties
 
 	fassert(#parties > 1, "parties has not been initialized yet")
@@ -562,7 +573,7 @@ PartyManager.get_least_filled_party = function (self, ignore_bots, ignore_specta
 	for i = 1, #parties do
 		local party = parties[i]
 
-		if not ignore_spectator_party or party.name ~= "spectators" then
+		if not ignore_none_game_participating_party or party.game_participating then
 			local num_used_slots = party.num_used_slots
 
 			if ignore_bots then

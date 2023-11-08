@@ -493,6 +493,7 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 			local spawn_pos = unit_data[U_POSITION]
 			local spawn_rot = unit_data[U_ROTATION]
 			local optional_data = unit_data[U_OPTIONAL_DATA] or {}
+			optional_data.ignore_event_counter = true
 			optional_data.spawned_func = EnemyRecycler.breed_spawned_callback
 			optional_data.dead_breed_data = unit_data
 			local breed = Breeds[breed_name]
@@ -508,6 +509,7 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 		local spawn_pos = unit_data[U_POSITION]
 		local spawn_rot = unit_data[U_ROTATION]
 		local optional_data = unit_data[U_OPTIONAL_DATA] or {}
+		optional_data.ignore_event_counter = true
 		optional_data.spawned_func = EnemyRecycler.breed_spawned_callback
 		optional_data.dead_breed_data = unit_data
 		local breed = Breeds[breed_name]
@@ -552,7 +554,7 @@ EnemyRecycler.deactivate_area = function (self, area)
 						[5] = d[7]
 					}
 					sleepy = true
-				elseif AiUtils.unit_alive(queue_id) then
+				elseif HEALTH_ALIVE[queue_id] then
 					local unit = queue_id
 					local blackboard = BLACKBOARDS[unit]
 
@@ -598,7 +600,7 @@ EnemyRecycler.deactivate_area = function (self, area)
 
 					local claim_unit = point.claim_unit or type(point[1]) ~= "number" and point[1]
 
-					if claim_unit and AiUtils.unit_alive(claim_unit) then
+					if claim_unit and HEALTH_ALIVE[claim_unit] then
 						local blackboard = BLACKBOARDS[claim_unit]
 
 						if not blackboard.target_unit_found_time then
@@ -650,7 +652,7 @@ EnemyRecycler.deactivate_area = function (self, area)
 			return true
 		end
 
-		local alive = ALIVE[unit] and ScriptUnit.extension(unit, "health_system"):is_alive()
+		local alive = HEALTH_ALIVE[unit]
 		local sleep_unit = false
 		local blackboard = nil
 

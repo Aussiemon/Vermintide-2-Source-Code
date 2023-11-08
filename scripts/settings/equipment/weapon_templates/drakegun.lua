@@ -284,6 +284,7 @@ local weapon_template = {
 	right_hand_attachment_node_linking = AttachmentNodeLinking.drakegun,
 	display_unit = "units/weapons/weapon_display/display_drakegun",
 	wield_anim = "to_drakegun",
+	state_machine = "units/beings/player/first_person_base/state_machines/ranged/drakegun",
 	crosshair_style = "circle",
 	buff_type = "RANGED",
 	weapon_type = "DRAKEFIRE",

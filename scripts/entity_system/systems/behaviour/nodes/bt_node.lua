@@ -44,7 +44,7 @@ BTNode.init = function (self, identifier, parent, condition_name, enter_hook_nam
 				self.old_leave(_self, unit, blackboard, t)
 			end
 		else
-			error("No behaviour tree leave hook called %q", leave_hook_name)
+			ferror("No behaviour tree leave hook called %q", leave_hook_name)
 		end
 	end
 end

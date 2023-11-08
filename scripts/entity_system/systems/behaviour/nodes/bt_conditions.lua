@@ -21,6 +21,10 @@ BTConditions.blocked = function (blackboard)
 	return blackboard.blocked
 end
 
+BTConditions.start_or_continue = function (blackboard)
+	return blackboard.attack_token == nil or blackboard.attack_token
+end
+
 BTConditions.ask_target_before_attacking = function (blackboard, condition_args, action)
 	if blackboard.attack_token then
 		return blackboard.attack_token
@@ -133,13 +137,13 @@ BTConditions.ratogre_target_reachable = function (blackboard)
 end
 
 BTConditions.chaos_spawn_grabbed_combat = function (blackboard)
-	return AiUtils.unit_alive(blackboard.victim_grabbed) and not AiUtils.unit_knocked_down(blackboard.victim_grabbed) and not blackboard.wants_to_throw
+	return HEALTH_ALIVE[blackboard.victim_grabbed] and not AiUtils.unit_knocked_down(blackboard.victim_grabbed) and not blackboard.wants_to_throw
 end
 
 BTConditions.chaos_spawn_grabbed_throw = function (blackboard)
 	local knocked_down = AiUtils.unit_knocked_down(blackboard.victim_grabbed)
 
-	return AiUtils.unit_alive(blackboard.victim_grabbed) and (knocked_down or blackboard.wants_to_throw)
+	return HEALTH_ALIVE[blackboard.victim_grabbed] and (knocked_down or blackboard.wants_to_throw)
 end
 
 BTConditions.path_found = function (blackboard)
@@ -262,6 +266,10 @@ BTConditions.has_destructible_as_target = function (blackboard)
 end
 
 BTConditions.can_see_player = function (blackboard)
+	return unit_alive(blackboard.target_unit)
+end
+
+BTConditions.has_target = function (blackboard)
 	return unit_alive(blackboard.target_unit)
 end
 
@@ -449,7 +457,7 @@ BTConditions.in_sprint_dist = function (blackboard)
 end
 
 BTConditions.in_run_dist = function (blackboard)
-	return blackboard.target_dist <= 7
+	return blackboard.target_dist <= 7 or blackboard.movement_inited and blackboard.target_dist <= 8
 end
 
 BTConditions.troll_downed = function (blackboard)
@@ -474,6 +482,81 @@ end
 
 BTConditions.confirmed_player_sighting = function (blackboard)
 	return unit_alive(blackboard.target_unit) and blackboard.confirmed_player_sighting
+end
+
+BTConditions.commander_disabled_or_resuming = function (blackboard)
+	return ALIVE[blackboard.commander_unit] and ScriptUnit.extension(blackboard.commander_unit, "status_system"):is_disabled() or blackboard.disabled_resume_time and Managers.time:time("game") < blackboard.disabled_resume_time
+end
+
+BTConditions.commander_disabled = function (blackboard)
+	return ALIVE[blackboard.commander_unit] and ScriptUnit.extension(blackboard.commander_unit, "status_system"):is_disabled()
+end
+
+BTConditions.has_commander_and_follow_node = function (blackboard)
+	local commander_unit = Managers.state.entity:system("ai_commander_system"):get_commander_unit(blackboard.unit)
+
+	return commander_unit and blackboard.is_navbot_following_path
+end
+
+BTConditions.confirmed_enemy_sighting_within_commander = function (blackboard)
+	return unit_alive(blackboard.target_unit) and blackboard.dist_to_commander and blackboard.target_dist + blackboard.dist_to_commander < blackboard.max_combat_range
+end
+
+BTConditions.confirmed_enemy_sighting_within_commander_sticky = function (blackboard)
+	return (unit_alive(blackboard.target_unit) or unit_alive(blackboard.locked_target_unit)) and (blackboard.commander_unit and blackboard.confirmed_enemy_sighting_within_commander or blackboard.attack and blackboard.attack_locked_in_t)
+end
+
+BTConditions.should_teleport_to_commander = function (blackboard)
+	local controlled_unit = blackboard.unit
+	local commander_unit = Managers.state.entity:system("ai_commander_system"):get_commander_unit(controlled_unit)
+
+	if commander_unit then
+		local max_commander_distance = blackboard.breed.max_commander_distance
+
+		if max_commander_distance then
+			local commander_position = POSITION_LOOKUP[commander_unit]
+			local self_position = POSITION_LOOKUP[controlled_unit]
+			local distance_sq = Vector3.distance_squared(commander_position, self_position)
+
+			if distance_sq > max_commander_distance * max_commander_distance then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
+BTConditions.has_command_attack = function (blackboard)
+	return blackboard.new_command_attack and ALIVE[blackboard.target_unit]
+end
+
+BTConditions.pet_skeleton_is_armored = function (blackboard)
+	return blackboard.breed.name == "pet_skeleton_armored"
+end
+
+BTConditions.pet_skeleton_is_dual_wield = function (blackboard)
+	return blackboard.breed.name == "pet_skeleton_dual_wield"
+end
+
+BTConditions.pet_skeleton_has_shield = function (blackboard)
+	return blackboard.breed.name == "pet_skeleton_with_shield"
+end
+
+BTConditions.pet_skeleton_default = function (blackboard)
+	return blackboard.breed.name == "pet_skeleton"
+end
+
+BTConditions.has_charge_target = function (blackboard)
+	return blackboard.charge_target
+end
+
+BTConditions.wants_stand_ground = function (blackboard)
+	return blackboard.command_state == CommandStates.StandingGround
+end
+
+BTConditions.necromancer_not_exploded = function (blackboard)
+	return not blackboard.explosion_triggered
 end
 
 BTConditions.suiciding_whilst_staggering = function (blackboard)
@@ -617,15 +700,15 @@ end
 BTConditions.is_mounted = function (blackboard)
 	local mount_unit = blackboard.mounted_data.mount_unit
 
-	return not blackboard.knocked_off_mount and AiUtils.unit_alive(mount_unit)
+	return not blackboard.knocked_off_mount and HEALTH_ALIVE[mount_unit]
 end
 
 BTConditions.knocked_off_mount = function (blackboard)
-	return (blackboard.knocked_off_mount or not AiUtils.unit_alive(blackboard.mounted_data.mount_unit)) and AiUtils.unit_alive(blackboard.target_unit)
+	return (blackboard.knocked_off_mount or not HEALTH_ALIVE[blackboard.mounted_data.mount_unit]) and HEALTH_ALIVE[blackboard.target_unit]
 end
 
 BTConditions.ready_to_cast_spell = function (blackboard)
-	return blackboard.ready_to_summon and not blackboard.about_to_mount and AiUtils.unit_alive(blackboard.target_unit)
+	return blackboard.ready_to_summon and not blackboard.about_to_mount and HEALTH_ALIVE[blackboard.target_unit]
 end
 
 BTConditions.grey_seer_teleport_spell = function (blackboard)
@@ -685,7 +768,7 @@ BTConditions.beastmen_standard_bearer_pickup_standard = function (blackboard)
 	if blackboard.moving_to_pick_up_standard then
 		return true
 	else
-		return blackboard.has_placed_standard and unit_alive(blackboard.target_unit) and AiUtils.unit_alive(blackboard.standard_unit) and target_distance_to_standard and blackboard.breed.pickup_standard_distance < target_distance_to_standard
+		return blackboard.has_placed_standard and unit_alive(blackboard.target_unit) and HEALTH_ALIVE[blackboard.standard_unit] and target_distance_to_standard and blackboard.breed.pickup_standard_distance < target_distance_to_standard
 	end
 end
 

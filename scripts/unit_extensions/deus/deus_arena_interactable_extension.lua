@@ -124,9 +124,7 @@ DeusArenaInteractableExtension.on_server_interact = function (self, world, inter
 	local state = self:_get_state()
 
 	if state == STATES.WAITING then
-		local health_extension = ScriptUnit.extension(interactor_unit, "health_system")
-
-		if ALIVE[interactor_unit] and health_extension:is_alive() then
+		if HEALTH_ALIVE[interactor_unit] then
 			local dialogue_input = ScriptUnit.extension_input(interactor_unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
 			local event_name = Unit.get_data(self._unit, "arena_interactable_data", "interactor_vo_line")

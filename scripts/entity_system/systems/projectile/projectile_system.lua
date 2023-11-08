@@ -27,7 +27,8 @@ local RPCS = {
 	"rpc_spawn_globadier_globe",
 	"rpc_spawn_globadier_globe_fixed_impact",
 	"rpc_clients_continuous_shoot_start",
-	"rpc_clients_continuous_shoot_stop"
+	"rpc_clients_continuous_shoot_stop",
+	"rpc_projectile_event"
 }
 local extensions = {
 	"GenericImpactProjectileUnitExtension",
@@ -85,11 +86,19 @@ ProjectileSystem.init = function (self, entity_system_creation_context, system_n
 end
 
 ProjectileSystem.on_add_extension = function (self, world, unit, extension_name, ...)
+	if self.is_server then
+		Managers.level_transition_handler.transient_package_loader:add_projectile(unit)
+	end
+
 	return ExtensionSystemBase.on_add_extension(self, world, unit, extension_name, ...)
 end
 
 ProjectileSystem.on_remove_extension = function (self, unit, extension_name)
 	ExtensionSystemBase.on_remove_extension(self, unit, extension_name)
+
+	if self.is_server then
+		Managers.level_transition_handler.transient_package_loader:remove_projectile(unit)
+	end
 end
 
 local projectiles_to_remove = {}
@@ -225,6 +234,7 @@ ProjectileSystem.spawn_player_projectile = function (self, owner_unit, position,
 	local projectile_unit = Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, projectile_info.projectile_unit_template_name or "player_projectile_unit", extension_init_data, position, rotation)
 
 	self:_add_player_projectile_reference(owner_unit, projectile_unit, projectile_info)
+	Managers.state.achievement:trigger_event("on_player_projectile_spawned", projectile_unit, owner_unit, item_template_name)
 end
 
 ProjectileSystem.spawn_globadier_globe = function (self, position, target_vector, angle, speed, initial_radius, radius, duration, owner_unit, damage_source, aoe_dot_damage, aoe_init_damage, aoe_dot_damage_interval, create_nav_tag_volume, instant_explosion, fixed_impact_data)
@@ -384,6 +394,20 @@ ProjectileSystem.rpc_drop_projectile = function (self, channel_id, go_id)
 	locomotion_extension:drop()
 end
 
+ProjectileSystem.rpc_projectile_event = function (self, channel_id, go_id, event_id)
+	local unit = self.unit_storage:unit(go_id)
+	local projectile_extension = ScriptUnit.extension(unit, "projectile_system")
+	local event_name = NetworkLookup.projectile_external_event[event_id]
+
+	projectile_extension:trigger_external_event(event_name)
+
+	if self.is_server then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_projectile_event", peer_id, go_id, event_id)
+	end
+end
+
 ProjectileSystem.rpc_spawn_pickup_projectile = function (self, channel_id, projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, pickup_spawn_type_id, spawn_limit)
 	if not Managers.state.network:game() then
 		return
@@ -411,8 +435,14 @@ ProjectileSystem.rpc_spawn_pickup_projectile = function (self, channel_id, proje
 	}
 	local position = AiAnimUtils.position_network_scale(network_position)
 	local rotation = AiAnimUtils.rotation_network_scale(network_rotation)
+	local pickup_settings = AllPickups[pickup_name]
+	local spawn_override_func = pickup_settings.spawn_override_func
 
-	Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, projectile_unit_template_name, extension_init_data, position, rotation)
+	if spawn_override_func then
+		spawn_override_func(pickup_settings, extension_init_data, position, rotation)
+	else
+		Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, projectile_unit_template_name, extension_init_data, position, rotation)
+	end
 end
 
 ProjectileSystem.rpc_spawn_pickup_projectile_limited = function (self, channel_id, projectile_unit_name_id, projectile_unit_template_name_id, network_position, network_rotation, network_velocity, network_angular_velocity, pickup_name_id, spawner_unit_id, limited_item_id, pickup_spawn_type_id)
@@ -1247,7 +1277,7 @@ end
 
 ProjectileSystem._redirect_shield_linking = function (self, hit_unit, node_index, link_position, depth_position_offset)
 	local breed = AiUtils.unit_breed(hit_unit)
-	local do_redirect = AiUtils.unit_alive(hit_unit) and breed and not breed.no_effects_on_shield_block and not breed.is_player
+	local do_redirect = HEALTH_ALIVE[hit_unit] and breed and not breed.no_effects_on_shield_block and not breed.is_player
 
 	if not do_redirect then
 		return hit_unit, node_index, link_position

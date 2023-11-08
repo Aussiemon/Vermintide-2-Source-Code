@@ -1,38 +1,38 @@
 local stagger_types = require("scripts/utils/stagger_types")
 local base_health = 850
 local breed_data = {
-	threat_value = 8,
+	minion_detection_radius = 20,
 	walk_speed = 6.5,
 	race = "chaos",
 	is_bot_aid_threat = true,
-	hit_mass_count = 100,
-	server_controlled_health_bar = true,
-	player_locomotion_constrain_radius = 0.7,
-	poison_resistance = 100,
+	look_at_range = 30,
+	behavior = "chaos_exalted_sorcerer_drachenfels",
+	lord_damage_reduction = true,
+	aoe_radius = 1,
 	armored_on_no_damage = true,
 	bot_hitbox_radius_approximation = 0.8,
-	aoe_radius = 1,
-	animation_sync_rpc = "rpc_sync_anim_state_7",
-	behavior = "chaos_exalted_sorcerer_drachenfels",
 	target_selection = "pick_rat_ogre_target_with_weights",
 	unit_template = "ai_unit_chaos_exalted_sorcerer_drachenfels",
 	ai_toughness = 10,
-	exchange_order = 2,
+	boss = true,
+	death_reaction = "ai_default",
+	perception = "perception_rat_ogre",
+	proximity_system_check = true,
 	bone_lod_level = 1,
 	wield_inventory_on_spawn = true,
 	max_vortex_units = 3,
 	default_inventory_template = "chaos_exalted_sorcerer_drachenfels",
-	perception = "perception_rat_ogre",
+	threat_value = 8,
 	dialogue_source_name = "chaos_exalted_sorcerer_drachenfels",
-	proximity_system_check = true,
 	flingable = true,
-	lord_damage_reduction = true,
+	aim_template = "chaos_marauder",
+	animation_sync_rpc = "rpc_sync_anim_state_7",
 	radius = 1.5,
-	boss = true,
-	look_at_range = 30,
+	server_controlled_health_bar = true,
+	hit_mass_count = 100,
 	disable_second_hit_ragdoll = true,
 	ai_strength = 10,
-	death_reaction = "ai_default",
+	poison_resistance = 100,
 	armor_category = 5,
 	death_sound_event = "Play_sorcerer_boss_dead",
 	smart_targeting_width = 0.3,
@@ -42,7 +42,7 @@ local breed_data = {
 	has_inventory = true,
 	run_speed = 6.5,
 	awards_positive_reinforcement_message = true,
-	aim_template = "chaos_marauder",
+	exchange_order = 2,
 	combat_music_state = "no_boss",
 	hit_reaction = "ai_default",
 	smart_targeting_outer_width = 0.7,
@@ -51,7 +51,7 @@ local breed_data = {
 	max_chain_stagger_time = 2,
 	smart_object_template = "special",
 	headshot_coop_stamina_fatigue_type = "headshot_special",
-	minion_detection_radius = 20,
+	player_locomotion_constrain_radius = 0.7,
 	far_off_despawn_immunity = true,
 	is_of_interest_func = "is_of_interest_boss_sorcerer",
 	vortexable = false,
@@ -73,6 +73,7 @@ local breed_data = {
 		distance_weight = 20,
 		target_disabled_mul = 0.15
 	},
+	infighting = InfightingSettings.boss,
 	size_variation_range = {
 		1.4,
 		1.4
@@ -98,6 +99,13 @@ local breed_data = {
 
 		return stagger_type, duration, length
 	end,
+	status_effect_settings = {
+		category = "medium",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire,
+			StatusEffectNames.poisoned
+		})
+	},
 	debug_color = {
 		255,
 		200,
@@ -503,14 +511,16 @@ local action_data = {
 	charge_attack = {
 		slow_down_speed = 2,
 		impact_animation = "attack_float_special",
-		cancel_slow_down_speed = 3,
-		num_charges = 5,
-		dodge_past_sound_event = "Play_enemy_bestigor_charge_attack_miss",
-		action_weight = 8,
-		max_slowdown_percentage = 0.25,
-		charge_at_max_speed_duration = 3,
-		dodge_past_push_speed = 8,
 		cancel_animation = "attack_float_special",
+		dodge_past_sound_event = "Play_enemy_bestigor_charge_attack_miss",
+		cancel_slow_down_speed = 3,
+		max_slowdown_percentage = 0.25,
+		charge_notification_sound_event = "Play_boss_aggro_enter",
+		num_charges = 5,
+		dodge_past_push_speed = 8,
+		fallback_to_idle = true,
+		charge_rotation_speed = 5,
+		charge_at_max_speed_duration = 3,
 		charge_max_speed_at = 3,
 		hit_target_slow_down_speed = 3,
 		charge_blocked_animation = "attack_float_special",
@@ -520,34 +530,30 @@ local action_data = {
 		animation_move_speed = 10,
 		align_to_target_animation = "turn_bwd",
 		attack_intensity_type = "charge",
-		charge_rotation_speed = 5,
+		action_weight = 8,
 		radius = 1.25,
-		player_push_speed_blocked = 10,
-		min_slowdown_angle = 20,
-		target_extrapolation_length_scale = 50,
 		hit_ai_radius = 3,
+		player_push_speed_blocked = 10,
+		target_extrapolation_length_scale = 50,
 		max_slowdown_angle = 40,
 		sound_event = "Play_sorcerer_boss_fly_charge",
-		charge_notification_sound_event = "Play_boss_aggro_enter",
+		min_slowdown_angle = 20,
 		end_align_t = 0.5666666666666667,
 		catapult_player = true,
-		lunge_rotation_speed = 6.5,
-		hit_react_type = "heavy",
 		damage = 300,
+		hit_react_type = "heavy",
 		fatigue_type = "blocked_charge",
+		ignore_ledge_death = false,
 		disable_path_splines_on_exit = true,
 		damage_type = "cutting",
 		charge_speed_min = 25,
-		ignore_ledge_death = false,
 		hit_radius = 3,
 		start_animation = "float_start_fwd",
 		target_dodged_radius = 2,
 		player_push_speed = 9.5,
 		blocked_velocity_scale = 1.5,
 		catapult_force_z = 5,
-		max_angle_to_allow_lunge = 60,
 		charge_speed_max = 25,
-		lunge_rotation_slow_down_speed = 4,
 		difficulty_attack_intensity = AttackIntensityPerDifficulty,
 		charging_distance_thresholds = {
 			far = 0,
@@ -559,25 +565,30 @@ local action_data = {
 			medium = 1.5,
 			short = 1
 		},
-		enter_lunge_thresholds = {
-			far = 3,
-			medium = 3,
-			short = 3
-		},
-		lunge_velocity_scaling = {
-			far = 1,
-			medium = 1,
-			short = 1
+		lunge = {
+			rotation_speed = 6.5,
+			rotation_slow_down_speed = 4,
+			max_angle_to_allow = 60,
+			enter_thresholds = {
+				far = 3,
+				medium = 3,
+				short = 3
+			},
+			velocity_scaling = {
+				far = 1,
+				medium = 1,
+				short = 1
+			},
+			animations = {
+				far = "attack_float_special",
+				medium = "attack_float_special",
+				short = "attack_float_special"
+			}
 		},
 		charging_animations = {
 			far = "float_fwd_special",
 			medium = "float_fwd_special",
 			short = "float_fwd_special"
-		},
-		lunge_animations = {
-			far = "attack_float_special",
-			medium = "attack_float_special",
-			short = "attack_float_special"
 		},
 		push_ai = {
 			stagger_distance = 1.5,

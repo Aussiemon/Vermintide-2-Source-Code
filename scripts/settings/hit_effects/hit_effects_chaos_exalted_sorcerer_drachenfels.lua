@@ -35,6 +35,7 @@ local fencer_damage_types = {
 }
 local ranged_damage_types = {
 	"arrow_carbine",
+	"elven_magic_arrow_carbine",
 	"arrow_sniper",
 	"arrow_machinegun",
 	"shot_carbine",

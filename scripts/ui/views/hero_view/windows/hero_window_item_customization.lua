@@ -1343,7 +1343,9 @@ HeroWindowItemCustomization._spawn_item_unit = function (self, item, ignore_spin
 		1,
 		0
 	}
-	local item_previewer = LootItemUnitPreviewer:new(item, preview_position, world, viewport)
+	local unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels, delayed_spawn = nil
+	local career_name_override = self._career_name
+	local item_previewer = LootItemUnitPreviewer:new(item, preview_position, world, viewport, unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels, delayed_spawn, career_name_override)
 	local spawn_callback = callback(self, "cb_on_item_loaded", item_key, ignore_spin)
 
 	item_previewer:register_spawn_callback(spawn_callback)

@@ -1,6 +1,7 @@
 require("scripts/unit_extensions/human/ai_player_unit/ai_utils")
 require("scripts/settings/slot_templates")
 require("scripts/settings/slot_settings")
+require("scripts/settings/infighting_settings")
 require("scripts/entity_system/systems/ai/ai_enemy_slot_extension")
 require("scripts/entity_system/systems/ai/ai_player_slot_extension")
 require("scripts/entity_system/systems/ai/ai_aggroable_slot_extension")
@@ -61,8 +62,6 @@ AISlotSystem2.destroy = function (self)
 		GwNavTraverseLogic.destroy(self._traverse_logic)
 	end
 end
-
-local unit_alive = AiUtils.unit_alive
 
 AISlotSystem2.hot_join_sync = function (self, peer_id, player)
 	return

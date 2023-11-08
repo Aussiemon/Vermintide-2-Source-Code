@@ -29,14 +29,6 @@ local game_object_templates = {
 		is_level_unit = false,
 		has_uniform_scaling = true
 	},
-	ai_unit_with_inventory_and_shield_and_target = {
-		game_object_created_func_name = "game_object_created_network_unit",
-		syncs_position = true,
-		syncs_yaw = true,
-		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
-		is_level_unit = false,
-		has_uniform_scaling = true
-	},
 	ai_unit_with_inventory = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = true,
@@ -44,6 +36,14 @@ local game_object_templates = {
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
 		is_level_unit = false,
 		has_uniform_scaling = true
+	},
+	ai_unit_training_dummy_bob = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		has_uniform_scaling = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false,
+		syncs_rotation = true
 	},
 	ai_unit_chaos_troll = {
 		game_object_created_func_name = "game_object_created_network_unit",
@@ -69,15 +69,7 @@ local game_object_templates = {
 		is_level_unit = false,
 		has_uniform_scaling = true
 	},
-	ai_unit_with_inventory_and_target = {
-		game_object_created_func_name = "game_object_created_network_unit",
-		syncs_position = true,
-		syncs_yaw = true,
-		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
-		is_level_unit = false,
-		has_uniform_scaling = true
-	},
-	ai_lord_with_inventory_and_target = {
+	ai_lord_with_inventory = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = true,
 		syncs_yaw = true,
@@ -166,6 +158,13 @@ local game_object_templates = {
 		is_level_unit = false
 	},
 	player_projectile_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = false,
+		syncs_rotation = false,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
+	sticky_projectile_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = false,
 		syncs_rotation = false,
@@ -475,6 +474,12 @@ local game_object_templates = {
 		is_level_unit = false
 	},
 	buff_aoe_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		is_level_unit = false,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit"
+	},
+	buff_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = true,
 		is_level_unit = false,

@@ -30,10 +30,9 @@ BackendInterfaceWeavesPlayFab.init = function (self, backend_mirror)
 	self:_validate_backend_progression_settings(progression_settings)
 
 	self._progression_settings = progression_settings
-	local read_only_data = backend_mirror:get_read_only_data()
-	self._forge_level = read_only_data.weaves_forge_level
-	self._loadouts = self:_parse_loadouts(read_only_data)
-	self._career_progress = self:_parse_career_progress(read_only_data)
+	self._forge_level = backend_mirror:get_read_only_data("weaves_forge_level")
+	self._loadouts = self:_parse_loadouts()
+	self._career_progress = self:_parse_career_progress()
 	local inventory_items = backend_mirror:get_all_inventory_items()
 
 	for _, item in pairs(inventory_items) do
@@ -113,7 +112,7 @@ BackendInterfaceWeavesPlayFab._validate_backend_progression_settings = function 
 	end
 end
 
-BackendInterfaceWeavesPlayFab._parse_loadouts = function (self, read_only_data)
+BackendInterfaceWeavesPlayFab._parse_loadouts = function (self)
 	local loadouts = {}
 
 	for career_name, settings in pairs(CareerSettings) do
@@ -122,7 +121,7 @@ BackendInterfaceWeavesPlayFab._parse_loadouts = function (self, read_only_data)
 				local dlc_unlocked = settings.is_dlc_unlocked()
 
 				if dlc_unlocked == nil or dlc_unlocked then
-					local loadout_json = read_only_data["weaves_loadout_" .. career_name]
+					local loadout_json = self._backend_mirror:get_read_only_data("weaves_loadout_" .. career_name)
 					local loadout = loadout_json and cjson.decode(loadout_json)
 					loadouts[career_name] = loadout
 
@@ -202,8 +201,8 @@ BackendInterfaceWeavesPlayFab._validate_loadout = function (self, career_name, l
 	end
 end
 
-BackendInterfaceWeavesPlayFab._parse_career_progress = function (self, read_only_data)
-	local progress_json = read_only_data.weaves_career_progress
+BackendInterfaceWeavesPlayFab._parse_career_progress = function (self)
+	local progress_json = self._backend_mirror:get_read_only_data("weaves_career_progress")
 	local progress = cjson.decode(progress_json)
 
 	return progress
@@ -699,7 +698,8 @@ local CAREER_ID_LOOKUP = {
 	"wh_bountyhunter",
 	"wh_zealot",
 	"we_thornsister",
-	"wh_priest"
+	"wh_priest",
+	"bw_necromancer"
 }
 
 BackendInterfaceWeavesPlayFab.upgrade_career_magic_level_cb = function (self, external_cb, result)

@@ -43,13 +43,6 @@ local video_settings_definition = {
 		widget_type = "stepper"
 	},
 	{
-		setup = "cb_lock_framerate_setup",
-		saved_value = "cb_lock_framerate_saved_value",
-		callback = "cb_lock_framerate",
-		tooltip_text = "tooltip_lock_framerate",
-		widget_type = "stepper"
-	},
-	{
 		setup = "cb_max_stacking_frames_setup",
 		saved_value = "cb_max_stacking_frames_saved_value",
 		callback = "cb_max_stacking_frames",
@@ -199,7 +192,7 @@ local video_settings_definition = {
 		widget_type = "empty"
 	},
 	{
-		text = "settings_view_header_fidelityfx_super_resolution",
+		text = "menu_settings_performance",
 		widget_type = "title"
 	},
 	{
@@ -221,6 +214,95 @@ local video_settings_definition = {
 		indent_level = 1,
 		condition = "cb_fsr_quality_condition",
 		widget_type = "drop_down"
+	},
+	{
+		setup = "cb_fsr2_enabled_setup",
+		saved_value = "cb_fsr2_enabled_saved_value",
+		tooltip_text = "tooltip_fsr2_enabled",
+		callback = "cb_fsr2_enabled",
+		condition = "cb_fsr2_enabled_condition",
+		widget_type = "stepper",
+		required_render_caps = {
+			d3d12 = true
+		}
+	},
+	{
+		setup = "cb_fsr2_quality_setup",
+		saved_value = "cb_fsr2_quality_saved_value",
+		tooltip_text = "tooltip_fsr2_quality",
+		callback = "cb_fsr2_quality",
+		indent_level = 1,
+		condition = "cb_fsr2_quality_condition",
+		widget_type = "drop_down",
+		required_render_caps = {
+			d3d12 = true
+		}
+	},
+	{
+		setup = "cb_dlss_enabled_setup",
+		saved_value = "cb_dlss_enabled_saved_value",
+		tooltip_text = "tooltip_dlss_enabled",
+		callback = "cb_dlss_enabled",
+		condition = "cb_dlss_enabled_condition",
+		widget_type = "stepper",
+		required_render_caps = {
+			dlss_supported = true
+		}
+	},
+	{
+		setup = "cb_dlss_frame_generation_setup",
+		saved_value = "cb_dlss_frame_generation_saved_value",
+		tooltip_text = "tooltip_dlss_frame_generation",
+		callback = "cb_dlss_frame_generation",
+		indent_level = 1,
+		condition = "cb_dlss_frame_generation_condition",
+		widget_type = "stepper",
+		required_render_caps = {
+			dlss_g_supported = true
+		}
+	},
+	{
+		setup = "cb_dlss_super_resolution_setup",
+		saved_value = "cb_dlss_super_resolution_saved_value",
+		tooltip_text = "tooltip_dlss_super_resolution",
+		callback = "cb_dlss_super_resolution",
+		indent_level = 1,
+		condition = "cb_dlss_super_resolution_condition",
+		widget_type = "drop_down",
+		required_render_caps = {
+			dlss_supported = true
+		}
+	},
+	{
+		setup = "cb_reflex_low_latency_setup",
+		saved_value = "cb_reflex_low_latency_saved_value",
+		tooltip_text = "tooltip_reflex_low_latency",
+		callback = "cb_reflex_low_latency",
+		condition = "cb_reflex_low_latency_condition",
+		widget_type = "drop_down",
+		required_render_caps = {
+			reflex_supported = true
+		}
+	},
+	{
+		setup = "cb_reflex_framerate_cap_setup",
+		saved_value = "cb_reflex_framerate_cap_saved_value",
+		callback = "cb_reflex_framerate_cap",
+		tooltip_text = "tooltip_reflex_framerate_cap",
+		widget_type = "drop_down",
+		required_render_caps = {
+			reflex_supported = true
+		}
+	},
+	{
+		setup = "cb_lock_framerate_setup",
+		saved_value = "cb_lock_framerate_saved_value",
+		callback = "cb_lock_framerate",
+		tooltip_text = "tooltip_lock_framerate",
+		widget_type = "drop_down",
+		required_render_caps = {
+			reflex_supported = false
+		}
 	},
 	{
 		size_y = 30,
@@ -743,6 +825,13 @@ local gameplay_settings_definition = {
 		saved_value = "cb_player_outlines_saved_value",
 		callback = "cb_player_outlines",
 		tooltip_text = "tooltip_outlines",
+		widget_type = "stepper"
+	},
+	{
+		setup = "cb_minion_outlines_setup",
+		saved_value = "cb_minion_outlines_saved_value",
+		callback = "cb_minion_outlines",
+		tooltip_text = "tooltip_minion_outlines",
 		widget_type = "stepper"
 	},
 	{
@@ -1470,6 +1559,15 @@ local keybind_settings_definition = {
 		widget_type = "keybind",
 		actions = {
 			"wield_4"
+		}
+	},
+	{
+		keybind_description = "wield_4_alt",
+		required_dlc = "shovel",
+		keymappings_key = "PlayerControllerKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"wield_4_alt"
 		}
 	},
 	{

@@ -2,6 +2,7 @@ require("scripts/helpers/pseudo_random_distribution")
 dofile("scripts/settings/bpc")
 
 local buff_perk_functions = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_functions")
+local buff_perk_names = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 script_data.buff_debug = script_data.buff_debug or Development.parameter("buff_debug")
 BuffExtension = class(BuffExtension)
 buff_extension_function_params = buff_extension_function_params or Script.new_map(15)
@@ -156,201 +157,239 @@ BuffExtension.add_buff = function (self, template_name, params)
 
 	for i = 1, #sub_buffs do
 		local sub_buff_template = sub_buffs[i]
-		local duration = sub_buff_template.duration
-		local ticks = sub_buff_template.ticks
-		local max_stacks = sub_buff_template.max_stacks
-		local end_time = duration and start_time + duration
-		local is_stacking_buff = max_stacks
-		local parent_id = nil
-		local bonus = sub_buff_template.bonus
-		local value = sub_buff_template.value
-		local multiplier = sub_buff_template.multiplier
-		local proc_chance = sub_buff_template.proc_chance
-		local proc_cooldown = sub_buff_template.proc_cooldown
-		local range = sub_buff_template.range
-		local damage_source, power_level, attacker_unit, source_attacker_unit = nil
+		local condition = sub_buff_template.apply_condition
 
-		if params then
-			local variable_value = params.variable_value
+		if not condition or condition(unit, sub_buff_template, params) then
+			local duration = sub_buff_template.duration
+			local ticks = sub_buff_template.ticks
+			local update_frequency = sub_buff_template.update_frequency
+			local max_stacks = sub_buff_template.max_stacks
+			local is_stacking_buff = max_stacks
+			local parent_id = nil
+			local bonus = sub_buff_template.bonus
+			local value = sub_buff_template.value
+			local multiplier = sub_buff_template.multiplier
+			local proc_chance = sub_buff_template.proc_chance
+			local proc_cooldown = sub_buff_template.proc_cooldown
+			local range = sub_buff_template.range
+			local damage_source, power_level, attacker_unit, source_attacker_unit = nil
 
-			if variable_value then
-				local variable_bonus_table = sub_buff_template.variable_bonus
+			if params then
+				local variable_value = params.variable_value
 
-				if variable_bonus_table then
-					local bonus_index = variable_value == 1 and #variable_bonus_table or 1 + math.floor(variable_value / (1 / #variable_bonus_table))
-					bonus = variable_bonus_table[bonus_index]
+				if variable_value then
+					local variable_bonus_table = sub_buff_template.variable_bonus
+
+					if variable_bonus_table then
+						local bonus_index = variable_value == 1 and #variable_bonus_table or 1 + math.floor(variable_value / (1 / #variable_bonus_table))
+						bonus = variable_bonus_table[bonus_index]
+					end
+
+					local variable_bonus_max = sub_buff_template.variable_bonus_max
+
+					if variable_bonus_max then
+						bonus = math.lerp(0, variable_bonus_max, variable_value)
+					end
+
+					local variable_multiplier_table = sub_buff_template.variable_multiplier
+
+					if variable_multiplier_table then
+						local min_multiplier = variable_multiplier_table[1]
+						local max_multiplier = variable_multiplier_table[2]
+						multiplier = math.lerp(min_multiplier, max_multiplier, variable_value)
+					end
+
+					local variable_multiplier_max = sub_buff_template.variable_multiplier_max
+
+					if variable_multiplier_max then
+						multiplier = math.lerp(0, variable_multiplier_max, variable_value)
+					end
 				end
 
-				local variable_bonus_max = sub_buff_template.variable_bonus_max
+				parent_id = params.parent_id or parent_id
+				bonus = params.external_optional_bonus or bonus
+				multiplier = params.external_optional_multiplier or multiplier
+				value = params.external_optional_value or value
+				proc_chance = params.external_optional_proc_chance or proc_chance
+				duration = params.external_optional_duration or duration
+				ticks = params.external_optional_ticks or ticks
+				range = params.external_optional_range or range
+				damage_source = params.damage_source or damage_source
+				power_level = params.power_level or power_level
+				attacker_unit = params.attacker_unit or attacker_unit
+				source_attacker_unit = params.source_attacker_unit or source_attacker_unit
+			end
 
-				if variable_bonus_max then
-					bonus = math.lerp(0, variable_bonus_max, variable_value)
-				end
+			if sub_buff_template.duration_modifier_func then
+				duration, ticks = sub_buff_template:duration_modifier_func(duration, self, params)
+			end
 
-				local variable_multiplier_table = sub_buff_template.variable_multiplier
+			local perks = sub_buff_template.perks
 
-				if variable_multiplier_table then
-					local min_multiplier = variable_multiplier_table[1]
-					local max_multiplier = variable_multiplier_table[2]
-					multiplier = math.lerp(min_multiplier, max_multiplier, variable_value)
-				end
+			if perks and table.find(perks, buff_perk_names.burning_balefire) then
+				local source = source_attacker_unit or attacker_unit
+				local source_buff_extension = ScriptUnit.has_extension(source, "buff_system")
 
-				local variable_multiplier_max = sub_buff_template.variable_multiplier_max
-
-				if variable_multiplier_max then
-					multiplier = math.lerp(0, variable_multiplier_max, variable_value)
+				if source_buff_extension and not Managers.state.side:is_ally(unit, source) then
+					local duration_multiplier = source_buff_extension:apply_buffs_to_value(1, "increased_balefire_dot_duration")
+					duration = duration and duration * duration_multiplier
+					ticks = ticks and math.floor(ticks * duration_multiplier)
+					update_frequency = update_frequency and update_frequency * duration_multiplier
 				end
 			end
 
-			parent_id = params.parent_id or parent_id
-			bonus = params.external_optional_bonus or bonus
-			multiplier = params.external_optional_multiplier or multiplier
-			value = params.external_optional_value or value
-			proc_chance = params.external_optional_proc_chance or proc_chance
-			duration = params.external_optional_duration or duration
-			ticks = params.external_optional_ticks or ticks
-			range = params.external_optional_range or range
-			damage_source = params.damage_source or damage_source
-			power_level = params.power_level or power_level
-			attacker_unit = params.attacker_unit or attacker_unit
-			source_attacker_unit = params.source_attacker_unit or source_attacker_unit
-		end
+			local end_time = duration and start_time + duration
 
-		if sub_buff_template.duration_modifier_func then
-			duration = sub_buff_template:duration_modifier_func(duration, self)
-		end
-
-		if not is_stacking_buff or self:_add_stacking_buff(sub_buff_template, max_stacks, start_time, duration, end_time, params) then
-			local buff = {
-				id = id,
-				start_time = start_time,
-				template = sub_buff_template,
-				buff_type = sub_buff_template.name,
-				buff_template_name = template_name,
-				parent_id = parent_id,
-				bonus = bonus,
-				multiplier = multiplier,
-				value = value,
-				proc_chance = proc_chance,
-				proc_cooldown = proc_cooldown,
-				duration = duration,
-				current_ticks = ticks and 0 or nil,
-				range = range,
-				damage_source = damage_source,
-				power_level = power_level,
-				attacker_unit = attacker_unit,
-				source_attacker_unit = source_attacker_unit,
-				parent_buff_shared_table = parent_buff_shared_table
-			}
-			self._num_buffs = self._num_buffs + 1
-			buffs[self._num_buffs] = buff
-			sub_buffs_added = sub_buffs_added + 1
-
-			if sub_buff_template.buff_area then
-				local unit_spawner = Managers.state.unit_spawner
-				local extension_init_data = {
-					buff_area_system = {
-						removal_proc_function_name = sub_buff_template.exit_area_func,
-						add_proc_function_name = sub_buff_template.enter_area_func,
-						duration = duration,
-						radius = sub_buff_template.area_radius,
-						sub_buff_template = sub_buff_template,
-						owner_unit = unit,
-						source_unit = source_attacker_unit
-					}
+			if not is_stacking_buff or self:_add_stacking_buff(sub_buff_template, max_stacks, start_time, duration, end_time, params) then
+				local buff = {
+					id = id,
+					start_time = start_time,
+					template = sub_buff_template,
+					buff_type = sub_buff_template.name,
+					buff_template_name = template_name,
+					parent_id = parent_id,
+					bonus = bonus,
+					multiplier = multiplier,
+					value = value,
+					proc_chance = proc_chance,
+					proc_cooldown = proc_cooldown,
+					duration = duration,
+					ticks = ticks,
+					current_ticks = ticks and 0 or nil,
+					update_frequency = update_frequency,
+					range = range,
+					damage_source = damage_source,
+					power_level = power_level,
+					attacker_unit = attacker_unit,
+					source_attacker_unit = source_attacker_unit,
+					parent_buff_shared_table = parent_buff_shared_table
 				}
-				local position = params and params.buff_area_position or POSITION_LOOKUP[self._unit]
-				local buff_unit, buff_unit_go_id = unit_spawner:spawn_network_unit(sub_buff_template.area_unit_name, "buff_aoe_unit", extension_init_data, position, Quaternion.identity(), nil)
-				buff.area_buff_unit = buff_unit
-			end
+				self._num_buffs = self._num_buffs + 1
+				buffs[self._num_buffs] = buff
+				sub_buffs_added = sub_buffs_added + 1
 
-			local apply_buff_func = sub_buff_template.apply_buff_func
+				if is_stacking_buff then
+					local current_buff_stacks = self._stacking_buffs[sub_buff_template.name]
 
-			if apply_buff_func then
-				buff_extension_function_params.bonus = bonus
-				buff_extension_function_params.multiplier = multiplier
-				buff_extension_function_params.value = value
-				buff_extension_function_params.t = start_time
-				buff_extension_function_params.end_time = end_time
-				buff_extension_function_params.attacker_unit = buff.attacker_unit
-				buff_extension_function_params.source_attacker_unit = buff.source_attacker_unit
+					if not current_buff_stacks then
+						current_buff_stacks = {}
+						self._stacking_buffs[sub_buff_template.name] = current_buff_stacks
+						local on_stack_buff_first_add = StackingBuffFunctions[sub_buff_template.on_stack_buff_first_add]
 
-				BuffFunctionTemplates.functions[apply_buff_func](unit, buff, buff_extension_function_params, world)
-			end
+						if on_stack_buff_first_add then
+							on_stack_buff_first_add(self._unit, sub_buff_template, params)
+						end
+					end
 
-			if sub_buff_template.stat_buff then
-				local index = self:_add_stat_buff(sub_buff_template, buff)
-				buff.stat_buff_index = index
-			end
+					current_buff_stacks[#current_buff_stacks + 1] = buff
+				end
 
-			local event = sub_buff_template.event
+				if perks then
+					for perk_i = 1, #perks do
+						local perk = perks[perk_i]
+						local perk_count = self._perks[perk] or 0
 
-			if event then
-				local buff_func = sub_buff_template.buff_func
-				buff.buff_func = buff_func
-				local index = self._event_buffs_index
-				buff.event_buff_index = index
-				local event_buffs = self._event_buffs[event]
-				event_buffs[index] = buff
-				self._event_buffs_index = index + 1
-			end
+						if perk_count == 0 then
+							local perk_funcs = buff_perk_functions[perk]
 
-			if sub_buff_template.duration_end_func then
-				local delayed_func_name = sub_buff_template.duration_end_func
-				buff.delayed_func_name = delayed_func_name
-			end
+							if perk_funcs and perk_funcs.added then
+								perk_funcs.added(self, unit, buff, is_server)
+							end
+						end
 
-			if sub_buff_template.continuous_effect then
-				self._continuous_screen_effects[id] = self:_play_screen_effect(sub_buff_template.continuous_effect)
-			end
-
-			local particles = sub_buff_template.particles
-
-			if particles then
-				local target_unit = unit
-				local is_first_person = false
-
-				if self.is_local and not self.is_husk then
-					local first_person_extension = ScriptUnit.has_extension(target_unit, "first_person_system")
-
-					if first_person_extension and first_person_extension.first_person_unit then
-						target_unit = first_person_extension.first_person_unit
-						is_first_person = true
+						self._perks[perk] = perk_count + 1
 					end
 				end
 
-				self._vfx[id] = BuffUtils.create_attached_particles(world, particles, target_unit, is_first_person)
-			end
-
-			local sfx = sub_buff_template.sfx
-
-			if sfx then
-				local activation_sound = sfx.activation_sound
-
-				if activation_sound then
-					self:_play_buff_sound(activation_sound, sfx.activation_sound_3p)
+				if sub_buff_template.buff_area then
+					local unit_spawner = Managers.state.unit_spawner
+					local extension_init_data = {
+						buff_area_system = {
+							removal_proc_function_name = sub_buff_template.exit_area_func,
+							add_proc_function_name = sub_buff_template.enter_area_func,
+							duration = duration,
+							radius = sub_buff_template.area_radius,
+							sub_buff_template = sub_buff_template,
+							owner_unit = unit,
+							source_unit = source_attacker_unit
+						}
+					}
+					local position = params and params.buff_area_position or POSITION_LOOKUP[self._unit]
+					local buff_unit, buff_unit_go_id = unit_spawner:spawn_network_unit(sub_buff_template.area_unit_name, "buff_aoe_unit", extension_init_data, position, Quaternion.identity(), nil)
+					buff.area_buff_unit = buff_unit
 				end
-			end
 
-			local perk = sub_buff_template.perk
+				if sub_buff_template.status_effect then
+					Managers.state.status_effect:set_status(unit, sub_buff_template.status_effect, buff, true)
+				end
 
-			if perk then
-				local perk_count = self._perks[perk] or 0
+				local apply_buff_func = sub_buff_template.apply_buff_func
 
-				if perk_count == 0 then
-					local perk_funcs = buff_perk_functions[perk]
+				if apply_buff_func then
+					buff_extension_function_params.bonus = bonus
+					buff_extension_function_params.multiplier = multiplier
+					buff_extension_function_params.value = value
+					buff_extension_function_params.t = start_time
+					buff_extension_function_params.end_time = end_time
+					buff_extension_function_params.attacker_unit = buff.attacker_unit
+					buff_extension_function_params.source_attacker_unit = buff.source_attacker_unit
 
-					if perk_funcs and perk_funcs.added then
-						perk_funcs.added(self, unit, is_server)
+					BuffFunctionTemplates.functions[apply_buff_func](unit, buff, buff_extension_function_params, world)
+				end
+
+				if sub_buff_template.stat_buff then
+					local index = self:_add_stat_buff(sub_buff_template, buff)
+					buff.stat_buff_index = index
+				end
+
+				local event = sub_buff_template.event
+
+				if event then
+					local buff_func = sub_buff_template.buff_func
+					buff.buff_func = buff_func
+					local index = self._event_buffs_index
+					buff.event_buff_index = index
+					local event_buffs = self._event_buffs[event]
+					event_buffs[index] = buff
+					self._event_buffs_index = index + 1
+				end
+
+				if sub_buff_template.duration_end_func then
+					local delayed_func_name = sub_buff_template.duration_end_func
+					buff.delayed_func_name = delayed_func_name
+				end
+
+				if sub_buff_template.continuous_effect then
+					self._continuous_screen_effects[id] = self:_play_screen_effect(sub_buff_template.continuous_effect)
+				end
+
+				local particles = sub_buff_template.particles
+
+				if particles then
+					local target_unit = unit
+					local is_first_person = false
+
+					if self.is_local and not self.is_husk then
+						local first_person_extension = ScriptUnit.has_extension(target_unit, "first_person_system")
+
+						if first_person_extension and first_person_extension.first_person_unit then
+							target_unit = first_person_extension.first_person_unit
+							is_first_person = true
+						end
+					end
+
+					self._vfx[id] = BuffUtils.create_attached_particles(world, particles, target_unit, is_first_person)
+				end
+
+				local sfx = sub_buff_template.sfx
+
+				if sfx then
+					local activation_sound = sfx.activation_sound
+
+					if activation_sound then
+						self:_play_buff_sound(activation_sound, sfx.activation_sound_3p)
 					end
 				end
-
-				self._perks[perk] = perk_count + 1
-			end
-
-			if is_stacking_buff then
-				local buff_stacks = self._stacking_buffs[sub_buff_template.name]
-				buff_stacks[#buff_stacks + 1] = buff
 			end
 		end
 	end
@@ -391,13 +430,7 @@ end
 
 BuffExtension._add_stacking_buff = function (self, sub_buff_template, max_stacks, start_time, duration, end_time, params)
 	local current_buff_stacks = self._stacking_buffs[sub_buff_template.name]
-
-	if not current_buff_stacks then
-		current_buff_stacks = {}
-		self._stacking_buffs[sub_buff_template.name] = current_buff_stacks
-	end
-
-	local num_stacks = #current_buff_stacks
+	local num_stacks = current_buff_stacks and #current_buff_stacks or 0
 
 	if duration and sub_buff_template.refresh_durations then
 		for stack_idx = 1, num_stacks do
@@ -429,7 +462,7 @@ BuffExtension._add_stacking_buff = function (self, sub_buff_template, max_stacks
 	local should_add_buff = true
 
 	if max_stacks <= num_stacks then
-		local on_max_stacks_overflow_func = MaxStackFunctions[sub_buff_template.on_max_stacks_overflow_func]
+		local on_max_stacks_overflow_func = StackingBuffFunctions[sub_buff_template.on_max_stacks_overflow_func]
 
 		if on_max_stacks_overflow_func then
 			should_add_buff = on_max_stacks_overflow_func(self._unit, sub_buff_template, params)
@@ -437,7 +470,7 @@ BuffExtension._add_stacking_buff = function (self, sub_buff_template, max_stacks
 			should_add_buff = false
 		end
 	elseif num_stacks == max_stacks - 1 then
-		local on_max_stacks_func = MaxStackFunctions[sub_buff_template.on_max_stacks_func]
+		local on_max_stacks_func = StackingBuffFunctions[sub_buff_template.on_max_stacks_func]
 
 		if on_max_stacks_func then
 			on_max_stacks_func(self._unit, sub_buff_template, params)
@@ -594,7 +627,7 @@ BuffExtension.update = function (self, unit, input, dt, context, t)
 		if not buff.removed then
 			local template = buff.template
 			local end_time = buff.duration and buff.start_time + buff.duration
-			local ticks = template.ticks
+			local ticks = buff.ticks
 			local current_ticks = buff.current_ticks
 			buff_extension_function_params.bonus = buff.bonus
 			buff_extension_function_params.multiplier = buff.multiplier
@@ -633,7 +666,7 @@ BuffExtension.update = function (self, unit, input, dt, context, t)
 						buff_extension_function_params.time_into_buff = t - buff.start_time
 						buff_extension_function_params.time_left_on_buff = end_time and end_time - t
 						local override_update_t = BuffFunctionTemplates.functions[update_func](unit, buff, buff_extension_function_params, world)
-						buff._next_update_t = override_update_t or t + (buff.template.update_frequency or 0)
+						buff._next_update_t = override_update_t or t + (buff.update_frequency or 0)
 
 						if current_ticks then
 							buff.current_ticks = current_ticks + 1
@@ -739,6 +772,7 @@ BuffExtension.remove_buff = function (self, id, skip_net_sync)
 			buff_extension_function_params.multiplier = buff.multiplier
 			buff_extension_function_params.value = buff.value
 			buff_extension_function_params.attacker_unit = buff.attacker_unit
+			buff_extension_function_params.source_attacker_unit = buff.source_attacker_unit
 
 			self:_remove_sub_buff(buff, i, buff_extension_function_params, false)
 		end
@@ -770,6 +804,10 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 
 	if remove_buff_func then
 		BuffFunctionTemplates.functions[remove_buff_func](self._unit, buff, buff_extension_function_params, world)
+	end
+
+	if template.status_effect then
+		Managers.state.status_effect:set_status(self._unit, template.status_effect, buff, false)
 	end
 
 	if buffs_to_remove_on_remove then
@@ -818,20 +856,23 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 		self._event_buffs[event][event_buff_index] = nil
 	end
 
-	local perk = template.perk
+	local perks = template.perks
 
-	if perk then
-		local perk_count = self._perks[perk] - 1
+	if perks then
+		for perk_i = 1, #perks do
+			local perk = perks[perk_i]
+			local perk_count = self._perks[perk] - 1
 
-		if perk_count == 0 then
-			local perk_funcs = buff_perk_functions[perk]
+			if perk_count == 0 then
+				local perk_funcs = buff_perk_functions[perk]
 
-			if perk_funcs and perk_funcs.removed then
-				perk_funcs.removed(self, self._unit, self.is_server)
+				if perk_funcs and perk_funcs.removed then
+					perk_funcs.removed(self, self._unit, buff, self.is_server)
+				end
 			end
-		end
 
-		self._perks[perk] = perk_count
+			self._perks[perk] = perk_count
+		end
 	end
 
 	buffs[index] = _removed_buff
@@ -844,6 +885,29 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 
 		if buff_idx > 0 then
 			table.swap_delete(buff_stacks, buff_idx)
+		end
+
+		if template.refresh_other_stacks_on_remove then
+			local t = Managers.time:time("game")
+
+			for i = 1, #buff_stacks do
+				local stack_buff = buff_stacks[i]
+				local start_time = t
+				local duration = stack_buff.duration
+				local end_time = duration and start_time + duration
+
+				self:_refresh_duration(stack_buff, start_time, duration, end_time, buff_extension_function_params, template)
+			end
+		end
+
+		if #buff_stacks == 0 then
+			local on_last_stack_removed = StackingBuffFunctions[template.on_last_stack_removed]
+
+			if on_last_stack_removed then
+				on_last_stack_removed(self._unit, template, buff_extension_function_params)
+			end
+
+			self._stacking_buffs[template.name] = nil
 		end
 	end
 
@@ -896,7 +960,7 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 		self._deactivation_screen_effects[id] = nil
 	end
 
-	if not is_stacking_buff or #self._stacking_buffs[buff.template.name] == 0 then
+	if not is_stacking_buff or not self._stacking_buffs[buff.template.name] then
 		local particles = self._vfx[id]
 
 		if particles then
@@ -1388,12 +1452,12 @@ BuffExtension._build_free_sync_ids_array = function (self)
 	local num_sync_ids = NetworkConstants.server_controlled_buff_id.max
 	self._free_sync_ids = Script.new_array(num_sync_ids)
 	local sync_ids_in_use = self._local_sync_to_id
+	local free_id = 1
 
-	for i = 1, num_sync_ids do
-		local sync_id = i
-
+	for sync_id = 1, num_sync_ids do
 		if not sync_ids_in_use[sync_id] then
-			self._free_sync_ids[i] = sync_id
+			self._free_sync_ids[free_id] = sync_id
+			free_id = free_id + 1
 		end
 	end
 end

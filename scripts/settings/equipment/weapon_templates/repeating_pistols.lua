@@ -209,6 +209,7 @@ local weapon_template = {
 	right_hand_attachment_node_linking = AttachmentNodeLinking.repeater_pistol,
 	display_unit = "units/weapons/weapon_display/display_repeating_pistols",
 	wield_anim = "to_repeater_pistol",
+	state_machine = "units/beings/player/first_person_base/state_machines/ranged/repeater_pistol",
 	crosshair_style = "default",
 	fire_at_gaze_setting = "tobii_fire_at_gaze_repeating_pistol",
 	reload_event = "reload",

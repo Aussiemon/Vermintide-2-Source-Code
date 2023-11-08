@@ -114,6 +114,10 @@ AudioSystem.play_audio_unit_event = function (self, event, unit, object)
 	local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
 	local sound_event_id = NetworkLookup.sound_events[event]
 
+	if event == "Stop_enemy_foley_globadier_boiling_loop" then
+		printf("[HON-43348] Globadier (%s) play audio unit event. unit_id: '%s', unit: '%s'", Unit.get_data(unit, "globadier_43348"), unit_id, tostring(unit))
+	end
+
 	if not unit_id then
 		return
 	end

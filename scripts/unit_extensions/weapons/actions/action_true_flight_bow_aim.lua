@@ -162,7 +162,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 		self.played_aim_sound = true
 	end
 
-	if not is_bot and current_target and not AiUtils.unit_alive(current_target) then
+	if not is_bot and current_target and not HEALTH_ALIVE[current_target] then
 		self:_mark_target(nil)
 
 		self.target = nil
@@ -203,7 +203,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 				if hit_actor then
 					local unit = actor_unit(hit_actor)
 
-					if AiUtils.unit_alive(unit) then
+					if HEALTH_ALIVE[unit] then
 						local hit_unit_side = side_by_unit[unit]
 
 						if not hit_unit_side or side_manager:is_enemy_by_side(side, hit_unit_side) then
@@ -217,12 +217,10 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 								if priority > 0 and higest_priority < priority then
 									hit_unit = unit
 									higest_priority = priority
-								elseif not hit_unit then
-									hit_unit = unit
+								else
+									hit_unit = hit_unit or unit
 								end
 							end
-						elseif hit_unit_side and side ~= hit_unit_side and higest_priority < 0 and Unit.get_data(unit, "is_dummy") then
-							hit_unit = unit
 						end
 					end
 				end
@@ -323,7 +321,7 @@ ActionTrueFlightBowAim._get_visible_targets = function (self, aimed_target, num_
 		for i = 1, ai_units_n do
 			local unit = nearby_ai_units[i]
 
-			if AiUtils.unit_alive(unit) then
+			if HEALTH_ALIVE[unit] then
 				local breed = unit_get_data(unit, "breed")
 
 				if breed and not breed.no_autoaim then

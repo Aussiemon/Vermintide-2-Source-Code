@@ -5,6 +5,7 @@ local QUEST_SIZE = {
 	75
 }
 local QUEST_PADDING = 20
+local RETAINED_MODE_ENABLED = true
 local scenegraph_definition = {
 	screen = {
 		scale = "hud_scale_fit",
@@ -51,68 +52,81 @@ local CHALLENGE_WIDGET_TEMPLATE = {
 	element = {
 		passes = {
 			{
+				style_id = "background_rect",
 				pass_type = "rect",
-				style_id = "background_rect"
+				retained_mode = RETAINED_MODE_ENABLED
 			},
 			{
 				pass_type = "texture",
 				style_id = "background_lilies",
-				texture_id = "background_id"
+				texture_id = "background_id",
+				retained_mode = RETAINED_MODE_ENABLED
 			},
 			{
 				pass_type = "texture",
 				style_id = "corner_top_right",
-				texture_id = "corner_id"
+				texture_id = "corner_id",
+				retained_mode = RETAINED_MODE_ENABLED
 			},
 			{
 				pass_type = "texture",
 				style_id = "corner_bot_right",
-				texture_id = "corner_id"
+				texture_id = "corner_id",
+				retained_mode = RETAINED_MODE_ENABLED
 			},
 			{
 				pass_type = "texture",
 				style_id = "lily",
-				texture_id = "lily_id"
+				texture_id = "lily_id",
+				retained_mode = RETAINED_MODE_ENABLED
 			},
 			{
 				pass_type = "texture",
 				style_id = "progress",
-				texture_id = "progress_id"
+				texture_id = "progress_id",
+				retained_mode = RETAINED_MODE_ENABLED
 			},
 			{
 				pass_type = "texture",
 				style_id = "progress_bg",
-				texture_id = "progress_bg_id"
+				texture_id = "progress_bg_id",
+				retained_mode = RETAINED_MODE_ENABLED
 			},
 			{
 				pass_type = "texture",
 				style_id = "reward_icon",
-				texture_id = "reward_icon"
+				texture_id = "reward_icon",
+				retained_mode = RETAINED_MODE_ENABLED
 			},
 			{
 				style_id = "progress_text",
 				pass_type = "text",
-				text_id = "progress_text"
+				text_id = "progress_text",
+				retained_mode = RETAINED_MODE_ENABLED
 			},
 			{
 				style_id = "challenge_name",
 				pass_type = "text",
-				text_id = "challenge_name"
+				text_id = "challenge_name",
+				retained_mode = RETAINED_MODE_ENABLED
 			},
 			{
 				style_id = "challenge_name_shadow",
 				pass_type = "text",
-				text_id = "challenge_name"
+				text_id = "challenge_name",
+				retained_mode = RETAINED_MODE_ENABLED
 			},
 			{
 				style_id = "reward_name",
 				pass_type = "text",
-				text_id = "reward_name"
+				text_id = "reward_name",
+				retained_mode = RETAINED_MODE_ENABLED
 			},
 			{
 				style_id = "reward_name_shadow",
 				pass_type = "text",
-				text_id = "reward_name"
+				text_id = "reward_name",
+				retained_mode = RETAINED_MODE_ENABLED
 			}
 		}
 	},
@@ -428,8 +442,9 @@ local animation_definitions = {
 				widget.content.alpha_multiplier = 0
 				widget.offset[1] = params.src[1]
 				widget.offset[2] = params.src[2]
+				local gui = RETAINED_MODE_ENABLED and params.ui_renderer.gui_retained or params.ui_renderer.gui
 				local content = widget.content
-				local material = Gui.material(params.ui_renderer.gui, widget.content.progress_id)
+				local material = Gui.material(gui, widget.content.progress_id)
 
 				Material.set_scalar(material, "angle", (content.start_anim_progress - 0.5) * math.pi * 2)
 			end,
@@ -458,7 +473,8 @@ local animation_definitions = {
 			end,
 			update = function (ui_scenegraph, scenegraph_def, widget, progress, params)
 				local content = widget.content
-				local material = Gui.material(params.ui_renderer.gui, widget.content.progress_id)
+				local gui = RETAINED_MODE_ENABLED and params.ui_renderer.gui_retained or params.ui_renderer.gui
+				local material = Gui.material(gui, widget.content.progress_id)
 				local start_anim_progress = content.start_anim_progress
 				local end_anim_progress = content.end_anim_progress
 				local anim_progress = math.lerp(start_anim_progress, end_anim_progress, progress)
@@ -534,5 +550,6 @@ return {
 	animation_definitions = animation_definitions,
 	scenegraph_definition = scenegraph_definition,
 	create_objective = create_objective,
-	get_widget_position = get_widget_position
+	get_widget_position = get_widget_position,
+	RETAINED_MODE_ENABLED = RETAINED_MODE_ENABLED
 }

@@ -1,4 +1,5 @@
 local BLACKBOARDS = BLACKBOARDS
+local stagger_types = require("scripts/utils/stagger_types")
 AnimationCallbackTemplates = {
 	client = {}
 }
@@ -110,6 +111,10 @@ AnimationCallbackTemplates.server.anim_cb_damage = function (unit, param)
 		return
 	end
 
+	if blackboard.buff_extension then
+		blackboard.buff_extension:trigger_procs("minion_attack_used")
+	end
+
 	if blackboard.active_node and blackboard.active_node.anim_cb_damage then
 		blackboard.active_node:anim_cb_damage(unit, blackboard)
 
@@ -133,6 +138,27 @@ AnimationCallbackTemplates.server.anim_cb_damage = function (unit, param)
 			blackboard.active_node:attack_blocked(unit, blackboard, attack_direction)
 		end
 
+		local t = Managers.time:time("game")
+		local target_blackboard = BLACKBOARDS[target_unit]
+
+		if not target_blackboard.is_player then
+			local attacker_blackboard = BLACKBOARDS[unit]
+			local attacker_pos = POSITION_LOOKUP[unit] or Unit.world_position(unit, 0)
+			local target_pos = POSITION_LOOKUP[target_unit] or Unit.local_position(target_unit, 0)
+			local damage_direction = Vector3.normalize(target_pos - attacker_pos)
+			local stagger_strength = AiUtils.calculate_ai_stagger_strength(attacker_blackboard, target_blackboard, t, true, stagger_types.medium, 0.25)
+
+			if stagger_strength == stagger_types.none then
+				stagger_strength = stagger_types.weak
+			elseif stagger_strength == stagger_types.heavy then
+				stagger_strength = stagger_types.medium
+			end
+
+			local impact, distance = AiUtils.calculate_ai_stagger_impact(stagger_strength)
+
+			AiUtils.stagger_target(unit, target_unit, distance, impact, damage_direction, t, nil, nil, nil, true)
+		end
+
 		return
 	end
 
@@ -153,6 +179,10 @@ AnimationCallbackTemplates.server.anim_cb_special_damage = function (unit, param
 
 	if blackboard.attack_aborted then
 		return
+	end
+
+	if blackboard.buff_extension then
+		blackboard.buff_extension:trigger_procs("minion_attack_used")
 	end
 
 	if blackboard.active_node and blackboard.active_node.anim_cb_damage then
@@ -617,7 +647,7 @@ AnimationCallbackTemplates.server.anim_cb_stormvermin_push = function (unit, par
 	local target_unit = blackboard.attacking_target
 	local active_node = blackboard.active_node
 
-	if not active_node or blackboard.attack_aborted or not AiUtils.unit_alive(target_unit) then
+	if not active_node or blackboard.attack_aborted or not HEALTH_ALIVE[target_unit] then
 		return
 	end
 

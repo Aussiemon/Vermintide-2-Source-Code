@@ -114,15 +114,14 @@ DoorSystem.update = function (self, context, t)
 					local should_open = true
 
 					for unit, extension in pairs(members) do
-						local heath_extension = ScriptUnit.has_extension(unit, "health_system")
-
-						if heath_extension and heath_extension:is_alive() then
+						if HEALTH_ALIVE[unit] then
 							local blackboard = BLACKBOARDS[unit]
 							local breed = blackboard.breed
 							local is_boss = breed and breed.boss
 
 							if is_boss then
-								local last_damage_taken_t = heath_extension:last_damage_t() or t
+								local health_extension = ScriptUnit.has_extension(unit, "health_system")
+								local last_damage_taken_t = health_extension:last_damage_t() or t
 								local last_damage_interval = 60
 								local not_damaged = t > last_damage_taken_t + last_damage_interval
 								local navigation_extension = blackboard.navigation_extension

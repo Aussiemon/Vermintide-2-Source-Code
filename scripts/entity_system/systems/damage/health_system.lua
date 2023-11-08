@@ -65,10 +65,13 @@ end
 
 HealthSystem.destroy = function (self)
 	self.network_event_delegate:unregister(self)
+	fassert(next(HEALTH_ALIVE) == nil, "global HEALTH_ALIVE table has units that were not cleaned up. Should be empty")
+	table.clear(HEALTH_ALIVE)
 end
 
 HealthSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, self.NAME, extension_init_data)
+	HEALTH_ALIVE[unit] = true
 	self.unit_extensions[unit] = extension
 
 	if extension_name == "PlayerUnitHealthExtension" then
@@ -90,6 +93,7 @@ HealthSystem.on_remove_extension = function (self, unit, extension_name)
 	self.frozen_unit_extensions[unit] = nil
 	self.player_unit_extensions[unit] = nil
 	self.updateable_unit_extensions[unit] = nil
+	HEALTH_ALIVE[unit] = nil
 end
 
 HealthSystem.freeze = function (self, unit, extension_name)
@@ -254,13 +258,14 @@ HealthSystem.update_debug = function (self)
 						local p = current_health / max_health
 						local color = p > 0.99 and color1 or p > 0.25 and color2 or color3
 						local blackboard = BLACKBOARDS[unit]
+						local dogpile = blackboard and (blackboard.lean_dogpile or 0) or "-"
 
 						if p <= 0 then
-							local text = string.format("dead")
+							local text = string.format("dead, dogpile %s", dogpile)
 
 							debug_text_manager:output_unit_text(text, 0.16, unit, head_node, offset_vector, nil, "health", deadcolor, viewport_name)
 						else
-							local text = string.format("%.2f / %.2f", current_health, health_extension.health)
+							local text = string.format("%.2f / %.2f dogpile %s", current_health, health_extension.health, dogpile)
 
 							debug_text_manager:output_unit_text(text, 0.3, unit, head_node, offset_vector, nil, "health", color, viewport_name)
 						end

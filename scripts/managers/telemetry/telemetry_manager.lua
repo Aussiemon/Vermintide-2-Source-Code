@@ -137,7 +137,7 @@ TelemetryManager.post_batch = function (self)
 
 	self._batch_in_flight = true
 	self._batch_post_time = math.floor(self._t)
-	local payload = cjson.encode(self._events)
+	local payload = self:_encode(self._events)
 
 	if IS_WINDOWS then
 		local headers = {
@@ -156,6 +156,12 @@ TelemetryManager.post_batch = function (self)
 
 		Managers.rest_transport:post(ENDPOINT, payload, headers, callback(self, "cb_post_batch"))
 	end
+end
+
+TelemetryManager._encode = function (self, events)
+	local payload = table.map(events, cjson.encode)
+
+	return "[" .. table.concat(payload, ",") .. "]"
 end
 
 TelemetryManager.cb_post_batch = function (self, success, _, _, error)

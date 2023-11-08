@@ -11,6 +11,7 @@ local belakor_intro_video_subtitle_settings = local_require("scripts/ui/cutscene
 local trails_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_trails_intro")
 local tower_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_tower_intro")
 local karak_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_karak_intro")
+local shovel_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_shovel_intro")
 CinematicsViewSettings = {
 	{
 		{
@@ -206,7 +207,7 @@ CinematicsViewSettings = {
 			}
 		},
 		{
-			description = "In Tower of Treachery, you must re-tread familiar ground with reignited purpose. Sofia Fuegonasus has taken over Olesya's old hideout, and is attempting to spread her corruption throughout the Grey Mountains, Bretonnia and the Reikland. It's up to you to put a stop to her deathly plans... Navigate both Olesya's and Sophia's traps and illusions and take on the toughest foe you've encountered in Vermintide.. so far! Will you make it to the top of the tower?",
+			description = "menu_cinematics_tower_description",
 			release_date = "2023/03/28",
 			time = "01:27",
 			header = "menu_cinematics_tower_title",
@@ -229,6 +230,19 @@ CinematicsViewSettings = {
 				sound_start = "Play_vermintide_2_karak_intro",
 				resource = "video/vermintide_2_karak_intro",
 				subtitle_template_settings = karak_intro_video_subtitle_settings
+			}
+		},
+		{
+			description = "menu_cinematics_shovel_description",
+			release_date = "2023/10/19",
+			time = "02:07",
+			header = "menu_cinematics_shovel_title",
+			thumbnail = "shovel_thumbnail",
+			video_data = {
+				sound_stop = "Stop_all_cinematics",
+				sound_start = "Play_vermintide_2_shovel_intro_trailer",
+				resource = "video/vermintide_2_shovel_intro",
+				subtitle_template_settings = shovel_intro_video_subtitle_settings
 			}
 		},
 		category_name = "all"

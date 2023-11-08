@@ -6,6 +6,7 @@ PACKAGED_BUILD = script_data.packaged_build and true or false
 RESOLUTION_LOOKUP = RESOLUTION_LOOKUP or {}
 POSITION_LOOKUP = POSITION_LOOKUP or Script.new_map(256)
 BLACKBOARDS = BLACKBOARDS or Script.new_map(256)
+HEALTH_ALIVE = HEALTH_ALIVE or Script.new_map(1024)
 ALIVE = POSITION_LOOKUP
 FROZEN = FROZEN or {}
 local position_lookup = POSITION_LOOKUP
@@ -68,7 +69,7 @@ end
 local function is_valid_target(unit)
 	local status_ext = ScriptUnit.extension(unit, "status_system")
 
-	return not status_ext:is_in_end_zone() and not status_ext:is_invisible() and not status_ext.spawn_grace and ScriptUnit.extension(unit, "health_system"):is_alive()
+	return not status_ext:is_in_end_zone() and not status_ext:is_invisible() and not status_ext.spawn_grace and HEALTH_ALIVE[unit]
 end
 
 local function is_valid_aggro_target(unit)
@@ -79,7 +80,7 @@ local function is_valid_aggro_target(unit)
 	local status_ext = ScriptUnit.has_extension(unit, "status_system")
 
 	if status_ext then
-		return not status_ext.ready_for_assisted_respawn and not status_ext:is_in_end_zone() and not status_ext:is_invisible() and not status_ext.spawn_grace and ScriptUnit.extension(unit, "health_system"):is_alive()
+		return not status_ext.ready_for_assisted_respawn and not status_ext:is_in_end_zone() and not status_ext:is_invisible() and not status_ext.spawn_grace and HEALTH_ALIVE[unit]
 	end
 
 	return true

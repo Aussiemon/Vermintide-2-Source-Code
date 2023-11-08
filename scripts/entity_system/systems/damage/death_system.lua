@@ -31,14 +31,10 @@ end
 DeathSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data)
 	local extension = ScriptUnit.add_extension(self.extension_init_context, unit, extension_name, self.NAME, extension_init_data)
 	self.unit_extensions[unit] = extension
-	local template = extension.death_reaction_template
-	local network_type = extension.network_type
-	local active_reactions = self.active_reactions[network_type]
-	active_reactions[template] = active_reactions[template] or {}
+	local template = extension_init_data.death_reaction_template or Unit.get_data(unit, "death_reaction")
 
-	if not extension.is_alive and not extension.death_is_done then
-		self.active_reactions[extension.network_type][extension.death_reaction_template][unit] = extension
-	end
+	self:set_death_reaction_template(unit, template)
+	fassert(extension.death_reaction_template, "Missing death reaction template in unit data or extension init data.")
 
 	return extension
 end
@@ -68,7 +64,6 @@ DeathSystem._cleanup_extension = function (self, unit, extension_name)
 	end
 
 	extension.death_has_started = false
-	extension.extension_init_data = nil
 	self.unit_extensions[unit] = nil
 	self.death_reactions_to_start[unit] = nil
 	self.active_reactions[extension.network_type][extension.death_reaction_template][unit] = nil
@@ -80,6 +75,7 @@ DeathSystem.freeze = function (self, unit, extension_name, reason)
 	local extension = self.unit_extensions[unit]
 
 	fassert(extension, "Unit to freeze didn't have unfrozen extension")
+	extension:freeze()
 	self:_cleanup_extension(unit, extension_name)
 
 	self.unit_extensions[unit] = nil
@@ -99,10 +95,28 @@ DeathSystem.hot_join_sync = function (self, sender)
 	return
 end
 
+DeathSystem.set_death_reaction_template = function (self, unit, template_name)
+	local extension = self.unit_extensions[unit]
+	extension.death_reaction_template = template_name
+	local network_type = extension.network_type
+	local active_reactions = self.active_reactions[network_type]
+	active_reactions[template_name] = active_reactions[template_name] or {}
+
+	if not extension.is_alive and not extension.death_is_done then
+		self.active_reactions[network_type][template_name][unit] = extension
+	end
+end
+
 local function start_death_reaction(unit, death_extension, killing_blow, active_reactions, t, context, is_server)
 	local network_type = death_extension.network_type
 	local death_reaction_template = death_extension.death_reaction_template
 	local death_reaction = DeathReactions.templates[death_reaction_template][network_type]
+	local breed = Unit.get_data(unit, "breed")
+
+	if breed and breed.name == "skaven_poison_wind_globadier" then
+		printf("[HON-43348] Globadier (%s) starting death reaction. temlate_name: '%s', network_type: '%s', killing_blow:\n%s", Unit.get_data(unit, "globadier_43348"), death_reaction_template, network_type, table.tostring(killing_blow))
+	end
+
 	local death_reaction_data, death_is_done = death_reaction.start(unit, context, t, killing_blow, is_server, death_extension)
 
 	if death_is_done == DeathReactions.IS_DONE then
@@ -166,6 +180,11 @@ end
 
 DeathSystem.kill_unit = function (self, unit, killing_blow)
 	local extension = self.unit_extensions[unit]
+	local breed = Unit.get_data(unit, "breed")
+
+	if breed and breed.name == "skaven_poison_wind_globadier" then
+		printf("[HON-43348] Globadier (%s) killing unit. extension: '%s', killing_blow:\n%s", Unit.get_data(unit, "globadier_43348"), extension, table.tostring(killing_blow))
+	end
 
 	if not extension then
 		return
@@ -209,6 +228,10 @@ DeathSystem.kill_unit = function (self, unit, killing_blow)
 	local death_reaction = DeathReactions.templates[death_reaction_template][network_type]
 
 	death_reaction.pre_start(unit, context, t, killing_blow)
+
+	if breed and breed.name == "skaven_poison_wind_globadier" then
+		printf("[HON-43348] Globadier (%s) pre-starting death reaction. template: '%s', network_type: '%s'", Unit.get_data(unit, "globadier_43348"), death_reaction_template, network_type)
+	end
 
 	local death_reactions_to_start = self.death_reactions_to_start
 	death_reactions_to_start[unit] = killing_blow

@@ -24,7 +24,7 @@ BTInterestPointChooseAction.enter = function (self, unit, blackboard, t)
 end
 
 BTInterestPointChooseAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	if (reason == "failed" or reason == "aborted") and AiUtils.unit_alive(unit) then
+	if (reason == "failed" or reason == "aborted") and HEALTH_ALIVE[unit] then
 		local interest_point_system_api = blackboard.system_api.ai_interest_point_system
 
 		interest_point_system_api.release_claim(blackboard.ip_request_id, unit)

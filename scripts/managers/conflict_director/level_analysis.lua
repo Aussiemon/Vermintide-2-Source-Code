@@ -18,6 +18,13 @@ LevelAnalysis.init = function (self, nav_world, using_editor, level_name, level_
 			level_sections = {}
 		}
 	}
+
+	if not using_editor then
+		local level_key = Managers.mechanism:get_current_level_keys()
+		local level_settings = LevelSettings[level_key]
+		self._skip_to_map_section = level_settings.override_map_start_section and Managers.mechanism:game_mechanism():get_map_start_section()
+	end
+
 	self.terror_spawners = terror_spawners
 	self.boss_waypoints = {}
 	self.override_spawners = {}
@@ -582,6 +589,11 @@ end
 LevelAnalysis.boss_gizmo_spawned = function (self, unit)
 	local travel_dist = Unit.get_data(unit, "travel_dist")
 	local map_section_index = tonumber(Unit.get_data(unit, "map_section"))
+
+	if self._skip_to_map_section and map_section_index < self._skip_to_map_section then
+		return
+	end
+
 	local override_spawners = self.override_spawners
 	local encampment_id = Unit.get_data(unit, "event_encampment")
 
@@ -799,7 +811,7 @@ LevelAnalysis.pick_boss_spline = function (self, map_section, padding, last_trav
 	local section_waypoints = boss_waypoints[map_section]
 
 	if not section_waypoints then
-		return false, string.format("no section waypoints for section %d - You need to add boss waypoints or set boss_spawning_method to nil in level_settings.", map_section)
+		return false, string.format("no section waypoints for section %d - You need to add boss waypoints or set boss_spawning_method to nil in level_settings. Or set boss_events = { max_events_of_this_kind = { event_patrol = 0 }, } in level settings.", map_section)
 	end
 
 	local section_travel_dist = section_waypoints[1].travel_dist
@@ -926,8 +938,9 @@ LevelAnalysis._give_events = function (self, main_paths, terror_spawners, genera
 	local spawn_distance = 0
 	local padding = 10
 	local start_index, end_index = nil
+	local map_start_section = self._skip_to_map_section or 1
 
-	for i = 1, #conflict_director_section_list do
+	for i = map_start_section, #conflict_director_section_list do
 		local boxed_pos, gizmo_unit, event_data = nil
 		local terror_event_kind = generated_event_list[i]
 		local terror_event_name, override_spawn_distance = nil
@@ -1447,6 +1460,10 @@ LevelAnalysis.store_patrol_waypoints = function (self, boss_waypoints, patrol_wa
 	if boss_waypoints then
 		for i = 1, #boss_waypoints do
 			self:_remove_short_routes(boss_waypoints[i], "boss")
+
+			if self._skip_to_map_section and i < self._skip_to_map_section then
+				table.clear(boss_waypoints[i])
+			end
 		end
 	end
 

@@ -616,7 +616,7 @@ VortexExtension._update_attract_outside_ai = function (self, vortex_data, blackb
 
 			if target_blackboard.breed.vortexable then
 				local locomotion_extension = target_blackboard.locomotion_extension
-				local is_alive = AiUtils.unit_alive(ai_unit)
+				local is_alive = HEALTH_ALIVE[ai_unit]
 
 				if locomotion_extension and is_alive then
 					local unit_position = position_lookup[ai_unit]
@@ -663,7 +663,7 @@ VortexExtension._update_attract_inside_ai = function (self, blackboard, vortex_d
 	local ai_units_inside = vortex_data.ai_units_inside
 
 	for ai_unit, _ in pairs(ai_units_inside) do
-		local is_alive = AiUtils.unit_alive(ai_unit)
+		local is_alive = HEALTH_ALIVE[ai_unit]
 
 		if is_alive then
 			local target_blackboard = BLACKBOARDS[ai_unit]

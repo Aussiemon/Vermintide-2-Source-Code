@@ -1,3 +1,5 @@
+require("scripts/entity_system/systems/buff/buff_sync_type")
+
 Pickups = Pickups or {}
 Pickups.healing = Pickups.healing or {}
 Pickups.healing.first_aid_kit = {
@@ -113,7 +115,7 @@ Pickups.level_events.door_stick = {
 	wield_on_pickup = true,
 	hud_description = "door_stick"
 }
-Pickups.level_events.training_dummy = {
+Pickups.level_events.training_dummy_bob = {
 	only_once = true,
 	individual_pickup = false,
 	type = "inventory_item",
@@ -121,13 +123,31 @@ Pickups.level_events.training_dummy = {
 	spawn_weighting = 1e-06,
 	debug_pickup_category = "level_event",
 	slot_name = "slot_level_event",
-	item_name = "training_dummy",
-	unit_name = "units/gameplay/training_dummy/training_dummy",
-	unit_template_name = "pickup_training_dummy_unit",
+	item_name = "training_dummy_bob",
+	unit_name = "units/gameplay/training_dummy/training_dummy_bob",
+	unit_template_name = "ai_unit_training_dummy_bob",
 	wield_on_pickup = true,
-	hud_description = "dummy_description"
+	hud_description = "dummy_description",
+	spawn_override_func = function (pickup_settings, data, spawn_pos, spawn_rot)
+		local breed = Breeds.training_dummy
+		local optional_data = {
+			side_id = 2,
+			prepare_func = function (breed, extension_init_data, optional_data, spawn_pos, spawn_rot)
+				extension_init_data.projectile_locomotion_system = data.projectile_locomotion_system
+				extension_init_data.pickup_system = data.pickup_system
+			end,
+			spawned_func = function (ai_unit, breed, optional_data)
+				local ai_system = Managers.state.entity:system("ai_system")
+
+				ai_system:set_attribute(ai_unit, "armor", "training_dummy", false)
+			end
+		}
+		local unit = Managers.state.conflict:_spawn_unit(breed, spawn_pos, spawn_rot, "pickup", nil, nil, optional_data)
+
+		return unit
+	end
 }
-Pickups.level_events.training_dummy_armored = {
+Pickups.level_events.training_dummy_armored_bob = {
 	only_once = true,
 	individual_pickup = false,
 	type = "inventory_item",
@@ -135,25 +155,29 @@ Pickups.level_events.training_dummy_armored = {
 	spawn_weighting = 1e-06,
 	debug_pickup_category = "level_event",
 	slot_name = "slot_level_event",
-	item_name = "training_dummy_armored",
-	unit_name = "units/gameplay/training_dummy/training_dummy_armored",
-	unit_template_name = "pickup_training_dummy_unit",
+	item_name = "training_dummy_armored_bob",
+	unit_name = "units/gameplay/training_dummy/training_dummy_bob",
+	unit_template_name = "ai_unit_training_dummy_bob",
 	wield_on_pickup = true,
-	hud_description = "dummy_description"
-}
-Pickups.level_events.training_dummy_skaven = {
-	only_once = true,
-	individual_pickup = false,
-	type = "inventory_item",
-	item_description = "dummy_description",
-	spawn_weighting = 1e-06,
-	debug_pickup_category = "level_event",
-	slot_name = "slot_level_event",
-	item_name = "training_dummy_skaven",
-	unit_name = "units/gameplay/training_dummy/training_dummy_skaven/training_dummy_skaven",
-	unit_template_name = "pickup_training_dummy_unit",
-	wield_on_pickup = true,
-	hud_description = "dummy_description"
+	hud_description = "dummy_description",
+	spawn_override_func = function (pickup_settings, data, spawn_pos, spawn_rot)
+		local breed = Breeds.training_dummy
+		local optional_data = {
+			side_id = 2,
+			prepare_func = function (breed, extension_init_data, optional_data, spawn_pos, spawn_rot)
+				extension_init_data.projectile_locomotion_system = data.projectile_locomotion_system
+				extension_init_data.pickup_system = data.pickup_system
+			end,
+			spawned_func = function (ai_unit, breed, optional_data)
+				local ai_system = Managers.state.entity:system("ai_system")
+
+				ai_system:set_attribute(ai_unit, "armor", "training_dummy", true)
+			end
+		}
+		local unit = Managers.state.conflict:_spawn_unit(breed, spawn_pos, spawn_rot, "pickup", nil, nil, optional_data)
+
+		return unit
+	end
 }
 Pickups.level_events.torch = {
 	only_once = true,
@@ -654,6 +678,40 @@ Pickups.special = {
 
 			return not is_in_cooldown and not is_falling_down
 		end
+	},
+	necromancer_ripped_soul = {
+		unit_template_name = "orb_pickup_unit",
+		type = "orb_pickup_unit",
+		pickup_sound = "Play_career_necro_ability_soul_rip_orb_pickup",
+		debug_pickup_category = "orbs",
+		local_only = true,
+		item_name = "health_orb",
+		unit_name = "units/beings/player/bright_wizard_necromancer/talents/ripped_soul",
+		pickup_radius = 0.3,
+		granted_buff = "sienna_necromancer_4_2_soul_rip_stack",
+		spawn_weighting = 1e-06,
+		buff_sync_type = BuffSyncType.Local,
+		can_pickup_orb = function (pickup_settings, unit)
+			local career_extension = ScriptUnit.has_extension(unit, "career_system")
+
+			if career_extension and career_extension:career_name() == "bw_necromancer" then
+				return true
+			end
+		end,
+		orb_offset = {
+			0,
+			0,
+			0.32
+		},
+		hover_settings = {
+			amplitude = 0.3,
+			frequency = 0.4
+		},
+		magnetic_settings = {
+			time_to_max_speed = 0.5,
+			radius = 3.5,
+			max_speed = 6.5
+		}
 	}
 }
 

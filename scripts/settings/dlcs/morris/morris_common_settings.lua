@@ -891,9 +891,6 @@ settings.dot_type_lookup = {
 	we_deus_01_dot_special_charged = "burning_dot",
 	we_deus_01_dot_charged = "burning_dot"
 }
-settings.infinite_burn_dot_lookup = {
-	burning_magma_dot = "burning_magma_dot_infinite"
-}
 settings.end_view_state = {
 	"scripts/ui/views/level_end/states/end_view_state_summary_deus"
 }

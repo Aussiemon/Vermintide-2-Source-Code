@@ -3,18 +3,18 @@ local breed_data = {
 	detection_radius = 12,
 	ai_strength = 1,
 	walk_speed = 2.3,
-	aoe_height = 1.4,
-	dont_wield_weapon_on_patrol = true,
+	leave_walk_distance = 5,
+	ai_toughness = 2,
 	patrol_active_target_selection = "pick_closest_target_with_spillover",
 	hesitation_timer = 7,
-	exchange_order = 4,
 	aim_template = "chaos_marauder",
-	animation_sync_rpc = "rpc_sync_anim_state_7",
 	target_selection = "pick_closest_target_with_spillover",
+	animation_sync_rpc = "rpc_sync_anim_state_7",
+	aoe_height = 1.4,
 	is_always_spawnable = true,
-	death_reaction = "ai_default",
+	poison_resistance = 70,
 	hit_mass_count = 3,
-	leave_walk_distance = 5,
+	dont_wield_weapon_on_patrol = true,
 	scale_death_push = 0.65,
 	slot_template = "chaos_roamer",
 	attack_player_sound_event = "Play_enemy_marauder_attack_player_vce",
@@ -31,15 +31,15 @@ local breed_data = {
 	push_sound_event = "Play_generic_pushed_impact_large",
 	look_at_range = 30,
 	patrol_active_perception = "perception_regular",
-	threat_value = 2,
 	perception_previous_attacker_stickyness_value = -7.75,
 	race = "chaos",
-	poison_resistance = 70,
+	threat_value = 2,
+	death_reaction = "ai_default",
 	armor_category = 1,
 	bone_lod_level = 1,
-	smart_object_template = "chaos_marauder",
 	backstab_player_sound_event = "Play_enemy_marauder_attack_player_back_vce",
 	death_sound_event = "Play_enemy_marauder_death_vce",
+	smart_object_template = "chaos_marauder",
 	smart_targeting_width = 0.2,
 	behavior = "marauder",
 	use_regular_horde_spawning = true,
@@ -47,7 +47,7 @@ local breed_data = {
 	has_inventory = true,
 	run_speed = 4.8,
 	follow_reach = 1,
-	ai_toughness = 2,
+	exchange_order = 4,
 	stagger_multiplier = 0.45,
 	stagger_threshold_light = 0,
 	hit_reaction = "ai_default",
@@ -79,6 +79,7 @@ local breed_data = {
 		"move_fwd_5",
 		"move_fwd_6"
 	},
+	infighting = InfightingSettings.small,
 	perception_exceptions = {
 		poison_well = true,
 		wizard_destructible = true
@@ -97,6 +98,12 @@ local breed_data = {
 	wwise_voices = {
 		"marauder_andreas",
 		"marauder_olof"
+	},
+	status_effect_settings = {
+		category = "small",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire
+		})
 	},
 	debug_color = {
 		255,

@@ -433,7 +433,7 @@ PlayerCharacterStateLunging._calculate_hit_mass = function (self, shield_blocked
 	local side_manager = Managers.state.side
 	local is_enemy = side_manager:is_enemy(unit, hit_unit)
 
-	if breed and is_enemy and AiUtils.unit_alive(hit_unit) then
+	if breed and is_enemy and HEALTH_ALIVE[hit_unit] then
 		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 		local hit_mass_total = shield_blocked and (breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank] or breed.hit_mass_count_block) or breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank] or breed.hit_mass_count or 1
 		local action_mass_override = current_action.hit_mass_count
@@ -490,7 +490,7 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 			local breed = Unit.get_data(hit_unit, "breed")
 			local damage_profile_id, power_level, hit_zone_id, ignore_shield, allow_backstab = self:_parse_attack_data(damage_data)
 
-			if breed and AiUtils.unit_alive(hit_unit) then
+			if breed and HEALTH_ALIVE[hit_unit] then
 				shield_blocked = not ignore_shield and AiUtils.attack_is_shield_blocked(hit_unit, unit)
 
 				if allow_backstab then
@@ -509,7 +509,7 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 				shield_blocked = false
 			end
 
-			if breed and AiUtils.unit_alive(hit_unit) then
+			if breed and HEALTH_ALIVE[hit_unit] then
 				local final_stagger_direction = nil
 
 				if damage_data.stagger_angles then
@@ -552,7 +552,7 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 
 				local hit_mass_count_reached = self.max_targets <= self._amount_of_mass_hit or breed.armor_category == 2 or breed.armor_category == 3
 
-				if AiUtils.unit_alive(hit_unit) and (damage_data.interrupt_on_first_hit or hit_mass_count_reached and damage_data.interrupt_on_max_hit_mass) then
+				if HEALTH_ALIVE[hit_unit] and (damage_data.interrupt_on_first_hit or hit_mass_count_reached and damage_data.interrupt_on_max_hit_mass) then
 					self:_do_blast(new_pos, forward_direction)
 
 					return true

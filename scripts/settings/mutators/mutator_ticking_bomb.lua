@@ -39,7 +39,7 @@ return {
 
 			for i = 1, random_num_affected_players do
 				local random_player_unit = current_player_units[math.random(1, num_current_player_units)]
-				local is_alive = AiUtils.unit_alive(random_player_unit)
+				local is_alive = HEALTH_ALIVE[random_player_unit]
 
 				if is_alive then
 					buff_system:add_buff(random_player_unit, data.buff_name, random_player_unit)

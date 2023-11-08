@@ -212,7 +212,7 @@ T.update_network = function (data, dt)
 		GameSession_set_game_object_field(game, go_id, "position", Vector3.clamp(position, min, max))
 		GameSession_set_game_object_field(game, go_id, "has_moved_from_start_position", extension.has_moved_from_start_position)
 
-		local speed = extension.anim_move_speed or math.min(Vector3.length(extension.velocity_current:unbox()), MAX_MOVE_SPEED)
+		local speed = math.min(extension.anim_move_speed or Vector3.length(extension.velocity_current:unbox()), MAX_MOVE_SPEED)
 
 		Unit.animation_set_variable(unit, extension.move_speed_anim_var, speed)
 		GameSession_set_game_object_field(game, go_id, "velocity", Vector3.clamp(velocity, min_vel, max_vel))

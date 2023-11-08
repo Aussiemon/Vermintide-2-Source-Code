@@ -104,7 +104,7 @@ local ROTTEN_MIASMA_DEBUFF = "curse_rotten_miasma"
 
 return {
 	description = "curse_rotten_miasma_desc",
-	package_name = "resource_packages/mutators/mutator_curse_rotten_miasma",
+	curse_package_name = "resource_packages/mutators/mutator_curse_rotten_miasma",
 	display_name = "curse_rotten_miasma_name",
 	icon = "deus_curse_nurgle_01",
 	server_update_function = function (context, data, dt, t)

@@ -5,6 +5,7 @@ PlayerCharacterStateCharged.init = function (self, character_state_init_context)
 
 	local context = character_state_init_context
 	self.inputs_to_buffer = {
+		wield_4_alt = true,
 		wield_2 = true,
 		wield_5 = true,
 		action_career_release = true,

@@ -35,8 +35,7 @@ end
 BackendInterfaceTalentsPlayfab._validate_talents = function (self, career_name, career_talents)
 	local profile = PROFILES_BY_CAREER_NAMES[career_name]
 	local profile_name = profile.display_name
-	local read_only_data = self._backend_mirror:get_read_only_data()
-	local hero_experience = read_only_data[profile_name .. "_experience"]
+	local hero_experience = self._backend_mirror:get_read_only_data(profile_name .. "_experience")
 	local hero_level = ExperienceSettings.get_level(hero_experience)
 	local talent_unlock_levels = TalentUnlockLevels
 	local changed = false

@@ -30,7 +30,8 @@ local RPCS = {
 	"rpc_set_corruptor_beam_state",
 	"rpc_check_trigger_backstab_sfx",
 	"rpc_set_attribute_bool",
-	"rpc_set_attribute_int"
+	"rpc_set_attribute_int",
+	"rpc_remove_attribute"
 }
 local extensions = {
 	"AISimpleExtension",
@@ -40,15 +41,36 @@ local extensions = {
 AttributeDefinition = {
 	grudge_marked = {
 		name_index = function (unit, value)
-			Unit.flow_event(unit, "enable_grudge")
-			print("New enhanced breed spawned")
+			if value then
+				Unit.flow_event(unit, "enable_grudge")
+				print("New enhanced breed spawned")
+			else
+				Unit.flow_event(unit, "disable_grudge")
+			end
 		end
 	},
-	breed_enhancements = {}
+	breed_enhancements = {},
+	training_dummy = {
+		armor = function (unit, value)
+			local has_armor = value
+
+			Unit.set_visibility(unit, "vg_armor", has_armor)
+
+			local armor = has_armor and 2 or 1
+
+			Unit.set_data(unit, "armor", armor)
+
+			local race_name = has_armor and "skaven" or "chaos"
+
+			Unit.set_data(unit, "race", race_name)
+		end
+	}
 }
 
-for name in pairs(BreedEnhancements.boss) do
-	AttributeDefinition.breed_enhancements[name] = false
+for name, data in pairs(BreedEnhancements) do
+	if not data.no_attribute then
+		AttributeDefinition.breed_enhancements[name] = false
+	end
 end
 
 AISystem.init = function (self, context, name)
@@ -558,6 +580,12 @@ AISystem._cleanup_extension = function (self, unit, extension_name)
 	self.unit_extension_data[unit] = nil
 
 	if extension_name == "AISimpleExtension" then
+		if USE_ENGINE_SLOID_SYSTEM then
+			notify_attackers(unit, Managers.state.conflict.dogpiled_attackers_on_unit)
+		else
+			Managers.state.conflict.gathering:notify_attackers(unit)
+		end
+
 		local ai_blackboard_updates = self.ai_blackboard_updates
 		local ai_blackboard_updates_n = #ai_blackboard_updates
 		local ai_blackboard_prioritized_updates = self.ai_blackboard_prioritized_updates
@@ -597,6 +625,14 @@ AISystem.freeze = function (self, unit, extension_name, reason)
 		frozen_extension:unit_removed_from_game()
 
 		return
+	end
+
+	local attributes = self:get_attributes(unit)
+
+	for category_id, attribute_ids in pairs(attributes) do
+		for attribute_id in pairs(attribute_ids) do
+			self:set_attribute(unit, attribute_id, category_id, nil, true)
+		end
 	end
 
 	local extension = self.unit_extension_data[unit]
@@ -711,7 +747,7 @@ end
 
 AISystem.update_alive = function (self)
 	for unit, extension in pairs(self.ai_units_alive) do
-		local is_alive = extension._health_extension == nil or extension._health_extension:is_alive()
+		local is_alive = extension._health_extension == nil or HEALTH_ALIVE[unit]
 
 		if not is_alive then
 			self.ai_units_alive[unit] = nil
@@ -841,6 +877,12 @@ AISystem.update_game_objects = function (self)
 		local action_id = NetworkLookup_bt_action_names[action_name]
 
 		GameSession_set_game_object_field(game, game_object_id, "bt_action_name", action_id)
+
+		local bb = BLACKBOARDS[unit]
+		local target_unit = bb.target_unit
+		local target_unit_id = unit_storage:go_id(target_unit) or NetworkConstants.invalid_game_object_id
+
+		GameSession_set_game_object_field(game, game_object_id, "target_unit_id", target_unit_id)
 	end
 end
 
@@ -1176,7 +1218,18 @@ local function update_blackboard(unit, blackboard, t, dt)
 
 	local attacking_target = blackboard.attacking_target
 	local has_attacking_target = unit_alive(attacking_target)
-	local is_valid_attacking_target = not has_attacking_target or blackboard.side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[attacking_target]
+	local is_valid_attacking_target = nil
+
+	if has_attacking_target then
+		if blackboard.target_unit_status_extension then
+			is_valid_attacking_target = blackboard.side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[attacking_target]
+		else
+			is_valid_attacking_target = HEALTH_ALIVE[attacking_target]
+		end
+	else
+		is_valid_attacking_target = true
+	end
+
 	blackboard.target_num_occupied_slots = 0
 
 	if target_alive and is_valid_attacking_target then
@@ -1483,19 +1536,26 @@ function write_attribute(extension, unit, id, category_id, value)
 	end
 end
 
-AISystem.set_attribute = function (self, unit, attribute_name, category_name, value)
+AISystem.set_attribute = function (self, unit, attribute_name, category_name, value, skip_sync)
 	local extension = self.unit_extension_data[unit]
 
 	write_attribute(extension, unit, attribute_name, category_name, value)
 
+	if skip_sync then
+		return
+	end
+
 	local unit_id = Managers.state.network:unit_game_object_id(unit)
 	local attribute_id = NetworkLookup.attributes[attribute_name]
 	local category_id = NetworkLookup.attribute_categories[category_name]
+	local val_type = type(value)
 
-	if type(value) == "boolean" then
+	if val_type == "boolean" then
 		self.network_transmit:send_rpc_clients("rpc_set_attribute_bool", unit_id, attribute_id, category_id, value)
-	else
+	elseif val_type == "number" then
 		self.network_transmit:send_rpc_clients("rpc_set_attribute_int", unit_id, attribute_id, category_id, value)
+	else
+		self.network_transmit:send_rpc_clients("rpc_remove_attribute", unit_id, attribute_id, category_id)
 	end
 end
 
@@ -1525,6 +1585,17 @@ AISystem.rpc_set_attribute_int = function (self, channel_id, unit_id, attribute_
 	local category_name = NetworkLookup.attribute_categories[category_id]
 
 	write_attribute(extension, unit, attribute_name, category_name, value)
+end
+
+AISystem.rpc_remove_attribute = function (self, channel_id, unit_id, attribute_id, category_id)
+	print("rpc_remove_attribute", unit_id, attribute_id, category_id, nil)
+
+	local unit = Managers.state.unit_storage:unit(unit_id)
+	local extension = self.unit_extension_data[unit]
+	local attribute_name = NetworkLookup.attributes[attribute_id]
+	local category_name = NetworkLookup.attribute_categories[category_id]
+
+	write_attribute(extension, unit, attribute_name, category_name, nil)
 end
 
 AISystem.hot_join_sync = function (self, peer_id)

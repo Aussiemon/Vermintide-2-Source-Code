@@ -104,9 +104,11 @@ local talent_buff_templates = {
 			{
 				buff_to_add = "kerillian_thorn_sister_passive_healing_received_aura_buff",
 				range = 100,
-				remove_buff_func = "remove_aura_buff",
 				update_func = "activate_buff_on_distance",
-				perk = buff_perks.overcharge_no_slow
+				remove_buff_func = "remove_aura_buff",
+				perks = {
+					buff_perks.overcharge_no_slow
+				}
 			}
 		}
 	},
@@ -142,7 +144,9 @@ local talent_buff_templates = {
 	kerillian_thorn_sister_damage_vs_wounded_enemies = {
 		buffs = {
 			{
-				perk = buff_perks.missing_health_damage
+				perks = {
+					buff_perks.missing_health_damage
+				}
 			}
 		}
 	},
@@ -241,7 +245,9 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				icon = "kerillian_thornsister_crit_on_any_ability",
-				perk = buff_perks.guaranteed_crit,
+				perks = {
+					buff_perks.guaranteed_crit
+				},
 				max_stacks = math.huge
 			}
 		}
@@ -327,14 +333,11 @@ local talent_buff_templates = {
 	kerillian_thorn_sister_debuff_wall_buff = {
 		buffs = {
 			{
-				start_flow_event = "poisoned",
 				name = "kerillian_thorn_sister_debuff_wall_buff",
 				stat_buff = "damage_taken",
-				death_flow_event = "poisoned_death",
 				refresh_durations = true,
-				end_flow_event = "poisoned_end",
-				update_start_delay = 1,
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1,
 				time_between_dot_damages = 1,
 				max_stacks = 1,
 				multiplier = buff_tweak_data.kerillian_thorn_sister_debuff_wall_buff.multiplier,
@@ -636,7 +639,13 @@ local talents = {
 		num_ranks = 1,
 		icon = "kerillian_thornsister_explosive_wall",
 		description_values = {},
-		buffs = {}
+		buffs = {},
+		requires_packages = {
+			wall_units = {
+				"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01",
+				"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wave_01"
+			}
+		}
 	},
 	{
 		description = "kerillian_thorn_sister_debuff_wall_desc_2",
@@ -652,7 +661,12 @@ local talents = {
 				value = buff_tweak_data.kerillian_thorn_sister_debuff_wall_buff.duration
 			}
 		},
-		buffs = {}
+		buffs = {},
+		requires_packages = {
+			wall_units = {
+				"units/beings/player/way_watcher_thornsister/abilities/ww_thornsister_thorn_wall_01_bleed"
+			}
+		}
 	}
 }
 local hero_name = "wood_elf"

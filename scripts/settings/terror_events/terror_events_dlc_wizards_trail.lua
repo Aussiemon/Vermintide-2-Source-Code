@@ -654,15 +654,6 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 15
-		},
-		{
-			"event_horde",
-			spawner_id = "trail_end_event_spawner_2",
-			composition_type = "event_medium_chaos"
-		},
-		{
-			"delay",
 			duration = 10
 		},
 		{
@@ -744,7 +735,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 30,
 			condition = function (t)
-				return spawned_during_event() < 8
+				return spawned_during_event() < 6
 			end
 		},
 		{
@@ -756,7 +747,11 @@ local terror_event_blueprints = {
 		{
 			"event_horde",
 			spawner_id = "trail_end_event_urn_01",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "chaos_berzerkers_small"
+		},
+		{
+			"delay",
+			duration = 3
 		},
 		{
 			"event_horde",
@@ -835,9 +830,13 @@ local terror_event_blueprints = {
 			composition_type = "event_small_fanatics"
 		},
 		{
+			"delay",
+			duration = 3
+		},
+		{
 			"event_horde",
 			spawner_id = "trail_end_event_urn_03",
-			composition_type = "event_chaos_extra_spice_medium"
+			composition_type = "event_chaos_extra_spice_small"
 		},
 		{
 			"delay",
@@ -846,7 +845,7 @@ local terror_event_blueprints = {
 		{
 			"event_horde",
 			spawner_id = "trail_end_event_urn_03",
-			composition_type = "chaos_raiders_medium"
+			composition_type = "chaos_raiders_small"
 		},
 		{
 			"delay",
@@ -895,7 +894,7 @@ local terror_event_blueprints = {
 		{
 			"event_horde",
 			spawner_id = "trail_end_event_urn_03",
-			composition_type = "event_chaos_extra_spice_medium"
+			composition_type = "event_chaos_extra_spice_small"
 		},
 		{
 			"delay",
@@ -927,7 +926,7 @@ local terror_event_blueprints = {
 		{
 			"event_horde",
 			spawner_id = "trail_end_event_urn_02",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "chaos_berzerkers_small"
 		},
 		{
 			"spawn_special",

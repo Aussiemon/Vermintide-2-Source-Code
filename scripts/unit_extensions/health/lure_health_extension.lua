@@ -61,6 +61,7 @@ end
 
 LureHealthExtension.set_dead = function (self)
 	self._is_dead = true
+	HEALTH_ALIVE[self._unit] = nil
 end
 
 LureHealthExtension.has_assist_shield = function (self)

@@ -146,6 +146,8 @@ GameNetworkManager.update_receive = function (self, dt)
 		return
 	end
 
+	self.network_transmit:update_receive()
+
 	if not self._game_session_host and GameSession.in_session(game_session) then
 		self._game_session_host = GameSession.game_session_host(game_session)
 	end
@@ -1190,61 +1192,15 @@ GameNetworkManager.rpc_flow_event = function (self, channel_id, unit_id, event_i
 end
 
 GameNetworkManager.anim_event = function (self, unit, event)
-	local go_id = self.unit_storage:go_id(unit)
+	local anim_system = Managers.state.entity:system("animation_system")
 
-	fassert(go_id, "Unit storage does not have a game object id for %q", unit)
-
-	local event_id = NetworkLookup.anims[event]
-
-	if self.game_session then
-		if self.is_server then
-			self.network_transmit:send_rpc_clients("rpc_anim_event", event_id, go_id)
-		else
-			self.network_transmit:send_rpc_server("rpc_anim_event", event_id, go_id)
-		end
-	end
-
-	Unit.animation_event(unit, event)
-end
-
-GameNetworkManager.specific_anim_event = function (self, unit, event, lookup_table)
-	local go_id = self.unit_storage:go_id(unit)
-
-	fassert(go_id, "Unit storage does not have a game object id for %q", unit)
-
-	local event_id = lookup_table[event]
-
-	if self.game_session then
-		if self.is_server then
-			self.network_transmit:send_rpc_clients("rpc_anim_event", event_id, go_id)
-		else
-			self.network_transmit:send_rpc_server("rpc_anim_event", event_id, go_id)
-		end
-	end
-
-	Unit.animation_event(unit, event)
+	anim_system:anim_event(unit, event)
 end
 
 GameNetworkManager.anim_event_with_variable_float = function (self, unit, event, variable_name, variable_value)
-	local go_id = self.unit_storage:go_id(unit)
+	local anim_system = Managers.state.entity:system("animation_system")
 
-	fassert(go_id, "Unit storage does not have a game object id for %q", unit)
-
-	local event_id = NetworkLookup.anims[event]
-	local variable_id = NetworkLookup.anims[variable_name]
-
-	if self.game_session then
-		if self.is_server then
-			self.network_transmit:send_rpc_clients("rpc_anim_event_variable_float", event_id, go_id, variable_id, variable_value)
-		else
-			self.network_transmit:send_rpc_server("rpc_anim_event_variable_float", event_id, go_id, variable_id, variable_value)
-		end
-	end
-
-	local variable_index = Unit.animation_find_variable(unit, variable_name)
-
-	Unit.animation_set_variable(unit, variable_index, variable_value)
-	Unit.animation_event(unit, event)
+	anim_system:anim_event_with_variable_float(unit, event, variable_name, variable_value)
 end
 
 GameNetworkManager.anim_set_variable_float = function (self, unit, variable_name, variable_value)
@@ -1265,17 +1221,4 @@ GameNetworkManager.anim_set_variable_float = function (self, unit, variable_name
 	local variable_index = Unit.animation_find_variable(unit, variable_name)
 
 	Unit.animation_set_variable(unit, variable_index, variable_value)
-end
-
-if LEVEL_EDITOR_TEST then
-	GameNetworkManager.anim_event = function (self, unit, event)
-		Unit.animation_event(unit, event)
-	end
-
-	GameNetworkManager.anim_event_with_variable_float = function (self, unit, event, variable_name, variable_value)
-		local variable_index = Unit.animation_find_variable(unit, variable_name)
-
-		Unit.animation_set_variable(unit, variable_index, variable_value)
-		Unit.animation_event(unit, event)
-	end
 end

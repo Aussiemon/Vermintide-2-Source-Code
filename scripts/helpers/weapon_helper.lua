@@ -440,3 +440,46 @@ WeaponHelper.ballistic_raycast = function (self, physics_world, max_steps, max_t
 
 	return false, position
 end
+
+WeaponHelper.look_at_enemy_or_static_position = function (self, physics_world, position, direction, side, hit_radius, length)
+	local static_hit, static_hit_pos, ray_length = PhysicsWorld.immediate_raycast(physics_world, position, direction, length, "closest", "collision_filter", "filter_player_ray_projectile_static_only")
+	local max_length = ray_length or length
+	local halfway_position = position + direction * max_length / 2
+	local prepare_radius = max_length / 2
+
+	PhysicsWorld.prepare_actors_for_overlap(physics_world, halfway_position, prepare_radius * prepare_radius)
+
+	local results = PhysicsWorld.linear_sphere_sweep(physics_world, position + direction * hit_radius / 2, position + direction * max_length, hit_radius, 100, "types", "both", "collision_filter", "filter_player_ray_projectile", "report_initial_overlap")
+	local side_manager = Managers.state.side
+	local side_by_unit = side_manager.side_by_unit
+	local num_results = results and #results or 0
+	local best_position = nil
+
+	for i = 1, num_results do
+		local result = results[i]
+		local hit_actor = result.actor
+
+		if hit_actor then
+			local hit_unit = Actor.unit(hit_actor)
+			local health_extension = ScriptUnit.has_extension(hit_unit, "health_system")
+
+			if health_extension then
+				local hit_unit_side = side_by_unit[hit_unit]
+
+				if not side or not hit_unit_side or side_manager:is_enemy_by_side(side, hit_unit_side) then
+					local node = Actor.node(hit_actor)
+					local breed = AiUtils.unit_breed(hit_unit)
+					local hit_zone = breed and breed.hit_zones_lookup[node]
+
+					if not hit_zone or hit_zone.name ~= "afro" then
+						best_position = result.position
+
+						break
+					end
+				end
+			end
+		end
+	end
+
+	return best_position or static_hit_pos or position + direction * length
+end

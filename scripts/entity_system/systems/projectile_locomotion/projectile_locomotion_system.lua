@@ -1,10 +1,14 @@
 require("scripts/unit_extensions/weapons/projectiles/projectile_physics_husk_locomotion_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_physics_unit_locomotion_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_script_unit_locomotion_extension")
+require("scripts/unit_extensions/weapons/projectiles/projectile_sticky_locomotion")
 
 ProjectileLocomotionSystem = class(ProjectileLocomotionSystem, ExtensionSystemBase)
 local RPCS = {
-	"rpc_set_projectile_state"
+	"rpc_set_projectile_state",
+	"rpc_projectile_stick_unit",
+	"rpc_projectile_stick_position",
+	"rpc_hot_join_sync_projectile_sticky"
 }
 local extensions = {
 	"ProjectilePhysicsHuskLocomotionExtension",
@@ -13,6 +17,7 @@ local extensions = {
 	"ProjectileTrueFlightLocomotionExtension",
 	"ProjectileHomingSkullLocomotionExtension",
 	"ProjectileExtrapolatedHuskLocomotionExtension",
+	"ProjectileStickyLocomotion",
 	"ProjectileEtherealSkullLocomotionExtension"
 }
 
@@ -113,4 +118,41 @@ ProjectileLocomotionSystem.rpc_set_projectile_state = function (self, channel_id
 	local extension = ScriptUnit.extension(projectile_unit, "projectile_locomotion_system")
 
 	extension:set_projectile_state(projectile_unit, state_id)
+end
+
+ProjectileLocomotionSystem.rpc_projectile_stick_unit = function (self, channel_id, projectile_unit_id, stick_unit_id)
+	local projectile_unit = self.unit_storage:unit(projectile_unit_id)
+	local extension = ScriptUnit.extension(projectile_unit, "projectile_locomotion_system")
+	local stick_unit = self.unit_storage:unit(stick_unit_id)
+
+	extension:stick_to_unit(stick_unit)
+
+	if self.is_server then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_projectile_stick_unit", peer_id, projectile_unit_id, stick_unit_id)
+	end
+end
+
+ProjectileLocomotionSystem.rpc_projectile_stick_position = function (self, channel_id, projectile_unit_id, stick_position)
+	local projectile_unit = self.unit_storage:unit(projectile_unit_id)
+	local extension = ScriptUnit.extension(projectile_unit, "projectile_locomotion_system")
+
+	extension:stick_to_position(stick_position)
+
+	if self.is_server then
+		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		Managers.state.network.network_transmit:send_rpc_clients_except("rpc_projectile_stick_position", peer_id, projectile_unit_id, stick_position)
+	end
+end
+
+ProjectileLocomotionSystem.rpc_hot_join_sync_projectile_sticky = function (self, channel_id, projectile_unit_id, time_lived, time_stopped)
+	local projectile_unit = self.unit_storage:unit(projectile_unit_id)
+
+	if projectile_unit then
+		local extension = ScriptUnit.extension(projectile_unit, "projectile_locomotion_system")
+
+		extension:hot_join_sync_projectile_sticky(time_lived, time_stopped)
+	end
 end

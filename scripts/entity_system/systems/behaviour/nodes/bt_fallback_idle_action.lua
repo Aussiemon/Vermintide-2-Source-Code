@@ -45,6 +45,8 @@ BTFallbackIdleAction.run = function (self, unit, blackboard, t, dt)
 		local rot = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
 
 		blackboard.locomotion_extension:set_wanted_rotation(rot)
+	elseif blackboard.fallback_rotation then
+		blackboard.locomotion_extension:set_wanted_rotation(blackboard.fallback_rotation:unbox())
 	end
 
 	return "running"

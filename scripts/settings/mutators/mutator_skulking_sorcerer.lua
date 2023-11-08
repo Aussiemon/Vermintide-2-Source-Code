@@ -55,7 +55,7 @@ return {
 				data.spawn_queue_id = spawn_queue_id
 			end
 		elseif data.has_spawned_mutator_sorcerer then
-			if AiUtils.unit_alive(data.sorcerer_unit) then
+			if HEALTH_ALIVE[data.sorcerer_unit] then
 				local blackboard = BLACKBOARDS[data.sorcerer_unit]
 
 				if blackboard.closest_enemy_dist_sq and data.despawn_distance_sq <= blackboard.closest_enemy_dist_sq then

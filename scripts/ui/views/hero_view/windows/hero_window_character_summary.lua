@@ -1011,16 +1011,14 @@ HeroWindowCharacterSummary._populate_career_info = function (self, career_name)
 	local passive_ability_data = career_settings.passive_ability
 	local activated_ability_data = career_settings.activated_ability[1]
 	local passive_display_name = passive_ability_data.display_name
-	local passive_description = passive_ability_data.description
 	local passive_icon = passive_ability_data.icon
 	local activated_display_name = activated_ability_data.display_name
-	local activated_description = activated_ability_data.description
 	local activated_icon = activated_ability_data.icon
 	widgets_by_name.passive_title_text.content.text = Localize(passive_display_name)
-	widgets_by_name.passive_description_text.content.text = Localize(passive_description)
+	widgets_by_name.passive_description_text.content.text = UIUtils.get_ability_description(passive_ability_data)
 	widgets_by_name.passive_icon.content.texture_id = passive_icon
 	widgets_by_name.active_title_text.content.text = Localize(activated_display_name)
-	widgets_by_name.active_description_text.content.text = Localize(activated_description)
+	widgets_by_name.active_description_text.content.text = UIUtils.get_ability_description(activated_ability_data)
 	widgets_by_name.active_icon.content.texture_id = activated_icon
 	local passive_perks = passive_ability_data.perks
 	local total_perks_height = 0
@@ -1039,7 +1037,7 @@ HeroWindowCharacterSummary._populate_career_info = function (self, career_name)
 
 		if data then
 			local display_name = Localize(data.display_name)
-			local description = Localize(data.description)
+			local description = UIUtils.get_perk_description(data)
 			local title_text_style = style.title_text
 			local description_text_style = style.description_text
 			local description_text_shadow_style = style.description_text_shadow

@@ -89,6 +89,20 @@ popup_atlas = {
 			615
 		},
 		uv00 = {
+			0.575684,
+			0.303223
+		},
+		uv11 = {
+			0.797363,
+			0.603516
+		}
+	},
+	lake_upsell_popup_bg = {
+		size = {
+			454,
+			615
+		},
+		uv00 = {
 			0.352051,
 			0.605469
 		},
@@ -97,7 +111,7 @@ popup_atlas = {
 			0.905762
 		}
 	},
-	lake_upsell_popup_bg = {
+	priest_upsell_popup_bg = {
 		size = {
 			454,
 			615
@@ -111,7 +125,7 @@ popup_atlas = {
 			0.603516
 		}
 	},
-	priest_upsell_popup_bg = {
+	shovel_upsell_popup_bg = {
 		size = {
 			454,
 			615

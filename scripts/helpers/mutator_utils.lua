@@ -67,14 +67,12 @@ MutatorUtils.apply_buff_to_alive_player_units = function (context, data, buff_na
 	local current_player_units = data.only_affect_players and side.PLAYER_UNITS or side.PLAYER_AND_BOT_UNITS
 	local num_current_player_units = #current_player_units
 	local get_extension = ScriptUnit.extension
-	local unit_alive = AiUtils.unit_alive
 	local new_buff_ids = {}
 
 	for i = 1, num_current_player_units do
 		local unit = current_player_units[i]
-		local is_alive = unit_alive(unit)
 
-		if player_units[unit] == nil and is_alive then
+		if player_units[unit] == nil and HEALTH_ALIVE[unit] then
 			local params = {
 				attacker_unit = unit
 			}

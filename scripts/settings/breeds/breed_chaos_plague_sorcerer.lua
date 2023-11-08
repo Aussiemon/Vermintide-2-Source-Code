@@ -9,9 +9,9 @@ local breed_data = {
 	stagger_threshold_heavy = 3,
 	stagger_threshold_explosion = 5,
 	stagger_threshold_medium = 2,
-	debug_spawn_category = "Misc",
 	stagger_threshold_light = 0.5,
 	death_sound_event = "chaos_sorcerer_plague_death",
+	debug_spawn_category = "Misc",
 	is_of_interest_func = "is_of_interest_plague_wave_sorcerer",
 	behavior = "chaos_plague_sorcerer",
 	base_unit = "units/beings/enemies/chaos_sorcerer/chr_chaos_sorcerer",
@@ -41,6 +41,13 @@ local breed_data = {
 	stagger_reduction = BreedTweaks.stagger_reduction.sorcerer,
 	diff_stagger_resist = BreedTweaks.diff_stagger_resist.sorcerer,
 	run_on_spawn = AiBreedSnippets.on_chaos_plague_sorcerer_spawn,
+	status_effect_settings = {
+		category = "medium",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire,
+			StatusEffectNames.poisoned
+		})
+	},
 	target_player_sound_events = {
 		witch_hunter = "chaos_sorcerer_plague_targeting_saltspyre",
 		empire_soldier = "chaos_sorcerer_plague_targeting_soldier",

@@ -49,6 +49,8 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	blackboard.optional_spawn_data = optional_spawn_data
 	blackboard.spawn_category = extension_init_data.spawn_category
 	blackboard.is_ai = true
+	blackboard.lean_unit_list = {}
+	blackboard.next_lean_index = 0
 	local blackboard_init_data = breed.blackboard_init_data
 
 	if blackboard_init_data and blackboard_init_data.player_locomotion_constrain_radius ~= nil then
@@ -57,6 +59,8 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 		self.player_locomotion_constrain_radius = breed.player_locomotion_constrain_radius or nil
 	end
 
+	blackboard.lean_dogpile = 0
+	blackboard.crowded_slots = breed.infighting.crowded_slots
 	local health_extension = ScriptUnit.has_extension(unit, "health_system")
 	self._health_extension = health_extension
 	local locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system")
@@ -65,6 +69,8 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	local ai_navigation_extension = ScriptUnit.has_extension(unit, "ai_navigation_system")
 	self._navigation = ai_navigation_extension
 	blackboard.navigation_extension = ai_navigation_extension
+	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+	blackboard.buff_extension = buff_extension
 	local blackboard_init_data = breed.blackboard_init_data
 
 	if blackboard_init_data then
@@ -107,23 +113,27 @@ STATIC_BLACKBOARD_KEYS = STATIC_BLACKBOARD_KEYS or {
 	stagger_count = true,
 	node_data = true,
 	is_in_attack_cooldown = true,
-	world = true,
+	next_lean_index = true,
 	health_extension = true,
 	stagger_count_reset_at = true,
-	override_targets = true,
+	lean_dogpile = true,
 	next_smart_object_data = true,
 	navigation_extension = true,
 	locomotion_extension = true,
 	move_orders = true,
+	lean_slots = true,
 	unit = true,
 	optional_spawn_data = true,
 	level = true,
 	system_api = true,
+	override_targets = true,
 	spawn_type = true,
 	running_nodes = true,
+	lean_unit_list = true,
 	group_blackboard = true,
 	attack_cooldown_at = true,
 	stuck_check_time = true,
+	world = true,
 	inventory_extension = true,
 	is_passive = true,
 	breed = true,
@@ -167,6 +177,8 @@ AISimpleExtension.unfreeze = function (self, unit, data)
 	blackboard.target_dist = math.huge
 	blackboard.spawn_type = spawn_type
 	blackboard.spawn_category = spawn_category
+	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+	blackboard.buff_extension = buff_extension
 	blackboard.stuck_check_time = Managers.time:time("game") + RecycleSettings.ai_stuck_check_start_time
 	blackboard.is_in_attack_cooldown = false
 	blackboard.attack_cooldown_at = 0
@@ -175,6 +187,12 @@ AISimpleExtension.unfreeze = function (self, unit, data)
 	blackboard.optional_spawn_data = optional_spawn_data
 	blackboard.side = side
 	local breed = blackboard.breed
+	blackboard.lean_dogpile = 0
+	blackboard.crowded_slots = breed.infighting.crowded_slots
+
+	table.clear(blackboard.lean_unit_list)
+
+	blackboard.next_lean_index = 0
 	local is_horde = spawn_type == "horde_hidden" or spawn_type == "horde"
 	local behavior = optional_spawn_data and optional_spawn_data.behavior or is_horde and breed.horde_behavior or breed.behavior
 
@@ -384,9 +402,9 @@ AISimpleExtension.attacked = function (self, attacker_unit, t, damage_hit)
 	local blackboard = self._blackboard
 	local side = blackboard.side
 	attacker_unit = AiUtils.get_actual_attacker_unit(attacker_unit)
-	local attacker_is_valid_player_target = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[attacker_unit]
+	local is_enemy = side.enemy_units_lookup[attacker_unit]
 
-	if attacker_is_valid_player_target then
+	if is_enemy then
 		if damage_hit and blackboard.confirmed_player_sighting and blackboard.target_unit == nil then
 			blackboard.target_unit = attacker_unit
 			blackboard.target_unit_found_time = t
@@ -396,7 +414,7 @@ AISimpleExtension.attacked = function (self, attacker_unit, t, damage_hit)
 
 		blackboard.previous_attacker = attacker_unit
 
-		if not damage_hit and blackboard.stagger == 1 and AiUtils.unit_alive(unit) then
+		if not damage_hit and blackboard.stagger == 1 and HEALTH_ALIVE[unit] then
 			StatisticsUtil.check_save(attacker_unit, unit)
 		end
 	end

@@ -51,6 +51,7 @@ PayloadExtension.init = function (self, extension_init_context, unit, extension_
 	end
 
 	self._side = Managers.state.side:get_side_from_name("heroes")
+	self._enemy_broadphase_categories = self._side.enemy_broadphase_categories
 end
 
 PayloadExtension.activate = function (self)
@@ -164,7 +165,7 @@ PayloadExtension._hit_enemies = function (self, abs_speed, t)
 	local can_stagger = hazard_settings.enemy.can_stagger or true
 	local blocking = false
 	local shield_breaking_hit = false
-	local num_hits = AiUtils.broadphase_query(payload_position, radius, RESULT_TABLE)
+	local num_hits = AiUtils.broadphase_query(payload_position, radius, RESULT_TABLE, self._enemy_broadphase_categories)
 
 	for i = 1, num_hits do
 		local hit_unit = RESULT_TABLE[i]

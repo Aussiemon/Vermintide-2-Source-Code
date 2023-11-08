@@ -70,6 +70,7 @@ local function add_item(is_server, player_unit, pickup_type)
 			local item_name = pickup_settings.item_name
 			local slot_data = inventory_extension:get_slot_data(slot_name)
 			local can_store_additional_item = inventory_extension:can_store_additional_item(slot_name)
+			local has_additional_items = inventory_extension:has_additional_items(slot_name)
 
 			if slot_data and not can_store_additional_item then
 				local item_data = slot_data.item_data
@@ -99,6 +100,16 @@ local function add_item(is_server, player_unit, pickup_type)
 
 			if can_store_additional_item and slot_data then
 				inventory_extension:store_additional_item(slot_name, item_data)
+			elseif has_additional_items and slot_data then
+				local has_droppable, is_stored, drop_item_data = inventory_extension:has_droppable_item(slot_name)
+
+				if is_stored then
+					inventory_extension:remove_additional_item(slot_name, drop_item_data)
+					inventory_extension:store_additional_item(slot_name, item_data)
+				else
+					inventory_extension:destroy_slot(slot_name)
+					inventory_extension:add_equipment(slot_name, item_data, unit_template, extra_extension_init_data)
+				end
 			else
 				inventory_extension:destroy_slot(slot_name)
 				inventory_extension:add_equipment(slot_name, item_data, unit_template, extra_extension_init_data)

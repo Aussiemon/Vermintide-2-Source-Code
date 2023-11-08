@@ -57,7 +57,7 @@ BTDefendStandardAction.leave = function (self, unit, blackboard, t, reason, dest
 end
 
 BTDefendStandardAction.run = function (self, unit, blackboard, t, dt)
-	if not AiUtils.unit_alive(blackboard.standard_unit) then
+	if not HEALTH_ALIVE[blackboard.standard_unit] then
 		return "done"
 	end
 
@@ -80,7 +80,7 @@ BTDefendStandardAction.run = function (self, unit, blackboard, t, dt)
 	if blackboard.reached_standard then
 		local target_unit = blackboard.target_unit
 
-		if AiUtils.unit_alive(target_unit) then
+		if HEALTH_ALIVE[target_unit] then
 			local rot = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
 
 			blackboard.locomotion_extension:set_wanted_rotation(rot)

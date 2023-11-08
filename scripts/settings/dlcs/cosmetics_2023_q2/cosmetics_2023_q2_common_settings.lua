@@ -76,7 +76,7 @@ settings.unlock_settings_ps4 = {
 			cosmetic = true
 		},
 		q2_2023_hat_collection = {
-			product_label = "0717934900097102",
+			product_label = "0191121509752950",
 			backend_reward_id = "q2_2023_hat_collection",
 			class = "UnlockDlc",
 			id = "ba610c9ec63a45ab9c01f1c8ac937ca6",
@@ -120,7 +120,7 @@ settings.unlock_settings_ps4 = {
 			cosmetic = true
 		},
 		q2_2023_hat_collection = {
-			product_label = "0191121509752950",
+			product_label = "0717934900097102",
 			backend_reward_id = "q2_2023_hat_collection",
 			class = "UnlockDlc",
 			id = "896dd51a728d4b21a161adf027a56b01",

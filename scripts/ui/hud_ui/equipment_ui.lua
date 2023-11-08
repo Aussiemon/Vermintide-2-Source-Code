@@ -437,6 +437,75 @@ EquipmentUI._sync_player_equipment = function (self)
 					end
 				end
 
+				if slot_name == "slot_potion" and item_data and widget_id > 0 then
+					local hud_slot = added_items[widget_id]
+					local widget = hud_slot and hud_slot.widget
+
+					if widget then
+						local content = widget.content
+						local style = widget.style
+						local has_additional_slots = inventory_extension:has_additional_item_slots(slot_name)
+						local additional_items = inventory_extension:get_additional_items(slot_name)
+
+						if additional_items then
+							local next_additional_item = additional_items[1]
+
+							if next_additional_item then
+								local hud_icon = next_additional_item.gamepad_hud_icon
+								content.secondary_texture_icon = hud_icon
+								content.secondary_texture_icon_glow = hud_icon .. "_glow"
+								content.has_additional_slots = has_additional_slots
+								local inventory_consumable_slot_colors = UISettings.inventory_consumable_slot_colors
+								local default_background_color = {
+									255,
+									0,
+									0,
+									0
+								}
+								local default_glow_color = {
+									255,
+									255,
+									255,
+									255
+								}
+								local slot_background_color = inventory_consumable_slot_colors[next_additional_item.key]
+
+								if slot_background_color then
+									style.secondary_texture_icon.color = slot_background_color
+									style.secondary_texture_icon_glow.color = {
+										255,
+										0,
+										0,
+										0
+									}
+								else
+									style.secondary_texture_icon.color = default_background_color
+									style.secondary_texture_icon_glow.color = default_glow_color
+								end
+
+								local default_angle = UISettings.additional_inventory_slot_angles.default
+								local slot_rotation = UISettings.additional_inventory_slot_angles[next_additional_item.key] or default_angle
+								style.secondary_texture_icon.angle = slot_rotation
+								style.secondary_texture_icon_glow.angle = slot_rotation
+
+								self:_set_widget_dirty(widget)
+							else
+								content.secondary_texture_icon = nil
+								content.secondary_texture_icon_glow = nil
+								content.has_additional_slots = has_additional_slots
+
+								self:_set_widget_dirty(widget)
+							end
+						elseif content.has_additional_slots and not has_additional_slots then
+							content.secondary_texture_icon = nil
+							content.secondary_texture_icon_glow = nil
+							content.has_additional_slots = has_additional_slots
+
+							self:_set_widget_dirty(widget)
+						end
+					end
+				end
+
 				if slot_name == "slot_career_skill_weapon" and item_data and widget_id > 0 then
 					local hud_slot = added_items[widget_id]
 					local widget = hud_slot and hud_slot.widget

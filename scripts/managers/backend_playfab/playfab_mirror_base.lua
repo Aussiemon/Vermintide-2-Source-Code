@@ -20,7 +20,13 @@ local CAREER_ID_LOOKUP = {
 	"wh_bountyhunter",
 	"wh_zealot",
 	"we_thornsister",
-	"wh_priest"
+	"wh_priest",
+	"bw_necromancer"
+}
+local ALLOWED_DATA_TYPES = {
+	string = true,
+	boolean = true,
+	number = true
 }
 local REDUCTION_INTERVAL = 80
 local DELAY_MULTIPLIER = 5
@@ -29,6 +35,12 @@ PlayFabMirrorBase = class(PlayFabMirrorBase)
 
 local function debug_printf(format, ...)
 	printf("[PlayFabMirrorBase] " .. format, ...)
+end
+
+local function assert_or_print_exception(condition, format, ...)
+	if not condition then
+		Crashify.print_exception("PlayFabMirrorBase", format, ...)
+	end
 end
 
 PlayFabMirrorBase.init = function (self, signin_result)
@@ -53,6 +65,9 @@ PlayFabMirrorBase.init = function (self, signin_result)
 
 	for key, data in pairs(read_only_data) do
 		local value = data.Value
+		local value_type = type(value)
+
+		assert_or_print_exception(ALLOWED_DATA_TYPES[value_type], "Tried to set initial read_only_data's '%s'. Got value '%s' ('%s')", key, tostring(value), value_type)
 
 		if tonumber(value) then
 			value = tonumber(value)
@@ -97,10 +112,10 @@ PlayFabMirrorBase.init = function (self, signin_result)
 	self:_verify_account_data()
 end
 
-PlayFabMirrorBase._parse_claimed_achievements = function (self, read_only_data_values)
+PlayFabMirrorBase._parse_claimed_achievements = function (self)
 	local split_achievements_string = {}
 	local claimed_achievements = {}
-	local claimed_achievements_string = read_only_data_values.claimed_achievements
+	local claimed_achievements_string = self:get_read_only_data("claimed_achievements")
 
 	if claimed_achievements_string then
 		split_achievements_string = string.split(claimed_achievements_string, ",")
@@ -114,9 +129,9 @@ PlayFabMirrorBase._parse_claimed_achievements = function (self, read_only_data_v
 	return claimed_achievements
 end
 
-PlayFabMirrorBase._parse_claimed_event_quests = function (self, read_only_data_values)
+PlayFabMirrorBase._parse_claimed_event_quests = function (self)
 	local claimed_event_quests = {}
-	local claimed_string = read_only_data_values.claimed_event_quests
+	local claimed_string = self:get_read_only_data("claimed_event_quests")
 
 	if claimed_string then
 		local split_string = string.split(claimed_string, ",")
@@ -129,9 +144,9 @@ PlayFabMirrorBase._parse_claimed_event_quests = function (self, read_only_data_v
 	return claimed_event_quests
 end
 
-PlayFabMirrorBase._parse_unlocked_weapon_skins = function (self, read_only_data_values)
+PlayFabMirrorBase._parse_unlocked_weapon_skins = function (self)
 	local unlocked_weapon_skins = {}
-	local unlocked_weapon_skins_string = read_only_data_values.unlocked_weapon_skins
+	local unlocked_weapon_skins_string = self:get_read_only_data("unlocked_weapon_skins")
 	local unlock_manager = Managers.unlock
 	local existing_weapon_skins = self._unlocked_weapon_skins or {}
 
@@ -144,19 +159,27 @@ PlayFabMirrorBase._parse_unlocked_weapon_skins = function (self, read_only_data_
 				local item_data = rawget(ItemMasterList, skin_name)
 				local required_dlc = item_data and item_data.required_dlc
 
-				if not required_dlc or unlock_manager:is_dlc_unlocked(required_dlc) then
+				if not required_dlc then
 					unlocked_weapon_skins[skin_name] = existing_weapon_skins[skin_name] or true
+				elseif not unlock_manager:dlc_exists(required_dlc) then
+					assert_or_print_exception(false, "Tried to check if unexisting DLC was unlocked %s", required_dlc)
+
+					unlocked_weapon_skins[skin_name] = true
+				elseif unlock_manager:is_dlc_unlocked(required_dlc) then
+					unlocked_weapon_skins[skin_name] = true
 				end
 			end
+		else
+			assert_or_print_exception(false, "Failed to decode unlocked_weapon_skins_string %s", unlocked_weapon_skins_string)
 		end
 	end
 
 	return unlocked_weapon_skins
 end
 
-PlayFabMirrorBase._parse_unlocked_cosmetics = function (self, read_only_data_values)
+PlayFabMirrorBase._parse_unlocked_cosmetics = function (self)
 	local unlocked_cosmetics = {}
-	local unlocked_cosmetics_string = read_only_data_values.unlocked_cosmetics
+	local unlocked_cosmetics_string = self:get_read_only_data("unlocked_cosmetics")
 	local unlock_manager = Managers.unlock
 	local existing_cosmetics = self._unlocked_cosmetics or {}
 
@@ -170,20 +193,28 @@ PlayFabMirrorBase._parse_unlocked_cosmetics = function (self, read_only_data_val
 					local item_data = rawget(ItemMasterList, cosmetic_name)
 					local required_dlc = item_data and item_data.required_dlc
 
-					if not required_dlc or unlock_manager:is_dlc_unlocked(required_dlc) then
+					if not required_dlc then
 						unlocked_cosmetics[cosmetic_name] = existing_cosmetics[cosmetic_name] or true
+					elseif not unlock_manager:dlc_exists(required_dlc) then
+						assert_or_print_exception(false, "Tried to check if unexisting DLC was unlocked %s", required_dlc)
+
+						unlocked_cosmetics[cosmetic_name] = true
+					elseif unlock_manager:is_dlc_unlocked(required_dlc) then
+						unlocked_cosmetics[cosmetic_name] = true
 					end
 				end
 			end
+		else
+			assert_or_print_exception(false, "Failed to decode unlocked_cosmetics_string %s", unlocked_cosmetics_string)
 		end
 	end
 
 	return unlocked_cosmetics
 end
 
-PlayFabMirrorBase._parse_claimed_console_dlc_rewards = function (self, read_only_data_values)
+PlayFabMirrorBase._parse_claimed_console_dlc_rewards = function (self)
 	local claimed_rewards = {}
-	local claimed_rewards_string = read_only_data_values.claimed_console_dlc_rewards
+	local claimed_rewards_string = self:get_read_only_data("claimed_console_dlc_rewards")
 
 	if claimed_rewards_string then
 		local claimed_rewards_table = cjson.decode(claimed_rewards_string)
@@ -218,7 +249,7 @@ PlayFabMirrorBase.verify_account_data_cb = function (self, result)
 end
 
 PlayFabMirrorBase._migrate_characters = function (self)
-	local characters_data = self._read_only_data.characters_data
+	local characters_data = self:get_read_only_data("characters_data")
 
 	if not characters_data or characters_data == "{}" or characters_data == "" or type(characters_data) == "table" and table.is_empty(characters_data) then
 		local request = {
@@ -243,8 +274,7 @@ PlayFabMirrorBase.migrate_characters_cb = function (self, result)
 	local characters_data = function_result.characters_data
 
 	if characters_data then
-		self._read_only_data.characters_data = characters_data
-		self._read_only_data_mirror.characters_data = characters_data
+		self:set_read_only_data("characters_data", characters_data, true)
 	end
 
 	self._num_items_to_load = self._num_items_to_load - 1
@@ -349,16 +379,15 @@ PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
 		end
 	end
 
-	local read_only_data_values = self._read_only_data
-	self._claimed_achievements = self:_parse_claimed_achievements(read_only_data_values)
-	self._claimed_event_quests = self:_parse_claimed_event_quests(read_only_data_values)
-	self._unlocked_weapon_skins = self:_parse_unlocked_weapon_skins(read_only_data_values)
-	self._unlocked_cosmetics = self:_parse_unlocked_cosmetics(read_only_data_values)
-	local unlocked_keep_decorations_json = read_only_data_values.unlocked_keep_decorations or "{}"
+	self._claimed_achievements = self:_parse_claimed_achievements()
+	self._claimed_event_quests = self:_parse_claimed_event_quests()
+	self._unlocked_weapon_skins = self:_parse_unlocked_weapon_skins()
+	self._unlocked_cosmetics = self:_parse_unlocked_cosmetics()
+	local unlocked_keep_decorations_json = self:get_read_only_data("unlocked_keep_decorations") or "{}"
 	self._unlocked_keep_decorations = cjson.decode(unlocked_keep_decorations_json)
 
 	if IS_CONSOLE then
-		self._claimed_console_dlc_rewards = self:_parse_claimed_console_dlc_rewards(read_only_data_values)
+		self._claimed_console_dlc_rewards = self:_parse_claimed_console_dlc_rewards()
 	end
 
 	if script_data["eac-untrusted"] then
@@ -389,7 +418,7 @@ PlayFabMirrorBase._sync_unseen_rewards = function (self, new_rewards)
 		return
 	end
 
-	local unseen_rewards = self._user_data.unseen_rewards
+	local unseen_rewards = self:get_user_data("unseen_rewards")
 	unseen_rewards = unseen_rewards and cjson.decode(unseen_rewards) or {}
 
 	for i = 1, #new_rewards do
@@ -647,9 +676,9 @@ PlayFabMirrorBase.fix_inventory_data_1_request_cb = function (self, result)
 			self:set_read_only_data(key, value, true)
 
 			if key == "unlocked_weapon_skins" then
-				self._unlocked_weapon_skins = self:_parse_unlocked_weapon_skins(new_read_only_data)
+				self._unlocked_weapon_skins = self:_parse_unlocked_weapon_skins()
 			elseif key == "unlocked_cosmetics" then
-				self._unlocked_cosmetics = self:_parse_unlocked_cosmetics(new_read_only_data)
+				self._unlocked_cosmetics = self:_parse_unlocked_cosmetics()
 			end
 		end
 	end
@@ -675,7 +704,7 @@ PlayFabMirrorBase.fix_inventory_data_2_request_cb = function (self, result)
 	local new_magic_level = function_result and function_result.new_magic_level
 
 	if new_magic_level then
-		local progress_json = self._read_only_data.weaves_career_progress
+		local progress_json = self:get_read_only_data("weaves_career_progress")
 		local weaves_career_progress = cjson.decode(progress_json)
 
 		for i = 1, #CAREER_ID_LOOKUP do
@@ -686,7 +715,7 @@ PlayFabMirrorBase.fix_inventory_data_2_request_cb = function (self, result)
 			end
 		end
 
-		self._read_only_data.weaves_career_progress = cjson.encode(weaves_career_progress)
+		self:set_read_only_data("weaves_career_progress", cjson.encode(weaves_career_progress), true)
 	end
 
 	self:_handle_fix_data_ids()
@@ -833,7 +862,8 @@ PlayFabMirrorBase.user_data_request_cb = function (self, result)
 	for key, data in pairs(result.Data) do
 		if key == "unseen_rewards" then
 			local new_unseen_rewards = cjson.decode(data.Value)
-			local existing_unseen_rewards = self._user_data.unseen_rewards and cjson.decode(self._user_data.unseen_rewards) or {}
+			local unseen_rewards_string = self:get_user_data("unseen_rewards")
+			local existing_unseen_rewards = unseen_rewards_string and cjson.decode(unseen_rewards_string) or {}
 			local is_fake_item = ItemHelper.is_fake_item
 
 			for i = 1, #new_unseen_rewards do
@@ -850,7 +880,7 @@ PlayFabMirrorBase.user_data_request_cb = function (self, result)
 
 			self:set_user_data(key, cjson.encode(existing_unseen_rewards))
 		else
-			self:set_user_data(key, data.Value)
+			self:set_user_data(key, data.Value, true)
 		end
 	end
 
@@ -1513,19 +1543,17 @@ PlayFabMirrorBase.get_character_data = function (self, career_name, key)
 	return nil
 end
 
-PlayFabMirrorBase.set_character_data = function (self, career_name, key, value)
+PlayFabMirrorBase.set_character_data = function (self, career_name, key, value, set_mirror)
 	local career_data = self._career_data[career_name]
 	career_data[key] = value
+
+	if set_mirror then
+		self._career_data_mirror[career_name][key] = value
+	end
+
 	local character_name = PROFILES_BY_CAREER_NAMES[career_name].display_name
 
-	self:set_career_read_only_data(character_name, key, value, career_name, false)
-end
-
-PlayFabMirrorBase.update_career_data = function (self, career_name, key, value)
-	local career_data = self._career_data[career_name]
-	local career_data_mirror = self._career_data_mirror[career_name]
-	career_data[key] = value
-	career_data_mirror[key] = value
+	self:set_career_read_only_data(character_name, key, value, career_name, set_mirror)
 end
 
 PlayFabMirrorBase.get_title_data = function (self)
@@ -1540,12 +1568,20 @@ PlayFabMirrorBase.set_title_data = function (self, key, value)
 	self._title_data[key] = value
 end
 
-PlayFabMirrorBase.get_user_data = function (self)
-	return self._user_data
+PlayFabMirrorBase.get_user_data = function (self, key)
+	return self._user_data[key]
 end
 
-PlayFabMirrorBase.set_user_data = function (self, key, value)
+PlayFabMirrorBase.set_user_data = function (self, key, value, set_mirror)
 	self._user_data[key] = value
+
+	if set_mirror then
+		if type(value) == "table" then
+			self._user_data_mirror[key] = table.clone(value)
+		else
+			self._user_data_mirror[key] = value
+		end
+	end
 end
 
 PlayFabMirrorBase.log_player_exit = function (self, external_cb)
@@ -1589,19 +1625,42 @@ PlayFabMirrorBase.update_user_data_cb = function (self, commit_id, result)
 	commit.wait_for_user_data = false
 end
 
-PlayFabMirrorBase.get_read_only_data = function (self)
-	return self._read_only_data
+PlayFabMirrorBase.get_read_only_data = function (self, key)
+	local value = self._read_only_data[key]
+	local value_type = type(value)
+
+	assert_or_print_exception(value == nil or ALLOWED_DATA_TYPES[value_type], "Tried to get read_only_data's '%s'. Got value '%s' ('%s')", key, tostring(value), value_type)
+
+	return value
 end
 
 PlayFabMirrorBase.set_read_only_data = function (self, key, value, set_mirror)
+	local value_type = type(value)
+
+	assert_or_print_exception(ALLOWED_DATA_TYPES[value_type], "Tried to set read_only_data's '%s' to value '%s' ('%s')", key, tostring(value), value_type)
+
 	self._read_only_data[key] = value
 
 	if set_mirror then
-		if type(value) == "table" then
+		if value_type == "table" then
 			self._read_only_data_mirror[key] = table.clone(value)
 		else
 			self._read_only_data_mirror[key] = value
 		end
+	end
+end
+
+PlayFabMirrorBase.merge_read_only_data = function (self, data, set_mirror)
+	for key, value in pairs(data) do
+		local value_type = type(value)
+
+		assert_or_print_exception(ALLOWED_DATA_TYPES[value_type], "Tried to merge read_only_data's '%s' with value '%s' ('%s')", key, tostring(value), value_type)
+	end
+
+	table.merge_recursive(self._read_only_data, data)
+
+	if set_mirror then
+		table.merge_recursive(self._read_only_data_mirror, data)
 	end
 end
 
@@ -1841,7 +1900,7 @@ PlayFabMirrorBase._add_new_weapon_skin = function (self, item, generate_new_id, 
 
 	if create_new_id then
 		local ids = self:add_unlocked_weapon_skin(skin_name, item.ItemInstanceId)
-		fake_item_id = item.ItemInstanceId or ids and ids[1]
+		fake_item_id = ids and ids[1]
 	else
 		local ids = self:add_unlocked_weapon_skin(skin_name)
 		fake_item_id = ids and ids[1]
@@ -1938,6 +1997,8 @@ PlayFabMirrorBase.add_unlocked_weapon_skin = function (self, weapon_skin, offlin
 		return self:_create_fake_inventory_items({
 			[weapon_skin] = offline_backend_id or true
 		}, "weapon_skins")
+	else
+		assert_or_print_exception(false, "Tried to add_unlocked_weapon_skin '%s' before unlocked_weapon_skins was created", weapon_skin)
 	end
 end
 
@@ -1952,6 +2013,8 @@ PlayFabMirrorBase.add_unlocked_cosmetic = function (self, cosmetic_name, offline
 
 			return backend_id[1]
 		end
+	else
+		assert_or_print_exception(false, "Tried to add_unlocked_cosmetics '%s' before unlocked_cosmetics was created", cosmetic_name)
 	end
 end
 
@@ -2221,22 +2284,17 @@ PlayFabMirrorBase.update_read_only_data_request_cb = function (self, commit_id, 
 	local commit = self._commits[commit_id]
 	local function_result = result.FunctionResult
 	local hero_attributes = function_result.hero_attributes
-	local read_only_data_mirror = self._read_only_data_mirror
 
 	for key, new_value in pairs(hero_attributes) do
-		local value = new_value
+		local number_value = tonumber(new_value)
 
-		if tonumber(value) then
-			value = tonumber(value)
-		end
-
-		read_only_data_mirror[key] = value
+		self:set_read_only_data(key, number_value or new_value, true)
 	end
 
-	self._characters_data_mirror = cjson.decode(read_only_data_mirror[self._characters_data_key])
+	self._characters_data_mirror = cjson.decode(self._read_only_data_mirror[self._characters_data_key])
 
 	for character_name, character_data in pairs(self._characters_data_mirror) do
-		table.merge(self._career_data_mirror, character_data.careers)
+		table.merge_recursive(self._career_data_mirror, character_data.careers)
 	end
 
 	commit.wait_for_read_only_data = false
@@ -2326,8 +2384,7 @@ PlayFabMirrorBase.verify_dlc_careers_cb = function (self, result)
 	if careers_added then
 		local data = function_result.data
 
-		table.merge(self._read_only_data, data)
-		table.merge(self._read_only_data_mirror, table.clone(data))
+		self:merge_read_only_data(data, true)
 	end
 
 	self._num_items_to_load = self._num_items_to_load - 1
@@ -2336,8 +2393,8 @@ PlayFabMirrorBase.verify_dlc_careers_cb = function (self, result)
 end
 
 PlayFabMirrorBase._setup_careers = function (self)
-	local read_only_data = self._read_only_data
-	local characters_data = cjson.decode(read_only_data[self._characters_data_key])
+	local characters_data_string = self:get_read_only_data(self._characters_data_key)
+	local characters_data = cjson.decode(characters_data_string)
 	self._career_data = {}
 	self._career_data_mirror = {}
 	self._career_lookup = {}
@@ -2439,13 +2496,14 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 	local characters_data = self._characters_data
 	local characters_data_mirror = self._characters_data_mirror
 	local dirty = false
+	local ignore_keys = {
+		"careers"
+	}
 
 	for name, data in pairs(characters_data) do
 		for name_mirror, data_mirror in pairs(characters_data_mirror) do
 			if name == name_mirror then
-				dirty = not table.compare(data, data_mirror, {
-					"careers"
-				})
+				dirty = not table.compare(data, data_mirror, ignore_keys)
 
 				break
 			end
@@ -2490,13 +2548,21 @@ PlayFabMirrorBase.set_career_read_only_data = function (self, character, key, va
 	local characters_data = self._characters_data
 	local data = career and characters_data[character].careers[career] or characters_data[character]
 	data[key] = value
-	local encoded_data = cjson.encode(characters_data)
 
 	if set_mirror then
-		self._read_only_data_mirror[self._characters_data_key] = encoded_data
+		local characters_data_mirror = self._characters_data_mirror
+		local data_mirror = career and characters_data_mirror[character].careers[career] or characters_data_mirror[character]
+
+		if type(value) == "table" then
+			data_mirror[key] = table.clone(value)
+		else
+			data_mirror[key] = value
+		end
 	end
 
-	self:set_read_only_data(self._characters_data_key, encoded_data)
+	local encoded_data = cjson.encode(characters_data)
+
+	self:set_read_only_data(self._characters_data_key, encoded_data, set_mirror)
 end
 
 PlayFabMirrorBase.get_characters_data = function (self)

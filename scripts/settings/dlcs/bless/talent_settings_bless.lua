@@ -122,7 +122,9 @@ local talent_buff_templates = {
 				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = buff_perks.tank_healing
+				perks = {
+					buff_perks.tank_healing
+				}
 			}
 		}
 	},
@@ -131,11 +133,13 @@ local talent_buff_templates = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
+				max_targets = 5,
 				bonus = 0.25,
-				perk = buff_perks.linesman_healing
+				perks = {
+					buff_perks.linesman_healing
+				}
 			}
 		}
 	},
@@ -164,10 +168,12 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				icon = "victor_priest_2_1",
-				perk = "slayer_stamina",
 				max_stacks = 1,
 				refresh_durations = true,
-				priority_buff = true
+				priority_buff = true,
+				perks = {
+					"slayer_stamina"
+				}
 			}
 		}
 	},

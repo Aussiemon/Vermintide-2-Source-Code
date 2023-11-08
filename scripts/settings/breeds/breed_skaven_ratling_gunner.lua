@@ -4,18 +4,18 @@ local breed_data = {
 	perception = "perception_all_seeing",
 	race = "skaven",
 	no_stagger_duration = true,
-	poison_resistance = 100,
 	is_bot_aid_threat = true,
 	always_look_at_target = true,
-	proximity_system_check = true,
 	animation_sync_rpc = "rpc_sync_anim_state_4",
-	is_always_spawnable = true,
 	ai_toughness = 3,
+	is_always_spawnable = true,
+	proximity_system_check = true,
 	target_selection = "pick_closest_target",
+	death_reaction = "ai_default",
 	exchange_order = 2,
 	run_speed = 4,
-	minion_detection_radius = 20,
 	headshot_coop_stamina_fatigue_type = "headshot_special",
+	minion_detection_radius = 20,
 	bone_lod_level = 1,
 	wield_inventory_on_spawn = true,
 	default_inventory_template = "ratlinggun",
@@ -24,7 +24,7 @@ local breed_data = {
 	radius = 1,
 	perception_previous_attacker_stickyness_value = -20,
 	ai_strength = 1,
-	death_reaction = "ai_default",
+	poison_resistance = 100,
 	armor_category = 2,
 	death_sound_event = "Play_enemy_vo_ratling_gunner_die",
 	spawning_rule = "always_ahead",
@@ -52,6 +52,7 @@ local breed_data = {
 	aoe_height = 1.5,
 	bots_flank_while_targeted = true,
 	detection_radius = math.huge,
+	infighting = InfightingSettings.small,
 	size_variation_range = {
 		1.1,
 		1.1
@@ -69,6 +70,12 @@ local breed_data = {
 		1,
 		1,
 		1
+	},
+	status_effect_settings = {
+		category = "small",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire
+		})
 	},
 	debug_color = {
 		255,

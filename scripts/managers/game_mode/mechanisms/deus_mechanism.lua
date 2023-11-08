@@ -150,7 +150,7 @@ local function get_next_level_data(deus_run_controller, in_map)
 
 		if curse_name then
 			local curse = MutatorTemplates[curse_name]
-			local package_name = curse.package_name
+			local package_name = curse.curse_package_name
 
 			table.insert(extra_packages, package_name)
 		end
@@ -951,13 +951,13 @@ DeusMechanism.debug_load_level = function (self, level_name)
 	end
 end
 
-DeusMechanism.debug_load_deus_level = function (self, level_name, difficulty, progress, level_seed)
+DeusMechanism.debug_load_deus_level = function (self, level_name, difficulty, progress, level_seed, with_belakor)
 	local run_seed = "DEBUG_SPECIFIC_NODE" .. math.floor(progress * 1000) .. "_" .. level_name .. "SEED" .. level_seed .. "SEED_END"
 
-	self:_debug_load_seed(run_seed, difficulty)
+	self:_debug_load_seed(run_seed, difficulty, with_belakor)
 end
 
-DeusMechanism._debug_load_seed = function (self, run_seed, difficulty)
+DeusMechanism._debug_load_seed = function (self, run_seed, difficulty, with_belakor)
 	local run_id = string.sub(tostring(math.random_seed()), 0, 8)
 	local journey_name = script_data.deus_journey or AvailableJourneyOrder[1]
 	local dominant_god = script_data.deus_dominant_god or DeusJourneyCycleGods[1]
@@ -968,7 +968,7 @@ DeusMechanism._debug_load_seed = function (self, run_seed, difficulty)
 	local journey_name_id = NetworkLookup.deus_journeys[journey_name]
 	local dominant_god_id = NetworkLookup.deus_themes[dominant_god]
 
-	Managers.mechanism:send_rpc_clients("rpc_deus_setup_run", run_id, run_seed, difficulty_id, journey_name_id, dominant_god_id)
+	Managers.mechanism:send_rpc_clients("rpc_deus_setup_run", run_id, run_seed, difficulty_id, journey_name_id, dominant_god_id, not not with_belakor)
 
 	if string.starts_with(run_seed, "DEBUG_SHRINE_NODE") then
 		self._deus_run_controller:debug_shrine_setup()

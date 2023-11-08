@@ -57,6 +57,10 @@ PropsSystem.on_add_extension = function (self, world, unit, extension_name, exte
 
 		extension = {}
 	else
+		if extension_name == "ThornSisterWallExtension" and self.is_server then
+			Managers.level_transition_handler.transient_package_loader:add_unit(unit)
+		end
+
 		extension = PropsSystem.super.on_add_extension(self, world, unit, extension_name, extension_init_data)
 	end
 
@@ -71,6 +75,10 @@ end
 
 PropsSystem.on_remove_extension = function (self, unit, extension_name)
 	if extension_name ~= "PerlinLightExtension" then
+		if extension_name == "ThornSisterWallExtension" and self.is_server then
+			Managers.level_transition_handler.transient_package_loader:remove_unit(unit)
+		end
+
 		PropsSystem.super.on_remove_extension(self, unit, extension_name)
 	end
 end

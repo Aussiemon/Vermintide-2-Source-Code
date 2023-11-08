@@ -159,7 +159,6 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	local experience_pool = function_result.ExperiencePool
 	local recent_quickplay_games = function_result.RecentQuickplayGames
 	local total_essence = function_result.total_essence
-	local vs_profile_data = function_result.vs_profile_data
 	local score_breakdown = function_result.ScoreBreakdown
 	local items = function_result.ItemsGranted or function_result.Result
 	local currency_granted = function_result.CurrencyGranted
@@ -239,10 +238,6 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 
 	if recent_quickplay_games then
 		backend_mirror:set_read_only_data("recent_quickplay_games", recent_quickplay_games, true)
-	end
-
-	if vs_profile_data then
-		backend_mirror:set_read_only_data("vs_profile_data", vs_profile_data, true)
 	end
 
 	if currency_granted then

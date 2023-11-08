@@ -70,14 +70,19 @@ BTPrepareForCrazyJumpAction.run = function (self, unit, blackboard, t, dt)
 
 	local target_unit = blackboard.target_unit
 
-	if unit_alive(target_unit) then
-		local status_extension = ScriptUnit.extension(target_unit, "status_system")
-		local is_pounced_by_other = status_extension:is_pounced_down()
+	if not HEALTH_ALIVE[target_unit] then
+		return "failed"
+	end
 
-		if is_pounced_by_other then
-			return "failed"
-		end
-	else
+	local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+
+	if not status_extension then
+		return "failed"
+	end
+
+	local is_pounced_by_other = status_extension:is_pounced_down()
+
+	if is_pounced_by_other then
 		return "failed"
 	end
 

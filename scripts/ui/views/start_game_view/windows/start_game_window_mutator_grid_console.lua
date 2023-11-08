@@ -91,6 +91,8 @@ StartGameWindowMutatorGridConsole.on_enter = function (self, params, offset)
 
 	if not item then
 		self._previously_selected_backend_id = nil
+
+		self.parent:set_selected_heroic_deed_backend_id(nil)
 	end
 
 	local hero_name = "empire_soldier"
@@ -564,6 +566,9 @@ StartGameWindowMutatorGridConsole._on_removal_complete = function (self)
 	local input_service = self.parent:window_input_service()
 
 	input_service:set_blocked(false)
+
+	local selected_backend_id = self.parent:get_selected_heroic_deed_backend_id()
+
 	self:_play_sound("hud_deed_delete_confirmed")
 end
 

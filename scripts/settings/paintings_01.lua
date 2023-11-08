@@ -1798,6 +1798,96 @@ Paintings.ver_dwarfs_page_43 = {
 		wood = true
 	}
 }
+Paintings.hor_vampire_counts_page_05 = {
+	sound_event = "painting_vampire_counts_8th_Page_5_description",
+	rarity = "common",
+	display_name = "painting_vampire_counts_8th_Page_5_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_vampire_counts_8th_Page_5_description",
+	artist = "painting_vampire_counts_8th_Page_5_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_vampire_counts_page_28 = {
+	sound_event = "painting_vampire_counts_8th_Page_28_description",
+	rarity = "common",
+	display_name = "painting_vampire_counts_8th_Page_28_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_vampire_counts_8th_Page_28_description",
+	artist = "painting_vampire_counts_8th_Page_28_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_vampire_counts_page_31 = {
+	sound_event = "painting_vampire_counts_8th_Page_31_description",
+	rarity = "common",
+	display_name = "painting_vampire_counts_8th_Page_31_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_vampire_counts_8th_Page_31_description",
+	artist = "painting_vampire_counts_8th_Page_31_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_vampire_counts_page_35 = {
+	sound_event = "painting_vampire_counts_8th_Page_35_description",
+	rarity = "common",
+	display_name = "painting_vampire_counts_8th_Page_35_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_vampire_counts_8th_Page_35_description",
+	artist = "painting_vampire_counts_8th_Page_35_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_vampire_counts_page_40 = {
+	sound_event = "painting_vampire_counts_8th_Page_40_description",
+	rarity = "common",
+	display_name = "painting_vampire_counts_8th_Page_40_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_vampire_counts_8th_Page_40_description",
+	artist = "painting_vampire_counts_8th_Page_40_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_vampire_counts_page_58 = {
+	sound_event = "painting_vampire_counts_8th_Page_58_description",
+	rarity = "common",
+	display_name = "painting_vampire_counts_8th_Page_58_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_vampire_counts_8th_Page_58_description",
+	artist = "painting_vampire_counts_8th_Page_58_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -1921,7 +2011,13 @@ local painting_order = {
 	"ver_dwarfs_page_14",
 	"ver_dwarfs_page_19",
 	"ver_dwarfs_page_46",
-	"ver_dwarfs_page_43"
+	"ver_dwarfs_page_43",
+	"hor_vampire_counts_page_05",
+	"ver_vampire_counts_page_28",
+	"ver_vampire_counts_page_31",
+	"ver_vampire_counts_page_35",
+	"ver_vampire_counts_page_40",
+	"ver_vampire_counts_page_58"
 }
 PaintingOrder = PaintingOrder or {}
 

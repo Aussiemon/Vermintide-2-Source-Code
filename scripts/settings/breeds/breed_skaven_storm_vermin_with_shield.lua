@@ -1,25 +1,24 @@
 local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
 	detection_radius = 12,
-	aoe_height = 1.7,
+	using_combo = true,
 	walk_speed = 2,
-	leave_walk_distance = 3.5,
+	block_stagger_mod_2 = 0.75,
 	attack_start_slow_fraction = 1,
 	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
-	hit_reaction = "ai_default",
-	disable_crowd_dispersion = true,
-	exchange_order = 3,
+	ai_toughness = 5,
+	death_reaction = "ai_default",
+	block_stagger_mod = 0.5,
 	animation_sync_rpc = "rpc_sync_anim_state_5",
 	aoe_radius = 0.4,
 	is_always_spawnable = true,
 	opt_base_unit = "units/beings/enemies/skaven_stormvermin/chr_skaven_stormvermin_baked",
-	block_stagger_mod = 0.5,
 	target_selection = "pick_closest_target_with_spillover",
-	ai_strength = 6,
-	using_combo = true,
+	aoe_height = 1.7,
+	disable_crowd_dispersion = true,
 	shield_blunt_block_sound = "blunt_hit_shield_metal",
 	slot_template = "skaven_elite",
-	death_reaction = "ai_default",
+	leave_walk_distance = 3.5,
 	hit_mass_count_block = 10,
 	match_speed_distance = 2,
 	default_inventory_template = "stormvermin_sword_and_shield",
@@ -36,6 +35,7 @@ local breed_data = {
 	perception_previous_attacker_stickyness_value = -4.5,
 	race = "skaven",
 	attack_general_sound_event = "Play_clan_rat_attack_vce",
+	ai_strength = 6,
 	unbreakable_shield = true,
 	armor_category = 2,
 	poison_resistance = 100,
@@ -59,8 +59,8 @@ local breed_data = {
 	attack_start_slow_factor_time = 0.4,
 	run_speed = 4.8,
 	shield_burning_block_sound = "Play_weapon_fire_torch_metal_shield_hit",
-	ai_toughness = 5,
-	block_stagger_mod_2 = 0.75,
+	exchange_order = 3,
+	hit_reaction = "ai_default",
 	patrol_passive_target_selection = "patrol_passive_target_selection",
 	smart_targeting_outer_width = 1,
 	unit_variation_setting_name = "skaven_storm_vermin_with_shield",
@@ -84,6 +84,7 @@ local breed_data = {
 	base_unit = "units/beings/enemies/skaven_stormvermin/chr_skaven_stormvermin",
 	enter_walk_distance = 1.5,
 	elite = true,
+	infighting = InfightingSettings.small,
 	shield_opening_event = {
 		"idle_shield_down",
 		"idle_shield_down_2"
@@ -116,6 +117,12 @@ local breed_data = {
 		"low",
 		"medium",
 		"high"
+	},
+	status_effect_settings = {
+		category = "small",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire
+		})
 	},
 	debug_color = {
 		255,

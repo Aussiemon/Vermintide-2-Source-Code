@@ -159,6 +159,12 @@ local breed_unit_flow_event_overrides = {
 		poisoned = false,
 		category = "small"
 	},
+	chr_npc_necromancer_skeleton = {
+		burn_death = false,
+		burn_death_critical = false,
+		poisoned = false,
+		category = "small"
+	},
 	chr_skaven_clan_rat = {
 		category = "small"
 	},

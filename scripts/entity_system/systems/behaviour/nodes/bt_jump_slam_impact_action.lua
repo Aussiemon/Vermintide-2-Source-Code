@@ -99,37 +99,32 @@ BTJumpSlamImpactAction.impact_damage = function (attacking_unit, t, radius, stag
 	for i = 1, num_ai_units do
 		local ai_unit = ai_units[i]
 
-		if ai_unit ~= attacking_unit then
-			local health_extension = ScriptUnit.extension(ai_unit, "health_system")
-			local is_alive = health_extension:is_alive()
+		if ai_unit ~= attacking_unit and HEALTH_ALIVE[ai_unit] then
+			local unit_position = position_lookup[ai_unit]
+			local vector_to_target = unit_position - impact_position
+			local stagger_type, stagger_duration = DamageUtils.calculate_stagger(impact, nil, ai_unit, attacking_unit)
+			stagger_duration = 1
+			local target_ai_blackboard = BLACKBOARDS[ai_unit]
 
-			if is_alive then
-				local unit_position = position_lookup[ai_unit]
-				local vector_to_target = unit_position - impact_position
-				local stagger_type, stagger_duration = DamageUtils.calculate_stagger(impact, nil, ai_unit, attacking_unit)
-				stagger_duration = 1
-				local target_ai_blackboard = BLACKBOARDS[ai_unit]
+			if stagger_types.none < stagger_type then
+				AiUtils.stagger(ai_unit, target_ai_blackboard, attacking_unit, vector_to_target, stagger_length, stagger_type, stagger_duration, nil, t)
+			end
 
-				if stagger_types.none < stagger_type then
-					AiUtils.stagger(ai_unit, target_ai_blackboard, attacking_unit, vector_to_target, stagger_length, stagger_type, stagger_duration, nil, t)
-				end
+			if damage and damage > 0 then
+				local direction = Vector3.normalize(Vector3(Vector3.x(vector_to_target), Vector3.y(vector_to_target), 0))
+				local distance = Vector3.length(vector_to_target)
+				local is_inside_radius = distance < radius
 
-				if damage and damage > 0 then
-					local direction = Vector3.normalize(Vector3(Vector3.x(vector_to_target), Vector3.y(vector_to_target), 0))
-					local distance = Vector3.length(vector_to_target)
-					local is_inside_radius = distance < radius
+				if is_inside_radius then
+					local damage_done = nil
 
-					if is_inside_radius then
-						local damage_done = nil
-
-						if max_damage_radius < distance then
-							damage_done = damage * (distance - max_damage_radius) / falloff_radius
-						else
-							damage_done = damage
-						end
-
-						DamageUtils.add_damage_network(ai_unit, attacking_unit, damage_done, "full", damage_type, nil, Vector3(0, 0, -1), nil, nil, nil, nil, hit_react_type)
+					if max_damage_radius < distance then
+						damage_done = damage * (distance - max_damage_radius) / falloff_radius
+					else
+						damage_done = damage
 					end
+
+					DamageUtils.add_damage_network(ai_unit, attacking_unit, damage_done, "full", damage_type, nil, Vector3(0, 0, -1), nil, nil, nil, nil, hit_react_type)
 				end
 			end
 		end

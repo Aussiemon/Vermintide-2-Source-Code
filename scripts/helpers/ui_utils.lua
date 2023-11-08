@@ -15,7 +15,7 @@ local VALUE_LIST = {}
 UIUtils.format_localized_description = function (fmt_str, fmt_def)
 	local fmt_localized = Localize(fmt_str)
 
-	if not fmt_def then
+	if not fmt_def or table.is_empty(fmt_def) then
 		return fmt_localized
 	end
 
@@ -49,6 +49,14 @@ end
 
 UIUtils.get_talent_description = function (talent_data)
 	return UIUtils.format_localized_description(talent_data.description, talent_data.description_values)
+end
+
+UIUtils.get_ability_description = function (ability_data)
+	return UIUtils.format_localized_description(ability_data.description, ability_data.description_values)
+end
+
+UIUtils.get_perk_description = function (perk_data)
+	return UIUtils.format_localized_description(perk_data.description, perk_data.description_values)
 end
 
 UIUtils.get_weave_property_description = function (property_name, property_data, mastery_costs, optional_amount)

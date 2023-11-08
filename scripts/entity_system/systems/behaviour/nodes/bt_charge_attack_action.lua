@@ -26,6 +26,8 @@ BTChargeAttackAction.enter = function (self, unit, blackboard, t)
 	blackboard.locked_attack_rotation = false
 	blackboard.ray_can_go_update_time = t
 	blackboard.attack_token = true
+	blackboard.anim_cb_charge_impact_finished = nil
+	blackboard.lunge_data = action.lunge
 	local target_unit = blackboard.target_unit
 	local target_unit_status_extension = ScriptUnit.has_extension(target_unit, "status_system")
 
@@ -35,7 +37,7 @@ BTChargeAttackAction.enter = function (self, unit, blackboard, t)
 		target_unit_status_extension.num_charges_targeting_player = num_charges_targeting_player
 	end
 
-	local animation_movement_extension = ScriptUnit.extension(unit, "animation_movement_system")
+	local animation_movement_extension = ScriptUnit.has_extension(unit, "animation_movement_system")
 	blackboard.animation_movement_extension = animation_movement_extension
 	local network_manager = Managers.state.network
 	blackboard.target_unit_status_extension = target_unit_status_extension
@@ -52,9 +54,6 @@ BTChargeAttackAction.enter = function (self, unit, blackboard, t)
 	locomotion_extension:set_wanted_velocity(Vector3.zero())
 	navigation_extension:set_enabled(false)
 	navigation_extension:reset_destination()
-
-	locomotion_extension.death_velocity_boxed = locomotion_extension.death_velocity_boxed or Vector3Box()
-
 	locomotion_extension:use_lerp_rotation(true)
 
 	blackboard.stored_rotation = QuaternionBox(Quaternion.identity())
@@ -85,7 +84,7 @@ BTChargeAttackAction.enter = function (self, unit, blackboard, t)
 end
 
 BTChargeAttackAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	if blackboard.move_state ~= "idle" and AiUtils.unit_alive(unit) then
+	if blackboard.action.fallback_to_idle and blackboard.move_state ~= "idle" and HEALTH_ALIVE[unit] then
 		if not blackboard.blocked then
 			local network_manager = Managers.state.network
 
@@ -97,7 +96,7 @@ BTChargeAttackAction.leave = function (self, unit, blackboard, t, reason, destro
 
 	blackboard.attack_token = false
 
-	if AiUtils.unit_alive(unit) then
+	if HEALTH_ALIVE[unit] then
 		local default_move_speed = AiUtils.get_default_breed_move_speed(unit, blackboard)
 		local navigation_extension = blackboard.navigation_extension
 
@@ -110,7 +109,6 @@ BTChargeAttackAction.leave = function (self, unit, blackboard, t, reason, destro
 		GwNavTraverseLogic.set_navtag_layer_cost_table(traverse_logic, blackboard.old_navtag_layer_cost_table)
 
 		blackboard.old_navtag_layer_cost_table = nil
-		blackboard.locomotion_extension.death_velocity_boxed = nil
 		local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
 		hit_reaction_extension.force_ragdoll_on_death = nil
 
@@ -161,6 +159,7 @@ BTChargeAttackAction.leave = function (self, unit, blackboard, t, reason, destro
 	blackboard.target_lunge_position = nil
 	blackboard.target_unit_status_extension = nil
 	blackboard.triggered_dodge_sound = nil
+	blackboard.charge_path_received = nil
 
 	self:_set_leaning_enabled(unit, blackboard, false)
 
@@ -201,7 +200,7 @@ BTChargeAttackAction.run = function (self, unit, blackboard, t, dt)
 	elseif charge_state == "pre_lunge" then
 		self:_run_pre_lunge(unit, blackboard, t, dt)
 	elseif charge_state == "lunge" then
-		self:_run_lunge(unit, blackboard, t, dt)
+		self:_run_lunge(unit, blackboard, blackboard.lunge_data, t, dt)
 	elseif charge_state == "impact" then
 		self:_run_impact(unit, blackboard, t, dt)
 	elseif charge_state == "align_to_target" then
@@ -248,9 +247,9 @@ BTChargeAttackAction._start_approaching = function (self, unit, blackboard)
 	blackboard.move_state = "moving"
 end
 
-BTChargeAttackAction._start_lunge = function (self, unit, blackboard, distance_to_target, t)
+BTChargeAttackAction._start_lunge = function (self, unit, blackboard, lunge_data, distance_to_target, t)
 	local action = blackboard.action
-	local max_angle_to_allow_lunge = action.max_angle_to_allow_lunge
+	local max_angle_to_allow_lunge = lunge_data.max_angle_to_allow
 
 	if max_angle_to_allow_lunge then
 		local self_position = POSITION_LOOKUP[unit]
@@ -271,14 +270,14 @@ BTChargeAttackAction._start_lunge = function (self, unit, blackboard, distance_t
 
 	self:_set_leaning_enabled(unit, blackboard, true)
 
-	local distance_thresholds = action.enter_lunge_thresholds
+	local distance_thresholds = lunge_data.enter_thresholds
 	local distance_identifier = self:_pick_distance_identifier(distance_thresholds, distance_to_target)
 
-	if action.lunge_animations then
-		local lunge_animation = action.lunge_animations[distance_identifier]
+	if lunge_data.animations then
+		local lunge_animation = lunge_data.animations[distance_identifier]
 
 		Managers.state.network:anim_event(unit, lunge_animation)
-	elseif action.lunge_lean_variables then
+	elseif lunge_data.lean_variables then
 		blackboard.lean_during_lunge = true
 		blackboard.lean_downwards = true
 
@@ -287,13 +286,13 @@ BTChargeAttackAction._start_lunge = function (self, unit, blackboard, distance_t
 
 	local locomotion_extension = blackboard.locomotion_extension
 	local current_velocity = locomotion_extension:current_velocity()
-	local lunge_velocity_scaling = action.lunge_velocity_scaling
+	local lunge_velocity_scaling = lunge_data.velocity_scaling
 	local lunge_velocity_scale = lunge_velocity_scaling[distance_identifier]
 	local lunge_threshold = distance_thresholds[distance_identifier]
 	local lunge_distance_scale = 1 + distance_to_target / lunge_threshold
 
 	locomotion_extension:set_wanted_velocity(current_velocity * lunge_velocity_scale * lunge_distance_scale)
-	locomotion_extension:set_rotation_speed(action.lunge_rotation_speed)
+	locomotion_extension:set_rotation_speed(lunge_data.rotation_speed)
 
 	blackboard.current_lunge_velocity_scale = lunge_velocity_scale
 
@@ -462,7 +461,13 @@ BTChargeAttackAction._check_overlap = function (self, unit, blackboard, action)
 
 	local broadphase = blackboard.group_blackboard.broadphase
 	local hit_ai_radius = action.hit_ai_radius
-	local num_results = Broadphase.query(broadphase, self_pos, hit_ai_radius, broadphase_query_result)
+	local broadphase_categories = nil
+
+	if action.ignore_friendly_ai then
+		broadphase_categories = side.enemy_broadphase_categories
+	end
+
+	local num_results = Broadphase.query(broadphase, self_pos, hit_ai_radius, broadphase_query_result, broadphase_categories)
 
 	for i = 1, num_results do
 		local hit_unit = broadphase_query_result[i]
@@ -474,6 +479,7 @@ BTChargeAttackAction._check_overlap = function (self, unit, blackboard, action)
 			self:_hit_ai(unit, hit_unit, action, blackboard, t)
 		end
 
+		succesfully_hit_target = succesfully_hit_target or hit_unit == blackboard.target_unit
 		hit_units[hit_unit] = true
 		broadphase_query_result[i] = nil
 	end
@@ -628,7 +634,6 @@ BTChargeAttackAction._check_wall_collision = function (self, unit, blackboard, d
 	if not success2 then
 		if not blackboard.action.ignore_ledge_death and self:_is_at_edge(unit, blackboard, from, direction) then
 			local damage_type = "charge_death"
-			locomotion_extension.death_velocity_boxed = nil
 
 			AiUtils.kill_unit(unit, unit, "torso", damage_type, Vector3.normalize(velocity))
 
@@ -712,8 +717,9 @@ BTChargeAttackAction._run_approaching = function (self, unit, blackboard, t, dt)
 		local target_unit = blackboard.attacking_target
 		local wanted_position = POSITION_LOOKUP[target_unit]
 		local distance_to_target = Vector3.distance(POSITION_LOOKUP[unit], wanted_position)
+		local lunge_data = blackboard.lunge_data
 
-		if distance_to_target <= blackboard.action.enter_lunge_thresholds.short then
+		if lunge_data and distance_to_target <= lunge_data.enter_thresholds.short then
 			self:_cancel_charge(unit, blackboard)
 		else
 			local above = 1
@@ -730,7 +736,11 @@ BTChargeAttackAction._run_approaching = function (self, unit, blackboard, t, dt)
 			elseif blackboard.stored_position then
 				local old_position = blackboard.stored_position:unbox()
 
-				navigation_extension:move_to(old_position)
+				if Vector3.distance_squared(old_position, POSITION_LOOKUP[unit]) > 1 then
+					navigation_extension:move_to(old_position)
+				else
+					self:_cancel_charge(unit, blackboard)
+				end
 			else
 				local p = GwNavQueries.inside_position_from_outside_position(nav_world, wanted_position, 3, 3, 1, 1)
 
@@ -747,6 +757,13 @@ BTChargeAttackAction._run_approaching = function (self, unit, blackboard, t, dt)
 
 	self:_check_overlap(unit, blackboard, action)
 	self:_check_smartobjects(unit, blackboard)
+
+	if blackboard.navigation_extension:is_following_path() then
+		blackboard.charge_path_received = true
+	elseif blackboard.charge_path_received then
+		self:_cancel_charge(unit, blackboard)
+	end
+
 	self:_update_animation_movement_speed(unit, blackboard, dt)
 
 	local wanted_node_index = 4
@@ -800,9 +817,19 @@ BTChargeAttackAction._run_charging = function (self, unit, blackboard, t, dt)
 	local charge_max_speed_at = action.charge_max_speed_at
 	local charge_scale = time_spent_charging / charge_max_speed_at
 	local wanted_charge_speed = math.min(charge_speed_min + charge_scale * (charge_speed_max - charge_speed_min), charge_speed_max)
+	local target_current_velocity = nil
 	local target_locomotion = ScriptUnit.has_extension(target_unit, "locomotion_system")
-	local target_current_velocity = target_locomotion:current_velocity()
-	target_current_velocity = target_current_velocity or target_locomotion:average_velocity()
+
+	if target_locomotion then
+		target_current_velocity = target_locomotion:current_velocity()
+
+		if not target_current_velocity then
+			target_current_velocity = target_locomotion:average_velocity()
+		end
+	else
+		target_current_velocity = Vector3.zero()
+	end
+
 	local target_position = POSITION_LOOKUP[target_unit]
 	local extrapolated_position = target_position + target_current_velocity * action.target_extrapolation_length_scale * dt
 	local direction_to_target = Vector3.normalize(Vector3.flat(extrapolated_position - self_position))
@@ -821,8 +848,6 @@ BTChargeAttackAction._run_charging = function (self, unit, blackboard, t, dt)
 
 	blackboard.current_charge_speed = wanted_charge_speed
 
-	locomotion_extension.death_velocity_boxed:store(new_velocity * 2)
-
 	if charge_speed_max <= wanted_charge_speed then
 		if not blackboard.stop_charge_at_t then
 			blackboard.stop_charge_at_t = t + action.charge_at_max_speed_duration
@@ -834,9 +859,10 @@ BTChargeAttackAction._run_charging = function (self, unit, blackboard, t, dt)
 	self:_check_unit_and_wall_collision(unit, blackboard, dt, false)
 
 	local distance_to_target = Vector3.distance(self_position, extrapolated_position)
+	local lunge_data = blackboard.lunge_data
 
-	if distance_to_target <= action.enter_lunge_thresholds.far then
-		self:_start_lunge(unit, blackboard, distance_to_target, t)
+	if lunge_data and distance_to_target <= lunge_data.enter_thresholds.far then
+		self:_start_lunge(unit, blackboard, lunge_data, distance_to_target, t)
 	end
 
 	Vector3.set_z(extrapolated_position, self_position[3])
@@ -845,21 +871,21 @@ BTChargeAttackAction._run_charging = function (self, unit, blackboard, t, dt)
 	self:_check_smartobjects(unit, blackboard)
 end
 
-BTChargeAttackAction._run_lunge = function (self, unit, blackboard, t, dt)
+BTChargeAttackAction._run_lunge = function (self, unit, blackboard, lunge_data, t, dt)
 	local locomotion_extension = blackboard.locomotion_extension
 	local action = blackboard.action
 	local slow_down_speed = action.slow_down_speed
 
-	if action.get_lunge_position_at_distance and not blackboard.target_lunge_position then
-		local distance_threshold = action.get_lunge_position_at_distance
+	if lunge_data.get_position_at_distance and not blackboard.target_lunge_position then
+		local distance_threshold = lunge_data.get_position_at_distance
 		local target_position = POSITION_LOOKUP[blackboard.attacking_target]
 		local distance_to_target = Vector3.distance(POSITION_LOOKUP[unit], target_position)
 
 		if distance_to_target <= distance_threshold then
 			blackboard.target_lunge_position = Vector3Box(target_position)
 
-			if action.get_lunge_position_duration then
-				blackboard.get_lunge_position_duration = t + action.get_lunge_position_duration
+			if lunge_data.get_position_duration then
+				blackboard.get_lunge_position_duration = t + lunge_data.get_position_duration
 			end
 		elseif not blackboard.ray_can_go_to_target then
 			self:_start_impact(unit, blackboard, false, false, false, true)
@@ -912,7 +938,7 @@ BTChargeAttackAction._run_lunge = function (self, unit, blackboard, t, dt)
 
 		locomotion_extension:set_wanted_rotation(wanted_rotation)
 
-		slow_down_speed = action.lunge_rotation_slow_down_speed
+		slow_down_speed = lunge_data.rotation_slow_down_speed
 	end
 
 	if not blackboard.anim_cb_disable_charge_collision then
@@ -1024,13 +1050,16 @@ BTChargeAttackAction._slow_down = function (self, unit, blackboard, slow_down_sp
 end
 
 BTChargeAttackAction._set_leaning_enabled = function (self, unit, blackboard, enable)
-	local go_id = Managers.state.unit_storage:go_id(unit)
 	local animation_movement_extension = blackboard.animation_movement_extension
 
-	if enable and not animation_movement_extension.enabled then
-		Managers.state.network.network_transmit:send_rpc_all("rpc_enable_animation_movement_system", go_id, enable)
-	elseif not enable and animation_movement_extension.enabled then
-		Managers.state.network.network_transmit:send_rpc_all("rpc_enable_animation_movement_system", go_id, enable)
+	if animation_movement_extension then
+		local go_id = Managers.state.unit_storage:go_id(unit)
+
+		if enable and not animation_movement_extension.enabled then
+			Managers.state.network.network_transmit:send_rpc_all("rpc_enable_animation_movement_system", go_id, enable)
+		elseif not enable and animation_movement_extension.enabled then
+			Managers.state.network.network_transmit:send_rpc_all("rpc_enable_animation_movement_system", go_id, enable)
+		end
 	end
 end
 
@@ -1099,6 +1128,8 @@ end
 
 BTChargeAttackAction.anim_cb_charge_impact_finished = function (self, unit, blackboard)
 	self:_start_align_to_target(unit, blackboard)
+
+	blackboard.anim_cb_charge_impact_finished = true
 end
 
 BTChargeAttackAction.anim_cb_disable_charge_collision = function (self, unit, blackboard)

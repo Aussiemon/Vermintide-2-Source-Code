@@ -16,23 +16,23 @@ ConflictDirectorTestify.get_all_breeds = function ()
 	return breeds
 end
 
-ConflictDirectorTestify.spawn_unit = function (unit_data, conflict_director)
+ConflictDirectorTestify.spawn_unit = function (conflict_director, unit_data)
 	local boxed_spawn_rotation = QuaternionBox(Quaternion.identity())
 
 	conflict_director:spawn_queued_unit(unit_data.breed_data, unit_data.boxed_spawn_position, boxed_spawn_rotation)
 end
 
-ConflictDirectorTestify.get_unit_of_breed = function (breed_name, conflict_director)
+ConflictDirectorTestify.get_unit_of_breed = function (conflict_director, breed_name)
 	local _, unit = next(conflict_director:spawned_units_by_breed(breed_name))
 
 	return unit
 end
 
-ConflictDirectorTestify.destroy_all_units = function (_, conflict_director)
+ConflictDirectorTestify.destroy_all_units = function (conflict_director)
 	conflict_director:destroy_all_units()
 end
 
-ConflictDirectorTestify.peaks = function (_, conflict_director)
+ConflictDirectorTestify.peaks = function (conflict_director)
 	return conflict_director:get_peaks()
 end
 
@@ -40,15 +40,15 @@ ConflictDirectorTestify.reset_terror_event_mixer = function ()
 	TerrorEventMixer.reset()
 end
 
-ConflictDirectorTestify.terror_event_finished = function (event_name, conflict_director)
+ConflictDirectorTestify.terror_event_finished = function (conflict_director, event_name)
 	return conflict_director:terror_event_finished(event_name)
 end
 
-ConflictDirectorTestify.start_terror_event = function (event_name, conflict_director)
+ConflictDirectorTestify.start_terror_event = function (conflict_director, event_name)
 	conflict_director:start_terror_event(event_name)
 end
 
-ConflictDirectorTestify.kill_nearby_enemies = function (_, conflict_director)
+ConflictDirectorTestify.kill_nearby_enemies = function (conflict_director)
 	conflict_director:destroy_close_units(nil, nil, 64)
 end
 

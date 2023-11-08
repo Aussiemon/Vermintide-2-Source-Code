@@ -6,25 +6,26 @@ local MOVING_HVY_STAGGERS = {
 	"run_stagger_right"
 }
 local breed_data = {
-	patrol_active_perception = "perception_regular",
+	proximity_system_check = true,
 	walk_speed = 2.25,
 	bone_lod_level = 0,
 	attack_start_slow_fraction = 0.5,
 	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
 	exchange_order = 3,
-	ai_toughness = 3,
+	has_inventory = true,
 	berzerker_alert = true,
 	animation_sync_rpc = "rpc_sync_anim_state_7",
+	ai_toughness = 3,
 	is_always_spawnable = true,
 	opt_base_unit = "units/beings/enemies/chaos_berzerker/chr_chaos_berzerker_baked",
-	proximity_system_check = true,
-	match_speed_distance = 2,
+	ai_strength = 2,
 	is_bot_threat = true,
+	stagger_threshold_explosion = 5,
 	dont_wield_weapon_on_patrol = true,
 	poison_resistance = 100,
 	slot_template = "chaos_elite",
 	hit_mass_count = 4,
-	ai_strength = 2,
+	match_speed_distance = 2,
 	default_inventory_template = "berzerker_dual_axes",
 	stagger_resistance = 3,
 	patrol_detection_radius = 10,
@@ -35,7 +36,7 @@ local breed_data = {
 	radius = 1.25,
 	use_slot_type = "medium",
 	look_at_range = 30,
-	stagger_threshold_explosion = 5,
+	patrol_active_perception = "perception_regular",
 	smart_object_template = "special",
 	perception_previous_attacker_stickyness_value = 0,
 	race = "chaos",
@@ -57,7 +58,6 @@ local breed_data = {
 	awards_positive_reinforcement_message = true,
 	during_horde_detection_radius = 24,
 	berzerking_stagger_time = 0.75,
-	has_inventory = true,
 	target_selection = "pick_closest_target_with_spillover",
 	attack_start_slow_factor_time = 0.35,
 	run_speed = 6,
@@ -86,6 +86,7 @@ local breed_data = {
 	base_unit = "units/beings/enemies/chaos_berzerker/chr_chaos_berzerker",
 	enter_walk_distance = 1.5,
 	elite = true,
+	infighting = InfightingSettings.small,
 	size_variation_range = {
 		1,
 		1
@@ -287,6 +288,12 @@ local breed_data = {
 	wwise_voices = {
 		"marauder_andreas",
 		"marauder_olof"
+	},
+	status_effect_settings = {
+		category = "small",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire
+		})
 	},
 	debug_color = {
 		255,

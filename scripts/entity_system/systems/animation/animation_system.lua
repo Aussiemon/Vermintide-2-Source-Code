@@ -1,4 +1,5 @@
 require("scripts/entity_system/systems/animation/animation_callback_templates")
+require("scripts/entity_system/systems/animation/networked_animation_variable_templates")
 
 AnimationSystem = class(AnimationSystem, ExtensionSystemBase)
 local position_lookup = POSITION_LOOKUP
@@ -36,6 +37,7 @@ AnimationSystem.init = function (self, entity_system_creation_context, system_na
 	network_event_delegate:register(self, unpack(RPCS))
 
 	self.anim_variable_update_list = {}
+	self._networked_animation_variables = {}
 end
 
 AnimationSystem.destroy = function (self)
@@ -62,6 +64,7 @@ end
 
 AnimationSystem.update = function (self, context, t)
 	self:update_anim_variables(t)
+	self:_update_networked_anim_variables(context.dt, t)
 end
 
 AnimationSystem.update_anim_variables = function (self, t)
@@ -104,6 +107,157 @@ AnimationSystem.update_anim_variables = function (self, t)
 	end
 end
 
+AnimationSystem.anim_event = function (self, unit, event_name, skip_sync)
+	if not skip_sync and Managers.state.network:game() then
+		local go_id = self.unit_storage:go_id(unit)
+
+		fassert(go_id, "Unit storage does not have a game object id for %q", unit)
+
+		local event_id = NetworkLookup.anims[event_name]
+
+		if self.is_server then
+			self.network_transmit:send_rpc_clients("rpc_anim_event", event_id, go_id)
+		else
+			self.network_transmit:send_rpc_server("rpc_anim_event", event_id, go_id)
+		end
+	end
+
+	self:_init_networked_variables(unit, event_name)
+	Unit.animation_event(unit, event_name)
+end
+
+AnimationSystem.anim_event_with_variable_float = function (self, unit, event_name, variable_name, variable_value, skip_sync)
+	if not skip_sync and Managers.state.network:game() then
+		local go_id = self.unit_storage:go_id(unit)
+
+		fassert(go_id, "Unit storage does not have a game object id for %q", unit)
+
+		local event_id = NetworkLookup.anims[event_name]
+		local variable_id = NetworkLookup.anims[variable_name]
+
+		if self.is_server then
+			self.network_transmit:send_rpc_clients("rpc_anim_event_variable_float", event_id, go_id, variable_id, variable_value)
+		else
+			self.network_transmit:send_rpc_server("rpc_anim_event_variable_float", event_id, go_id, variable_id, variable_value)
+		end
+	end
+
+	self:_init_networked_variables(unit, event_name)
+
+	local variable_index = Unit.animation_find_variable(unit, variable_name)
+
+	Unit.animation_set_variable(unit, variable_index, variable_value)
+	Unit.animation_event(unit, event_name)
+end
+
+if LEVEL_EDITOR_TEST then
+	AnimationSystem.anim_event = function (self, unit, event_name)
+		self:_init_networked_variables(unit, event_name)
+		Unit.animation_event(unit, event_name)
+	end
+
+	AnimationSystem.anim_event_with_variable_float = function (self, unit, event_name, variable_name, variable_value)
+		self:_init_networked_variables(unit, event_name)
+
+		local variable_index = Unit.animation_find_variable(unit, variable_name)
+
+		Unit.animation_set_variable(unit, variable_index, variable_value)
+		Unit.animation_event(unit, event_name)
+	end
+end
+
+AnimationSystem._init_networked_variables = function (self, unit, event_name)
+	self:_remove_networked_variables(unit)
+
+	local networked_variables = NetworkedAnimationVariableTemplatesLookup[event_name]
+
+	if not networked_variables then
+		return
+	end
+
+	local breed = Unit.get_data(unit, "breed")
+
+	if not breed then
+		return
+	end
+
+	local breed_anim_vars = breed.networked_animation_variables
+
+	if not breed_anim_vars then
+		return
+	end
+
+	local variable_datas = breed_anim_vars[event_name]
+
+	if not variable_datas then
+		return
+	end
+
+	local networked_anim_vars = self._networked_animation_variables
+
+	for variable_name, data in pairs(variable_datas) do
+		local scratchpad = {
+			variable_name = variable_name,
+			variable_index = Unit.animation_find_variable(unit, variable_name),
+			variable_data = data
+		}
+		local template = NetworkedAnimationVariableTemplates[variable_name]
+
+		if template.init then
+			template.init(unit, scratchpad)
+		end
+
+		if not networked_anim_vars[unit] then
+			local unit_vars = {
+				updates = {}
+			}
+		end
+
+		if template.update then
+			unit_vars.updates[#unit_vars.updates + 1] = scratchpad
+		end
+
+		unit_vars[#unit_vars + 1] = scratchpad
+		networked_anim_vars[unit] = unit_vars
+	end
+end
+
+AnimationSystem._remove_networked_variables = function (self, unit)
+	local networked_anim_vars = self._networked_animation_variables
+	local unit_vars = networked_anim_vars[unit]
+
+	if unit_vars then
+		for i = 1, #unit_vars do
+			local scratchpad = unit_vars[i]
+			local var_name = scratchpad.variable_name
+			local template = NetworkedAnimationVariableTemplates[var_name]
+
+			if template.stop then
+				template.stop(unit, scratchpad)
+			end
+
+			unit_vars[i] = nil
+		end
+	end
+end
+
+AnimationSystem._update_networked_anim_variables = function (self, dt, t)
+	for unit, networked_variables in pairs(self._networked_animation_variables) do
+		if not ALIVE[unit] or not Unit.has_animation_state_machine(unit) then
+			self:_remove_networked_variables(unit)
+		else
+			local updates = networked_variables.updates
+
+			for i = 1, #updates do
+				local scratchpad = updates[i]
+				local variable_name = scratchpad.variable_name
+
+				NetworkedAnimationVariableTemplates[variable_name].update(unit, scratchpad, dt, t)
+			end
+		end
+	end
+end
+
 AnimationSystem.rpc_sync_anim_state = function (self, channel_id, go_id, ...)
 	local unit = self.unit_storage:unit(go_id)
 
@@ -142,10 +296,8 @@ AnimationSystem.rpc_anim_event_variable_float = function (self, channel_id, anim
 		assert(event, "[GameNetworkManager] Lookup missing for event_id", anim_id)
 
 		local variable_name = NetworkLookup.anims[variable_id]
-		local variable_index = Unit.animation_find_variable(unit, variable_name)
 
-		Unit.animation_set_variable(unit, variable_index, variable_value)
-		Unit.animation_event(unit, event)
+		self:anim_event_with_variable_float(unit, event, variable_name, variable_value, true)
 	end
 end
 
@@ -208,7 +360,7 @@ AnimationSystem.rpc_anim_event = function (self, channel_id, anim_id, go_id)
 		local event = NetworkLookup.anims[anim_id]
 
 		assert(event, "[GameNetworkManager] Lookup missing for event_id", anim_id)
-		Unit.animation_event(unit, event)
+		self:anim_event(unit, event, true)
 	end
 end
 

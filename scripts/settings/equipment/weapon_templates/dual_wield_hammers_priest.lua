@@ -1739,6 +1739,7 @@ weapon_template.wield_anim_career = {
 	wh_captain = "to_dual_hammers",
 	wh_bountyhunter = "to_dual_hammers"
 }
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/melee/dual_hammers_priest"
 weapon_template.attack_meta_data = {
 	tap_attack = {
 		penetrating = false,

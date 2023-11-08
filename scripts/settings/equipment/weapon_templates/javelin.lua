@@ -1472,6 +1472,7 @@ weapon_template.buff_type = "RANGED"
 weapon_template.wield_anim = "to_javelin"
 weapon_template.wield_anim_no_ammo = "to_javelin_noammo"
 weapon_template.wield_anim_no_ammo_on_husk = true
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/ranged/javelin"
 weapon_template.weapon_type = "POLEARM"
 weapon_template.default_projectile_action = weapon_template.actions.action_one.default
 weapon_template.dodge_count = 6

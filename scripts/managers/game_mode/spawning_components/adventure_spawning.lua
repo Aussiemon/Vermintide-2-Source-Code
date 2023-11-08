@@ -43,7 +43,15 @@ end
 
 AdventureSpawning._assign_data_to_slot = function (self, slot, data)
 	if table.is_empty(data) then
-		local box_pos, box_rot = self:get_spawn_point()
+		local box_pos, box_rot = nil
+
+		if self._spawn_groups then
+			local spawn_group = Managers.mechanism:game_mechanism():get_current_spawn_group()
+			box_pos, box_rot = self:get_spawn_point_from_spawn_group(spawn_group)
+		else
+			box_pos, box_rot = self:get_spawn_point()
+		end
+
 		data.health_state = "alive"
 		data.health_percentage = 1
 		data.temporary_health_percentage = 0
@@ -587,4 +595,48 @@ end
 
 AdventureSpawning.get_respawn_handler = function (self)
 	return self._respawn_handler
+end
+
+AdventureSpawning.add_spawn_point_to_spawn_group = function (self, unit)
+	if not self._spawn_groups then
+		self._spawn_groups = {}
+	end
+
+	local pos = Unit.local_position(unit, 0)
+	local rot = Unit.local_rotation(unit, 0)
+	local spawn_point = {
+		pos = Vector3Box(pos),
+		rot = QuaternionBox(rot)
+	}
+	local group_id = Unit.get_data(unit, "spawn_group")
+
+	fassert(group_id, "spawn group property missing from spawn point unit")
+
+	if not self._spawn_groups[group_id] then
+		self._spawn_groups[group_id] = {}
+	end
+
+	local num_points = #self._spawn_groups[group_id]
+	self._spawn_groups[group_id][num_points + 1] = spawn_point
+end
+
+AdventureSpawning.get_spawn_point_from_spawn_group = function (self, group_id)
+	if not self._used_spawn_group_positions then
+		self._used_spawn_group_positions = {}
+	end
+
+	local spawn_points = self._spawn_groups[group_id]
+	local num_spawnpoints = spawn_points and #spawn_points
+
+	fassert(num_spawnpoints, "no spawn points exists for indicated spawn group: ", group_id)
+
+	if self._used_spawn_group_positions[group_id] then
+		self._used_spawn_group_positions[group_id] = self._used_spawn_group_positions[group_id] + 1
+	else
+		self._used_spawn_group_positions[group_id] = 1
+	end
+
+	local spawn_point = spawn_points[self._used_spawn_group_positions[group_id]]
+
+	return spawn_point.pos, spawn_point.rot
 end

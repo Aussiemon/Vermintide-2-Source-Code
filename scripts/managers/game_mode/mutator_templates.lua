@@ -169,6 +169,14 @@ local function default_ai_spawned_function_server(context, data, spawned_unit)
 	return
 end
 
+local function default_pre_ai_spawned_function(context, data, breed, optional_data)
+	return
+end
+
+local function default_post_ai_spawned_function(context, data, ai_unit, breed, optional_data)
+	return
+end
+
 local function default_start_function_client(context, data)
 	modify_breed_armor_category_start(context, data)
 	modify_breed_primary_armor_category_start(context, data)
@@ -364,6 +372,28 @@ for name, template in pairs(mutator_settings) do
 		template.server.ai_spawned_function = ai_spawned_function
 	else
 		template.server.ai_spawned_function = default_ai_spawned_function_server
+	end
+
+	if template.pre_ai_spawned_function then
+		local function pre_ai_spawned_function(context, data, breed, optional_data)
+			default_pre_ai_spawned_function(context, data, breed, optional_data)
+			template.pre_ai_spawned_function(context, data, breed, optional_data)
+		end
+
+		template.server.pre_ai_spawned_function = pre_ai_spawned_function
+	else
+		template.server.pre_ai_spawned_function = default_pre_ai_spawned_function
+	end
+
+	if template.post_ai_spawned_function then
+		local function post_ai_spawned_function(context, data, ai_unit, breed, optional_data)
+			default_post_ai_spawned_function(context, data, ai_unit, breed, optional_data)
+			template.post_ai_spawned_function(context, data, ai_unit, breed, optional_data)
+		end
+
+		template.server.post_ai_spawned_function = post_ai_spawned_function
+	else
+		template.server.post_ai_spawned_function = default_post_ai_spawned_function
 	end
 
 	if template.server_players_left_safe_zone then

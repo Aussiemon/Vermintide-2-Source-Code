@@ -1,4 +1,8 @@
 ProjectileRaycastImpactUnitExtension = class(ProjectileRaycastImpactUnitExtension, ProjectileBaseImpactUnitExtension)
+local INDEX_POSITION = 1
+local INDEX_DISTANCE = 2
+local INDEX_NORMAL = 3
+local INDEX_ACTOR = 4
 
 ProjectileRaycastImpactUnitExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	ProjectileRaycastImpactUnitExtension.super.init(self, extension_init_context, unit, extension_init_data)
@@ -19,11 +23,6 @@ end
 ProjectileRaycastImpactUnitExtension.extensions_ready = function (self, world, unit)
 	self.locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
 end
-
-local INDEX_POSITION = 1
-local INDEX_DISTANCE = 2
-local INDEX_NORMAL = 3
-local INDEX_ACTOR = 4
 
 ProjectileRaycastImpactUnitExtension.update = function (self, unit, input, dt, context, t)
 	ProjectileRaycastImpactUnitExtension.super.update(self, unit, input, dt, context, t)
@@ -48,25 +47,20 @@ ProjectileRaycastImpactUnitExtension.update = function (self, unit, input, dt, c
 	local current_position = Unit.local_position(unit, 0)
 
 	if self.last_position then
-		self:_do_raycast(unit, self.last_position:unbox(), current_position, physics_world, collision_filter)
+		self:_do_raycast(unit, self.last_position:unbox(), current_position, physics_world, collision_filter, t, dt)
 	else
 		self.last_position = Vector3Box()
 	end
 
 	self.last_position:store(previous_position)
-
-	if not self.has_hit then
-		self:_do_raycast(unit, previous_position, current_position, physics_world, collision_filter)
-	end
+	self:_do_raycast(unit, previous_position, current_position, physics_world, collision_filter, t, dt)
 end
 
-ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, to, physics_world, collision_filter)
-	local direction = to - from
-	local length = Vector3.length(direction)
-	direction = Vector3.normalize(direction)
+ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, to, physics_world, collision_filter, t, dt)
+	local direction, length = Vector3.direction_length(to - from)
 
-	if length < 0.001 then
-		length = 0.001
+	if length < math.epsilon then
+		length = math.epsilon
 	end
 
 	if script_data.debug_projectiles then
@@ -85,12 +79,9 @@ ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, t
 
 	for i = 1, num_hits do
 		local hit = result[i]
-		local hit_position = hit[INDEX_POSITION]
-		local hit_distance = hit[INDEX_DISTANCE]
-		local hit_normal = hit[INDEX_NORMAL]
 		local hit_actor = hit[INDEX_ACTOR]
 		local hit_unit = Actor.unit(hit_actor)
-		local valid = self:_valid_target(unit, hit_unit)
+		local valid = self:_valid_target(unit, hit_unit, hit_actor)
 
 		if valid then
 			local num_actors = Unit.num_actors(hit_unit)
@@ -106,17 +97,21 @@ ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, t
 				end
 			end
 
-			assert(actor_index, "How does this happen?")
-
-			self.has_hit = true
+			local hit_position = hit[INDEX_POSITION]
+			local hit_distance = hit[INDEX_DISTANCE]
+			local hit_normal = hit[INDEX_NORMAL]
 
 			self:impact(hit_unit, hit_position, direction, hit_normal, actor_index)
 		end
 	end
 end
 
-ProjectileRaycastImpactUnitExtension._valid_target = function (self, unit, hit_unit)
-	if unit == hit_unit or unit == self.owner_unit then
+ProjectileRaycastImpactUnitExtension._valid_target = function (self, unit, hit_unit, hit_actor)
+	if hit_unit == unit or hit_unit == self.owner_unit then
+		return false
+	end
+
+	if Unit.actor(hit_unit, "c_afro") == hit_actor then
 		return false
 	end
 
@@ -129,7 +124,7 @@ ProjectileRaycastImpactUnitExtension._valid_target = function (self, unit, hit_u
 		end
 	end
 
-	if self._ignore_dead and not AiUtils.unit_alive(hit_unit) then
+	if self._ignore_dead and ScriptUnit.has_extension(hit_unit, "health_system") and not HEALTH_ALIVE[hit_unit] then
 		return false
 	end
 

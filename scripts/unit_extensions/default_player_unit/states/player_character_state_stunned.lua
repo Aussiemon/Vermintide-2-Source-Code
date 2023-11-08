@@ -11,6 +11,7 @@ PlayerCharacterStateStunned.init = function (self, character_state_init_context)
 		"wield_2",
 		"wield_3",
 		"wield_4",
+		"wield_4_alt",
 		"wield_5",
 		"action_one"
 	}

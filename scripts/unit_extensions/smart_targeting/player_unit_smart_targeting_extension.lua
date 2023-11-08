@@ -44,7 +44,7 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 	table.clear(self.targeting_data)
 
 	local get_data_func = Unit.get_data
-	local extension_func = ScriptUnit.extension
+	local extension_func = ScriptUnit.has_extension
 	local math_min = math.min
 	local res_w = RESOLUTION_LOOKUP.res_w
 	local res_h = RESOLUTION_LOOKUP.res_h
@@ -115,7 +115,7 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 		repeat
 			local unit = nearby_ai_units[i]
 
-			if not AiUtils.unit_alive(unit) then
+			if not HEALTH_ALIVE[unit] then
 				break
 			end
 
@@ -138,7 +138,7 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 			local smart_targeting_outer_width = breed.smart_targeting_outer_width or smart_targeting_width * 2
 			local smart_targeting_height_multiplier = breed.smart_targeting_height_multiplier or 1
 			local locomotion = extension_func(unit, "locomotion_system")
-			local locomotion_velocity = locomotion:current_velocity()
+			local locomotion_velocity = locomotion and locomotion:current_velocity() or Vector3(0, 0, 0)
 			local aim_scalar = EngineOptimized.smart_targeting_optimized(camera, target_pos, look_right, distance, effective_max_range, range_scalar_at_effective_max_range, max_range, min_size, aim_screen_pos_x, aim_screen_pos_y, smart_targeting_width, smart_targeting_outer_width, smart_targeting_height_multiplier, (projectile_speed or 0) * 0.01, drop_multiplier, locomotion_velocity, debug_gui)
 			local score_modifier = previous_score_modifiers[unit] or 0.1
 			local score = breed_weapon_scalar * aim_scalar * score_modifier
@@ -266,7 +266,7 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 		repeat
 			local unit = nearby_ai_units[i]
 
-			if not AiUtils.unit_alive(unit) then
+			if not HEALTH_ALIVE[unit] then
 				break
 			end
 
@@ -312,7 +312,8 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 			local offset = Vector3.zero()
 
 			if projectile_speed then
-				offset = flat_func(locomotion:current_velocity()) * distance / (projectile_speed * 0.01)
+				local current_velocity = locomotion and locomotion:current_velocity() or Vector3(0, 0, 0)
+				offset = flat_func(current_velocity) * distance / (projectile_speed * 0.01)
 				offset.z = offset.z + distance * (loaded_projectile_settings.drop_multiplier or 0)
 			end
 

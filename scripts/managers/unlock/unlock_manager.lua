@@ -58,8 +58,9 @@ UnlockManager._init_unlocks = function (self)
 			local always_unlocked_game_app_ids = unlock_config.always_unlocked_game_app_ids
 			local requires_restart = unlock_config.requires_restart
 			local cosmetic = unlock_config.cosmetic
+			local is_legacy_console_dlc = unlock_config.is_legacy_console_dlc
 			local class = rawget(_G, class_name)
-			local instance = class:new(unlock_name, id, backend_reward_id, always_unlocked_game_app_ids, cosmetic, fallback_id, requires_restart)
+			local instance = class:new(unlock_name, id, backend_reward_id, always_unlocked_game_app_ids, cosmetic, fallback_id, requires_restart, is_legacy_console_dlc)
 			unlocks[unlock_name] = instance
 			unlocks_indexed[i][unlock_name] = instance
 		end
@@ -306,8 +307,9 @@ UnlockManager._update_console_backend_unlocks = function (self)
 
 				for _, unlock in pairs(unlocks) do
 					local reward_id = unlock:backend_reward_id()
+					local is_legacy_console_dlc = unlock:is_legacy_console_dlc()
 
-					if reward_id then
+					if reward_id and is_legacy_console_dlc then
 						if unlock:has_error() then
 							unlock:remove_backend_reward_id()
 						else

@@ -1,3 +1,4 @@
+require("scripts/entity_system/systems/buff/buff_sync_type")
 require("scripts/unit_extensions/default_player_unit/buffs/buff_templates")
 require("scripts/unit_extensions/default_player_unit/buffs/group_buff_templates")
 require("scripts/unit_extensions/default_player_unit/buffs/buff_function_templates")
@@ -257,7 +258,7 @@ BuffSystem.add_buff = function (self, unit, template_name, attacker_unit, is_ser
 
 	fassert(self.is_server or not is_server_controlled, "[BuffSystem]: Trying to add a server controlled buff from a client!")
 
-	if is_server_controlled and not AiUtils.unit_alive(unit) then
+	if is_server_controlled and not HEALTH_ALIVE[unit] then
 		return nil
 	end
 
@@ -725,23 +726,13 @@ BuffSystem._unpack_buff_params = function (self, dest_table, param_ids, param_va
 	return dest_table
 end
 
-BuffSyncType = {
-	"Local",
-	"LocalAndServer",
-	"Client",
-	"ClientAndServer",
-	"Server",
-	"All"
-}
 local invalid_buff_sync_id = 0
-local buff_sync_type_lookup = table.mirror_array(BuffSyncType)
-BuffSyncType = table.ordered_enum(unpack(BuffSyncType))
 
 BuffSystem._prepare_sync = function (self, target_unit, template_name, sync_type, params)
 	local network_manager = Managers.state.network
 	local target_unit_id = network_manager:unit_game_object_id(target_unit)
 	local template_name_id = NetworkLookup.buff_templates[template_name]
-	local sync_type_id = buff_sync_type_lookup[sync_type]
+	local sync_type_id = BuffSyncTypeLookup[sync_type]
 	local rpc_name = "rpc_add_buff_synced"
 	local param_ids, param_vals = nil
 
@@ -863,7 +854,7 @@ BuffSystem.rpc_add_buff_synced = function (self, channel_id, target_unit_id, tem
 		local id = buff_extension:add_buff(template_name)
 		local local_sync_id = remote_sync_id ~= invalid_buff_sync_id and buff_extension:generate_sync_id() or invalid_buff_sync_id
 		local server_sync_id = self.is_server and local_sync_id or remote_sync_id
-		local sync_type = buff_sync_type_lookup[sync_type_id]
+		local sync_type = BuffSyncTypeLookup[sync_type_id]
 		local owner_peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 		if server_sync_id ~= invalid_buff_sync_id then
@@ -901,7 +892,7 @@ BuffSystem.rpc_add_buff_synced_relay = function (self, channel_id, target_unit_i
 		local local_buff_id = buff_extension:add_buff(template_name)
 
 		if server_sync_id ~= invalid_buff_sync_id then
-			local sync_type = buff_sync_type_lookup[sync_type_id]
+			local sync_type = BuffSyncTypeLookup[sync_type_id]
 
 			buff_extension:apply_remote_sync_id(local_buff_id, server_sync_id, sync_type)
 		end
@@ -918,7 +909,7 @@ BuffSystem.rpc_add_buff_synced_params = function (self, channel_id, target_unit_
 		local id = buff_extension:add_buff(template_name, params)
 		local local_sync_id = remote_sync_id ~= invalid_buff_sync_id and buff_extension:generate_sync_id() or invalid_buff_sync_id
 		local server_sync_id = self.is_server and local_sync_id or remote_sync_id
-		local sync_type = buff_sync_type_lookup[sync_type_id]
+		local sync_type = BuffSyncTypeLookup[sync_type_id]
 		local owner_peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 		if server_sync_id ~= invalid_buff_sync_id then
@@ -957,7 +948,7 @@ BuffSystem.rpc_add_buff_synced_relay_params = function (self, channel_id, target
 		local local_buff_id = buff_extension:add_buff(template_name, params)
 
 		if server_sync_id ~= invalid_buff_sync_id then
-			local sync_type = buff_sync_type_lookup[sync_type_id]
+			local sync_type = BuffSyncTypeLookup[sync_type_id]
 
 			buff_extension:apply_remote_sync_id(local_buff_id, server_sync_id, sync_type)
 		end
@@ -1009,7 +1000,7 @@ BuffSystem._hot_join_sync_synced_buffs = function (self, peer_id)
 	local t = Managers.time:time("game")
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
-	local sync_type_id = buff_sync_type_lookup[BuffSyncType.All]
+	local sync_type_id = BuffSyncTypeLookup[BuffSyncType.All]
 	local buff_params = {}
 	local active_buff_units = self.active_buff_units
 

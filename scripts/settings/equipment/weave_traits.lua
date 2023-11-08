@@ -205,7 +205,9 @@ WeaveTraits.buff_templates = {
 			{
 				event = "on_critical_hit",
 				buff_func = "remove_overcharge",
-				perk = buff_perks.no_overcharge_crit
+				perks = {
+					buff_perks.no_overcharge_crit
+				}
 			}
 		}
 	},
@@ -297,7 +299,9 @@ WeaveTraits.buff_templates = {
 	weave_traits_reduce_cooldown_on_crit_internal_cooldown = {
 		buffs = {
 			{
-				perk = buff_perks.cooldown_delay
+				perks = {
+					buff_perks.cooldown_delay
+				}
 			}
 		}
 	},
@@ -339,7 +343,9 @@ WeaveTraits.buff_templates = {
 	weave_trait_ring_potion_duration = {
 		buffs = {
 			{
-				perk = buff_perks.potion_duration
+				perks = {
+					buff_perks.potion_duration
+				}
 			}
 		}
 	},
@@ -370,7 +376,9 @@ WeaveTraits.buff_templates = {
 			{
 				max_stacks = 1,
 				update_func = "update_heal_ticks",
-				perk = buff_perks.no_permanent_health
+				perks = {
+					buff_perks.no_permanent_health
+				}
 			}
 		}
 	},

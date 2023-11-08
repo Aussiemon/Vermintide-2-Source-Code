@@ -1,6 +1,7 @@
 local definitions = local_require("scripts/ui/hud_ui/challenge_tracker_ui_definitions")
 ChallengeTrackerUI = class(ChallengeTrackerUI)
 local RESTACK_SPEED = 500
+local RETAINED_MODE_ENABLED = definitions.RETAINED_MODE_ENABLED
 
 ChallengeTrackerUI.init = function (self, parent, ingame_ui_context)
 	self._ui_renderer = ingame_ui_context.ui_renderer
@@ -9,11 +10,23 @@ ChallengeTrackerUI.init = function (self, parent, ingame_ui_context)
 	self:_create_ui_elements()
 end
 
+ChallengeTrackerUI.destroy = function (self)
+	if RETAINED_MODE_ENABLED then
+		local widgets = self._data and self._data.widgets
+
+		if widgets then
+			UIUtils.destroy_widgets(self._ui_renderer, widgets)
+		end
+	end
+end
+
 ChallengeTrackerUI._play_sound = function (self, sound_event)
 	return WwiseWorld.trigger_event(self._wwise_world, sound_event)
 end
 
 ChallengeTrackerUI._create_ui_elements = function (self)
+	self:destroy()
+
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self._render_settings = {
 		alpha_multiplier = 1
@@ -33,6 +46,8 @@ ChallengeTrackerUI._create_ui_elements = function (self)
 	self._restack_targets = {}
 
 	UIRenderer.clear_scenegraph_queue(self._ui_renderer)
+
+	self._dirty = true
 end
 
 local function sort_by_category(a, b)
@@ -48,6 +63,7 @@ ChallengeTrackerUI._refresh_challenge_data = function (self, data)
 
 	local active_widgets = data.widgets
 	local num_active_widgets = #active_widgets
+	local gui = RETAINED_MODE_ENABLED and self._ui_renderer.gui_retained or self._ui_renderer.gui
 
 	for i = 1, n do
 		local challenge = challenges[i]
@@ -56,7 +72,7 @@ ChallengeTrackerUI._refresh_challenge_data = function (self, data)
 
 		if not widget and challenge_status == InGameChallengeStatus.InProgress then
 			num_active_widgets = num_active_widgets + 1
-			widget = definitions.create_objective(challenge, self._ui_renderer.gui, data.offset, num_active_widgets)
+			widget = definitions.create_objective(challenge, gui, data.offset, num_active_widgets)
 			data.widgets[num_active_widgets] = widget
 			data.widget_by_challenge[challenge] = widget
 
@@ -110,6 +126,11 @@ ChallengeTrackerUI._cb_on_done = function (self, widget, challenge)
 	data.widget_by_challenge[challenge] = nil
 	self._animation_queue[widget] = nil
 	self._restack_targets[widget] = nil
+
+	if RETAINED_MODE_ENABLED then
+		UIWidget.destroy(self._ui_renderer, widget)
+	end
+
 	local offset = data.offset
 	local restack_targets = self._restack_targets
 
@@ -182,6 +203,39 @@ ChallengeTrackerUI._update_restacking = function (self, dt)
 			local step_size = math.min(math.abs(step), speed)
 			widget.offset[2] = current + math.clamp(step, -step_size, step_size)
 		end
+
+		self:_set_widget_dirty(widget)
+	end
+end
+
+ChallengeTrackerUI._set_widget_dirty = function (self, widget)
+	widget.element.dirty = true
+	self._dirty = true
+end
+
+ChallengeTrackerUI._update_animations = function (self, dt, t)
+	local ui_animator = self._ui_animator
+
+	ui_animator:update(dt)
+
+	local active_widgets = self._data.widgets
+	local num_active_widgets = #active_widgets
+
+	for i = 1, num_active_widgets do
+		local widget = active_widgets[i]
+		local anim_id = widget.content.animation_id
+
+		if not ui_animator:is_animation_completed(anim_id) then
+			self:_set_widget_dirty(widget)
+		end
+	end
+end
+
+ChallengeTrackerUI._handle_resolution_modified = function (self)
+	if RESOLUTION_LOOKUP.modified then
+		UIUtils.mark_dirty(self._data.widgets)
+
+		self._dirty = true
 	end
 end
 
@@ -196,14 +250,19 @@ local customizer_data = {
 
 ChallengeTrackerUI.update = function (self, dt, t)
 	HudCustomizer.run(self._ui_renderer, self._ui_scenegraph, customizer_data)
+	self:_handle_resolution_modified()
 	self:_update_restacking(dt)
 	self:_update_animation_queue()
 	self:_refresh_challenge_data(self._data)
-	self._ui_animator:update(dt)
+	self:_update_animations(dt, t)
 	self:_draw(dt)
 end
 
 ChallengeTrackerUI._draw = function (self, dt)
+	if not self._dirty and RETAINED_MODE_ENABLED then
+		return
+	end
+
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local render_settings = self._render_settings
@@ -219,4 +278,6 @@ ChallengeTrackerUI._draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
+
+	self._dirty = false
 end

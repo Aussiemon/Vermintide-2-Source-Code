@@ -38,6 +38,10 @@ NetworkTransmit.init = function (self, is_server, server_peer_id)
 	self.game_session = nil
 end
 
+NetworkTransmit.update_receive = function (self)
+	self._pack_temp_types = false
+end
+
 NetworkTransmit.set_game_session = function (self, session)
 	self.game_session = session
 end
@@ -63,7 +67,7 @@ NetworkTransmit.queue_local_rpc = function (self, rpc_name, ...)
 
 	fassert(pack_index[num_varargs + 2], "Could not pack local rpc %q due to too many varargs. Only 20 is currently supported.", rpc_name)
 
-	if self._transmitting_local_rpcs then
+	if self._pack_temp_types then
 		local arguments = {
 			...
 		}
@@ -95,7 +99,7 @@ NetworkTransmit.queue_local_rpc = function (self, rpc_name, ...)
 end
 
 NetworkTransmit.transmit_local_rpcs = function (self)
-	self._transmitting_local_rpcs = true
+	self._pack_temp_types = true
 	local local_rpc_buffer_index = self.local_rpc_buffer_index
 	local local_rpc_queue_contains_boxed = self.local_rpc_queue_contains_boxed[local_rpc_buffer_index]
 	local local_rpc_queue_n = self.local_rpc_queue_n[local_rpc_buffer_index]
@@ -138,8 +142,6 @@ NetworkTransmit.transmit_local_rpcs = function (self)
 	self.local_rpc_queue_n[local_rpc_buffer_index] = 0
 
 	table.clear(local_rpc_queue_contains_boxed)
-
-	self._transmitting_local_rpcs = false
 end
 
 NetworkTransmit.set_network_event_delegate = function (self, network_event_delegate)

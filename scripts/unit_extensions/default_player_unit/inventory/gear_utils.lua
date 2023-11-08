@@ -188,7 +188,7 @@ GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_unit
 	end
 
 	local attachment_node_linking_3p = node_linking_settings.third_person.wielded
-	local unit_template_3p_name = item_template.third_person_extension_template or "weapon_unit_3p"
+	local unit_template_3p_name = item_data.third_person_extension_template or item_template.third_person_extension_template or "weapon_unit_3p"
 	local extension_init_data_3p = nil
 
 	if item_template.uses_weapon_system_on_3p and not owner_unit_1p then
@@ -202,7 +202,8 @@ GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_unit
 		extension_init_data_3p = {}
 	end
 
-	local weapon_unit_3p = Managers.state.unit_spawner:spawn_local_unit_with_extensions(weapon_unit_name .. "_3p", unit_template_3p_name, extension_init_data_3p)
+	local weapon_unit_3p_name = weapon_unit_name .. "_3p"
+	local weapon_unit_3p = Managers.state.unit_spawner:spawn_local_unit_with_extensions(weapon_unit_3p_name, unit_template_3p_name, extension_init_data_3p)
 	local scene_graph_links_3p = {}
 
 	GearUtils.link(world, attachment_node_linking_3p, scene_graph_links_3p, owner_unit_3p, weapon_unit_3p)

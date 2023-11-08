@@ -10,7 +10,9 @@ require("foundation/scripts/util/table")
 require("foundation/scripts/util/error")
 require("scripts/unit_extensions/human/ai_player_unit/ai_breed_snippets")
 require("scripts/settings/dlc_settings")
+require("scripts/settings/infighting_settings")
 require("scripts/settings/player_bots_settings")
+require("scripts/managers/status_effect/status_effect_templates")
 require("scripts/settings/breeds/breed_players")
 
 DEFAULT_BREED_AOE_HEIGHT = 1.5
@@ -61,7 +63,10 @@ dofile("scripts/settings/breeds/breed_chaos_dummy_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_exalted_champion")
 dofile("scripts/settings/breeds/breed_chaos_exalted_sorcerer")
 dofile("scripts/settings/breeds/breed_chaos_zombie")
+dofile("scripts/settings/breeds/breed_chaos_skeleton")
+dofile("scripts/settings/breeds/breed_pet_skeleton")
 dofile("scripts/settings/breeds/breed_critters")
+dofile("scripts/settings/breeds/breed_training_dummy")
 DLCUtils.dofile_list("breeds")
 
 CHAOS = {}
@@ -300,10 +305,11 @@ local PerceptionTypes = {
 	perception_rat_ogre = true
 }
 local TargetSelectionTypes = {
-	pick_rat_ogre_target_with_weights = true,
+	pick_closest_target_with_filter = true,
 	pick_ninja_approach_target = true,
 	pick_chaos_warrior_target_with_weights = true,
 	pick_flee_target = true,
+	pick_closest_target_near_detection_source_position = true,
 	pick_bestigor_target_with_weights = true,
 	pick_rat_ogre_target_idle = true,
 	pick_player_controller_allied = true,
@@ -311,7 +317,7 @@ local TargetSelectionTypes = {
 	pick_mutator_sorcerer_target = true,
 	pick_closest_target = true,
 	pick_corruptor_target = true,
-	pick_closest_target_with_filter = true,
+	pick_rat_ogre_target_with_weights = true,
 	pick_closest_vortex_target = true,
 	pick_closest_target_with_spillover = true,
 	horde_pick_closest_target_with_spillover = true,
@@ -354,6 +360,8 @@ for name, breed in pairs(Breeds) do
 		UNDEAD[breed.name] = true
 	elseif breed.race == "critter" then
 		CRITTER[breed.name] = true
+	elseif breed.race == "dummy" then
+		-- Nothing
 	elseif breed.race then
 		error("Bad race type '" .. breed.race .. "' specified in breed .. '" .. breed.name .. "'.")
 	else
@@ -362,5 +370,38 @@ for name, breed in pairs(Breeds) do
 
 	if breed.elite then
 		ELITES[breed.name] = true
+	end
+
+	local status_effect_settings = breed.status_effect_settings
+	local ignored_statuses = status_effect_settings and status_effect_settings.ignored_statuses
+
+	if ignored_statuses then
+		ignored_statuses[StatusEffectNames.burning_balefire] = ignored_statuses[StatusEffectNames.burning]
+		ignored_statuses[StatusEffectNames.burning_balefire_death_critical] = ignored_statuses[StatusEffectNames.burning_death_critical]
+	end
+
+	local anim_variables = breed.networked_animation_variables
+
+	if anim_variables then
+		local compiled = {}
+
+		for _, anim_group in ipairs(anim_variables) do
+			local anims = anim_group.anims
+			local variables = anim_group.variables
+
+			for anim_i = 1, #anims do
+				local anim_name = anims[anim_i]
+				local compiled_variables = compiled[anim_name] or {}
+				compiled[anim_name] = compiled_variables
+
+				for variable_name, variable_data in pairs(variables) do
+					fassert(not compiled_variables[variable_name], "[Breeds] The variable '%s' for anim '%s' in breed '%s' was already defined in a previous animation group.", variable_name, anim_name, breed.name)
+
+					compiled_variables[variable_name] = variable_data
+				end
+			end
+		end
+
+		breed.networked_animation_variables = compiled
 	end
 end

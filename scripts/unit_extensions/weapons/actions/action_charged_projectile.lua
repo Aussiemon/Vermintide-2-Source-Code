@@ -142,9 +142,11 @@ ActionChargedProjectile._shoot = function (self, t)
 		if not self.extra_buff_shot then
 			if not self._free_grenade then
 				self.ammo_extension:use_ammo(ammo_usage)
-			end
 
-			swap_weapon_on_shot = true
+				swap_weapon_on_shot = "wield_previous_weapon"
+			else
+				swap_weapon_on_shot = "rewield_wielded_weapon"
+			end
 		end
 
 		if not self._grenade_thrown then
@@ -216,6 +218,8 @@ ActionChargedProjectile._shoot = function (self, t)
 		local position_on_trajectory = WeaponHelper:position_on_trajectory(position, target_vector, speed / 100, radians, gravity, life_time)
 		target_vector = Vector3.normalize(Vector3.flat(position_on_trajectory - muzzle_pos))
 		position = muzzle_pos
+	elseif current_action.fire_pos_rot then
+		position, rotation = current_action:fire_pos_rot(first_person_unit, self.weapon_unit, owner_unit, self.world)
 	end
 
 	local flatten_target_vector = current_action.flatten_target_vector ~= false
@@ -302,10 +306,12 @@ ActionChargedProjectile._shoot = function (self, t)
 		dialogue_input:trigger_networked_dialogue_event("throwing_item", event_data)
 	end
 
-	if swap_weapon_on_shot then
-		local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
+	local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
 
+	if swap_weapon_on_shot == "wield_previous_weapon" then
 		inventory_extension:wield_previous_weapon()
+	elseif swap_weapon_on_shot == "rewield_wielded_weapon" then
+		inventory_extension:rewield_wielded_slot()
 	end
 end
 

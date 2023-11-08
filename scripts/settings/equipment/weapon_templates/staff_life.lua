@@ -483,6 +483,7 @@ left_hand_unit = "units/weapons/player/wpn_we_life_staff_01/wpn_we_life_staff_01
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.left
 weapon_template.display_unit = "units/weapons/weapon_display/display_staff"
 weapon_template.wield_anim = "to_life_staff"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/ranged/life_staff"
 weapon_template.crosshair_style = "arrows"
 weapon_template.buff_type = "RANGED"
 weapon_template.weapon_type = "LIFE_STAFF"

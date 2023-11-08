@@ -1860,6 +1860,10 @@ UIPasses.text = {
 					color = ui_style.line_colors[i]
 				end
 
+				if ui_style.inject_alpha then
+					text = string.format(text, color[1])
+				end
+
 				local line_color_override = ui_style.line_color_override
 
 				if ui_style.color_override then

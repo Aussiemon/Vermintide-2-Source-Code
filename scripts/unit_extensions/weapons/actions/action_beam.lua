@@ -198,7 +198,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 						local node = Actor.node(hit_actor)
 						local hit_zone = breed.hit_zones_lookup[node]
 						local hit_zone_name = hit_zone.name
-						hit_enemy = (allow_friendly_fire or is_enemy) and hit_zone_name ~= "afro"
+						hit_enemy = (allow_friendly_fire and breed.is_player or is_enemy) and hit_zone_name ~= "afro"
 					else
 						hit_enemy = true
 					end
@@ -230,10 +230,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 						Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], 5)
 
 						self.damage_timer = 0
-
-						if health_extension then
-							self.ramping_interval = math.clamp(self.ramping_interval * 1.4, 0.45, 1.5)
-						end
+						self.ramping_interval = math.clamp(self.ramping_interval * 1.4, 0.45, 1.5)
 					end
 
 					if self.damage_timer == 0 then
@@ -272,7 +269,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 								})
 							end
 
-							if health_extension:is_alive() then
+							if HEALTH_ALIVE[hit_unit] then
 								local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[current_action.overcharge_type]
 
 								if is_critical_strike and buff_extension:has_buff_perk("no_overcharge_crit") then

@@ -7,7 +7,9 @@ local math_max = math.max
 local math_abs = math.abs
 local math_acos = math.acos
 local pi = math.pi
-math.half_pi = pi * 0.5
+math.epsilon = 0.001
+math.tau = 2 * pi
+math.half_pi = 0.5 * pi
 math.inverse_sqrt_2 = 1 / math_sqrt(2)
 math.degrees_to_radians = math.rad
 math.radians_to_degrees = math.deg
@@ -49,6 +51,10 @@ math.lerp = function (a, b, p)
 end
 
 local math_lerp = math.lerp
+
+math.lerp_clamped = function (a, b, v)
+	return math_lerp(a, b, math.clamp01(v))
+end
 
 math.inv_lerp = function (a, b, v)
 	return (v - a) / (b - a)
@@ -547,6 +553,34 @@ Intersect.ray_segment = function (ray_from, ray_direction, segment_start, segmen
 	end
 end
 
+Intersect.ray_circle = function (ray_from, ray_direction, circle_position, circle_radius)
+	local ray_coord = ray_from - circle_position
+	local rx, ry = Vector3.to_elements(ray_coord)
+	local dx, dy = Vector3.to_elements(ray_direction)
+	local a = dx * dx + dy * dy
+	local a2 = a * 2
+	local b = 2 * (dx * rx + dy * ry)
+	local c = rx * rx + ry * ry - circle_radius * circle_radius
+	local discriminant = b * b - 2 * a2 * c
+
+	if discriminant < 0 then
+		return nil
+	end
+
+	local sqrt_discriminant = math.sqrt(discriminant)
+	local t1 = (-b + sqrt_discriminant) / a2
+	local pos1 = ray_from + Vector3(dx * t1, dy * t1, 0)
+
+	if sqrt_discriminant < math.epsilon then
+		return pos1, pos1
+	end
+
+	local t2 = (-b - sqrt_discriminant) / a2
+	local pos2 = ray_from + Vector3(dx * t2, dy * t2, 0)
+
+	return pos1, pos2
+end
+
 math.ease_exp = function (t)
 	if t < 0.5 then
 		return 0.5 * 2^(20 * (t - 0.5))
@@ -795,4 +829,160 @@ math.quat_angle = function (from, to)
 	end
 
 	return target_angle
+end
+
+local function _calculate_distributed_point_ranks(positions, n, forward, right, center, out_ranks, out_rank_lookup, out_forward_distance_lookup)
+	local rank_precision = 0.8
+
+	for i = 1, n do
+		local position = positions[i]
+		local delta_pos = Vector3.flat(position - center)
+		local projected_right_distance = Vector3.dot(delta_pos, right)
+		local rank_key = math.floor(projected_right_distance / rank_precision + 0.5) * rank_precision
+		local rank = out_ranks[rank_key]
+
+		if not rank then
+			rank = FrameTable.alloc_table()
+			out_ranks[rank_key] = rank
+			out_rank_lookup[#out_rank_lookup + 1] = rank_key
+		end
+
+		out_forward_distance_lookup[i] = Vector3.dot(delta_pos, forward)
+		rank[#rank + 1] = i
+	end
+end
+
+local function _match_rank_counts(left_rank_array, left_rank_lookup, left_sort_lookup, right_rank_array, right_rank_lookup, right_sort_lookup)
+	local left_rank_n = #left_rank_lookup
+	local right_rank_n = #right_rank_lookup
+	local min_rank_n = left_rank_n <= right_rank_n and left_rank_n or right_rank_n
+
+	for rank_i = 1, min_rank_n do
+		local left_rank = left_rank_array[left_rank_lookup[rank_i]]
+		local right_rank = right_rank_array[right_rank_lookup[rank_i]]
+
+		if not left_rank or not right_rank then
+			local rank_array = left_rank and left_rank_array or right_rank_array
+			local rank_lookup = left_rank and left_rank_lookup or right_rank_lookup
+			local sort_lookup = left_rank and left_sort_lookup or right_sort_lookup
+
+			for remaining_i = rank_i, #rank_lookup do
+				local other_rank = rank_array[rank_lookup[remaining_i]]
+
+				table.sort(other_rank, function (a, b)
+					return sort_lookup[b] < sort_lookup[a]
+				end)
+			end
+
+			break
+		end
+
+		local left_n = #left_rank
+		local right_n = #right_rank
+		local smaller_n = left_n
+		local larger_n = right_n
+		local smaller_rank, smaller_rank_array, smaller_rank_lookup, smaller_sort_lookup = nil
+
+		if left_n <= right_n then
+			smaller_rank = left_rank
+			smaller_rank_array = left_rank_array
+			smaller_rank_lookup = left_rank_lookup
+			smaller_sort_lookup = left_sort_lookup
+		else
+			larger_n = smaller_n
+			smaller_n = larger_n
+			smaller_rank = right_rank
+			smaller_rank_array = right_rank_array
+			smaller_rank_lookup = right_rank_lookup
+			smaller_sort_lookup = right_sort_lookup
+		end
+
+		while smaller_n < larger_n do
+			local next_rank = smaller_rank_array[smaller_rank_lookup[rank_i + 1]]
+			local next_rank_n = #next_rank
+
+			if larger_n >= smaller_n + next_rank_n then
+				for i = 1, next_rank_n do
+					smaller_n = smaller_n + 1
+					smaller_rank[smaller_n] = next_rank[i]
+				end
+
+				table.remove(smaller_rank_lookup, rank_i + 1)
+			else
+				table.sort(next_rank, function (a, b)
+					return smaller_sort_lookup[b] < smaller_sort_lookup[a]
+				end)
+
+				for i = next_rank_n, next_rank_n - (larger_n - smaller_n) + 1, -1 do
+					smaller_n = smaller_n + 1
+					smaller_rank[smaller_n] = next_rank[i]
+					next_rank[i] = nil
+				end
+			end
+		end
+
+		table.sort(left_rank, function (a, b)
+			return left_sort_lookup[b] < left_sort_lookup[a]
+		end)
+		table.sort(right_rank, function (a, b)
+			return right_sort_lookup[b] < right_sort_lookup[a]
+		end)
+	end
+end
+
+math.distributed_point_matching = function (source_positions, target_positions, out_indices, use_rows)
+	local num_points = math.min(#source_positions, #target_positions)
+
+	if num_points <= 0 then
+		return
+	end
+
+	local source_center = Vector3.zero()
+	local target_center = Vector3.zero()
+
+	for i = 1, num_points do
+		source_center = source_center + source_positions[i]
+		target_center = target_center + target_positions[i]
+	end
+
+	source_center = source_center / num_points
+	target_center = target_center / num_points
+	local forward = Vector3.normalize(Vector3.flat(target_center - source_center))
+	local right = Vector3.cross(forward, Vector3.up())
+
+	if use_rows then
+		right = forward
+		forward = right
+	end
+
+	local out_source_ranks = FrameTable.alloc_table()
+	local out_source_rank_lookup = FrameTable.alloc_table()
+	local out_source_forward_distance_lookup = FrameTable.alloc_table()
+
+	_calculate_distributed_point_ranks(source_positions, num_points, forward, right, source_center, out_source_ranks, out_source_rank_lookup, out_source_forward_distance_lookup)
+	table.sort(out_source_rank_lookup)
+
+	local out_target_ranks = FrameTable.alloc_table()
+	local out_target_rank_lookup = FrameTable.alloc_table()
+	local out_target_forward_distance_lookup = FrameTable.alloc_table()
+
+	_calculate_distributed_point_ranks(target_positions, num_points, forward, right, target_center, out_target_ranks, out_target_rank_lookup, out_target_forward_distance_lookup)
+	table.sort(out_target_rank_lookup)
+	_match_rank_counts(out_source_ranks, out_source_rank_lookup, out_source_forward_distance_lookup, out_target_ranks, out_target_rank_lookup, out_target_forward_distance_lookup)
+
+	local num_ranks = #out_source_rank_lookup
+
+	for rank_i = 1, num_ranks do
+		local source_rank = out_source_ranks[out_source_rank_lookup[rank_i]]
+		local target_rank = out_target_ranks[out_target_rank_lookup[rank_i]]
+		local rank_n = #source_rank
+
+		for inline_i = 1, rank_n do
+			local source_index = source_rank[inline_i]
+			local target_index = target_rank[inline_i]
+			out_indices[source_index] = target_index
+		end
+	end
+
+	return num_points
 end

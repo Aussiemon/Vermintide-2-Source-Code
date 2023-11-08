@@ -38,12 +38,6 @@ AIEnemySlotExtension.cleanup_extension = function (self, unit, update_slots_ai_u
 	self:_detach_from_slot()
 	self:_detach_from_ai_slot("cleanup_extension")
 
-	if USE_ENGINE_SLOID_SYSTEM then
-		notify_attackers(unit, Managers.state.conflict.dogpiled_attackers_on_unit)
-	else
-		self.gathering:notify_attackers(unit)
-	end
-
 	for i = 1, update_slots_ai_units_n do
 		local ai_unit = update_slots_ai_units[i]
 
@@ -212,10 +206,10 @@ end
 
 AIEnemySlotExtension.ai_has_slot = function (self, target_unit)
 	local target_blackboard = BLACKBOARDS[target_unit]
-	local infighting = target_blackboard.breed.infighting or InfightingSettings.small
+	local infighting = target_blackboard.breed.infighting
 	local num_slots = infighting.crowded_slots
 
-	return target_blackboard.lean_dogpile < num_slots
+	return target_blackboard.lean_dogpile <= num_slots
 end
 
 AIEnemySlotExtension.on_unit_blocked_attack = function (self, ai_unit, system)
@@ -404,9 +398,9 @@ AIEnemySlotExtension.on_ai_slot_gained = function (self, defender_unit, system)
 	local blackboard = BLACKBOARDS[unit]
 	local defender_pos = POSITION_LOOKUP[defender_unit]
 	local attacker_pos = POSITION_LOOKUP[unit]
-	local infighting = target_blackboard.breed.infighting or InfightingSettings.small
+	local infighting = target_blackboard.breed.infighting
 	local distance = USE_ENGINE_SLOID_SYSTEM and 3 or infighting.distance or 2
-	local attacker_infighting = blackboard.breed.infighting or InfightingSettings.small
+	local attacker_infighting = blackboard.breed.infighting
 	local boid_radius = attacker_infighting.boid_radius or 0.3
 	local to_attacker = Vector3.normalize(attacker_pos - defender_pos) * (distance + boid_radius)
 

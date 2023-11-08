@@ -226,7 +226,6 @@ ProjectileEtherealSkullLocomotionExtension.set_knockback = function (self, attac
 
 	local velocity = Vector3.normalize(hit_dir + look_direction * 0.5) * settings.knockback_speed
 	self._knockback_velocity = Vector3Box(velocity)
-	self.death_velocity_boxed = Vector3Box(velocity)
 end
 
 ProjectileEtherealSkullLocomotionExtension.set_rotation = function (self, unit, target_direction, game, id, dt)

@@ -13,7 +13,7 @@ BTLeaveHooks.check_if_victim_was_grabbed = function (unit, blackboard, t)
 		local status_extension = ScriptUnit.has_extension(blackboard.victim_grabbed, "status_system")
 		local is_grabbed = status_extension and status_extension:is_grabbed_by_chaos_spawn()
 
-		if blackboard.stagger or is_grabbed and not AiUtils.unit_alive(unit) then
+		if blackboard.stagger or is_grabbed and not HEALTH_ALIVE[unit] then
 			StatusUtils.set_grabbed_by_chaos_spawn_network(blackboard.victim_grabbed, false, unit)
 
 			blackboard.has_grabbed_victim = nil
@@ -23,12 +23,10 @@ BTLeaveHooks.check_if_victim_was_grabbed = function (unit, blackboard, t)
 end
 
 BTLeaveHooks.kill_unit = function (unit, blackboard, t)
-	if Unit.alive(unit) then
+	if Unit.alive(unit) and HEALTH_ALIVE[unit] then
 		local health_extension = ScriptUnit.has_extension(unit, "health_system")
 
-		if health_extension and health_extension:is_alive() then
-			health_extension:die("forced")
-		end
+		health_extension:die("forced")
 	end
 end
 
@@ -177,7 +175,7 @@ end
 BTLeaveHooks.leave_attack_grabbed_smash = function (unit, blackboard, t)
 	local victim_is_alive = Unit.alive(blackboard.victim_grabbed)
 
-	if blackboard.stagger or not AiUtils.unit_alive(unit) or not victim_is_alive then
+	if blackboard.stagger or not HEALTH_ALIVE[unit] or not victim_is_alive then
 		if victim_is_alive then
 			StatusUtils.set_grabbed_by_chaos_spawn_network(blackboard.victim_grabbed, false, unit)
 		end
@@ -190,7 +188,7 @@ BTLeaveHooks.leave_attack_grabbed_smash = function (unit, blackboard, t)
 end
 
 BTLeaveHooks.on_lord_intro_leave = function (unit, blackboard, t)
-	if AiUtils.unit_alive(unit) and not blackboard.exit_last_action then
+	if HEALTH_ALIVE[unit] and not blackboard.exit_last_action then
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		health_extension.is_invincible = false
 		local game = Managers.state.network:game()
@@ -209,7 +207,7 @@ BTLeaveHooks.on_lord_intro_leave = function (unit, blackboard, t)
 end
 
 BTLeaveHooks.on_lord_warlord_intro_leave = function (unit, blackboard, t)
-	if AiUtils.unit_alive(unit) and not blackboard.exit_last_action then
+	if HEALTH_ALIVE[unit] and not blackboard.exit_last_action then
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		health_extension.is_invincible = false
 		local game = Managers.state.network:game()

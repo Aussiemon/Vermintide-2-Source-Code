@@ -10,20 +10,20 @@ local pig_data = {
 	animation_sync_rpc = "rpc_sync_anim_state_1",
 	aoe_radius = 0.25,
 	is_always_spawnable = true,
-	poison_resistance = 70,
+	death_reaction = "ai_default",
 	debug_spawn_category = "Misc",
+	bone_lod_level = 1,
 	cannot_far_path = true,
 	aoe_height = 0.5,
-	walk_speed = 4,
 	hit_reaction = "ai_default",
-	bone_lod_level = 1,
+	walk_speed = 4,
 	hit_effect_template = "HitEffectsCritterPig",
 	radius = 1,
 	unit_template = "ai_unit_critter",
 	perception_previous_attacker_stickyness_value = 0,
 	race = "critter",
 	no_autoaim = true,
-	death_reaction = "ai_default",
+	poison_resistance = 70,
 	armor_category = 1,
 	weapon_reach = 2,
 	vortexable = false,
@@ -65,6 +65,7 @@ local pig_data = {
 			actors = {}
 		}
 	},
+	infighting = InfightingSettings.small,
 	max_health = {
 		3,
 		3,
@@ -91,18 +92,18 @@ local rat_data = {
 	detection_radius = 10,
 	target_selection = "pick_closest_target",
 	run_speed = 6,
+	perception = "perception_regular",
 	exchange_order = 1,
 	flingable = false,
 	has_inventory = false,
-	perception = "perception_regular",
 	not_bot_target = true,
 	animation_sync_rpc = "rpc_sync_anim_state_1",
 	aoe_radius = 0.1,
+	walk_speed = 4,
 	poison_resistance = 70,
 	debug_spawn_category = "Misc",
-	aoe_height = 0.1,
 	cannot_far_path = true,
-	walk_speed = 4,
+	aoe_height = 0.1,
 	hit_reaction = "ai_default",
 	bone_lod_level = 1,
 	hit_effect_template = "HitEffectsCritterRat",
@@ -154,6 +155,7 @@ local rat_data = {
 			}
 		}
 	},
+	infighting = InfightingSettings.small,
 	max_health = {
 		1,
 		1,
@@ -187,21 +189,21 @@ Breeds.critter_rat = table.create_copy(Breeds.critter_rat, rat_data)
 local nurgling_data = {
 	detection_radius = 10,
 	target_selection = "pick_closest_target",
-	has_inventory = true,
 	run_speed = 4,
+	perception = "perception_regular",
 	flingable = false,
 	not_bot_target = true,
-	perception = "perception_regular",
-	walk_speed = 1.6,
+	debug_spawn_category = "Misc",
 	exchange_order = 1,
 	animation_sync_rpc = "rpc_sync_anim_state_1",
 	aoe_radius = 0.1,
-	debug_spawn_category = "Misc",
-	aoe_height = 0.1,
-	cannot_far_path = true,
+	has_inventory = true,
 	death_reaction = "critter_nurgling",
-	hit_reaction = "ai_default",
 	bone_lod_level = 1,
+	cannot_far_path = true,
+	aoe_height = 0.1,
+	hit_reaction = "ai_default",
+	walk_speed = 1.6,
 	default_inventory_template = "critter_nurgling",
 	hit_effect_template = "HitEffectsCritterRat",
 	radius = 1,
@@ -221,6 +223,13 @@ local nurgling_data = {
 	size_variation_range = {
 		0.9,
 		1.1
+	},
+	status_effect_settings = {
+		category = "small",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire,
+			StatusEffectNames.poisoned
+		})
 	},
 	animation_merge_options = {
 		idle_animation_merge_options = {},
@@ -242,7 +251,7 @@ local nurgling_data = {
 			prio = 1,
 			actors = {
 				"c_hips",
-				"c_spine1",
+				"c_spine",
 				"c_leftarm",
 				"c_leftforearm",
 				"c_lefthand",
@@ -257,10 +266,11 @@ local nurgling_data = {
 				"c_rightfoot"
 			},
 			push_actors = {
-				"c_spine1"
+				"c_spine"
 			}
 		}
 	},
+	infighting = InfightingSettings.small,
 	max_health = {
 		1,
 		1,

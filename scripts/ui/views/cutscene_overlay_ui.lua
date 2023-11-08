@@ -19,6 +19,10 @@ CutsceneOverlayUI.init = function (self, parent, context)
 
 		event_manager:register(self, "event_start_cutscene_overlay", "event_start_function")
 	end
+
+	self._render_settings = {
+		alpha_multiplier = 1
+	}
 end
 
 CutsceneOverlayUI.force_unregister_event_listener = function (self)
@@ -84,8 +88,9 @@ CutsceneOverlayUI._present_template_entry = function (self, template_list_name, 
 
 	if text then
 		widget = widgets.text_widget
+		local content = widget.content
 		local localize = entry.localize
-		widget.content.text = localize and Localize(text) or text
+		content.text = localize and Localize(text) or text
 		local font_size = entry.font_size
 		local font_type = entry.font_type
 		local word_wrap = entry.word_wrap
@@ -94,6 +99,8 @@ CutsceneOverlayUI._present_template_entry = function (self, template_list_name, 
 		local horizontal_alignment = entry.horizontal_alignment or "center"
 		local color = entry.color or Colors.get_color_table_with_alpha("white", 255)
 		local offset = entry.offset
+		local use_shadow = entry.use_shadow
+		local inject_alpha = entry.inject_alpha
 		local style = widget.style
 		local text_style = style.text
 		local text_shadow_style = style.text_shadow
@@ -102,6 +109,7 @@ CutsceneOverlayUI._present_template_entry = function (self, template_list_name, 
 		text_color[2] = color[2]
 		text_color[3] = color[3]
 		text_color[4] = color[4]
+		text_style.inject_alpha = inject_alpha
 		text_style.font_size = font_size
 		text_shadow_style.font_size = font_size
 		text_style.font_type = font_type
@@ -112,6 +120,11 @@ CutsceneOverlayUI._present_template_entry = function (self, template_list_name, 
 		text_shadow_style.upper_case = font_upper_case
 		text_style.vertical_alignment = vertical_alignment
 		text_shadow_style.vertical_alignment = vertical_alignment
+
+		if use_shadow ~= nil then
+			content.use_shadow = use_shadow
+		end
+
 		local text_offset = text_style.offset
 		local text_shadow_offset = text_shadow_style.offset
 		text_offset[1] = offset[1]
@@ -265,8 +278,9 @@ CutsceneOverlayUI._draw = function (self, widget, dt)
 	local ui_renderer = self._ui_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = FAKE_INPUT_SERVICE
+	local render_settings = self.render_settings
 
-	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
+	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, render_settings)
 	UIRenderer.draw_widget(ui_renderer, widget)
 	UIRenderer.end_pass(ui_renderer)
 end

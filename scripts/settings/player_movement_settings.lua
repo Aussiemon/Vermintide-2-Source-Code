@@ -425,11 +425,6 @@ PlayerUnitMovementSettings.block.stamina_per_damage = 0.001375
 PlayerUnitMovementSettings.block.consecutive_block_impact_time = 3
 PlayerUnitMovementSettings.block.consecutive_block_impact_multiplier = 1
 PlayerUnitMovementSettings.block.override_recharge_rate = 0.025
-
-PlayerUnitMovementSettings.block.aim_direction_pitch_function = function (z)
-	return 1.25 * (z - 0.2)
-end
-
 PlayerUnitMovementSettings.parry = PlayerUnitMovementSettings.parry or {}
 PlayerUnitMovementSettings.parry.REQUIRED_MOVEMENT_TO_POSE = 0.003
 PlayerUnitMovementSettings.parry.invert_parry_control_x = false

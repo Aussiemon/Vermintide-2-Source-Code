@@ -1463,6 +1463,7 @@ weapon_template.right_hand_unit = "units/weapons/player/wpn_empire_short_sword/w
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.polearm
 weapon_template.display_unit = "units/weapons/weapon_display/display_2h_billhooks"
 weapon_template.wield_anim = "to_2h_billhook"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/melee/2h_billhook"
 weapon_template.buff_type = "MELEE_2H"
 weapon_template.weapon_type = "POLEARM"
 weapon_template.max_fatigue_points = 6

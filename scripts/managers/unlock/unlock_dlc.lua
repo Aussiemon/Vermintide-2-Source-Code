@@ -22,6 +22,10 @@ UnlockDlc.init = function (self, name, app_id, backend_reward_id, always_unlocke
 	self:update_is_installed()
 end
 
+UnlockDlc.is_legacy_console_dlc = function (self)
+	return false
+end
+
 UnlockDlc.ready = function (self)
 	return true
 end

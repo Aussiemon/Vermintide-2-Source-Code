@@ -71,19 +71,91 @@ DialogueQueries = {
 			dialogue.randomize_indexes_n = dialogue.sound_events_n
 		end
 	end,
-	get_dialogue_event_index = function (dialogue)
-		if dialogue.sound_events_n == 1 then
+	get_dialogue_event_index = function (dialogue, wrap_around)
+		local num_events = dialogue.sound_events_n
+
+		if num_events == 1 then
 			return 1
 		end
 
+		local wrapped = false
+
 		if dialogue.randomize_indexes_n == 0 then
-			DialogueQueries.build_randomized_indexes(dialogue)
+			if wrap_around then
+				wrapped = true
+				dialogue.randomize_indexes_n = num_events
+			else
+				DialogueQueries.build_randomized_indexes(dialogue)
+			end
 		end
 
 		local current_index = dialogue.randomize_indexes_n
 		dialogue.randomize_indexes_n = dialogue.randomize_indexes_n - 1
 
-		return dialogue.randomize_indexes[current_index]
+		return dialogue.randomize_indexes[current_index], wrapped
+	end,
+	get_filtered_dialogue_event_index = function (dialogue, context, global_filters)
+		local dialogue_index, wrapped = DialogueQueries.get_dialogue_event_index(dialogue)
+		local valid_event = false
+
+		for i = 1, dialogue.sound_events_n do
+			valid_event = DialogueQueries.filter_sound_event(dialogue, dialogue_index, context, global_filters)
+
+			if valid_event then
+				break
+			end
+
+			local did_wrap = nil
+			dialogue_index, did_wrap = DialogueQueries.get_dialogue_event_index(dialogue, true)
+			wrapped = wrapped or did_wrap
+		end
+
+		if wrapped then
+			DialogueQueries.build_randomized_indexes(dialogue)
+		end
+
+		return dialogue_index
+	end,
+	filter_sound_event = function (dialogue, event_index, context, global_filters)
+		local sound_event = dialogue.sound_events[event_index]
+		local event_filters = global_filters[sound_event]
+
+		if event_filters then
+			for i = 1, #event_filters do
+				local filter = event_filters[i]
+				local sub_context = filter[1]
+				local context_key = filter[2]
+				local condition = filter[3]
+				local filter_value = filter[4]
+				local real_value = context[sub_context][context_key] or false
+				local op = TagQuery.FilterOP[condition]
+
+				if op(real_value, filter_value) then
+					return false
+				end
+			end
+		end
+
+		local all_filters = dialogue.sound_event_filters
+		local event_filters = all_filters and all_filters[sound_event]
+
+		if event_filters then
+			for i = 1, #event_filters do
+				local filter = event_filters[i]
+				local sub_context = filter[1]
+				local context_key = filter[2]
+				local condition = filter[3]
+				local filter_value = filter[4]
+				local real_value = context[sub_context][context_key] or false
+				local op = TagQuery.FilterOP[condition]
+
+				if op(real_value, filter_value) then
+					return false
+				end
+			end
+		end
+
+		return true
 	end
 }
 

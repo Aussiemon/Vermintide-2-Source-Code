@@ -13,8 +13,6 @@ DialogueSettings.auto_load_files = {
 	"dialogues/generated/bright_wizard_generic_vo",
 	"dialogues/generated/dwarf_ranger_generic_vo",
 	"dialogues/generated/witch_hunter_generic_vo",
-	"dialogues/generated/pactsworn_player_vo",
-	"dialogues/generated/vs_player_vo",
 	"dialogues/generated/weather_vo"
 }
 DialogueSettings.level_specific_load_files = {
@@ -1207,5 +1205,11 @@ DialogueSettings.speaker_color_lookup = {
 	chaos_exalted_champion_warcamp = HOSTILE_COLOR,
 	chaos_exalted_sorcerer = HOSTILE_COLOR,
 	grey_seer = HOSTILE_COLOR,
-	skaven_storm_vermin_warlord = HOSTILE_COLOR
+	skaven_storm_vermin_warlord = HOSTILE_COLOR,
+	sofia_necromancer = {
+		255,
+		0,
+		255,
+		255
+	}
 }

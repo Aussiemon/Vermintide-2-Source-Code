@@ -56,17 +56,17 @@ GenericAmmoUserExtension.init = function (self, extension_init_context, unit, ex
 	self._last_reload_event = extension_init_data.last_reload_event or self._reload_event
 	self._no_ammo_reload_event = extension_init_data.no_ammo_reload_event
 	self.slot_name = extension_init_data.slot_name
+	local first_person_extension = ScriptUnit.has_extension(self.owner_unit, "first_person_system")
 
-	if ScriptUnit.has_extension(self.owner_unit, "first_person_system") then
-		local first_person_extension = ScriptUnit.extension(self.owner_unit, "first_person_system")
+	if first_person_extension then
 		self.first_person_extension = first_person_extension
 		self.first_person_unit = first_person_extension:get_first_person_unit()
-	end
 
-	self._should_update_anim_ammo = self.first_person_unit and ammo_data.should_update_anim_ammo
+		if ammo_data.should_update_anim_ammo then
+			self._should_update_anim_ammo = true
 
-	if self._should_update_anim_ammo then
-		self._anim_ammo_variable_id = Unit.animation_find_variable(self.first_person_unit, "ammo_count")
+			assert(self.first_person_unit)
+		end
 	end
 end
 
@@ -606,5 +606,7 @@ GenericAmmoUserExtension._update_anim_ammo = function (self)
 		return
 	end
 
-	Unit.animation_set_variable(self.first_person_unit, self._anim_ammo_variable_id, self._current_ammo - self._shots_fired)
+	local value = self._current_ammo - self._shots_fired
+
+	self.first_person_extension:animation_set_variable("ammo_count", value, true)
 end

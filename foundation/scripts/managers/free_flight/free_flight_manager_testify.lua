@@ -1,6 +1,6 @@
 local FreeFlightManagerTestify = {}
 
-FreeFlightManagerTestify.move_free_flight_camera = function (data, free_flight_manager)
+FreeFlightManagerTestify.move_free_flight_camera = function (free_flight_manager, data)
 	local position = MainPathUtils.point_on_mainpath(nil, data.position)
 	local rotation = stingray.Quaternion.from_euler_angles_xyz(data.rotation.x, data.rotation.y, data.rotation.z)
 	position.z = position.z + 1

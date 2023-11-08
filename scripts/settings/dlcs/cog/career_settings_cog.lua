@@ -2,6 +2,7 @@ CareerActionNames.dwarf_ranger[#CareerActionNames.dwarf_ranger + 1] = "action_ca
 PlayerBreeds.hero_dr_engineer = {
 	is_hero = true,
 	name = "hero_dr_engineer",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -9,14 +10,28 @@ PlayerBreeds.hero_dr_engineer = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.player_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
+
+setmetatable(PlayerBreeds.hero_dr_engineer, {
+	__newindex = function (table, key, value)
+		if type(key) == "number" then
+			error("HON-32308. Trying to modify read only table.")
+		end
+
+		rawset(table, key, value)
+	end
+})
+
 CareerSettings.dr_engineer = {
 	profile_name = "dwarf_ranger",
 	display_name = "dr_engineer",
+	sound_character = "dwarf_engineer",
 	package_name = "resource_packages/careers/dr_engineer",
 	name = "dr_engineer",
-	sound_character = "dwarf_engineer",
 	preview_idle_animation = "career_idle_04",
 	preview_animation = "career_select_04",
 	icon = "icons_placeholder",
@@ -87,13 +102,9 @@ CareerSettings.dr_engineer = {
 
 		return nil
 	end,
-	fp_anim_setup = function (fp_unit)
-		if Unit.animation_has_variable(fp_unit, "is_engineer") then
-			local variable_index = Unit.animation_find_variable(fp_unit, "is_engineer")
-
-			Unit.animation_set_variable(fp_unit, variable_index, 1)
-		end
-	end,
+	animation_variables = {
+		is_engineer = 1
+	},
 	talent_packages = function (talent_ids, packages_list, is_first_person)
 		local career_skill_index = 1
 		local career_weapon_index = 1

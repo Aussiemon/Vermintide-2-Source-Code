@@ -215,8 +215,6 @@ local function slots_count(target_unit, unit_extension_data, wanted_slot_type)
 	return slots_n
 end
 
-local unit_alive = AiUtils.unit_alive
-
 local function detach_ai_unit_from_slot(ai_unit, unit_extension_data)
 	local ai_unit_extension = unit_extension_data[ai_unit]
 
@@ -355,7 +353,7 @@ local function get_slot_queue_position(unit_extension_data, slot, nav_world, dis
 	local target_unit = slot.target_unit
 	local ai_unit = slot.ai_unit
 
-	if not unit_alive(target_unit) or not ALIVE[ai_unit] then
+	if not HEALTH_ALIVE[target_unit] or not ALIVE[ai_unit] then
 		return
 	end
 
@@ -2329,7 +2327,7 @@ function debug_draw_slots(target_units, unit_extension_data, nav_world, t)
 
 		for i_target, target_unit in pairs(targets) do
 			repeat
-				if not unit_alive(target_unit) then
+				if not HEALTH_ALIVE[target_unit] then
 					break
 				end
 

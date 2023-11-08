@@ -1,70 +1,100 @@
 BreedEnhancements = BreedEnhancements or {
 	base = {
-		base = {
-			"grudge_mark_health",
-			"grudge_mark_damage",
-			"grudge_mark_stagger_distance_resistance",
-			no_attribute = true
-		}
+		"grudge_mark_health",
+		"grudge_mark_damage",
+		"grudge_mark_stagger_distance_resistance",
+		no_attribute = true
 	},
-	boss = {
-		warping = {
-			"grudge_mark_warping",
-			display_name = "display_name_warping"
-		},
-		intangible = {
-			"grudge_mark_intangible",
-			display_name = "display_name_intangible"
-		},
-		unstaggerable = {
-			"grudge_mark_unstaggerable",
-			display_name = "display_name_unstaggerable"
-		},
-		raging = {
-			"grudge_mark_raging",
-			display_name = "display_name_raging"
-		},
-		vampiric = {
-			"grudge_mark_vampiric",
-			display_name = "display_name_vampiric"
-		},
-		ranged_immune = {
-			"grudge_mark_ranged_immune",
-			display_name = "display_name_ranged_immune"
-		},
-		periodic_shield = {
-			"grudge_mark_periodic_shield",
-			display_name = "display_name_periodic_shield"
-		},
-		crippling = {
-			"grudge_mark_crippling_blow",
-			display_name = "display_name_crippling"
-		},
-		crushing = {
-			"grudge_mark_crushing_blow",
-			display_name = "display_name_crushing"
-		},
-		regenerating = {
-			"grudge_mark_regeneratig",
-			display_name = "display_name_regenerating"
-		},
-		intangible_mirror = {
-			display_name = "display_name_intangible",
-			dummy_enhancement = true
-		},
-		periodic_curse = {
-			"grudge_mark_periodic_curse_aura",
-			display_name = "display_name_periodic_curse"
-		},
-		commander = {
-			"grudge_mark_commander",
-			display_name = "display_name_commander"
-		},
-		frenzy = {
-			"grudge_mark_frenzy",
-			display_name = "display_name_frenzy"
-		}
+	elite_base = {
+		"grudge_mark_elite_health",
+		"grudge_mark_damage",
+		"grudge_mark_stagger_distance_resistance",
+		no_attribute = true
+	},
+	warping = {
+		"grudge_mark_warping",
+		display_name = "display_name_warping"
+	},
+	intangible = {
+		"grudge_mark_intangible",
+		display_name = "display_name_intangible"
+	},
+	unstaggerable = {
+		"grudge_mark_unstaggerable",
+		display_name = "display_name_unstaggerable"
+	},
+	raging = {
+		"grudge_mark_raging",
+		display_name = "display_name_raging"
+	},
+	vampiric = {
+		"grudge_mark_vampiric",
+		display_name = "display_name_vampiric"
+	},
+	ranged_immune = {
+		"grudge_mark_ranged_immune",
+		display_name = "display_name_ranged_immune"
+	},
+	periodic_shield = {
+		"grudge_mark_periodic_shield",
+		display_name = "display_name_periodic_shield"
+	},
+	crippling = {
+		"grudge_mark_crippling_blow",
+		display_name = "display_name_crippling"
+	},
+	crushing = {
+		"grudge_mark_crushing_blow",
+		display_name = "display_name_crushing"
+	},
+	regenerating = {
+		"grudge_mark_regeneratig",
+		display_name = "display_name_regenerating"
+	},
+	intangible_mirror = {
+		display_name = "display_name_intangible",
+		dummy_enhancement = true
+	},
+	periodic_curse = {
+		"grudge_mark_periodic_curse_aura",
+		display_name = "display_name_periodic_curse"
+	},
+	commander = {
+		"grudge_mark_commander",
+		display_name = "display_name_commander"
+	},
+	frenzy = {
+		"grudge_mark_frenzy",
+		display_name = "display_name_frenzy"
+	},
+	shockwave = {
+		"grudge_mark_shockwave_attacks",
+		display_name = "display_name_knockback"
+	},
+	ignore_death_aura = {
+		"grudge_mark_ignore_death_aura",
+		display_name = "display_name_invincibility_aura"
 	}
+}
+
+for enhancement_name, buff_list in pairs(BreedEnhancements) do
+	buff_list.name = enhancement_name
+end
+
+BossGrudgeMarks = {
+	unstaggerable = true,
+	regenerating = true,
+	periodic_shield = true,
+	vampiric = true,
+	crushing = true,
+	periodic_curse = true,
+	frenzy = true,
+	crippling = true,
+	raging = true,
+	commander = true,
+	intangible = true,
+	warping = true,
+	ranged_immune = true
 }
 BREED_ENHANCEMENTS_PER_DIFFICULTY = {
 	normal = {
@@ -230,6 +260,9 @@ GrudgeMarkedNames = {
 		"name_grudge_minotaur_018",
 		"name_grudge_minotaur_019",
 		"name_grudge_minotaur_020"
+	},
+	chaos_warrior = {
+		"name_grudge_blosphors_01"
 	},
 	shadow_lieutenant = {
 		"name_shadow_lieutenant"

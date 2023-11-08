@@ -1923,6 +1923,7 @@ local weapon_template = {
 		}
 	},
 	wield_anim = "to_dual_axes",
+	state_machine = "units/beings/player/first_person_base/state_machines/melee/dual_axes",
 	attack_meta_data = {
 		tap_attack = {
 			penetrating = false,

@@ -51,7 +51,7 @@ BTChewAttackAction.leave = function (self, unit, blackboard, t, reason, destroy)
 		blackboard.wants_to_throw = true
 	end
 
-	if not AiUtils.unit_alive(blackboard.victim_grabbed) then
+	if not HEALTH_ALIVE[blackboard.victim_grabbed] then
 		blackboard.has_grabbed_victim = nil
 		blackboard.victim_grabbed = nil
 	end
@@ -62,7 +62,7 @@ local Unit_alive = Unit.alive
 BTChewAttackAction.run = function (self, unit, blackboard, t, dt)
 	local victim_grabbed = blackboard.victim_grabbed
 
-	if not victim_grabbed or not AiUtils.unit_alive(victim_grabbed) then
+	if not victim_grabbed or not HEALTH_ALIVE[victim_grabbed] then
 		return "done"
 	end
 

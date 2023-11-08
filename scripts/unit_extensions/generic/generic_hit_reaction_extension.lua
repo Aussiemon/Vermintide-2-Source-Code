@@ -432,6 +432,46 @@ GenericHitReactionExtension._is_dismembering_allowed = function (self, parameter
 	return BloodSettings.dismemberment.enabled
 end
 
+local status_effect_overrides = {
+	bw_necromancer = {
+		[StatusEffectNames.burning] = {
+			override = StatusEffectNames.burning_balefire,
+			damage_types = table.set({
+				"burning_stab_fencer",
+				"burning_tank",
+				"heavy_burning_tank",
+				"burn",
+				"burn_sniper",
+				"burn_shotgun",
+				"burn_machinegun",
+				"burn_carbine",
+				"burning_smiter",
+				"light_burning_linesman",
+				"burning_linesman",
+				"drakegun",
+				"drakegun_glance"
+			})
+		},
+		[StatusEffectNames.burning_death_critical] = {
+			override = StatusEffectNames.burning_balefire_death_critical,
+			damage_types = table.set({
+				"burning_stab_fencer",
+				"burning_tank",
+				"heavy_burning_tank",
+				"burn",
+				"burn_sniper",
+				"burn_shotgun",
+				"burn_machinegun",
+				"burn_carbine",
+				"burning_smiter",
+				"light_burning_linesman",
+				"burning_linesman",
+				"drakegun",
+				"drakegun_glance"
+			})
+		}
+	}
+}
 local FLOW_EVENTS = {}
 local WWISE_PARAMETERS = {}
 
@@ -459,6 +499,26 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		local buff_system = Managers.state.entity:system("buff_system")
 
 		buff_system:add_buff(self.unit, effect_template.buff, attacker_unit)
+	end
+
+	local timed_status = effect_template.timed_status
+
+	if timed_status then
+		local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
+		local career_name = career_extension and career_extension:career_name()
+		local overrides_by_status = status_effect_overrides[career_name]
+
+		if overrides_by_status then
+			local overrides_by_damage_type = overrides_by_status[timed_status]
+
+			if overrides_by_damage_type and overrides_by_damage_type.damage_types[damage_type] then
+				timed_status = overrides_by_damage_type.override or timed_status
+			end
+		end
+	end
+
+	if timed_status then
+		Managers.state.status_effect:add_timed_status(unit, timed_status)
 	end
 
 	local has_flow_event = false
@@ -592,7 +652,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 	local impact_position = nil
 
 	if hit_effect or should_spawn_blood or sound_event then
-		if AiUtils.unit_alive(unit) then
+		if HEALTH_ALIVE[unit] then
 			local hit_position = Vector3Aux.unbox(effect_biggest_hit[DamageDataIndex.POSITION])
 			impact_position = hit_position
 		else
@@ -651,8 +711,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 					hit_direction.y,
 					hit_direction.z
 				},
-				push_actors = push_actors,
-				death_velocity = self.locomotion_extension and self.locomotion_extension.death_velocity_boxed
+				push_actors = push_actors
 			}
 		end
 	end
@@ -735,15 +794,7 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 	local distal_vector = distal_direction * distal_force
 	local lateral_vector = lateral_direction * lateral_force
 	local vertical_vector = Vector3(0, 0, vertical_force)
-	local death_velocity = delayed_push.death_velocity
-	local push_force = nil
-
-	if death_velocity then
-		push_force = distal_vector + lateral_vector + vertical_vector + death_velocity:unbox() * 20
-	else
-		push_force = distal_vector + lateral_vector + vertical_vector
-	end
-
+	local push_force = distal_vector + lateral_vector + vertical_vector
 	local push_velocity_factor = 60
 	local breed = Unit.get_data(unit, "breed")
 

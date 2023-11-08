@@ -4,8 +4,7 @@ local RPCS = {
 }
 local extension_list = {
 	"TalentExtension",
-	"HuskTalentExtension",
-	"ClientHuskTalentExtension"
+	"HuskTalentExtension"
 }
 
 TalentSystem.init = function (self, entity_system_creation_context, system_name)
@@ -36,10 +35,9 @@ TalentSystem.rpc_sync_talents = function (self, channel_id, unit_game_object_id,
 	local talent_extension = ScriptUnit.extension(unit, "talent_system")
 
 	talent_extension:set_talent_ids(talent_ids)
+	talent_extension:apply_buffs_from_talents()
 
 	if self.is_server then
-		talent_extension:apply_buffs_from_talents()
-
 		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 		self.network_transmit:send_rpc_clients_except("rpc_sync_talents", peer_id, unit_game_object_id, talent_ids)

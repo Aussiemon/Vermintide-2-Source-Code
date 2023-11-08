@@ -43,11 +43,13 @@ dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_exalted_sorcer
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_tentacle_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_tentacle_sorcerer_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_zombie_behavior")
+dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_skeleton_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/undead/ethereal_skeleton_with_hammer_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/undead/ethereal_skeleton_with_shield_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_pig_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_rat_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_nurgling_behavior")
+dofile("scripts/entity_system/systems/behaviour/trees/training_dummy_behavior")
 DLCUtils.dofile_list("behaviour_trees")
 
 if USE_PRECOMPILED_ROOT_TABLES then

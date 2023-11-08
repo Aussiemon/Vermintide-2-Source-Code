@@ -686,7 +686,6 @@ HitEffectsBeastmenGor = {
 	},
 	burning_stab_fencer_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_stab_fencer"
@@ -702,7 +701,8 @@ HitEffectsBeastmenGor = {
 			distal_force = 30,
 			vertical_force = 0,
 			lateral_force = 0
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	heavy_stab_fencer_death = {
 		inherits = "default_death",
@@ -1132,7 +1132,6 @@ HitEffectsBeastmenGor = {
 	burning_tank_death = {
 		inherits = "default_death",
 		do_dismember = false,
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank"
@@ -1145,7 +1144,8 @@ HitEffectsBeastmenGor = {
 			distal_force = 10,
 			vertical_force = 0,
 			lateral_force = 30
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burning_tank_death_head = {
 		inherits = "burning_tank_death",
@@ -1164,7 +1164,6 @@ HitEffectsBeastmenGor = {
 	heavy_burning_tank_death = {
 		inherits = "default_death",
 		do_dismember = true,
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"heavy_burning_tank"
@@ -1177,7 +1176,8 @@ HitEffectsBeastmenGor = {
 			distal_force = 20,
 			vertical_force = 10,
 			lateral_force = 40
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	heavy_burning_tank_death_head = {
 		inherits = "heavy_burning_tank_death",
@@ -1455,6 +1455,7 @@ HitEffectsBeastmenGor = {
 			damage_type = {
 				"arrow_sniper",
 				"arrow_carbine",
+				"elven_magic_arrow_carbine",
 				"arrow_machinegun",
 				"arrow_shotgun",
 				"bolt_sniper",
@@ -1467,48 +1468,15 @@ HitEffectsBeastmenGor = {
 			"hit_reaction"
 		}
 	},
-	arrow_machinegun_death = {
+	arrow_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			damage_type = {
-				"arrow_machinegun"
-			}
-		},
-		animations = {
-			"ragdoll",
-			"death_shot_body",
-			"death_shot_body_2"
-		},
-		push = {
-			distal_force = 20,
-			vertical_force = 10,
-			lateral_force = 0
-		}
-	},
-	arrow_carbine_death = {
-		inherits = "default_death",
-		extra_conditions = {
-			damage_type = {
+				"arrow_machinegun",
 				"arrow_carbine",
-				"arrow_shotgun"
-			}
-		},
-		animations = {
-			"ragdoll",
-			"death_shot_body",
-			"death_shot_body_2"
-		},
-		push = {
-			distal_force = 20,
-			vertical_force = 10,
-			lateral_force = 0
-		}
-	},
-	arrow_sniper_death = {
-		inherits = "default_death",
-		extra_conditions = {
-			damage_type = {
-				"arrow_sniper"
+				"arrow_shotgun",
+				"arrow_sniper",
+				"elven_magic_arrow_carbine"
 			}
 		},
 		animations = {
@@ -1568,7 +1536,8 @@ HitEffectsBeastmenGor = {
 				"arrow_sniper",
 				"arrow_carbine",
 				"arrow_machinegun",
-				"arrow_shotgun"
+				"arrow_shotgun",
+				"elven_magic_arrow_carbine"
 			},
 			hit_zone = {
 				"head",
@@ -1714,10 +1683,22 @@ HitEffectsBeastmenGor = {
 	},
 	burn = {
 		extra_conditions = {
-			death = false,
 			damage = true,
 			damage_type = "burn"
 		}
+	},
+	burn_death = {
+		extra_conditions = {
+			death = true,
+			damage = true,
+			damage_type = "burn"
+		},
+		animations = {
+			"death_burn",
+			"death_burn_2",
+			"death_burn_3"
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burninating = {
 		extra_conditions = {
@@ -1728,31 +1709,10 @@ HitEffectsBeastmenGor = {
 			"hit_reaction"
 		}
 	},
-	burn_death = {
-		flow_event = "burn",
+	burninating_death = {
+		inherits = "burninating",
 		extra_conditions = {
-			death = true,
-			damage = true,
-			damage_type = {
-				"burninating",
-				"burn"
-			}
-		},
-		animations = {
-			"death_burn",
-			"death_burn_2",
-			"death_burn_3"
-		}
-	},
-	burn_death_force_fire = {
-		flow_event = "burn_force_fire",
-		extra_conditions = {
-			death = true,
-			damage = true,
-			damage_type = {
-				"burn_force_fire",
-				"burninating_force_fire"
-			}
+			death = true
 		},
 		animations = {
 			"death_burn",
@@ -1771,7 +1731,6 @@ HitEffectsBeastmenGor = {
 	},
 	burn_sniper_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burn_sniper"
@@ -1780,6 +1739,7 @@ HitEffectsBeastmenGor = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -1789,7 +1749,6 @@ HitEffectsBeastmenGor = {
 	burn_sniper_death_dismember = {
 		inherits = "burn_sniper_death",
 		do_dismember = true,
-		flow_event = "burn",
 		extra_conditions = {
 			hit_zone = {
 				"head",
@@ -1804,6 +1763,7 @@ HitEffectsBeastmenGor = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -1821,7 +1781,6 @@ HitEffectsBeastmenGor = {
 	},
 	burn_shotgun_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burn_shotgun"
@@ -1830,6 +1789,7 @@ HitEffectsBeastmenGor = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 30,
 			vertical_force = 30,
@@ -1847,7 +1807,6 @@ HitEffectsBeastmenGor = {
 	},
 	burn_machinegun_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burn_machinegun"
@@ -1856,6 +1815,7 @@ HitEffectsBeastmenGor = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
 			vertical_force = 10,
@@ -1874,9 +1834,9 @@ HitEffectsBeastmenGor = {
 			"death_shot_head_front"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
 			vertical_force = 10,
@@ -1894,7 +1854,6 @@ HitEffectsBeastmenGor = {
 	},
 	burn_carbine_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burn_carbine"
@@ -1903,6 +1862,7 @@ HitEffectsBeastmenGor = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 10,
@@ -1921,9 +1881,9 @@ HitEffectsBeastmenGor = {
 			"death_shot_head_front"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 10,
@@ -1932,26 +1892,38 @@ HitEffectsBeastmenGor = {
 	},
 	arrow_poison_dot = {
 		inherits = "default",
-		flow_event = "poisoned",
 		extra_conditions = {
 			damage_type = {
 				"arrow_poison_dot",
-				"aoe_poison_dot"
+				"aoe_poison_dot",
+				"posion"
 			}
 		},
 		animations = {
 			"hit_reaction"
 		}
 	},
+	poison_death = {
+		extra_conditions = {
+			death = true,
+			damage_type = {
+				"poison"
+			}
+		},
+		timed_status = StatusEffectNames.poisoned,
+		animations = {
+			"death_gas",
+			"death_gas_2",
+			"death_gas_3"
+		}
+	},
 	arrow_poison_dot_death = {
-		flow_event = "poisoned",
 		extra_conditions = {
 			death = true,
 			damage = true,
 			damage_type = {
 				"arrow_poison_dot",
-				"aoe_poison_dot",
-				"poison"
+				"aoe_poison_dot"
 			}
 		},
 		animations = {
@@ -2050,10 +2022,10 @@ HitEffectsBeastmenGor = {
 	fire_grenade_glance_death = {
 		inherits = "default_death",
 		explosion_push = true,
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "fire_grenade_glance"
 		},
+		timed_status = StatusEffectNames.burning,
 		animations = {
 			"ragdoll"
 		},
@@ -2066,7 +2038,6 @@ HitEffectsBeastmenGor = {
 	fire_grenade_glance_death_dismember = {
 		inherits = "fire_grenade_glance_death",
 		do_dismember = true,
-		flow_event = "burn",
 		extra_conditions = {
 			hit_zone = {
 				"head",
@@ -2084,6 +2055,7 @@ HitEffectsBeastmenGor = {
 			"death_decapitate_2",
 			"death_decapitate_3"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 50,
 			vertical_force = 30,
@@ -2105,10 +2077,10 @@ HitEffectsBeastmenGor = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"dismember_left_leg",
 			"dismember_right_arm"
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	drakegun = {
 		inherits = "default",
@@ -2120,7 +2092,6 @@ HitEffectsBeastmenGor = {
 	},
 	drakegun_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "drakegun"
 		},
@@ -2130,7 +2101,8 @@ HitEffectsBeastmenGor = {
 		push = {
 			distal_force = 70,
 			vertical_force = 35
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	drakegun_glance = {
 		inherits = "default",
@@ -2140,13 +2112,13 @@ HitEffectsBeastmenGor = {
 	},
 	drakegun_glance_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "drakegun_glance"
 		},
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 30,
 			vertical_force = 15
@@ -2154,7 +2126,6 @@ HitEffectsBeastmenGor = {
 	},
 	drakegun_shot_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"drakegun_shot"
@@ -2163,6 +2134,7 @@ HitEffectsBeastmenGor = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2172,7 +2144,6 @@ HitEffectsBeastmenGor = {
 	drakegun_shot_death_dismember = {
 		inherits = "drakegun_shot_death",
 		do_dismember = true,
-		flow_event = "burn",
 		extra_conditions = {
 			hit_zone = {
 				"left_arm",
@@ -2185,6 +2156,7 @@ HitEffectsBeastmenGor = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2203,9 +2175,9 @@ HitEffectsBeastmenGor = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,

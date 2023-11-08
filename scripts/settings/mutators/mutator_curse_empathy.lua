@@ -44,9 +44,7 @@ local function get_alive_units(units)
 	table.clear(temp)
 
 	for _, player_unit in ipairs(units) do
-		local health_extension = ScriptUnit.has_extension(player_unit, "health_system")
-
-		if ALIVE[player_unit] and health_extension:is_alive() then
+		if HEALTH_ALIVE[player_unit] then
 			table.insert(temp, player_unit)
 		end
 	end
@@ -58,12 +56,13 @@ local function get_not_knocked_down_units(units)
 	table.clear(temp)
 
 	for _, player_unit in ipairs(units) do
-		local health_extension = ScriptUnit.has_extension(player_unit, "health_system")
-		local status_extension = ScriptUnit.extension(player_unit, "status_system")
-		local is_knocked_down = status_extension:is_knocked_down()
+		if HEALTH_ALIVE[player_unit] then
+			local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
+			local is_knocked_down = status_extension:is_knocked_down()
 
-		if ALIVE[player_unit] and health_extension:is_alive() and not is_knocked_down then
-			table.insert(temp, player_unit)
+			if not is_knocked_down then
+				table.insert(temp, player_unit)
+			end
 		end
 	end
 
@@ -224,8 +223,7 @@ end
 
 local function remove_unused_effect(context, data, beam_effects, num_valid_units)
 	for player_unit, _ in pairs(beam_effects) do
-		local player_health_extension = ScriptUnit.has_extension(player_unit, "health_system")
-		local is_alive = ALIVE[player_unit] and player_health_extension:is_alive()
+		local is_alive = HEALTH_ALIVE[player_unit]
 		local status_extension = is_alive and ScriptUnit.extension(player_unit, "status_system")
 		local is_knocked_down = status_extension and status_extension:is_knocked_down()
 

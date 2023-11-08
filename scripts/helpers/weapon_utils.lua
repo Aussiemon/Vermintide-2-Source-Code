@@ -88,31 +88,33 @@ WeaponUtils.get_weapon_packages = function (item_template, item_units, first_per
 		end
 	end
 
-	local actions = item_template.actions
+	if first_person and item_template.load_state_machine ~= false then
+		local state_machine_name = item_template.state_machine
 
-	for _, sub_actions in pairs(actions) do
-		for _, sub_action_data in pairs(sub_actions) do
-			local projectile_info = sub_action_data.projectile_info
+		if state_machine_name then
+			packages[#packages + 1] = state_machine_name
+		end
+	end
 
-			if projectile_info then
-				local projectile_units_template = projectile_info.projectile_units_template
+	local required_projectile_unit_templates = item_template.required_projectile_unit_templates
 
-				if projectile_units_template then
-					local projectile_units = ProjectileUnits[projectile_units_template]
+	if required_projectile_unit_templates then
+		for projectile_units_template, use_skin in pairs(required_projectile_unit_templates) do
+			local projectile_units = use_skin and ProjectileUnits[item_units.projectile_units_template] or ProjectileUnits[projectile_units_template]
 
-					if projectile_units.projectile_unit_name then
-						packages[#packages + 1] = projectile_units.projectile_unit_name
-					end
+			if projectile_units.projectile_unit_name then
+				packages[#packages + 1] = projectile_units.projectile_unit_name
+			end
 
-					if projectile_units.dummy_linker_unit_name then
-						packages[#packages + 1] = projectile_units.dummy_linker_unit_name
-					end
+			if projectile_units.dummy_linker_unit_name then
+				packages[#packages + 1] = projectile_units.dummy_linker_unit_name
+			end
 
-					if projectile_units.dummy_linker_broken_units then
-						for _, unit in pairs(projectile_units.dummy_linker_broken_units) do
-							packages[#packages + 1] = unit
-						end
-					end
+			local dummy_linker_broken_units = projectile_units.dummy_linker_broken_units
+
+			if dummy_linker_broken_units then
+				for broken_unit_package_idx = 1, #dummy_linker_broken_units do
+					packages[#packages + 1] = dummy_linker_broken_units[broken_unit_package_idx]
 				end
 			end
 		end

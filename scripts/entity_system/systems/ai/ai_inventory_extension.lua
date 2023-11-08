@@ -100,10 +100,14 @@ AIInventoryExtension._setup_configuration = function (self, unit, start_n, inven
 			Unit.set_data(item_unit, "shield_owner_unit", unit)
 
 			self.inventory_item_shield_unit = item_unit
+
+			table.insert(self.inventory_item_weapon_units, item_unit)
 		elseif item_unit_template_name == "ai_helmet_unit" then
 			table.insert(self.inventory_item_helmet_units, item_unit)
 		elseif item_unit_template_name == "ai_outfit_unit" then
 			table.insert(self.inventory_item_outfit_units, item_unit)
+		else
+			table.insert(self.inventory_item_weapon_units, item_unit)
 		end
 
 		if item_flow_event ~= nil then
@@ -130,6 +134,7 @@ AIInventoryExtension.init = function (self, unit, extension_init_data)
 	self.inventory_item_definitions = {}
 	self.inventory_item_outfit_units = {}
 	self.inventory_item_helmet_units = {}
+	self.inventory_item_weapon_units = {}
 	self.dropped_items = {}
 	self.gib_items = {}
 	self.stump_items = {}

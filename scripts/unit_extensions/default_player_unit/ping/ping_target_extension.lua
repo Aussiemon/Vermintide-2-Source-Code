@@ -72,12 +72,6 @@ PingTargetExtension.set_pinged = function (self, pinged, flash, pinger_unit, sho
 
 		Managers.state.event:trigger_referenced(owner_unit, "on_pinged", pinger_unit, pinged)
 	end
-
-	if self._locomotion_extension and self._locomotion_extension.bone_lod_extension_id then
-		local bone_lod_extension_id = self._locomotion_extension.bone_lod_extension_id
-
-		EngineOptimized.bone_lod_set_ignore_umbra(bone_lod_extension_id, pinged)
-	end
 end
 
 PingTargetExtension.pinged = function (self)

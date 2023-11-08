@@ -175,6 +175,32 @@ HeroViewStateStore.on_enter = function (self, params)
 	if unseen_currency_rewards then
 		self:_trigger_welcome_popup(unseen_currency_rewards)
 	end
+
+	self:_apply_global_shader_flag_overrides()
+end
+
+HeroViewStateStore._apply_global_shader_flag_overrides = function (self)
+	local global_shader_flag_overrides = StoreLayoutConfig.global_shader_flag_overrides
+
+	if not global_shader_flag_overrides then
+		return
+	end
+
+	for global_shader_flag, enabled in pairs(global_shader_flag_overrides) do
+		GlobalShaderFlags.set_override_shader_flag(global_shader_flag, enabled)
+	end
+end
+
+HeroViewStateStore._remove_global_shader_flag_overrides = function (self)
+	local global_shader_flag_overrides = StoreLayoutConfig.global_shader_flag_overrides
+
+	if not global_shader_flag_overrides then
+		return
+	end
+
+	for global_shader_flag, enabled in pairs(global_shader_flag_overrides) do
+		GlobalShaderFlags.remove_override_shader_flag(global_shader_flag)
+	end
 end
 
 HeroViewStateStore._trigger_welcome_popup = function (self, unseen_currency_rewards)
@@ -636,7 +662,11 @@ HeroViewStateStore.page_exists = function (self, page_name)
 	return StoreLayoutConfig.pages[page_name] ~= nil
 end
 
-HeroViewStateStore.go_to_store_path = function (self, path_array)
+HeroViewStateStore.go_to_store_path = function (self, path_array, keep_global_shader_flags)
+	if not keep_global_shader_flags then
+		self:_remove_page_global_shader_flag_overrides()
+	end
+
 	local pages = StoreLayoutConfig.pages
 	local page = pages[path_array[#path_array]]
 	local layout = page.layout
@@ -649,9 +679,47 @@ HeroViewStateStore.go_to_store_path = function (self, path_array)
 	self._store_path_array = path_array
 
 	self:set_layout_by_name(layout)
+
+	if not keep_global_shader_flags then
+		self:_apply_page_global_shader_flag_overrides(page)
+	end
 end
 
-HeroViewStateStore.go_to_product = function (self, product_id, optional_path, optional_product_settings)
+HeroViewStateStore._apply_page_global_shader_flag_overrides = function (self, page)
+	local global_shader_flag_overrides = page.global_shader_flag_overrides
+
+	if not global_shader_flag_overrides then
+		return
+	end
+
+	for global_shader_flag, enabled in pairs(global_shader_flag_overrides) do
+		GlobalShaderFlags.set_override_shader_flag(global_shader_flag, enabled)
+	end
+end
+
+HeroViewStateStore._remove_page_global_shader_flag_overrides = function (self)
+	local pages = StoreLayoutConfig.pages
+	local path_array = self._store_path_array
+
+	if not path_array then
+		return
+	end
+
+	local page = pages[path_array[#path_array]]
+	local global_shader_flag_overrides = page.global_shader_flag_overrides
+
+	if not global_shader_flag_overrides then
+		return
+	end
+
+	for global_shader_flag, enabled in pairs(global_shader_flag_overrides) do
+		GlobalShaderFlags.remove_override_shader_flag(global_shader_flag)
+	end
+
+	self:_apply_global_shader_flag_overrides()
+end
+
+HeroViewStateStore.go_to_product = function (self, product_id, optional_path, optional_product_settings, keep_global_shader_flags)
 	local new_path = optional_path
 	local dlc_settings = nil
 	dlc_settings = StoreDlcSettingsByName[product_id]
@@ -711,7 +779,7 @@ HeroViewStateStore.go_to_product = function (self, product_id, optional_path, op
 	params.selected_product = product
 
 	if new_path then
-		self:go_to_store_path(new_path)
+		self:go_to_store_path(new_path, keep_global_shader_flags)
 	end
 end
 
@@ -849,6 +917,7 @@ HeroViewStateStore.on_exit = function (self, params)
 	end
 
 	Managers.telemetry_events:store_closed()
+	self:_remove_global_shader_flag_overrides()
 end
 
 HeroViewStateStore._close_active_windows = function (self, force_unload)

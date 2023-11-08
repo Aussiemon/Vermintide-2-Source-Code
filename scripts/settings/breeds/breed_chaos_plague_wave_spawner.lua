@@ -17,6 +17,7 @@ local breed_data = {
 	special = true,
 	base_unit = "units/hub_elements/empty",
 	threat_value = 0,
+	infighting = InfightingSettings.small,
 	debug_color = {
 		255,
 		255,

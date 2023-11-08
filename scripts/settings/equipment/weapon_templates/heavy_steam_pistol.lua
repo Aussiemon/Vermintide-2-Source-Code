@@ -338,6 +338,7 @@ local weapon_template = {
 		dr_ironbreaker = "to_steam_pistol_noammo_ib",
 		dr_engineer = "to_steam_pistol_noammo_engi"
 	},
+	state_machine = "units/beings/player/first_person_base/state_machines/ranged/steam_pistol",
 	no_ammo_reload_event = "reload",
 	reload_event = "reload",
 	crosshair_style = "default",

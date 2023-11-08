@@ -28,7 +28,7 @@ local breed_additional_spawn_chance = {
 
 return {
 	description = "curse_skulls_of_fury_desc",
-	package_name = "resource_packages/mutators/mutator_curse_skulls_of_fury",
+	curse_package_name = "resource_packages/mutators/mutator_curse_skulls_of_fury",
 	display_name = "curse_skulls_of_fury_name",
 	icon = "deus_curse_khorne_01",
 	server_start_function = function (context, data)

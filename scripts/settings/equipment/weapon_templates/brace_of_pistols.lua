@@ -525,6 +525,7 @@ local weapon_template = {
 	left_hand_attachment_node_linking = AttachmentNodeLinking.pistol.left,
 	display_unit = "units/weapons/weapon_display/display_pistols",
 	wield_anim = "to_dual_pistol",
+	state_machine = "units/beings/player/first_person_base/state_machines/ranged/dual_pistol",
 	reload_event = "reload",
 	crosshair_style = "default",
 	gui_texture = "hud_weapon_icon_repeating_handgun",

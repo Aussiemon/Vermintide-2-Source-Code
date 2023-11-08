@@ -413,10 +413,9 @@ SocialWheelUI._draw = function (self, dt, t)
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = Managers.input:get_service("ingame_menu")
 	local selection_widgets = self._current_selection_widgets
+	local render_settings = self._render_settings
 
-	if selection_widgets then
-		local render_settings = self._render_settings
-
+	if selection_widgets and render_settings.alpha_multiplier > 0 then
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
 		local num_selection_widgets = #selection_widgets

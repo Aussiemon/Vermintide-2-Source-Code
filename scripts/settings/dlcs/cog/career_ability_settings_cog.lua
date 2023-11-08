@@ -44,6 +44,7 @@ PassiveAbilitySettings.dr_4 = {
 	},
 	passive_ability_classes = {
 		{
+			name = "dr_4",
 			ability_class = PassiveAbilityEngineer
 		}
 	}

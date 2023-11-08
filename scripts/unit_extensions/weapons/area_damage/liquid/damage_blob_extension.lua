@@ -531,7 +531,7 @@ DamageBlobExtension.update_blob_overlaps = function (self, t)
 				local target_unit = ai_units[i]
 				local inside_blob = ai_units_inside[target_unit]
 
-				if AiUtils.unit_alive(target_unit) and (inside_blob == nil or inside_blob == blob) then
+				if HEALTH_ALIVE[target_unit] and (inside_blob == nil or inside_blob == blob) then
 					local target_position = position_lookup[target_unit]
 					local pos_projected_on_wave_line = Geometry.closest_point_on_line(target_position, first_blob_position, last_blob_position)
 					local to_line_distance_sq = Vector3.distance_squared(target_position, pos_projected_on_wave_line)

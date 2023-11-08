@@ -59,6 +59,14 @@ BTTargetUnreachableAction.run = function (self, unit, blackboard, t, dt)
 		end
 
 		blackboard.target_outside_navmesh = not target_on_mesh
+	else
+		if distance_target_sq < 1 then
+			local to_target = Vector3.normalize(position - target_position)
+			local test_pos = position + to_target * 1.5
+			closest_position = ConflictUtils.find_center_tri(blackboard.nav_world, test_pos, 0.7, 0.7)
+		end
+
+		blackboard.target_outside_navmesh = false
 	end
 
 	local navigation_extension = blackboard.navigation_extension

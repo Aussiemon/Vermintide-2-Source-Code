@@ -25,7 +25,6 @@ ActionInspectGeheimnisnacht2021.init = function (self, world, item_name, is_serv
 	self._health_extension = ScriptUnit.has_extension(owner_unit, "health_system")
 	self._influence_str = 0
 	self._influence_str_max = 0
-	self._influnece_anim_var = Unit.animation_find_variable(self.first_person_unit, "influence")
 	self._screen_fx_id = nil
 	self._is_immune = immune_careers[self._career_extension:career_name()]
 	self._next_curse_time_t = 0
@@ -41,9 +40,7 @@ ActionInspectGeheimnisnacht2021.client_owner_start_action = function (self, new_
 	self._next_curse_time_t = 0
 	self._take_curse_damage = false
 
-	if self._influnece_anim_var then
-		Unit.animation_set_variable(self.first_person_unit, self._influnece_anim_var, self._influence_str)
-	end
+	self._first_person_extension:animation_set_variable("influence", self._influence_str)
 end
 
 ActionInspectGeheimnisnacht2021.client_owner_post_update = function (self, dt, t, world, can_damage)
@@ -66,9 +63,7 @@ ActionInspectGeheimnisnacht2021.client_owner_post_update = function (self, dt, t
 		self._influence_str = math.min(math.lerp(self._influence_str, max_influence_at_angle, influence_inc), MAX_INFLUENCE)
 	end
 
-	if self._influnece_anim_var then
-		Unit.animation_set_variable(self.first_person_unit, self._influnece_anim_var, self._influence_str)
-	end
+	self._first_person_extension:animation_set_variable("influence", self._influence_str)
 
 	self._influence_str_max = math.max(self._influence_str_max, self._influence_str)
 

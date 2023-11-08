@@ -305,6 +305,7 @@ weapon_template.left_hand_unit = "units/weapons/player/wpn_wh_deus_01/wpn_wh_deu
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.pistol.left
 weapon_template.display_unit = "units/weapons/weapon_display/display_pistols"
 weapon_template.wield_anim = "to_wh_deus_01"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/ranged/wh_deus_01"
 weapon_template.reload_event = "reload"
 weapon_template.crosshair_style = "default"
 weapon_template.gui_texture = "hud_weapon_icon_repeating_handgun"

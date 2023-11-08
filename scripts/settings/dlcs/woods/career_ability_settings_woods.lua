@@ -38,6 +38,7 @@ PassiveAbilitySettings.we_thornsister = {
 	},
 	passive_ability_classes = {
 		{
+			name = "we_thornsister",
 			ability_class = PassiveAbilityThornsister,
 			init_data = {
 				starting_stack_count = 0,

@@ -29,7 +29,6 @@ PassiveAbilityWarriorPriest.extensions_ready = function (self, world, unit)
 	if self._first_person_extension then
 		local fp_unit = self._first_person_extension:get_first_person_unit()
 		self._fp_unit = fp_unit
-		self._anim_var_id = Unit.animation_find_variable(fp_unit, "talent_anim_type")
 		self._anim_var_3p_id = Unit.animation_find_variable(unit, "talent_anim_type")
 
 		self:on_talents_changed(unit, self._talent_extension)
@@ -135,7 +134,7 @@ PassiveAbilityWarriorPriest.on_player_killed_enemy = function (self, killing_blo
 end
 
 PassiveAbilityWarriorPriest.on_hit = function (self, hit_unit, attack_type, hit_zone_name, target_number, buff_type, is_critical, unmodified, unit)
-	if self._is_local_player then
+	if self._is_local_player and unit == self._owner_unit then
 		self:set_in_combat()
 	end
 end
@@ -313,8 +312,8 @@ PassiveAbilityWarriorPriest.on_talents_changed = function (self, unit, talent_ex
 
 	local fp_unit = self._fp_unit
 
-	if ALIVE[fp_unit] and self._anim_var_id then
-		unit_animation_set_variable(fp_unit, self._anim_var_id, talent_selection)
+	if ALIVE[fp_unit] then
+		self._first_person_extension:animation_set_variable("talent_anim_type", talent_selection)
 	end
 
 	local tp_unit = unit

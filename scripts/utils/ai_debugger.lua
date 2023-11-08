@@ -132,15 +132,15 @@ AIDebugger.update = function (self, t, dt)
 	elseif DebugKeyHandler.key_pressed("j", "damage selected AI", "ai", "left alt") then
 		local kill_unit = self.active_unit
 
-		if not AiUtils.unit_alive(kill_unit) and self:closest_unit_in_aim_dir(in_free_flight) then
+		if not HEALTH_ALIVE[kill_unit] and self:closest_unit_in_aim_dir(in_free_flight) then
 			kill_unit = self.hot_unit
 		end
 
-		DamageUtils.debug_deal_damage(kill_unit, nil, nil, 500)
+		DamageUtils.debug_deal_damage(kill_unit, 1000)
 	elseif DebugKeyHandler.key_pressed("j", "kill selected AI", "ai") then
 		local kill_unit = self.active_unit
 
-		if not AiUtils.unit_alive(kill_unit) and self:closest_unit_in_aim_dir(in_free_flight) then
+		if not HEALTH_ALIVE[kill_unit] and self:closest_unit_in_aim_dir(in_free_flight) then
 			kill_unit = self.hot_unit
 		end
 
@@ -443,7 +443,7 @@ AIDebugger.update_mouse_input = function (self, input)
 	if mouse_released then
 		local breed = Unit.get_data(self.hot_unit, "breed")
 
-		DamageUtils.debug_deal_damage(self.hot_unit, "basic_debug_damage_ai")
+		DamageUtils.debug_deal_damage(self.hot_unit, 1000)
 	end
 end
 

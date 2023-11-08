@@ -157,12 +157,11 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 	local damaged_by_other = unit ~= killer_unit
 	local blackboard = BLACKBOARDS[unit]
 	local ai_extension = ScriptUnit.extension(unit, "ai_system")
+	local breed = blackboard.breed
 
-	if damaged_by_other then
+	if not breed.disable_alert_friends_on_death and damaged_by_other then
 		AiUtils.alert_nearby_friends_of_enemy(unit, blackboard.group_blackboard.broadphase, killer_unit)
 	end
-
-	local breed = blackboard.breed
 
 	if is_server and breed.custom_death_enter_function then
 		local damage_source = killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME]
@@ -175,11 +174,11 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 	local locomotion = ScriptUnit.has_extension(unit, "locomotion_system")
 
 	if locomotion then
-		locomotion.death_velocity_boxed = locomotion.movement_type == "script_driven" and Vector3Box(locomotion:current_velocity()) or nil
+		local death_velocity = locomotion.death_velocity_boxed and locomotion.death_velocity_boxed:unbox() or Vector3.zero()
 
 		locomotion:set_affected_by_gravity(false)
 		locomotion:set_movement_type("script_driven")
-		locomotion:set_wanted_velocity(Vector3.zero())
+		locomotion:set_wanted_velocity(death_velocity)
 		Managers.state.entity:system("ai_navigation_system"):add_navbot_to_release(unit)
 		locomotion:set_collision_disabled("death_reaction", true)
 		locomotion:set_movement_type("disabled")
@@ -219,7 +218,7 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 	local death_extension = ScriptUnit.extension(unit, "death_system")
 	local data = {
 		breed = breed,
-		finish_time = t + (breed.time_to_unspawn_after_death or 10),
+		finish_time = t + (breed.time_to_unspawn_after_death or 3),
 		wall_nail_data = death_extension.wall_nail_data
 	}
 	local force_despawn = breed.force_despawn
@@ -376,23 +375,31 @@ local function update_wall_nail(unit, dt, t, data)
 end
 
 local function ai_default_unit_update(unit, dt, context, t, data, is_server)
-	if not data.remove then
-		if data.push_to_death_watch_timer and data.push_to_death_watch_timer < t then
-			Managers.state.unit_spawner:push_unit_to_death_watch_list(unit, t, data)
+	local removed_externally = data.remove
 
-			data.push_to_death_watch_timer = nil
-		end
+	if removed_externally then
+		Managers.state.conflict:register_unit_destroyed(unit, BLACKBOARDS[unit], "death_done")
 
-		if next(data.wall_nail_data) then
-			update_wall_nail(unit, dt, t, data)
-		end
-
-		return DeathReactions.IS_NOT_DONE
+		return DeathReactions.IS_DONE
 	end
 
-	Managers.state.conflict:register_unit_destroyed(unit, BLACKBOARDS[unit], "death_done")
+	if data.finish_time then
+		if t < data.finish_time then
+			if next(data.wall_nail_data) then
+				update_wall_nail(unit, dt, t, data)
+			end
+		else
+			data.finish_time = nil
+		end
+	end
 
-	return DeathReactions.IS_DONE
+	if data.push_to_death_watch_timer and data.push_to_death_watch_timer < t then
+		Managers.state.unit_spawner:push_unit_to_death_watch_list(unit, t, data)
+
+		data.push_to_death_watch_timer = nil
+	end
+
+	return DeathReactions.IS_NOT_DONE
 end
 
 local function ai_default_husk_pre_start(unit, context, t, killing_blow)
@@ -428,7 +435,6 @@ local function ai_default_husk_start(unit, context, t, killing_blow, is_server)
 	if locomotion then
 		locomotion:set_mover_disable_reason("husk_death_reaction", true)
 		locomotion:set_collision_disabled("husk_death_reaction", true)
-		locomotion:destroy()
 	end
 
 	local owner_unit = AiUtils.get_actual_attacker_unit(killer_unit)
@@ -466,7 +472,7 @@ local function ai_default_husk_start(unit, context, t, killing_blow, is_server)
 	local death_extension = ScriptUnit.extension(unit, "death_system")
 	local data = {
 		breed = breed,
-		finish_time = t + 10,
+		finish_time = t + 3,
 		wall_nail_data = death_extension.wall_nail_data
 	}
 
@@ -494,14 +500,20 @@ local function ai_default_husk_update(unit, dt, context, t, data)
 		update_wall_nail(unit, dt, t, data)
 
 		return DeathReactions.IS_NOT_DONE
-	elseif not data.player_collided and not data.nailed then
+	elseif t < data.finish_time and not data.player_collided and not data.nailed then
 		return DeathReactions.IS_NOT_DONE
+	end
+
+	local locomotion = ScriptUnit.has_extension(unit, "locomotion_system")
+
+	if locomotion then
+		locomotion:destroy()
 	end
 
 	return DeathReactions.IS_DONE
 end
 
-local function play_unit_audio(unit, blackboard, sound_name)
+local function play_unit_audio(unit, sound_name)
 	Managers.state.entity:system("audio_system"):play_audio_unit_event(sound_name, unit)
 end
 
@@ -954,6 +966,12 @@ DeathReactions.templates = {
 					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 				end
 
+				local locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system")
+
+				if locomotion_extension then
+					locomotion_extension:destroy()
+				end
+
 				Managers.state.unit_spawner:freeze_unit_extensions(unit, t, data)
 
 				return nil, DeathReactions.IS_DONE
@@ -970,8 +988,13 @@ DeathReactions.templates = {
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
 				local blackboard = BLACKBOARDS[unit]
+				local breed = Unit.get_data(unit, "breed")
 
-				play_unit_audio(unit, blackboard, "Stop_enemy_foley_globadier_boiling_loop")
+				if breed.name == "skaven_poison_wind_globadier" then
+					printf("[HON-43348] Globadier (%s) inside death reaction. Playing sound.", Unit.get_data(unit, "globadier_43348"))
+				end
+
+				play_unit_audio(unit, "Stop_enemy_foley_globadier_boiling_loop")
 
 				if unit ~= killing_blow[DamageDataIndex.ATTACKER] and ScriptUnit.has_extension(unit, "ai_system") then
 					ScriptUnit.extension(unit, "ai_system"):attacked(killing_blow[DamageDataIndex.ATTACKER], t, killing_blow)
@@ -985,7 +1008,7 @@ DeathReactions.templates = {
 
 					local sound_name = "Play_enemy_combat_globadier_suicide_explosion"
 
-					play_unit_audio(unit, blackboard, sound_name)
+					play_unit_audio(unit, sound_name)
 					trigger_unit_dialogue_death_event(unit, killing_blow[DamageDataIndex.ATTACKER], killing_blow[DamageDataIndex.HIT_ZONE], killing_blow[DamageDataIndex.DAMAGE_TYPE])
 					trigger_player_killing_blow_ai_buffs(unit, killing_blow)
 
@@ -1532,8 +1555,8 @@ DeathReactions.templates = {
 			end,
 			start = function (unit, context, t, killing_blow, is_server, death_extension)
 				local data = {
-					despawn_after_time = death_extension.extension_init_data.despawn_after_time or 0,
-					play_effect = death_extension.extension_init_data.play_effect
+					despawn_after_time = death_extension.despawn_after_time or 0,
+					play_effect = death_extension.play_effect
 				}
 				local projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
 

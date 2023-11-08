@@ -128,7 +128,9 @@ AIGroupSystem.init_extension = function (self, unit, extension, extension_init_d
 			group_start_position = extension_init_data.group_start_position,
 			despawn_at_end = despawn_at_end,
 			side_id = extension_init_data.side_id,
-			side = extension_init_data.side
+			side = extension_init_data.side,
+			commanding_player = extension_init_data.commanding_player,
+			group_data = extension_init_data.group_data
 		}
 		local spline_name = group.spline_name
 		local spline = self._patrol_splines[spline_name] or self._roaming_splines[spline_name] or self._event_splines[spline_name]

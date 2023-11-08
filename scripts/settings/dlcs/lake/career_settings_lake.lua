@@ -2,6 +2,7 @@ CareerActionNames.empire_soldier[#CareerActionNames.empire_soldier + 1] = "actio
 PlayerBreeds.hero_es_questingknight = {
 	is_hero = true,
 	name = "hero_es_questingknight",
+	cannot_be_aggroed = true,
 	vortexable = true,
 	awards_positive_reinforcement_message = true,
 	is_player = true,
@@ -9,7 +10,10 @@ PlayerBreeds.hero_es_questingknight = {
 	poison_resistance = 0,
 	armor_category = 4,
 	threat_value = 8,
-	hit_zones = PlayerBreedHitZones.kruber_breed_hit_zones
+	hit_zones = PlayerBreedHitZones.kruber_breed_hit_zones,
+	status_effect_settings = {
+		category = "small"
+	}
 }
 CareerSettings.es_questingknight = {
 	profile_name = "empire_soldier",

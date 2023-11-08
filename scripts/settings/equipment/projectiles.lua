@@ -183,6 +183,27 @@ Projectiles.victor_bounty_hunter = {
 	projectile_units_template = "bullet_temp"
 }
 Projectiles.victor_bounty_hunter = table.clone(Projectiles.victor_bounty_hunter) or table.clone(Projectiles.default)
+Projectiles.necromancer_trapped_soul = {
+	projectile_unit_template_name = "ai_true_flight_projectile_unit",
+	static_impact_type = "raycast",
+	gravity_settings = "drake_pistols",
+	impact_type = "sphere_sweep",
+	trajectory_template_name = "throw_trajectory",
+	radius = 0.05,
+	projectile_units_template = "necromancer_trapped_soul"
+}
+Projectiles.bw_necromancy_staff = {
+	impact_type = "sphere_sweep",
+	static_impact_type = "raycast",
+	fire_from_muzzle = false,
+	gaze_override_gravity_settings = "gaze_fireball",
+	trajectory_template_name = "throw_trajectory",
+	muzzle_name = "fx_01",
+	radius = 0.15,
+	gravity_settings = "bounty_hunter_shot",
+	projectile_unit_template_name = "player_projectile_unit",
+	projectile_units_template = "necromancer_curse_spirit"
+}
 Projectiles.pistol_shot = table.clone(Projectiles.victor_bounty_hunter) or table.clone(Projectiles.default)
 Projectiles.pistol_shot.radius = 0.05
 Projectiles.grenade = {

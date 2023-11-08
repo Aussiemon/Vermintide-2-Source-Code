@@ -538,7 +538,7 @@ AINavigationSystem.update_next_smart_object = function (self, t, dt)
 
 		if data.next_smart_object_id then
 			local dist_sq = Vector3.distance_squared(data.entrance_pos:unbox(), Unit.local_position(extension._unit, 0))
-			extension._blackboard.is_in_smartobject_range = dist_sq < 4
+			extension._blackboard.is_in_smartobject_range = dist_sq < 1
 		end
 	end
 end

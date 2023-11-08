@@ -38,12 +38,6 @@ PlayerUnitAttackIntensityExtension.extensions_ready = function (self, world, uni
 end
 
 PlayerUnitAttackIntensityExtension.update = function (self, unit, input, dt, context, t)
-	if RELOAD then
-		self:_setup_intensity()
-
-		RELOAD = false
-	end
-
 	for type, _ in pairs(AttackIntensitySettings.attack_type_intesities) do
 		local decay_grace = self._attack_intensity_decay_grace[type]
 

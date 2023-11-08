@@ -614,7 +614,7 @@ AiBreedSnippets.on_chaos_warrior_update = function (unit, blackboard, t)
 	local breed = blackboard.breed
 	local displace_players_data = breed.displace_players_data
 
-	if not displace_players_data or not AiUtils.unit_alive(unit) then
+	if not displace_players_data or not HEALTH_ALIVE[unit] then
 		return
 	end
 
@@ -1494,7 +1494,7 @@ end
 AiBreedSnippets.on_stormfiend_boss_dismount = function (unit, blackboard)
 	local grey_seer_unit = blackboard.linked_unit
 
-	if AiUtils.unit_alive(grey_seer_unit) then
+	if HEALTH_ALIVE[grey_seer_unit] then
 		local grey_seer_blackboard = BLACKBOARDS[grey_seer_unit]
 		local mounted_data = grey_seer_blackboard.mounted_data
 		local network_manager = Managers.state.network
@@ -1664,7 +1664,7 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 		blackboard.current_phase = 2
 	end
 
-	if not AiUtils.unit_alive(mount_unit) and blackboard.current_phase ~= 5 and blackboard.current_phase ~= 6 then
+	if not HEALTH_ALIVE[mount_unit] and blackboard.current_phase ~= 5 and blackboard.current_phase ~= 6 then
 		if blackboard.current_phase ~= 4 then
 			local event_data = FrameTable.alloc_table()
 
@@ -1703,7 +1703,7 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 		mounted_data.knocked_off_mounted_timer = t
 	end
 
-	if blackboard.knocked_off_mount and AiUtils.unit_alive(mount_unit) then
+	if blackboard.knocked_off_mount and HEALTH_ALIVE[mount_unit] then
 		local mount_blackboard = BLACKBOARDS[mount_unit]
 		local mounted_timer_finished = mounted_data.knocked_off_mounted_timer and mounted_data.knocked_off_mounted_timer <= t
 		local should_call_stormfiend = not blackboard.call_stormfiend and not mount_blackboard.intro_rage and mounted_timer_finished and not mount_blackboard.goal_position and not mount_blackboard.anim_cb_move
@@ -1733,7 +1733,7 @@ AiBreedSnippets.on_grey_seer_update = function (unit, blackboard, t)
 		local conflict_director = Managers.state.conflict
 		local timer = hp * 12
 
-		if blackboard.knocked_off_mount or not AiUtils.unit_alive(mount_unit) then
+		if blackboard.knocked_off_mount or not HEALTH_ALIVE[mount_unit] then
 			timer = timer * 0.5
 		end
 
@@ -1798,6 +1798,69 @@ AiBreedSnippets.on_gutter_runner_spawn = function (unit, blackboard)
 	blackboard.initial_pounce_timer = t + math.random(2, 3)
 
 	Managers.state.entity:system("surrounding_aware_system"):add_system_event(unit, "heard_enemy", DialogueSettings.enemies_distant_distance, "enemy_tag", "skaven_gutter_runner")
+end
+
+AiBreedSnippets.update_enemy_sighting_within_commander_sticky = function (blackboard)
+	local units_in_combat = blackboard.commander_extension:controlled_units_in_combat()
+	local within_commander_range = false
+
+	repeat
+		if not HEALTH_ALIVE[blackboard.target_unit] then
+			break
+		end
+
+		if blackboard.override_target_selection_name or blackboard.ability_spawned then
+			within_commander_range = true
+		elseif HEALTH_ALIVE[blackboard.commander_target] then
+			within_commander_range = true
+		else
+			blackboard.commander_target = nil
+
+			if blackboard.stick_to_enemy_t then
+				local t = Managers.time:time("game")
+
+				if t < blackboard.stick_to_enemy_t then
+					within_commander_range = true
+
+					break
+				else
+					blackboard.stick_to_enemy_t = nil
+				end
+			end
+
+			if blackboard.attack_token or blackboard.keep_target then
+				within_commander_range = true
+			else
+				local detection_source_pos = blackboard.detection_source_pos:unbox()
+				local distance_sq = Vector3.distance_squared(detection_source_pos, POSITION_LOOKUP[blackboard.target_unit])
+				local padding = 1
+				local detection_radius = blackboard.detection_radius + padding
+
+				if distance_sq < detection_radius * detection_radius then
+					within_commander_range = true
+				end
+			end
+		end
+	until true
+
+	blackboard.target_unit = within_commander_range and blackboard.target_unit or nil
+	blackboard.confirmed_enemy_sighting_within_commander = within_commander_range
+
+	blackboard.commander_extension:set_in_combat(blackboard.unit, within_commander_range)
+
+	local commanded_aggro_sound = blackboard.breed.commanded_unit_aggro_sound
+
+	if commanded_aggro_sound then
+		local t = Managers.time:time("game")
+		blackboard.last_in_combat_t = blackboard.last_in_combat_t or t
+		local required_time_out_of_combat = 2
+
+		if blackboard.target_unit and blackboard.command_state ~= CommandStates.Attacking and t > blackboard.last_in_combat_t + required_time_out_of_combat then
+			Managers.state.entity:system("dialogue_system"):trigger_general_unit_event(blackboard.unit, commanded_aggro_sound)
+		end
+
+		blackboard.last_in_combat_t = blackboard.target_unit and t or blackboard.last_in_combat_t
+	end
 end
 
 DLCUtils.require_list("ai_breed_snippets_file_names")

@@ -1211,7 +1211,7 @@ dlc_settings.buff_function_templates = {
 		end
 
 		if buff.marked_enemy then
-			local alive = AiUtils.unit_alive(buff.marked_enemy)
+			local alive = HEALTH_ALIVE[buff.marked_enemy]
 
 			if alive then
 				return
@@ -1243,7 +1243,7 @@ dlc_settings.buff_function_templates = {
 
 		local marked_enemy = buff.marked_enemy
 
-		if marked_enemy == unit and AiUtils.unit_alive(marked_enemy) then
+		if marked_enemy == unit and HEALTH_ALIVE[marked_enemy] then
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 			local marked_enemy_buff_id = buff.marked_enemy_buff_id
 
@@ -2215,7 +2215,7 @@ dlc_settings.proc_functions = {
 				for target_id = 1, num_enemies do
 					local target_unit = nearby_enemy_units[target_id]
 
-					if ALIVE[target_unit] and not hit_units[target_unit] and AiUtils.unit_alive(target_unit) and target_unit ~= hit_unit then
+					if ALIVE[target_unit] and not hit_units[target_unit] and HEALTH_ALIVE[target_unit] and target_unit ~= hit_unit then
 						hit_units[target_unit] = true
 
 						DamageUtils.add_damage_network(target_unit, owner_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
@@ -2591,7 +2591,7 @@ dlc_settings.proc_functions = {
 				for target_id = 1, num_enemies do
 					local target_unit = nearby_enemy_units[target_id]
 
-					if ALIVE[target_unit] and not hit_units[target_unit] and AiUtils.unit_alive(target_unit) then
+					if ALIVE[target_unit] and not hit_units[target_unit] and HEALTH_ALIVE[target_unit] then
 						hit_units[target_unit] = true
 
 						DamageUtils.add_damage_network(target_unit, owner_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
@@ -2903,9 +2903,8 @@ dlc_settings.proc_functions = {
 		end
 	end,
 	last_player_standing_knocked_down_check = function (owner_unit, buff, params)
-		local local_health_extension = ScriptUnit.has_extension(owner_unit, "health_system")
 		local local_status_extension = ScriptUnit.extension(owner_unit, "status_system")
-		local player_eligible = ALIVE[owner_unit] and local_health_extension:is_alive() and not local_status_extension:is_knocked_down()
+		local player_eligible = HEALTH_ALIVE[owner_unit] and not local_status_extension:is_knocked_down()
 
 		if player_eligible then
 			local all_down_but_me = true
@@ -2914,11 +2913,10 @@ dlc_settings.proc_functions = {
 
 			for _, player_unit in ipairs(player_units) do
 				if player_unit ~= owner_unit then
-					local health_extension = ScriptUnit.has_extension(player_unit, "health_system")
 					local status_extension = ScriptUnit.extension(player_unit, "status_system")
 					local is_knocked_down = status_extension:is_knocked_down()
 
-					if ALIVE[player_unit] and health_extension:is_alive() and not is_knocked_down then
+					if HEALTH_ALIVE[player_unit] and not is_knocked_down then
 						all_down_but_me = false
 					end
 				end
@@ -3945,15 +3943,14 @@ dlc_settings.explosion_templates = {
 	stagger_aoe_on_crit = {
 		name = "stagger_aoe_on_crit",
 		explosion = {
-			no_prop_damage = true,
-			radius = 5,
-			use_attacker_power_level = true,
-			max_damage_radius = 2,
 			always_hurt_players = false,
-			alert_enemies = true,
+			radius = 5,
+			no_prop_damage = true,
+			max_damage_radius = 2,
+			use_attacker_power_level = true,
 			alert_enemies_radius = 15,
 			attack_template = "drakegun",
-			damage_type = "grenade",
+			alert_enemies = true,
 			damage_profile = "ability_push",
 			no_friendly_fire = true
 		}
@@ -3964,7 +3961,6 @@ dlc_settings.explosion_templates = {
 			use_attacker_power_level = true,
 			radius = 4,
 			hit_sound_event = "Play_wind_metal_gameplay_mutator_wind_hit",
-			damage_type = "cutting",
 			damage_profile = "armor_breaker",
 			no_friendly_fire = true
 		}
@@ -3999,6 +3995,7 @@ dlc_settings.explosion_templates = {
 		aoe = {
 			dot_template_name = "burning_magma_dot",
 			nav_tag_volume_layer = "fire_grenade",
+			dot_balefire_variant = true,
 			create_nav_tag_volume = true,
 			attack_template = "wizard_staff_geiser",
 			sound_event_name = "player_combat_weapon_fire_bw_deus_01_impact",
@@ -4007,7 +4004,7 @@ dlc_settings.explosion_templates = {
 			area_damage_template = "explosion_template_aoe",
 			nav_mesh_effect = {
 				particle_radius = 2,
-				particle_name = "fx/wpnfx_bw_deus_geyser_01",
+				particle_name = "fx/wpnfx_bw_deus_geyser_01_remap",
 				particle_spacing = 0.9
 			}
 		}
@@ -4030,11 +4027,10 @@ dlc_settings.explosion_templates = {
 		name = "blessing_of_isha_stagger",
 		explosion = {
 			use_attacker_power_level = true,
-			damage_type = "grenade",
 			no_friendly_fire = true,
+			no_prop_damage = true,
 			max_damage_radius = 0,
 			damage_profile = "markus_knight_charge",
-			no_prop_damage = true,
 			always_hurt_players = false,
 			attack_template = "markus_knight_charge"
 		}
@@ -4320,16 +4316,15 @@ dlc_settings.explosion_templates = {
 	player_disabled_stagger = {
 		name = "stagger_aoe_on_crit",
 		explosion = {
-			use_attacker_power_level = true,
+			no_prop_damage = true,
 			radius = 5,
 			effect_name = "fx/cw_enemy_explosion",
 			max_damage_radius = 2,
-			no_prop_damage = true,
+			use_attacker_power_level = true,
 			always_hurt_players = false,
-			alert_enemies = true,
-			attack_template = "drakegun",
 			alert_enemies_radius = 15,
-			damage_type = "grenade",
+			attack_template = "drakegun",
+			alert_enemies = true,
 			damage_profile = "ability_push",
 			no_friendly_fire = true
 		}
@@ -4339,18 +4334,17 @@ dlc_settings.explosion_templates = {
 		explosion = {
 			use_attacker_power_level = true,
 			radius = 5,
+			effect_name = "fx/chr_kruber_shockwave",
 			hit_sound_event = "Play_wind_metal_gameplay_mutator_wind_hit",
 			max_damage_radius = 2,
-			no_friendly_fire = true,
 			no_prop_damage = true,
 			always_hurt_players = false,
 			attack_template = "drakegun",
-			alert_enemies = true,
 			alert_enemies_radius = 15,
 			sound_event_name = "boon_melee_wave",
-			damage_type = "grenade",
+			alert_enemies = true,
 			damage_profile = "ability_push",
-			effect_name = "fx/chr_kruber_shockwave"
+			no_friendly_fire = true
 		}
 	},
 	shield_splinters = {
@@ -4359,9 +4353,8 @@ dlc_settings.explosion_templates = {
 			use_attacker_power_level = true,
 			radius = 4,
 			no_friendly_fire = true,
-			damage_type = "cutting",
-			damage_profile = "armor_breaker",
 			hit_sound_event = "Play_wind_metal_gameplay_mutator_wind_hit",
+			damage_profile = "armor_breaker",
 			sound_event_name = "boon_shield_of_splinters",
 			effect_name = "fx/wpnfx_flaming_flail_hit_01"
 		}
@@ -4391,7 +4384,6 @@ dlc_settings.explosion_templates = {
 			use_attacker_power_level = true,
 			radius = 2,
 			hit_sound_event = "Play_wind_metal_gameplay_mutator_wind_hit",
-			damage_type = "cutting",
 			damage_profile = "thorn_skin",
 			no_friendly_fire = true
 		}
@@ -4399,14 +4391,13 @@ dlc_settings.explosion_templates = {
 	static_charge = {
 		name = "static_charge",
 		explosion = {
-			no_prop_damage = true,
-			radius = 3,
-			use_attacker_power_level = true,
-			max_damage_radius = 2,
 			always_hurt_players = false,
-			sound_event_name = "boon_orb_static_charge",
+			radius = 3,
+			no_prop_damage = true,
+			max_damage_radius = 2,
+			use_attacker_power_level = true,
 			attack_template = "drakegun",
-			damage_type = "grenade",
+			sound_event_name = "boon_orb_static_charge",
 			damage_profile = "static_charge",
 			no_friendly_fire = true
 		}
@@ -4414,17 +4405,16 @@ dlc_settings.explosion_templates = {
 	bad_breath = {
 		name = "stagger_aoe_on_crit",
 		explosion = {
-			use_attacker_power_level = true,
+			no_prop_damage = true,
 			radius = 5,
 			effect_name = "fx/belakor/blk_smite_01_fx",
 			max_damage_radius = 2,
-			no_prop_damage = true,
+			use_attacker_power_level = true,
 			always_hurt_players = false,
-			alert_enemies = true,
-			attack_template = "drakegun",
 			alert_enemies_radius = 15,
+			attack_template = "drakegun",
 			sound_event_name = "boon_bad_breath",
-			damage_type = "grenade",
+			alert_enemies = true,
 			damage_profile = "ability_push",
 			no_friendly_fire = true
 		}
@@ -4434,10 +4424,9 @@ dlc_settings.explosion_templates = {
 		explosion = {
 			use_attacker_power_level = true,
 			radius = 1,
-			damage_type = "grenade",
+			no_friendly_fire = true,
 			max_damage_radius = 0,
 			damage_profile = "markus_knight_charge",
-			no_friendly_fire = true,
 			no_prop_damage = true,
 			attack_template = "markus_knight_charge"
 		}
@@ -4665,11 +4654,14 @@ dlc_settings.buff_templates = {
 			{
 				update_func = "update_pockets_full_of_bombs_buff",
 				name = "pockets_full_of_bombs_potion",
-				icon = "potion_pockets_full_of_bombs",
 				remove_buff_func = "remove_deus_potion_buff",
+				icon = "potion_pockets_full_of_bombs",
 				apply_buff_func = "apply_pockets_full_of_bombs_buff",
 				duration = MorrisBuffTweakData.pockets_full_of_bombs_potion.duration,
-				perk = buff_perks.disable_interactions
+				perks = {
+					buff_perks.disable_interactions,
+					buff_perks.free_grenade
+				}
 			},
 			{
 				remove_buff_func = "remove_movement_buff",
@@ -4688,11 +4680,14 @@ dlc_settings.buff_templates = {
 			{
 				update_func = "update_pockets_full_of_bombs_buff",
 				name = "pockets_full_of_bombs_potion_increased",
-				icon = "potion_pockets_full_of_bombs",
 				remove_buff_func = "remove_deus_potion_buff",
+				icon = "potion_pockets_full_of_bombs",
 				apply_buff_func = "apply_pockets_full_of_bombs_buff",
 				duration = MorrisBuffTweakData.pockets_full_of_bombs_potion_increased.duration,
-				perk = buff_perks.disable_interactions
+				perks = {
+					buff_perks.disable_interactions,
+					buff_perks.free_grenade
+				}
 			},
 			{
 				name = "pockets_full_of_bombs_potion_movement_speed_increased",
@@ -4782,7 +4777,9 @@ dlc_settings.buff_templates = {
 				max_stacks = 1,
 				icon = "potion_poison_proof",
 				refresh_durations = true,
-				perk = buff_perks.poison_proof,
+				perks = {
+					buff_perks.poison_proof
+				},
 				duration = MorrisBuffTweakData.poison_proof_potion.duration
 			}
 		}
@@ -4795,7 +4792,9 @@ dlc_settings.buff_templates = {
 				max_stacks = 1,
 				icon = "potion_poison_proof",
 				refresh_durations = true,
-				perk = buff_perks.poison_proof,
+				perks = {
+					buff_perks.poison_proof
+				},
 				duration = MorrisBuffTweakData.poison_proof_potion_increased.duration
 			}
 		}
@@ -4853,16 +4852,15 @@ dlc_settings.buff_templates = {
 	curse_mark_of_nurgle_dot = {
 		buffs = {
 			{
-				refresh_durations = true,
+				duration = 3,
 				name = "curse_mark_of_nurgle_dot",
-				update_func = "apply_dot_damage",
 				damage_profile = "curse_mark_of_nurgle_dot",
-				remove_buff_func = "remove_dot_damage",
+				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 1,
 				time_between_dot_damages = 1,
 				max_stacks = 1,
-				duration = 3
+				update_func = "apply_dot_damage"
 			}
 		}
 	},
@@ -4953,14 +4951,15 @@ dlc_settings.buff_templates = {
 				name = "curse_blood_storm_dot",
 				max_stacks = 1,
 				refresh_durations = true,
-				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 0.5,
 				time_between_dot_damages = 0.5,
 				damage_profile = "blood_storm",
 				update_func = "apply_dot_damage",
 				reapply_buff_func = "reapply_dot_damage",
-				perk = buff_perks.bleeding
+				perks = {
+					buff_perks.bleeding
+				}
 			}
 		}
 	},
@@ -4971,26 +4970,26 @@ dlc_settings.buff_templates = {
 				name = "curse_blood_storm_dot",
 				max_stacks = 1,
 				refresh_durations = true,
-				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 0.5,
 				time_between_dot_damages = 0.5,
 				damage_profile = "blood_storm_bots",
 				update_func = "apply_dot_damage",
 				reapply_buff_func = "reapply_dot_damage",
-				perk = buff_perks.bleeding
+				perks = {
+					buff_perks.bleeding
+				}
 			}
 		}
 	},
 	curse_abundance_of_life = {
 		buffs = {
 			{
-				update_func = "apply_dot_damage",
-				name = "curse_abundance_of_life_dot",
 				damage_percentage = 0.01,
-				custom_dot_tick_func = "curse_abundance_of_life_custom_dot_tick",
+				name = "curse_abundance_of_life_dot",
 				time_between_dot_damages = 2,
-				remove_buff_func = "remove_dot_damage",
+				custom_dot_tick_func = "curse_abundance_of_life_custom_dot_tick",
+				update_func = "apply_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 2
 			},
@@ -5060,7 +5059,9 @@ dlc_settings.buff_templates = {
 				icon = "buff_icon_mutator_icon_slayer_curse",
 				name = "curse_rotten_miasma_debuff",
 				debuff = true,
-				perk = buff_perks.slayer_curse
+				perks = {
+					buff_perks.slayer_curse
+				}
 			},
 			{
 				activation_effect = "fx/screenspace_deus_miasma",
@@ -5101,7 +5102,9 @@ dlc_settings.buff_templates = {
 		buffs = {
 			{
 				name = "blessing_of_shallya_buff",
-				perk = buff_perks.temp_to_permanent_health
+				perks = {
+					buff_perks.temp_to_permanent_health
+				}
 			}
 		}
 	},
@@ -5166,7 +5169,9 @@ dlc_settings.buff_templates = {
 		buffs = {
 			{
 				name = "blessing_of_isha_invincibility",
-				perk = buff_perks.ignore_death
+				perks = {
+					buff_perks.ignore_death
+				}
 			}
 		}
 	},
@@ -5218,7 +5223,9 @@ dlc_settings.buff_templates = {
 		buffs = {
 			{
 				name = "shared_health_pool",
-				perk = buff_perks.shared_health_pool_damage_only
+				perks = {
+					buff_perks.shared_health_pool_damage_only
+				}
 			}
 		}
 	},
@@ -5226,7 +5233,9 @@ dlc_settings.buff_templates = {
 		buffs = {
 			{
 				name = "we_deus_01_kerillian_critical_bleed_dot_disable",
-				perk = buff_perks.kerillian_critical_bleed_dot_disable
+				perks = {
+					buff_perks.kerillian_critical_bleed_dot_disable
+				}
 			}
 		}
 	},
@@ -5234,7 +5243,9 @@ dlc_settings.buff_templates = {
 		buffs = {
 			{
 				name = "wh_deus_01_victor_witchhunter_bleed_on_critical_hit_disable",
-				perk = buff_perks.victor_witchhunter_bleed_on_critical_hit_disable
+				perks = {
+					buff_perks.victor_witchhunter_bleed_on_critical_hit_disable
+				}
 			}
 		}
 	},
@@ -5243,74 +5254,66 @@ dlc_settings.buff_templates = {
 			{
 				duration = 2,
 				name = "we_deus_01_dot",
-				end_flow_event = "smoke",
-				start_flow_event = "burn",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
 				damage_type = "burninating",
 				damage_profile = "we_deus_01_dot",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
+				perks = {
+					buff_perks.burning_elven_magic
+				}
 			}
 		}
 	},
 	we_deus_01_dot_fast = {
 		buffs = {
 			{
-				end_flow_event = "smoke",
 				name = "we_deus_01_dot_fast",
 				ticks = 2,
-				start_flow_event = "burn",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
 				damage_type = "burninating",
 				damage_profile = "we_deus_01_dot",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
+				perks = {
+					buff_perks.burning_elven_magic
+				}
 			}
 		}
 	},
 	we_deus_01_dot_special_charged = {
 		buffs = {
 			{
-				end_flow_event = "smoke",
 				name = "we_deus_01_dot_special_charged",
 				ticks = 4,
-				start_flow_event = "burn",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
 				damage_type = "burninating",
 				damage_profile = "we_deus_01_dot",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
+				perks = {
+					buff_perks.burning_elven_magic
+				}
 			}
 		}
 	},
 	we_deus_01_dot_charged = {
 		buffs = {
 			{
-				end_flow_event = "smoke",
 				name = "we_deus_01_dot_charged",
 				ticks = 6,
-				start_flow_event = "burn",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
 				damage_type = "burninating",
 				damage_profile = "we_deus_01_dot",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
+				perks = {
+					buff_perks.burning_elven_magic
+				}
 			}
 		}
 	},
@@ -5328,43 +5331,20 @@ dlc_settings.buff_templates = {
 	burning_magma_dot = {
 		buffs = {
 			{
-				reapply_start_flow_event = true,
-				name = "burning_magma_dot",
-				remove_buff_func = "remove_dot_damage",
-				end_flow_event = "smoke",
 				duration = 3,
-				death_flow_event = "burn_death",
-				start_flow_event = "burn",
-				update_start_delay = 0.75,
+				name = "burning_magma_dot",
 				max_stacks = 6,
-				damage_type = "burninating",
-				reapply_buff_func = "reapply_dot_damage",
 				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
-				time_between_dot_damages = 0.75,
-				damage_profile = "burning_dot",
-				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
-			}
-		}
-	},
-	burning_magma_dot_infinite = {
-		buffs = {
-			{
-				end_flow_event = "smoke",
-				name = "infinite_burning_dot",
-				start_flow_event = "burn_infinity",
-				death_flow_event = "burn_death",
-				on_max_stacks_overflow_func = "reapply_infinite_burn",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
 				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
-				max_stacks = 1,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
+				reapply_buff_func = "reapply_dot_damage",
+				perks = {
+					buff_perks.burning
+				}
 			}
 		}
 	},
@@ -5390,7 +5370,9 @@ dlc_settings.buff_templates = {
 				event = "on_ledge_hang_start",
 				update_func = "update_ledge_rescue",
 				pull_up_duration = 1,
-				perk = buff_perks.ledge_self_rescue
+				perks = {
+					buff_perks.ledge_self_rescue
+				}
 			}
 		}
 	},
@@ -5516,27 +5498,31 @@ dlc_settings.buff_templates = {
 	guaranteed_crit_buff = {
 		buffs = {
 			{
-				name = "guaranteed_crit_buff",
 				max_stacks = 1,
+				name = "guaranteed_crit_buff",
 				buff_func = "dummy_function",
 				event = "on_critical_action",
 				icon = "bardin_ranger_linesman_unbalance",
 				remove_on_proc = true,
-				perk = buff_perks.guaranteed_crit
+				perks = {
+					buff_perks.guaranteed_crit
+				}
 			}
 		}
 	},
 	follow_up_guaranteed_crit_buff = {
 		buffs = {
 			{
-				name = "follow_up_guaranteed_crit_buff",
 				max_stacks = 1,
+				name = "follow_up_guaranteed_crit_buff",
 				buff_func = "dummy_function",
 				event = "on_critical_action",
 				icon = "deus_icon_buff_follow_up",
 				priority_buff = true,
 				remove_on_proc = true,
-				perk = buff_perks.guaranteed_crit
+				perks = {
+					buff_perks.guaranteed_crit
+				}
 			}
 		}
 	},
@@ -5670,14 +5656,16 @@ dlc_settings.buff_templates = {
 	pent_up_anger_guaranteed_crit_buff = {
 		buffs = {
 			{
-				name = "pent_up_anger_guaranteed_crit_buff",
 				max_stacks = 1,
+				name = "pent_up_anger_guaranteed_crit_buff",
 				buff_func = "dummy_function",
 				event = "on_critical_action",
 				icon = "deus_icon_pent_up_anger",
 				priority_buff = true,
 				remove_on_proc = true,
-				perk = buff_perks.guaranteed_crit
+				perks = {
+					buff_perks.guaranteed_crit
+				}
 			}
 		}
 	},
@@ -5686,7 +5674,9 @@ dlc_settings.buff_templates = {
 			{
 				icon = "deus_icon_surprise_strike",
 				name = "surprise_strike_guaranteed_crit_buff",
-				perk = buff_perks.guaranteed_crit,
+				perks = {
+					buff_perks.guaranteed_crit
+				},
 				duration = MorrisBuffTweakData.surprise_strike_guaranteed_crit_buff.duration
 			}
 		}
@@ -5712,7 +5702,9 @@ dlc_settings.buff_templates = {
 				remove_buff_func = "boulder_bro_add_buff",
 				update_func = "update_boulder_bro",
 				pull_up_duration = 1,
-				perk = buff_perks.ledge_self_rescue
+				perks = {
+					buff_perks.ledge_self_rescue
+				}
 			}
 		}
 	},
@@ -5807,7 +5799,9 @@ dlc_settings.buff_templates = {
 		buffs = {
 			{
 				name = "serrated_blade",
-				perk = buff_perks.generic_melee_bleed
+				perks = {
+					buff_perks.generic_melee_bleed
+				}
 			}
 		}
 	},
@@ -5971,6 +5965,7 @@ dlc_settings.buff_templates = {
 				explosion_template = "deus_ranged_crit_explosion",
 				valid_attack_types = {
 					instant_projectile = true,
+					heavy_instant_projectile = true,
 					projectile = true
 				},
 				power_scale = MorrisBuffTweakData.deus_ranged_crit_explosion.multiplier
@@ -6075,7 +6070,9 @@ dlc_settings.buff_templates = {
 		buffs = {
 			{
 				name = "resolve_buff",
-				perk = buff_perks.full_health_revive
+				perks = {
+					buff_perks.full_health_revive
+				}
 			}
 		}
 	}

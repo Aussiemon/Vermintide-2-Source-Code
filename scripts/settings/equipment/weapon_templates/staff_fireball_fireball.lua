@@ -280,6 +280,7 @@ weapon_template.left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.fireball
 weapon_template.display_unit = "units/weapons/weapon_display/display_staff"
 weapon_template.wield_anim = "to_staff"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/ranged/staff"
 weapon_template.crosshair_style = "arrows"
 weapon_template.fire_at_gaze_setting = "tobii_fire_at_gaze_fireball"
 weapon_template.buff_type = "RANGED"

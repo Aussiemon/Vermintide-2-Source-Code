@@ -44,19 +44,15 @@ settings.buff_function_templates = {
 			local stored_damage = buff.stored_damage
 			local standard_is_destroyed = buff.standard_is_destroyed
 
-			if stored_damage and standard_is_destroyed then
-				local health_extension = ScriptUnit.extension(unit, "health_system")
+			if stored_damage and standard_is_destroyed and HEALTH_ALIVE[unit] then
+				local attacker_unit = ALIVE[params.attacker_unit] and params.attacker_unit or unit
+				local armor_type = buff.armor_type
+				local damage_type = "buff"
+				local damage = stored_damage
+				local damage_source = buff.damage_source
+				buff.applied_damage = true
 
-				if health_extension:is_alive() then
-					local attacker_unit = ALIVE[params.attacker_unit] and params.attacker_unit or unit
-					local armor_type = buff.armor_type
-					local damage_type = "buff"
-					local damage = stored_damage
-					local damage_source = buff.damage_source
-					buff.applied_damage = true
-
-					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
-				end
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 			end
 		end
 	end,

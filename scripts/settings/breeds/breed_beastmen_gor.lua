@@ -1,19 +1,19 @@
 local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
 	detection_radius = 12,
-	death_reaction = "gor",
+	hit_effect_template = "HitEffectsBeastmenGor",
 	walk_speed = 2.75,
-	aoe_height = 1.4,
 	leave_walk_distance = 4.5,
 	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
-	aim_template = "chaos_marauder",
 	target_selection = "pick_closest_target_with_spillover",
 	exchange_order = 3,
+	aim_template = "chaos_marauder",
 	animation_sync_rpc = "rpc_sync_anim_state_8",
-	is_always_spawnable = true,
 	run_speed = 4.8,
-	hit_effect_template = "HitEffectsBeastmenGor",
-	no_stagger_duration = false,
+	is_always_spawnable = true,
+	aoe_height = 1.4,
+	death_reaction = "gor",
+	scale_death_push = 0.65,
 	attack_player_sound_event = "play_enemy_gor_attack_short_vce",
 	slot_template = "beastmen_roamer",
 	attack_player_sound_event_long = "play_enemy_gor_attack_vce",
@@ -33,11 +33,11 @@ local breed_data = {
 	dialogue_source_name = "beastmen_gor",
 	perception_previous_attacker_stickyness_value = -4.5,
 	race = "beastmen",
-	threat_value = 2,
 	ai_strength = 1,
 	poison_resistance = 70,
 	armor_category = 1,
 	attack_general_sound_event_long = "play_enemy_gor_attack_husk_vce",
+	threat_value = 2,
 	backstab_player_sound_event = "play_enemy_gor_attack_player_back_vce",
 	death_sound_event = "play_enemy_gor_die_vce",
 	bone_lod_level = 1,
@@ -45,7 +45,7 @@ local breed_data = {
 	smart_targeting_width = 0.2,
 	behavior = "gor",
 	has_inventory = true,
-	scale_death_push = 0.65,
+	no_stagger_duration = false,
 	follow_reach = 1,
 	ai_toughness = 2,
 	stagger_threshold_heavy = 3,
@@ -74,6 +74,7 @@ local breed_data = {
 		poison_well = true,
 		wizard_destructible = true
 	},
+	infighting = InfightingSettings.small,
 	passive_in_patrol_start_anim = {
 		"move_fwd_walk",
 		"move_fwd_walk_2",
@@ -95,6 +96,12 @@ local breed_data = {
 		"gor_vce_profile_a",
 		"gor_vce_profile_b",
 		"gor_vce_profile_c"
+	},
+	status_effect_settings = {
+		category = "small",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire
+		})
 	},
 	debug_color = {
 		255,

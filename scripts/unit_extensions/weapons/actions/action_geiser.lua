@@ -161,6 +161,7 @@ ActionGeiser.fire = function (self, reason)
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
 	local side_manager = Managers.state.side
 	local side = side_manager.side_by_unit[owner_unit]
+	local attacker_is_player = owner_player and owner_player.player_unit
 
 	if num_actors > 0 then
 		local hit_index = 0
@@ -170,14 +171,23 @@ ActionGeiser.fire = function (self, reason)
 			local hit_unit = Actor.unit(hit_actor)
 			local hit_position = POSITION_LOOKUP[hit_unit] or Unit.local_position(hit_unit, 0)
 			local breed = Unit.get_data(hit_unit, "breed")
-			local dummy = not breed and Unit.get_data(hit_unit, "is_dummy")
 
 			if not hit_units[hit_unit] then
 				local is_enemy = side_manager:is_enemy(owner_unit, hit_unit)
 				local hit_unit_side = side_manager.side_by_unit[hit_unit]
 				local is_friend = side == hit_unit_side
 				local friendly_fire = is_friend and not ignore_hitting_allies
-				local should_hit = dummy or is_enemy or friendly_fire
+				local should_hit = is_enemy or friendly_fire
+
+				if not is_enemy then
+					local is_player = breed and breed.is_player
+					local is_ai = breed and not is_player
+					local is_ally = not is_enemy and side_manager:is_ally(owner_unit, hit_unit)
+
+					if attacker_is_player and is_ai and is_ally then
+						should_hit = false
+					end
+				end
 
 				if should_hit then
 					local attack_vector = hit_position - source_pos
@@ -202,9 +212,8 @@ ActionGeiser.fire = function (self, reason)
 					end
 
 					hit_units[hit_unit] = true
-					local hit_unit_health_extension = ScriptUnit.extension(hit_unit, "health_system")
 
-					if hit_unit_health_extension:is_alive() then
+					if HEALTH_ALIVE[hit_unit] then
 						hit_index = hit_index + 1
 					end
 

@@ -377,8 +377,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_slam_burn_target_tank_M = {
+		dot_template_name = "burning_dot_3tick",
+		dot_balefire_variant = true,
 		boost_curve_type = "tank_curve",
-		dot_template_name = "burning_3W_dot",
 		attack_template = "flame_blast",
 		power_distribution = {
 			attack = 0.15,
@@ -386,8 +387,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_slam_burn_target_fencer_M = {
+		dot_template_name = "burning_dot_3tick",
+		dot_balefire_variant = true,
 		boost_curve_type = "tank_curve",
-		dot_template_name = "burning_3W_dot",
 		attack_template = "flame_blast",
 		power_distribution = {
 			attack = 0.25,
@@ -395,8 +397,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_slam_burn_tank_M = {
+		dot_template_name = "burning_dot_3tick",
+		dot_balefire_variant = true,
 		boost_curve_type = "tank_curve",
-		dot_template_name = "burning_3W_dot",
 		attack_template = "flame_blast",
 		power_distribution = {
 			attack = 0.075,
@@ -404,8 +407,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_slam_burn_fencer_M = {
+		dot_template_name = "burning_dot_1tick",
+		dot_balefire_variant = true,
 		boost_curve_type = "tank_curve",
-		dot_template_name = "burning_1W_dot",
 		attack_template = "flame_blast",
 		power_distribution = {
 			attack = 0.075,
@@ -413,7 +417,8 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_slam_burn_aoe_tank_M = {
-		dot_template_name = "burning_1W_dot",
+		dot_template_name = "burning_dot_1tick",
+		dot_balefire_variant = true,
 		dead_attack_template = "flame_blast",
 		boost_curve_type = "tank_curve",
 		attack_template = "blunt_fencer",
@@ -520,7 +525,8 @@ PowerLevelTemplates = {
 	targets_linesman_burn_L = {
 		{
 			boost_curve_coefficient_headshot = 1,
-			dot_template_name = "burning_3W_dot",
+			dot_template_name = "burning_dot_3tick",
+			dot_balefire_variant = true,
 			boost_curve_type = "linesman_curve",
 			boost_curve_coefficient = 2,
 			attack_template = "light_slashing_linesman_hs",
@@ -531,7 +537,8 @@ PowerLevelTemplates = {
 		},
 		{
 			boost_curve_coefficient_headshot = 1,
-			dot_template_name = "burning_1W_dot",
+			dot_template_name = "burning_dot_1tick",
+			dot_balefire_variant = true,
 			boost_curve_type = "linesman_curve",
 			attack_template = "light_slashing_linesman",
 			power_distribution = {
@@ -1194,8 +1201,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_linesman_burn_H = {
-		dot_template_name = "burning_1W_dot",
+		dot_template_name = "burning_dot_1tick",
 		boost_curve_coefficient_headshot = 0.25,
+		dot_balefire_variant = true,
 		boost_curve_type = "linesman_curve",
 		attack_template = "light_burning_linesman",
 		power_distribution = {
@@ -1295,7 +1303,8 @@ PowerLevelTemplates = {
 	targets_linesman_burn_H = {
 		{
 			boost_curve_coefficient_headshot = 1,
-			dot_template_name = "burning_3W_dot",
+			dot_template_name = "burning_dot_3tick",
+			dot_balefire_variant = true,
 			boost_curve_type = "linesman_curve",
 			boost_curve_coefficient = 2,
 			attack_template = "burning_linesman",
@@ -1305,8 +1314,9 @@ PowerLevelTemplates = {
 			}
 		},
 		{
-			dot_template_name = "burning_3W_dot",
+			dot_template_name = "burning_dot_3tick",
 			boost_curve_coefficient_headshot = 1,
+			dot_balefire_variant = true,
 			boost_curve_type = "linesman_curve",
 			attack_template = "burning_linesman",
 			power_distribution = {
@@ -1315,8 +1325,9 @@ PowerLevelTemplates = {
 			}
 		},
 		{
+			dot_template_name = "burning_dot_3tick",
+			dot_balefire_variant = true,
 			boost_curve_type = "linesman_curve",
-			dot_template_name = "burning_3W_dot",
 			attack_template = "burning_linesman",
 			power_distribution = {
 				attack = 0.15,
@@ -1324,8 +1335,9 @@ PowerLevelTemplates = {
 			}
 		},
 		{
+			dot_template_name = "burning_dot_1tick",
+			dot_balefire_variant = true,
 			boost_curve_type = "linesman_curve",
-			dot_template_name = "burning_1W_dot",
 			attack_template = "burning_linesman",
 			power_distribution = {
 				attack = 0.125,
@@ -1970,7 +1982,8 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_slashing_smiter_burn_M = {
-		dot_template_name = "burning_3W_dot",
+		dot_template_name = "burning_dot_3tick",
+		dot_balefire_variant = true,
 		boost_curve_type = "smiter_curve",
 		boost_curve_coefficient = 2,
 		attack_template = "slashing_smiter",
@@ -1980,8 +1993,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_smiter_burn_M = {
+		dot_template_name = "burning_dot_3tick",
+		dot_balefire_variant = true,
 		boost_curve_type = "smiter_curve",
-		dot_template_name = "burning_3W_dot",
 		attack_template = "burning_smiter",
 		power_distribution = {
 			attack = 0.325,
@@ -1989,8 +2003,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_smiter_burn_H = {
+		dot_template_name = "burning_dot_3tick",
+		dot_balefire_variant = true,
 		boost_curve_type = "smiter_curve",
-		dot_template_name = "burning_3W_dot",
 		attack_template = "burning_smiter",
 		power_distribution = {
 			attack = 0.25,
@@ -1998,8 +2013,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_smiter_burn_H_charged = {
+		dot_template_name = "burning_dot_3tick",
+		dot_balefire_variant = true,
 		boost_curve_type = "smiter_curve",
-		dot_template_name = "burning_3W_dot",
 		attack_template = "burning_smiter",
 		power_distribution = {
 			attack = 0.45,
@@ -2007,8 +2023,9 @@ PowerLevelTemplates = {
 		}
 	},
 	default_target_burning_stab_smiter_M = {
-		dot_template_name = "burning_3W_dot",
+		dot_template_name = "burning_dot_3tick",
 		boost_curve_coefficient_headshot = 1.5,
+		dot_balefire_variant = true,
 		boost_curve_type = "ninja_curve",
 		attack_template = "flame_blast",
 		power_distribution = {
@@ -2423,7 +2440,8 @@ PowerLevelTemplates = {
 	targets_burning_stab_smiter_L = {
 		{
 			boost_curve_coefficient_headshot = 2,
-			dot_template_name = "burning_1W_dot",
+			dot_template_name = "burning_dot_1tick",
+			dot_balefire_variant = true,
 			boost_curve_type = "smiter_curve",
 			boost_curve_coefficient = 0.75,
 			attack_template = "burning_stab_fencer",
@@ -2436,7 +2454,8 @@ PowerLevelTemplates = {
 	targets_burning_punch_smiter_L = {
 		{
 			boost_curve_coefficient_headshot = 1.5,
-			dot_template_name = "burning_3W_dot",
+			dot_template_name = "burning_dot_3tick",
+			dot_balefire_variant = true,
 			boost_curve_type = "ninja_curve",
 			boost_curve_coefficient = 0.75,
 			attack_template = "burning_stab_fencer",
@@ -2781,6 +2800,7 @@ PowerLevelTemplates = {
 		{
 			dot_template_name = "weapon_bleed_dot_dagger",
 			boost_curve_coefficient_headshot = 3,
+			dot_balefire_variant = true,
 			boost_curve_type = "ninja_curve",
 			attack_template = "light_stab_smiter",
 			power_distribution = {
@@ -3271,7 +3291,8 @@ PowerLevelTemplates = {
 		impact = 0.5
 	},
 	default_target_burning_tank_M = {
-		dot_template_name = "burning_1W_dot",
+		dot_template_name = "burning_dot_1tick",
+		dot_balefire_variant = true,
 		boost_curve_type = "tank_curve",
 		boost_curve_coefficient = 0.3,
 		attack_template = "burning_tank",
@@ -3282,7 +3303,8 @@ PowerLevelTemplates = {
 	},
 	targets_burning_tank_M = {
 		{
-			dot_template_name = "burning_1W_dot",
+			dot_template_name = "burning_dot_1tick",
+			dot_balefire_variant = true,
 			boost_curve_type = "tank_curve",
 			boost_curve_coefficient = 0.3,
 			attack_template = "burning_tank",
@@ -3292,7 +3314,8 @@ PowerLevelTemplates = {
 			}
 		},
 		{
-			dot_template_name = "burning_1W_dot",
+			dot_template_name = "burning_dot_1tick",
+			dot_balefire_variant = true,
 			boost_curve_type = "tank_curve",
 			boost_curve_coefficient = 0.3,
 			attack_template = "burning_tank",

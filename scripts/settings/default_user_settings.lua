@@ -6,6 +6,7 @@ require("scripts/settings/sound_quality_settings")
 require("scripts/managers/player/player_sync_data")
 require("scripts/ui/views/crosshair_kill_confirm_settings")
 
+local dlss_supported, dlss_g_supported, reflex_supported = Application.render_caps("dlss_supported", "dlss_g_supported", "reflex_supported")
 local default_user_settings = {
 	gamepad_left_handed = false,
 	gamepad_auto_aim_enabled = true,
@@ -23,7 +24,7 @@ local default_user_settings = {
 	sfx_bus_volume = 100,
 	input_buffer = 0.5,
 	borderless_fullscreen = false,
-	root_scale_x = 1,
+	dlss_enabled = false,
 	hud_clamp_ui_scaling = false,
 	voip_push_to_talk = true,
 	overcharge_opacity = 100,
@@ -89,14 +90,16 @@ local default_user_settings = {
 	twitch_mutator_duration = 1,
 	motion_sickness_misc_cam = "normal",
 	gamepad_use_ps4_style_input_icons = false,
-	weapon_trails = "normal",
+	fsr2_enabled = false,
 	use_pc_menu_layout = false,
 	gamepad_layout = "default",
 	chat_enabled = true,
+	root_scale_x = 1,
 	small_network_packets = false,
 	twitch_time_between_votes = 30,
 	music_bus_volume = 100,
 	toggle_alternate_attack = false,
+	weapon_trails = "normal",
 	mute_in_background = false,
 	voip_bus_volume = 100,
 	blood_enabled = true,
@@ -107,6 +110,7 @@ local default_user_settings = {
 	head_bob = true,
 	melee_camera_movement = true,
 	numeric_ui = false,
+	minion_outlines = "off",
 	gamepad_zoom_sensitivity = 0,
 	dynamic_range_sound = "high",
 	chat_font_size = 20,
@@ -122,35 +126,46 @@ local default_user_settings = {
 	ao_quality = script_data.settings.default_ao_quality or "medium",
 	playerlist_build_privacy = PrivacyLevels.friends,
 	crosshair_kill_confirm = CrosshairKillConfirmSettingsGroups.off,
-	sound_channel_configuration = Wwise.AK_SPEAKER_SETUP_AUTO
+	sound_channel_configuration = Wwise.AK_SPEAKER_SETUP_AUTO,
+	overriden_settings = {
+		dlss_frame_generation = not not dlss_g_supported,
+		dlss_super_resolution = dlss_supported and "auto" or "none"
+	}
 }
 local default_render_settings = {
-	lod_decoration_density = 1,
-	eye_adaptation_speed = 1,
-	light_shafts_enabled = false,
-	fxaa_enabled = false,
-	lens_flares_enabled = false,
-	skin_material_enabled = false,
-	sun_flare_enabled = false,
-	ao_enabled = true,
-	sun_shadows = true,
-	ao_high_quality = false,
-	lens_quality_enabled = false,
-	sharpen_enabled = false,
-	dof_enabled = false,
-	ssr_enabled = false,
-	bloom_enabled = true,
-	fsr_enabled = false,
+	lod_scatter_density = 1,
+	local_probes_enabled = true,
+	upscaling_mode = "none",
 	fsr_quality = 4,
+	sun_shadows = true,
+	skin_material_enabled = false,
+	eye_adaptation_speed = 1,
+	fsr_enabled = false,
+	lens_quality_enabled = false,
+	sun_flare_enabled = false,
+	lod_decoration_density = 1,
+	dof_enabled = false,
+	nv_framerate_cap = 0,
 	taa_enabled = false,
 	ssr_high_quality = false,
+	light_shafts_enabled = false,
+	dlss_g_enabled = false,
+	fxaa_enabled = false,
+	upscaling_quality = "none",
+	lens_flares_enabled = false,
+	ao_enabled = true,
+	ao_high_quality = false,
+	ssr_enabled = false,
+	bloom_enabled = true,
 	gamma = 2.2,
 	lod_object_multiplier = 1,
-	local_probes_enabled = true,
-	lod_scatter_density = 1,
+	sharpen_enabled = false,
+	nv_low_latency_boost = false,
+	upscaling_enabled = false,
 	motion_blur_enabled = true,
 	max_shadow_casting_lights = IS_WINDOWS and 1 or 2,
-	fov = script_data.settings.default_fov or CameraSettings.first_person._node.vertical_fov
+	fov = script_data.settings.default_fov or CameraSettings.first_person._node.vertical_fov,
+	nv_low_latency_mode = not not reflex_supported
 }
 local default_texture_settings = {}
 local char_texture_settings = TextureQuality.characters[default_user_settings.char_texture_quality]
@@ -240,6 +255,7 @@ DefaultUserSettings = {
 
 		if reload then
 			Application.apply_user_settings()
+			GlobalShaderFlags.apply_settings()
 		end
 
 		if set_default then

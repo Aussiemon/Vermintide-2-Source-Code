@@ -63,7 +63,11 @@ local function spawn_orb(nav_world, orb_name, owner_peer_id, orb_starting_positi
 		}
 	}
 
-	return Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, projectile_unit_template_name, extension_init_data, orb_starting_position)
+	if pickup_settings.local_only then
+		return Managers.state.unit_spawner:spawn_local_unit_with_extensions(projectile_unit_name, projectile_unit_template_name, extension_init_data, orb_starting_position)
+	else
+		return Managers.state.unit_spawner:spawn_network_unit(projectile_unit_name, projectile_unit_template_name, extension_init_data, orb_starting_position)
+	end
 end
 
 OrbSystem.init = function (self, entity_system_creation_context, ...)
@@ -73,6 +77,8 @@ OrbSystem.init = function (self, entity_system_creation_context, ...)
 	self.network_event_delegate = network_event_delegate
 
 	network_event_delegate:register(self, unpack(RPCS))
+
+	self._is_server = entity_system_creation_context.is_server
 end
 
 OrbSystem.rpc_spawn_orb = function (self, channel_id, orb_name, owner_peer_id, orb_starting_position, cake_slice_dir, cake_slice_angle_radians)

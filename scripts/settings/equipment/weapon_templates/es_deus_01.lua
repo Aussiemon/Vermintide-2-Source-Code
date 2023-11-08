@@ -1740,10 +1740,11 @@ weapon_template.actions = {
 }
 weapon_template.right_hand_unit = "units/weapons/player/wpn_es_deus_spear_01/wpn_es_deus_spear_01"
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.right
-weapon_template.left_hand_unit = "units/weapons/player/wpn_es_deus_shield_01/wpn_es_deus_shield_01"
+weapon_template.left_hand_unit = "units/weapons/player/wpn_empire_shield_02/wpn_emp_shield_02"
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.shield
 weapon_template.display_unit = "units/weapons/weapon_display/display_shield_spear"
 weapon_template.wield_anim = "to_es_deus_01"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/melee/es_deus_01"
 weapon_template.buff_type = "MELEE_1H"
 weapon_template.weapon_type = "SWORD_1H_SHIELD"
 weapon_template.max_fatigue_points = 10

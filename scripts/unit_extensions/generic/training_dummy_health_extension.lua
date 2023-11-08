@@ -10,10 +10,12 @@ TrainingDummyHealthExtension.init = function (self, extension_init_context, unit
 		pdArray.new()
 	}
 	self.network_transmit = extension_init_context.network_transmit
-	self.is_invincible = true
+	self.is_invincible = false
 	self.health = NetworkConstants.health.max
+	self.unmodified_max_health = self.health
 	self.damage = 0
 	self.state = "alive"
+	self.fake_max_health = 255
 	self._side_name = "neutral"
 end
 
@@ -54,7 +56,7 @@ TrainingDummyHealthExtension.current_health = function (self)
 end
 
 TrainingDummyHealthExtension.get_max_health = function (self)
-	return self.health
+	return self.fake_max_health
 end
 
 local dot_hit_types = {
@@ -141,7 +143,7 @@ TrainingDummyHealthExtension.set_current_damage = function (self, damage)
 end
 
 TrainingDummyHealthExtension.die = function (self, damage_type)
-	fassert(false, "Tried to kill TrainingDummyHealthExtension")
+	return
 end
 
 TrainingDummyHealthExtension.set_dead = function (self)

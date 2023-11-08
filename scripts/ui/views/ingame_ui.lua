@@ -658,6 +658,12 @@ IngameUI._update_menu_blocking_information = function (self, dt, t, input_servic
 	local in_view, menu_input_service, no_unblock = self:_menu_blocking_information(input_service, end_of_level_ui)
 
 	Managers.chat:update(dt, t, in_view, menu_input_service, no_unblock)
+
+	if IS_WINDOWS and in_view ~= self._was_in_view then
+		self._was_in_view = in_view
+
+		Application.set_in_menu(in_view)
+	end
 end
 
 IngameUI._menu_blocking_information = function (self, input_service, end_of_level_ui)

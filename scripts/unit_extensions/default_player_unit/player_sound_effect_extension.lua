@@ -97,7 +97,7 @@ PlayerSoundEffectExtension._update_aggro_ranges = function (self, dt)
 		local wwise_world = self._wwise_world
 
 		WwiseWorld.set_global_parameter(wwise_world, "combat_combo_has_aggro", 0)
-	elseif not AiUtils.unit_alive(self._aggro_unit) then
+	elseif not HEALTH_ALIVE[self._aggro_unit] then
 		self._aggro_unit = nil
 		local wwise_world = self._wwise_world
 
@@ -106,7 +106,7 @@ PlayerSoundEffectExtension._update_aggro_ranges = function (self, dt)
 	end
 
 	if self._waiting_aggro_unit then
-		if not AiUtils.unit_alive(self._waiting_aggro_unit) then
+		if not HEALTH_ALIVE[self._waiting_aggro_unit] then
 			self._waiting_aggro_unit = nil
 
 			return
@@ -183,7 +183,7 @@ PlayerSoundEffectExtension._update_specials_proximity = function (self, dt)
 			repeat
 				local ai_unit = NEARBY_AI_UNITS[i]
 
-				if not AiUtils.unit_alive(ai_unit) then
+				if not HEALTH_ALIVE[ai_unit] then
 					break
 				end
 

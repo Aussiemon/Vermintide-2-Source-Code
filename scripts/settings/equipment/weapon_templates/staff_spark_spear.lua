@@ -631,6 +631,7 @@ local weapon_template = {
 	left_hand_attachment_node_linking = AttachmentNodeLinking.fireball,
 	display_unit = "units/weapons/weapon_display/display_staff",
 	wield_anim = "to_staff",
+	state_machine = "units/beings/player/first_person_base/state_machines/ranged/staff",
 	crosshair_style = "arrows",
 	buff_type = "RANGED",
 	weapon_type = "FIRE_STAFF",

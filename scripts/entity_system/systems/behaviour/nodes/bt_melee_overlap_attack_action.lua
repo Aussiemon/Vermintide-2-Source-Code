@@ -98,8 +98,8 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, target_unit, bla
 	local use_running_attack = nil
 
 	if action.running_attacks then
-		local target_locomotion_extension = ScriptUnit.extension(target_unit, "locomotion_system")
-		local target_velocity = target_locomotion_extension:current_velocity()
+		local target_locomotion_extension = ScriptUnit.has_extension(target_unit, "locomotion_system")
+		local target_velocity = target_locomotion_extension and target_locomotion_extension:current_velocity() or Vector3.zero()
 		local velocity_threshold = action.target_running_velocity_threshold
 		local target_running_distance_threshold = action.target_running_distance_threshold
 		local to_target = POSITION_LOOKUP[target_unit] - POSITION_LOOKUP[unit]
@@ -107,7 +107,14 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, target_unit, bla
 		local to_target_normalized = Vector3.normalize(to_target)
 		local dot = Vector3.dot(target_velocity, to_target_normalized)
 		local target_in_front = dot > 0.5
-		local target_is_running = target_running_distance_threshold and target_running_distance_threshold < target_distance or velocity_threshold < dot and target_in_front
+		local target_is_running = nil
+
+		if target_running_distance_threshold then
+			target_is_running = target_running_distance_threshold < target_distance
+		else
+			target_is_running = velocity_threshold < dot and target_in_front
+		end
+
 		local self_running_speed_threshold = action.self_running_speed_threshold
 
 		if self_running_speed_threshold and not target_is_running then
@@ -612,17 +619,23 @@ BTMeleeOverlapAttackAction.hit_ai = function (self, unit, hit_unit, action, atta
 			local self_pos = POSITION_LOOKUP[unit]
 			local hit_unit_pos = POSITION_LOOKUP[hit_unit]
 			local direction = Vector3.normalize(hit_unit_pos - self_pos)
+			local should_play_push_sound = true
+			should_play_push_sound = not blackboard.commander_unit
 
-			AiUtils.stagger(hit_unit, hit_unit_blackboard, unit, direction, push_data.stagger_distance, stagger_type, stagger_duration, nil, t, nil, nil, nil, true)
+			AiUtils.stagger(hit_unit, hit_unit_blackboard, unit, direction, push_data.stagger_distance, stagger_type, stagger_duration, nil, t, nil, nil, nil, should_play_push_sound)
 		end
 	end
 
-	if not action.ignore_ai_damage then
+	if hit_unit == blackboard.attacking_target or not action.ignore_ai_damage then
 		AiUtils.damage_target(hit_unit, unit, action, action.damage)
 	end
 
 	if attack.hit_ai_func then
 		attack.hit_ai_func(unit, blackboard, hit_unit, action, attack)
+	end
+
+	if action.hit_ai_func then
+		action.hit_ai_func(unit, blackboard, hit_unit, action, attack)
 	end
 end
 
@@ -631,6 +644,10 @@ BTMeleeOverlapAttackAction.anim_cb_frenzy_damage = function (self, unit, blackbo
 end
 
 BTMeleeOverlapAttackAction.anim_cb_damage = function (self, unit, blackboard)
+	if not blackboard.attacking_target then
+		return
+	end
+
 	blackboard.past_damage_in_attack = true
 	local attack = blackboard.attack
 	local width = attack.width

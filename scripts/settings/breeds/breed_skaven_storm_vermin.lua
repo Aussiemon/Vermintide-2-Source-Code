@@ -1,20 +1,20 @@
 local breed_data = {
-	is_bot_threat = true,
-	no_stagger_duration = false,
-	walk_speed = 2.75,
-	has_inventory = true,
-	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
-	disable_crowd_dispersion = true,
-	has_running_attack = true,
+	detection_radius = 12,
 	aoe_height = 1.7,
+	walk_speed = 2.75,
+	disable_crowd_dispersion = true,
+	patrol_active_target_selection = "storm_patrol_death_squad_target_selection",
+	has_running_attack = true,
+	death_reaction = "ai_default",
+	ai_toughness = 3,
 	animation_sync_rpc = "rpc_sync_anim_state_5",
 	aoe_radius = 0.4,
 	is_always_spawnable = true,
 	opt_base_unit = "units/beings/enemies/skaven_stormvermin/chr_skaven_stormvermin_baked",
 	run_speed = 4.8,
-	exchange_order = 3,
-	death_reaction = "ai_default",
-	detection_radius = 12,
+	target_selection = "pick_closest_target_with_spillover",
+	no_stagger_duration = false,
+	is_bot_threat = true,
 	slot_template = "skaven_elite",
 	push_sound_event = "Play_generic_pushed_impact_small_armour",
 	headshot_coop_stamina_fatigue_type = "headshot_special",
@@ -42,10 +42,10 @@ local breed_data = {
 	is_bot_aid_threat = true,
 	behavior = "storm_vermin",
 	bots_should_flank = true,
-	target_selection = "pick_closest_target_with_spillover",
+	has_inventory = true,
 	scale_death_push = 1,
 	follow_reach = 1,
-	ai_toughness = 3,
+	exchange_order = 3,
 	stagger_threshold_light = 0.5,
 	hit_reaction = "ai_default",
 	patrol_passive_target_selection = "patrol_passive_target_selection",
@@ -66,6 +66,7 @@ local breed_data = {
 	base_unit = "units/beings/enemies/skaven_stormvermin/chr_skaven_stormvermin",
 	enter_walk_distance = 2.5,
 	elite = true,
+	infighting = InfightingSettings.small,
 	perception_exceptions = {
 		poison_well = true,
 		wizard_destructible = true
@@ -84,6 +85,12 @@ local breed_data = {
 		"low",
 		"medium",
 		"high"
+	},
+	status_effect_settings = {
+		category = "small",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire
+		})
 	},
 	debug_color = {
 		255,

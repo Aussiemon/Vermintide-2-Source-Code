@@ -535,18 +535,14 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 				if target_breed.is_player then
 					local is_enemy, attacker_side = Managers.state.side:is_enemy(attacker_unit, victim_unit)
 
-					if is_enemy and attacker_side.show_damage_feedback then
-						local victim_health_ext = ScriptUnit.has_extension(victim_unit, "health_system")
+					if is_enemy and attacker_side.show_damage_feedback and HEALTH_ALIVE[victim_unit] then
+						local target_player = player_manager:owner(victim_unit)
+						local local_human = not attacker_player.remote and not attacker_player.bot_player
+						local event_type = local_human and "dealing_damage" or "other_dealing_damage"
+						local profile_index = target_player:profile_index()
+						local damage_type = damage_data[DamageDataIndex.DAMAGE_TYPE]
 
-						if victim_health_ext:is_alive() then
-							local target_player = player_manager:owner(victim_unit)
-							local local_human = not attacker_player.remote and not attacker_player.bot_player
-							local event_type = local_human and "dealing_damage" or "other_dealing_damage"
-							local profile_index = target_player:profile_index()
-							local damage_type = damage_data[DamageDataIndex.DAMAGE_TYPE]
-
-							Managers.state.event:trigger("add_damage_feedback_event", stats_id .. breed_name, local_human, event_type, attacker_player, target_player, damage_amount, damage_type)
-						end
+						Managers.state.event:trigger("add_damage_feedback_event", stats_id .. breed_name, local_human, event_type, attacker_player, target_player, damage_amount, damage_type)
 					end
 				end
 			end

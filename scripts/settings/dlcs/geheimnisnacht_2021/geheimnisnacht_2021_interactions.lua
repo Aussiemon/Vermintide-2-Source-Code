@@ -15,8 +15,12 @@ InteractionDefinitions.geheimnisnacht_2021_altar.server.stop = function (world, 
 
 	if success then
 		local seed = Managers.mechanism:get_level_seed()
+		local altar_position = Unit.local_position(interactable_unit, 0)
+		local nav_world = Managers.state.conflict.nav_world
+		local origin_position = ConflictUtils.get_pos_towards_goal(nav_world, altar_position, 15, 1)
+		local boxed_pos = origin_position and Vector3Box(origin_position) or nil
 
-		Managers.state.conflict:start_terror_event("geheimnisnacht_2021_event", seed)
+		Managers.state.conflict:start_terror_event("geheimnisnacht_2021_event", seed, nil, boxed_pos)
 	end
 
 	local altar_extension = ScriptUnit.extension(interactable_unit, "props_system")

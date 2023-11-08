@@ -259,6 +259,9 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 		},
 		target_override_system = {
 			side = side
+		},
+		ai_commander_system = {
+			player = self
 		}
 	}
 	local unit_template_name = "player_bot_unit"

@@ -114,7 +114,7 @@ end
 
 BloodManager._update_blood_effects = function (self)
 	for unit, data in pairs(self._blood_effect_data) do
-		if not AiUtils.unit_alive(unit) and not data.done then
+		if not HEALTH_ALIVE[unit] and not data.done then
 			for _, effect_data in ipairs(data) do
 				if effect_data.effect_id then
 					World.destroy_particles(self._world, effect_data.effect_id)
@@ -360,8 +360,8 @@ BloodManager.add_weapon_blood = function (self, attacker, damage_type)
 	end
 end
 
-BloodManager.add_enemy_blood = function (self, position, unit, damage_ext)
-	if BloodSettings.enemy_blood.enabled and unit and damage_ext and damage_ext:is_alive() then
+BloodManager.add_enemy_blood = function (self, position, unit)
+	if BloodSettings.enemy_blood.enabled and HEALTH_ALIVE[unit] then
 		local enemy_base_pos = Unit.local_position(unit, 0)
 		local _, extents = Unit.box(unit)
 		local height = extents[3] * 0.5

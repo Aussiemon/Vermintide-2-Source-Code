@@ -7,15 +7,10 @@ AttackTemplates.staff_magma = {
 	sound_type = "heavy",
 	damage_type = "burn"
 }
-AttackTemplates.staff_magma_charge = {
-	sound_type = "light",
-	damage_type = "burn"
-}
 AttackTemplates.wizard_staff_geiser_magma = {
-	dot_template_name = "burning_1W_dot",
-	sound_type = "light",
-	damage_type = "burn",
 	dot_type = "burning_dot",
+	sound_type = "light",
+	damage_type = "burninating",
 	damage = {
 		0,
 		0,

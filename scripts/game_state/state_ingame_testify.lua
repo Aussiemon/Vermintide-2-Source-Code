@@ -45,7 +45,7 @@ local function timer()
 end
 
 local StateInGameTestify = {
-	load_level = function (level_settings)
+	load_level = function (_, level_settings)
 		local level_key = level_settings.level_key
 		local environment_variation_id = level_settings.environment_variation_id or 0
 
@@ -54,7 +54,7 @@ local StateInGameTestify = {
 	wait_for_state_ingame_reached = function ()
 		return
 	end,
-	get_level_weather_variations = function (level_key)
+	get_level_weather_variations = function (_, level_key)
 		return LevelSettings[level_key].environment_variations
 	end,
 	wait_for_player_to_spawn = function ()
@@ -74,7 +74,7 @@ StateInGameTestify.wait_for_bots_to_spawn = function ()
 	end
 end
 
-StateInGameTestify.request_profiles = function (affiliation)
+StateInGameTestify.request_profiles = function (_, affiliation)
 	local profiles = {}
 
 	for _, profile in pairs(SPProfiles) do
@@ -95,13 +95,13 @@ StateInGameTestify.request_profiles = function (affiliation)
 	return profiles
 end
 
-StateInGameTestify.set_player_profile = function (profile)
+StateInGameTestify.set_player_profile = function (_, profile)
 	Managers.state.network:request_profile(1, profile.profile_name, profile.career_name, true)
 
 	return Testify.RETRY
 end
 
-StateInGameTestify.set_bot_profile = function (profile)
+StateInGameTestify.set_bot_profile = function (_, profile)
 	script_data.allow_same_bots = true
 	script_data.wanted_bot_profile = profile.profile_name
 	local profile_index = FindProfileIndex(profile.profile_name)
@@ -171,7 +171,7 @@ StateInGameTestify.get_available_deus_generic_power_up_tests = function ()
 	return power_up_tests
 end
 
-StateInGameTestify.activate_bots_deus_power_up = function (request_parameter)
+StateInGameTestify.activate_bots_deus_power_up = function (_, request_parameter)
 	local power_up_name = request_parameter.power_up_name
 	local rarity = request_parameter.rarity
 	local power_up = DeusPowerUpUtils.generate_specific_power_up(power_up_name, rarity)
@@ -196,7 +196,7 @@ StateInGameTestify.activate_bots_deus_power_up = function (request_parameter)
 	end
 end
 
-StateInGameTestify.activate_player_deus_power_up = function (request_parameter)
+StateInGameTestify.activate_player_deus_power_up = function (_, request_parameter)
 	local power_up_name = request_parameter.power_up_name
 	local rarity = request_parameter.rarity
 	local power_up = DeusPowerUpUtils.generate_specific_power_up(power_up_name, rarity)
@@ -234,7 +234,7 @@ StateInGameTestify.reset_deus_power_ups = function ()
 	end
 end
 
-StateInGameTestify.set_script_data = function (options)
+StateInGameTestify.set_script_data = function (_, options)
 	table.merge(script_data, options)
 end
 
@@ -257,14 +257,14 @@ StateInGameTestify.wait_for_players_inventory_ready = function ()
 	end
 end
 
-StateInGameTestify.player_wield_weapon = function (weapon)
+StateInGameTestify.player_wield_weapon = function (_, weapon)
 	local player = Managers.player:local_player()
 	local inventory = ScriptUnit.extension(player.player_unit, "inventory_system")
 
 	inventory:testify_wield_weapon(weapon)
 end
 
-StateInGameTestify.bot_wield_weapon = function (weapon)
+StateInGameTestify.bot_wield_weapon = function (_, weapon)
 	for _, bot in pairs(Managers.player:bots()) do
 		local inventory = ScriptUnit.extension(bot.player_unit, "inventory_system")
 
@@ -272,7 +272,7 @@ StateInGameTestify.bot_wield_weapon = function (weapon)
 	end
 end
 
-StateInGameTestify.set_game_mode_to_weave = function (_, state_ingame)
+StateInGameTestify.set_game_mode_to_weave = function (state_ingame)
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
 
 	if game_mode_key ~= "weave" then
@@ -281,7 +281,7 @@ StateInGameTestify.set_game_mode_to_weave = function (_, state_ingame)
 	end
 end
 
-StateInGameTestify.load_weave = function (weave_name, state_ingame)
+StateInGameTestify.load_weave = function (state_ingame, weave_name)
 	local weave_template = WeaveSettings.templates[weave_name]
 	local objective = weave_template.objectives[1]
 	local level_key = objective.level_id
@@ -291,7 +291,7 @@ StateInGameTestify.load_weave = function (weave_name, state_ingame)
 	level_transition_handler:promote_next_level_data()
 end
 
-StateInGameTestify.make_game_ready_for_next_weave = function (_, state_ingame)
+StateInGameTestify.make_game_ready_for_next_weave = function (state_ingame)
 	if not state_ingame.is_in_inn then
 		return Testify.RETRY
 	end
@@ -321,7 +321,7 @@ StateInGameTestify.update_camera_to_follow_first_bot_rotation = function ()
 	end
 end
 
-StateInGameTestify.teleport_player_to_main_path_point = function (main_path_point)
+StateInGameTestify.teleport_player_to_main_path_point = function (_, main_path_point)
 	local player_unit = Managers.player:local_player().player_unit
 	local position = MainPathUtils.point_on_mainpath(nil, main_path_point)
 
@@ -335,7 +335,7 @@ StateInGameTestify.closest_travel_distance_to_player = function ()
 	return travel_distance
 end
 
-StateInGameTestify.teleport_player_to_position = function (position)
+StateInGameTestify.teleport_player_to_position = function (_, position)
 	local player_unit = Managers.player:local_player().player_unit
 
 	teleport_unit_to_position(player_unit, position:unbox() + Vector3(0, 0, 1))
@@ -357,7 +357,7 @@ StateInGameTestify.set_player_unit_not_visible = function ()
 	end
 end
 
-StateInGameTestify.teleport_bots_forward_on_main_path_if_blocked = function (bots_data)
+StateInGameTestify.teleport_bots_forward_on_main_path_if_blocked = function (_, bots_data)
 	local bots_stuck_data = bots_data.bots_stuck_data
 	local main_path_point = bots_data.main_path_point
 	local bots_blocked_time_before_teleportation = bots_data.bots_blocked_time_before_teleportation or 6
@@ -398,7 +398,7 @@ StateInGameTestify.teleport_bots_forward_on_main_path_if_blocked = function (bot
 	end
 end
 
-StateInGameTestify.are_bots_blocked = function (bots_data)
+StateInGameTestify.are_bots_blocked = function (_, bots_data)
 	local bots_stuck_data = bots_data.bots_stuck_data
 	local bots_blocked_time_before_teleportation = bots_data.bots_blocked_time_before_teleportation or 6
 
@@ -446,7 +446,7 @@ StateInGameTestify.post_telemetry_events = function ()
 	Managers.telemetry:post_batch()
 end
 
-StateInGameTestify.get_main_path_points = function (nb_points)
+StateInGameTestify.get_main_path_points = function (_, nb_points)
 	local main_path_total_length = EngineOptimized.main_path_total_length()
 	local main_path_points = {}
 
@@ -457,7 +457,7 @@ StateInGameTestify.get_main_path_points = function (nb_points)
 	return main_path_points
 end
 
-StateInGameTestify.set_difficulty = function (difficulty)
+StateInGameTestify.set_difficulty = function (_, difficulty)
 	local difficulty_tweak = 0
 
 	Managers.state.difficulty:set_difficulty(difficulty, difficulty_tweak)
@@ -470,14 +470,11 @@ StateInGameTestify.get_player_current_position = function ()
 	return player_current_position
 end
 
-StateInGameTestify.is_unit_alive = function (unit)
-	local health_extension = ScriptUnit.has_extension(unit, "health_system")
-	local is_alive = health_extension and health_extension:is_alive() or false
-
-	return is_alive
+StateInGameTestify.is_unit_alive = function (_, unit)
+	return HEALTH_ALIVE[unit] or false
 end
 
-StateInGameTestify.get_unit_health_values = function (unit)
+StateInGameTestify.get_unit_health_values = function (_, unit)
 	local health_values = nil
 	local health_extension = ScriptUnit.has_extension(unit, "health_system")
 
@@ -491,14 +488,14 @@ StateInGameTestify.get_unit_health_values = function (unit)
 	return health_values
 end
 
-StateInGameTestify.kill_unit = function (unit)
+StateInGameTestify.kill_unit = function (_, unit)
 	local damage_type = "forced"
 	local damage_direction = Vector3(0, 0, -1)
 
 	AiUtils.kill_unit(unit, nil, nil, damage_type, damage_direction)
 end
 
-StateInGameTestify.add_buffs_to_heroes = function (buffs)
+StateInGameTestify.add_buffs_to_heroes = function (_, buffs)
 	local side = Managers.state.side:get_side_from_name("heroes")
 
 	for _, unit in pairs(side.PLAYER_AND_BOT_UNITS) do
@@ -510,7 +507,7 @@ StateInGameTestify.add_buffs_to_heroes = function (buffs)
 	end
 end
 
-StateInGameTestify.fail_test = function (message)
+StateInGameTestify.fail_test = function (_, message)
 	assert(false, message)
 end
 

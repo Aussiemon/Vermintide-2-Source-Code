@@ -140,7 +140,7 @@ local DISTANCE_TO_FORBIDDEN_POSITION_LIST = 10
 
 return {
 	description = "curse_shadow_daggers_desc",
-	package_name = "resource_packages/mutators/mutator_curse_shadow_daggers",
+	curse_package_name = "resource_packages/mutators/mutator_curse_shadow_daggers",
 	display_name = "curse_shadow_daggers_name",
 	icon = "deus_curse_khorne_01",
 	server_start_function = function (context, data)

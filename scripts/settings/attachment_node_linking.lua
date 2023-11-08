@@ -2991,6 +2991,78 @@ AttachmentNodeLinking = {
 			}
 		}
 	},
+	ghost_scythe = {
+		first_person = {
+			wielded = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "j_hips"
+				}
+			}
+		},
+		third_person = {
+			display = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			wielded = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "a_unwielded_staff"
+				}
+			}
+		}
+	},
+	necro_skull = {
+		first_person = {
+			wielded = {
+				{
+					target = 0,
+					source = "j_leftweaponattach"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "j_hips"
+				}
+			}
+		},
+		third_person = {
+			display = {
+				{
+					target = 0,
+					source = "j_leftweaponattach"
+				}
+			},
+			wielded = {
+				{
+					target = 0,
+					source = "j_leftweaponattach"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "j_hips"
+				}
+			}
+		}
+	},
 	polearm = {
 		first_person = {
 			wielded = {
@@ -5707,6 +5779,46 @@ AttachmentNodeLinking = {
 			}
 		}
 	},
+	hat_skinned_hair = {
+		slot_hat = {
+			{
+				target = 0,
+				source = "a_hat"
+			},
+			{
+				target = "j_neck",
+				source = "j_neck"
+			},
+			{
+				target = "j_head",
+				source = "j_head"
+			},
+			{
+				target = "j_lefteyebrowinner_anim",
+				source = "j_lefteyebrowinner_anim"
+			},
+			{
+				target = "j_lefteyebrowmid_anim",
+				source = "j_lefteyebrowmid_anim"
+			},
+			{
+				target = "j_lefteyebrowouter_anim",
+				source = "j_lefteyebrowouter_anim"
+			},
+			{
+				target = "j_righteyebrowinner_anim",
+				source = "j_righteyebrowinner_anim"
+			},
+			{
+				target = "j_righteyebrowmid_anim",
+				source = "j_righteyebrowmid_anim"
+			},
+			{
+				target = "j_righteyebrowouter_anim",
+				source = "j_righteyebrowouter_anim"
+			}
+		}
+	},
 	dr_beard = {
 		slot_hat = {
 			{
@@ -7808,6 +7920,100 @@ AttachmentNodeLinking = {
 				target = 0,
 				source = "j_hips"
 			}
+		}
+	},
+	skeleton_armor = {
+		{
+			target = 0,
+			source = "j_spine2"
+		}
+	},
+	skeleton_torso = {
+		{
+			target = 0,
+			source = "j_spine2"
+		},
+		{
+			target = "j_spine2",
+			source = "j_spine2"
+		},
+		{
+			target = "j_leftshoulder",
+			source = "j_leftshoulder"
+		},
+		{
+			target = "j_leftshoulderblade",
+			source = "j_leftshoulderblade"
+		},
+		{
+			target = "j_leftarm",
+			source = "j_leftarm"
+		},
+		{
+			target = "j_rightshoulder",
+			source = "j_rightshoulder"
+		},
+		{
+			target = "j_rightshoulderblade",
+			source = "j_rightshoulderblade"
+		},
+		{
+			target = "j_rightarm",
+			source = "j_rightarm"
+		},
+		{
+			target = "j_neck",
+			source = "j_neck"
+		}
+	},
+	skeleton_skull = {
+		{
+			target = 0,
+			source = "j_head"
+		},
+		{
+			target = "j_head",
+			source = "j_head"
+		},
+		{
+			target = "j_jaw",
+			source = "j_jaw"
+		}
+	},
+	skeleton_helmet = {
+		{
+			target = 0,
+			source = "j_head"
+		}
+	},
+	skeleton_greaves_l = {
+		{
+			target = 0,
+			source = "j_leftleg"
+		}
+	},
+	skeleton_greaves_r = {
+		{
+			target = 0,
+			source = "j_rightleg"
+		}
+	},
+	skeleton_vambrace_l = {
+		{
+			target = 0,
+			source = "j_leftforearmroll"
+		}
+	},
+	skeleton_vambrace_r = {
+		{
+			target = 0,
+			source = "j_rightforearmroll"
+		}
+	},
+	skeleton_hips = {
+		{
+			target = 0,
+			source = "j_hips"
 		}
 	},
 	ai_mace = {

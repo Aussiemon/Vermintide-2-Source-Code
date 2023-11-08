@@ -286,10 +286,9 @@ end
 
 PlayerBotBase.update = function (self, unit, input, dt, context, t)
 	self._t = t
-	local health_extension = self._health_extension
 	local status_extension = self._status_extension
 	local locomotion_extension = self._locomotion_extension
-	local is_alive = health_extension:is_alive()
+	local is_alive = HEALTH_ALIVE[self._unit]
 	local is_ready_for_assisted_respawn = status_extension:is_ready_for_assisted_respawn()
 	local is_linked_movement = locomotion_extension:is_linked_movement()
 
@@ -428,11 +427,11 @@ PlayerBotBase._update_proximity_target = function (self, dt, t, self_position)
 			search_position = self_position
 		end
 
-		local num_hits = Broadphase.query(self._enemy_broadphase, search_position, check_range, BROADPHASE_QUERY_TEMP)
+		local side = blackboard.side
+		local num_hits = Broadphase.query(self._enemy_broadphase, search_position, check_range, BROADPHASE_QUERY_TEMP, side.enemy_broadphase_categories)
 		local closest_dist = math.huge
 		local closest_enemy = nil
 		local closest_real_dist = math.huge
-		local side = blackboard.side
 
 		for PLAYER_UNIT, _ in pairs(side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS) do
 			num_hits = num_hits + 1
@@ -443,9 +442,8 @@ PlayerBotBase._update_proximity_target = function (self, dt, t, self_position)
 
 		for i = 1, num_hits do
 			local unit = BROADPHASE_QUERY_TEMP[i]
-			local health_ext = ScriptUnit.extension(unit, "health_system")
 
-			if health_ext:is_alive() then
+			if HEALTH_ALIVE[unit] then
 				local enemy_pos = POSITION_LOOKUP[unit]
 				local enemy_offset = enemy_pos - search_position
 
@@ -569,7 +567,7 @@ PlayerBotBase._get_closest_target_in_slot = function (self, position, unit, curr
 			for slot_index, slot in pairs(slot_data) do
 				local enemy_unit = slot.ai_unit
 
-				if ALIVE[enemy_unit] and ScriptUnit.extension(enemy_unit, "health_system"):is_alive() then
+				if HEALTH_ALIVE[enemy_unit] then
 					local dist = Vector3.length(POSITION_LOOKUP[enemy_unit] - position)
 
 					if enemy_unit == current_enemy_unit then
@@ -864,7 +862,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 	for k = 1, #player_and_bot_units do
 		local player_unit = player_and_bot_units[k]
 
-		if player_unit ~= unit and AiUtils.unit_alive(player_unit) then
+		if player_unit ~= unit and HEALTH_ALIVE[player_unit] then
 			local status_ext = ScriptUnit.extension(player_unit, "status_system")
 			local utility = 0
 			local look_at_ally = false
@@ -903,7 +901,7 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 					elseif can_give_grenade_to_other and (not player_inventory_extension:get_slot_data("slot_grenade") or player_inventory_extension:can_store_additional_item("slot_grenade")) and not is_bot then
 						in_need_type = "can_accept_grenade"
 						utility = 70
-					elseif can_give_potion_to_other and not player_inventory_extension:get_slot_data("slot_potion") and not is_bot then
+					elseif can_give_potion_to_other and (not player_inventory_extension:get_slot_data("slot_potion") or player_inventory_extension:can_store_additional_item("slot_potion")) and not is_bot then
 						in_need_type = "can_accept_potion"
 						utility = 70
 					elseif need_attention_type == "stop" then

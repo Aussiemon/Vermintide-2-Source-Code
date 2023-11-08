@@ -53,7 +53,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 
 	local breed = Unit.get_data(hit_unit, "breed")
 
-	fassert(not breed or breed.is_player, "Trying to apply surface material effect to unit %q an ai unit.", hit_unit)
+	fassert(not breed or breed.is_player or breed.race == "dummy", "Trying to apply surface material effect to unit %q an ai unit.", hit_unit)
 	fassert(not ScriptUnit.has_extension(hit_unit, "ai_inventory_item_system"), "Trying to apply surface material effect to unit %q with ai_inventory_item extension.", hit_unit)
 
 	local decal_settings = effect_settings.decal and effect_settings.decal.settings
@@ -279,7 +279,7 @@ EffectHelper.play_skinned_surface_material_effects = function (effect_name, worl
 end
 
 EffectHelper.player_critical_hit = function (world, is_critical_hit, attacker_unit, target_unit, hit_position)
-	if not AiUtils.unit_alive(target_unit) then
+	if not HEALTH_ALIVE[target_unit] then
 		return
 	end
 
@@ -457,7 +457,6 @@ EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_n
 	local sound_character = Unit.get_data(unit, "sound_character")
 	local world = Managers.world:world("level_world")
 	local physics_world = World.get_data(world, "physics_world")
-	local debug = script_data.debug_material_effects
 	local hit, position, _, normal, actor = PhysicsWorld.immediate_raycast(physics_world, raycast_position, raycast_direction, raycast_range, "closest", "types", "both", "collision_filter", "filter_ground_material_check")
 	local player = Managers.player:owner(unit)
 	local husk = not player or player.remote or player.bot_player
@@ -471,16 +470,6 @@ EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_n
 
 		EffectHelper.play_surface_material_effects(effect_name, world, hit_unit, position, rotation, normal, sound_character, husk, unit)
 	else
-		if debug then
-			local drawer = Managers.state.debug:drawer({
-				mode = "retained",
-				name = "DEBUG_DRAW_IMPACT_DECAL_HIT"
-			})
-
-			drawer:vector(raycast_position, raycast_direction * raycast_range, Color(255, 255, 0, 0))
-			Managers.state.debug_text:output_world_text("MISS", 0.1, raycast_position, 30, "material_text", Vector3(0, 255, 0))
-		end
-
 		local effect_settings = MaterialEffectMappings[effect_name]
 		local level_settings = LevelHelper:current_level_settings()
 		local material = level_settings.default_surface_material or DefaultSurfaceMaterial
@@ -491,47 +480,26 @@ EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_n
 		if sound then
 			local wwise_source_id, wwise_world = WwiseUtils.make_position_auto_source(world, raycast_position + raycast_direction * raycast_range)
 
-			if debug then
-				printf("[EffectHelper:play_surface_material_effects()] playing sound %s", sound.event)
-				printf("   sound param: \"husk\", sound_value %q", husk and "true" or "false")
-			end
-
 			WwiseWorld.set_switch(wwise_world, "husk", husk and "true" or "false", wwise_source_id)
 
 			if sound.parameters then
 				for parameter_name, parameter_value in pairs(sound.parameters) do
-					if debug then
-						printf("   sound param: %q, sound_value %q", parameter_name, parameter_value)
-					end
-
 					WwiseWorld.set_switch(wwise_world, parameter_name, parameter_value, wwise_source_id)
 				end
 			end
 
 			if sound_character then
-				if debug then
-					printf("   sound param: \"sound_character\", sound_value %q", sound_character)
-				end
-
 				WwiseWorld.set_switch(wwise_world, "character_foley", sound_character, wwise_source_id)
 			end
 
 			if rtpcs then
 				for parameter_name, parameter_value in pairs(rtpcs) do
-					if debug then
-						printf("   sound param: %q, sound_value %q", parameter_name, parameter_value)
-					end
-
 					WwiseWorld.set_source_parameter(wwise_world, wwise_source_id, parameter_name, parameter_value)
 				end
 			end
 
 			if switches then
 				for parameter_name, parameter_value in pairs(switches) do
-					if debug then
-						printf("   sound param: %q, sound_value %q", parameter_name, parameter_value)
-					end
-
 					WwiseWorld.set_switch(wwise_world, parameter_name, parameter_value, wwise_source_id)
 				end
 			end

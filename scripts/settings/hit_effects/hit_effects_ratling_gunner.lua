@@ -651,7 +651,6 @@ HitEffectsRatlingGunner = {
 	},
 	burning_stab_fencer_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_stab_fencer"
@@ -665,7 +664,8 @@ HitEffectsRatlingGunner = {
 			distal_force = 30,
 			vertical_force = 0,
 			lateral_force = 0
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	heavy_stab_fencer_death = {
 		inherits = "default_death",
@@ -1095,7 +1095,6 @@ HitEffectsRatlingGunner = {
 	burning_tank_death = {
 		inherits = "default_death",
 		do_dismember = false,
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank"
@@ -1108,7 +1107,8 @@ HitEffectsRatlingGunner = {
 			distal_force = 10,
 			vertical_force = 0,
 			lateral_force = 30
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burning_tank_death_head = {
 		inherits = "burning_tank_death",
@@ -1127,7 +1127,6 @@ HitEffectsRatlingGunner = {
 	heavy_burning_tank_death = {
 		inherits = "default_death",
 		do_dismember = true,
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"heavy_burning_tank"
@@ -1140,7 +1139,8 @@ HitEffectsRatlingGunner = {
 			distal_force = 20,
 			vertical_force = 10,
 			lateral_force = 40
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	heavy_burning_tank_death_head = {
 		inherits = "heavy_burning_tank_death",
@@ -1415,6 +1415,7 @@ HitEffectsRatlingGunner = {
 			damage_type = {
 				"arrow_sniper",
 				"arrow_carbine",
+				"elven_magic_arrow_carbine",
 				"arrow_machinegun",
 				"arrow_shotgun",
 				"bolt_sniper",
@@ -1427,48 +1428,15 @@ HitEffectsRatlingGunner = {
 			"hit_reaction"
 		}
 	},
-	arrow_machinegun_death = {
+	arrow_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			damage_type = {
-				"arrow_machinegun"
-			}
-		},
-		animations = {
-			"ragdoll",
-			"death_shot_body",
-			"death_shot_body_2"
-		},
-		push = {
-			distal_force = 20,
-			vertical_force = 10,
-			lateral_force = 0
-		}
-	},
-	arrow_carbine_death = {
-		inherits = "default_death",
-		extra_conditions = {
-			damage_type = {
+				"arrow_machinegun",
 				"arrow_carbine",
-				"arrow_shotgun"
-			}
-		},
-		animations = {
-			"ragdoll",
-			"death_shot_body",
-			"death_shot_body_2"
-		},
-		push = {
-			distal_force = 20,
-			vertical_force = 10,
-			lateral_force = 0
-		}
-	},
-	arrow_sniper_death = {
-		inherits = "default_death",
-		extra_conditions = {
-			damage_type = {
-				"arrow_sniper"
+				"arrow_shotgun",
+				"arrow_sniper",
+				"elven_magic_arrow_carbine"
 			}
 		},
 		animations = {
@@ -1527,7 +1495,8 @@ HitEffectsRatlingGunner = {
 				"arrow_sniper",
 				"arrow_carbine",
 				"arrow_machinegun",
-				"arrow_shotgun"
+				"arrow_shotgun",
+				"elven_magic_arrow_carbine"
 			},
 			hit_zone = {
 				"head",
@@ -1670,33 +1639,25 @@ HitEffectsRatlingGunner = {
 			"hit_reaction"
 		}
 	},
-	burn_death = {
-		flow_event = "burn",
+	burninating_death = {
+		inherits = "burninating",
 		extra_conditions = {
-			death = true,
-			damage = true,
-			damage_type = {
-				"burninating",
-				"burn"
-			}
+			death = true
 		},
 		animations = {
 			"death_burn"
 		}
 	},
-	burn_death_force_fire = {
-		flow_event = "burn_force_fire",
+	burn_death = {
 		extra_conditions = {
 			death = true,
 			damage = true,
-			damage_type = {
-				"burn_force_fire",
-				"burninating_force_fire"
-			}
+			damage_type = "burn"
 		},
 		animations = {
 			"death_burn"
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burn_sniper = {
 		inherits = "default",
@@ -1709,7 +1670,6 @@ HitEffectsRatlingGunner = {
 	},
 	burn_sniper_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burn_sniper"
@@ -1718,6 +1678,7 @@ HitEffectsRatlingGunner = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -1727,7 +1688,6 @@ HitEffectsRatlingGunner = {
 	burn_sniper_death_dismember = {
 		inherits = "burn_sniper_death",
 		do_dismember = true,
-		flow_event = "burn",
 		extra_conditions = {
 			hit_zone = {
 				"head",
@@ -1742,6 +1702,7 @@ HitEffectsRatlingGunner = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -1759,7 +1720,6 @@ HitEffectsRatlingGunner = {
 	},
 	burn_shotgun_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burn_shotgun"
@@ -1768,6 +1728,7 @@ HitEffectsRatlingGunner = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 30,
 			vertical_force = 30,
@@ -1785,7 +1746,6 @@ HitEffectsRatlingGunner = {
 	},
 	burn_machinegun_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burn_machinegun"
@@ -1794,6 +1754,7 @@ HitEffectsRatlingGunner = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
 			vertical_force = 10,
@@ -1812,9 +1773,9 @@ HitEffectsRatlingGunner = {
 			"death_shot_head_front"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
 			vertical_force = 10,
@@ -1832,7 +1793,6 @@ HitEffectsRatlingGunner = {
 	},
 	burn_carbine_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burn_carbine"
@@ -1841,6 +1801,7 @@ HitEffectsRatlingGunner = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 10,
@@ -1859,9 +1820,9 @@ HitEffectsRatlingGunner = {
 			"death_shot_head_front"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 10,
@@ -1870,26 +1831,35 @@ HitEffectsRatlingGunner = {
 	},
 	arrow_poison_dot = {
 		inherits = "default",
-		flow_event = "poisoned",
 		extra_conditions = {
 			damage_type = {
 				"arrow_poison_dot",
-				"aoe_poison_dot"
+				"aoe_poison_dot",
+				"poison"
 			}
 		},
 		animations = {
 			"hit_reaction"
 		}
 	},
-	arrow_poison_dot_death = {
-		flow_event = "poisoned",
+	poison_death = {
 		extra_conditions = {
 			death = true,
-			damage = true,
+			damage_type = {
+				"poison"
+			}
+		},
+		timed_status = StatusEffectNames.poisoned,
+		animations = {
+			"death_gas"
+		}
+	},
+	arrow_poison_dot_death = {
+		extra_conditions = {
+			death = true,
 			damage_type = {
 				"arrow_poison_dot",
-				"aoe_poison_dot",
-				"poison"
+				"aoe_poison_dot"
 			}
 		},
 		animations = {
@@ -1974,10 +1944,10 @@ HitEffectsRatlingGunner = {
 	fire_grenade_glance_death = {
 		inherits = "default_death",
 		explosion_push = true,
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "fire_grenade_glance"
 		},
+		timed_status = StatusEffectNames.burning,
 		animations = {
 			"ragdoll"
 		},
@@ -1990,7 +1960,6 @@ HitEffectsRatlingGunner = {
 	fire_grenade_glance_death_dismember = {
 		inherits = "fire_grenade_glance_death",
 		do_dismember = true,
-		flow_event = "burn",
 		extra_conditions = {
 			hit_zone = {
 				"head",
@@ -2007,6 +1976,7 @@ HitEffectsRatlingGunner = {
 			"death_shot_head_front",
 			"death_decapitate"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 50,
 			vertical_force = 30,
@@ -2028,10 +1998,10 @@ HitEffectsRatlingGunner = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"dismember_left_leg",
 			"dismember_right_arm"
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	drakegun = {
 		inherits = "default",
@@ -2043,7 +2013,6 @@ HitEffectsRatlingGunner = {
 	},
 	drakegun_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "drakegun"
 		},
@@ -2053,7 +2022,8 @@ HitEffectsRatlingGunner = {
 		push = {
 			distal_force = 70,
 			vertical_force = 35
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	drakegun_glance = {
 		inherits = "default",
@@ -2063,13 +2033,13 @@ HitEffectsRatlingGunner = {
 	},
 	drakegun_glance_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "drakegun_glance"
 		},
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 30,
 			vertical_force = 15
@@ -2077,7 +2047,6 @@ HitEffectsRatlingGunner = {
 	},
 	drakegun_shot_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"drakegun_shot"
@@ -2086,6 +2055,7 @@ HitEffectsRatlingGunner = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2095,7 +2065,6 @@ HitEffectsRatlingGunner = {
 	drakegun_shot_death_dismember = {
 		inherits = "drakegun_shot_death",
 		do_dismember = true,
-		flow_event = "burn",
 		extra_conditions = {
 			hit_zone = {
 				"left_arm",
@@ -2108,6 +2077,7 @@ HitEffectsRatlingGunner = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2126,9 +2096,9 @@ HitEffectsRatlingGunner = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2205,6 +2175,7 @@ HitEffectsRatlingGunner = {
 			damage_type = {
 				"arrow_sniper",
 				"arrow_carbine",
+				"elven_magic_arrow_carbine",
 				"arrow_machinegun",
 				"arrow_shotgun",
 				"bolt_sniper",
@@ -2228,6 +2199,7 @@ HitEffectsRatlingGunner = {
 			damage_type = {
 				"arrow_sniper",
 				"arrow_carbine",
+				"elven_magic_arrow_carbine",
 				"arrow_machinegun",
 				"arrow_shotgun",
 				"bolt_sniper",
@@ -2251,6 +2223,7 @@ HitEffectsRatlingGunner = {
 			damage_type = {
 				"arrow_sniper",
 				"arrow_carbine",
+				"elven_magic_arrow_carbine",
 				"arrow_machinegun",
 				"arrow_shotgun",
 				"bolt_sniper",
@@ -2273,6 +2246,7 @@ HitEffectsRatlingGunner = {
 			damage_type = {
 				"arrow_sniper",
 				"arrow_carbine",
+				"elven_magic_arrow_carbine",
 				"arrow_machinegun",
 				"arrow_shotgun",
 				"bolt_sniper",

@@ -241,7 +241,7 @@ settings.bt_leave_hooks = {
 		blackboard.transition_done = true
 	end,
 	on_drachenfels_sorcerer_intro_leave = function (unit, blackboard, t)
-		if AiUtils.unit_alive(unit) and not blackboard.exit_last_action then
+		if HEALTH_ALIVE[unit] and not blackboard.exit_last_action then
 			local game = Managers.state.network:game()
 			local go_id = Managers.state.unit_storage:go_id(unit)
 

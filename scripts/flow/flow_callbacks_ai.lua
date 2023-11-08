@@ -479,7 +479,7 @@ function flow_callback_broadphase_ai_set_goal_destination(params)
 			local blackboard = BLACKBOARDS[ai_unit]
 			local breed = blackboard.breed
 
-			if breed.name == affected_breed_name and AiUtils.unit_alive(ai_unit) then
+			if breed.name == affected_breed_name and HEALTH_ALIVE[ai_unit] then
 				if blackboard.goal_destination == nil then
 					blackboard.goal_destination = Vector3Box(goal_destination)
 				else

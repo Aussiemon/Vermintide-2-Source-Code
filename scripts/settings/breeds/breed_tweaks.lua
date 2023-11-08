@@ -2717,3 +2717,6 @@ BreedTweaks.standard_bearer_spawn_list_replacements = {
 	"beastmen_ungor_archer",
 	"beastmen_ungor"
 }
+BreedTweaks.perception_weights = {
+	prioritize_players_limit = 100
+}

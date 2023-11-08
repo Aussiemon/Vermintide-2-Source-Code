@@ -1,6 +1,5 @@
 AIPlayerSlotExtension = class(AIPlayerSlotExtension)
 local AISlotUtils = require("scripts/entity_system/systems/ai/ai_slot_utils")
-local unit_alive = AiUtils.unit_alive
 local Vector3_distance = Vector3.distance
 local Vector3_distance_sq = Vector3.distance_squared
 local Vector3_length = Vector3.length
@@ -1412,7 +1411,7 @@ local function get_slot_queue_position(slot, nav_world, distance_modifier, t)
 	local target_unit = slot.target_unit
 	local ai_unit = slot.ai_unit
 
-	if not unit_alive(target_unit) or not ALIVE[ai_unit] then
+	if not HEALTH_ALIVE[target_unit] or not ALIVE[ai_unit] then
 		return
 	end
 

@@ -8,6 +8,7 @@ local cog_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_ove
 local morris_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_morris_intro")
 local woods_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_woods_intro")
 local bless_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_bless_intro")
+local shovel_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_shovel_intro")
 local scenegraph_definition = {
 	screen = {
 		vertical_alignment = "center",
@@ -821,12 +822,12 @@ local prologue_video = {
 	subtitle_template_settings = prologue_video_subtitle_settings
 }
 local dlc_intro_video = {
-	video_name = "video/vermintide_2_bless_intro",
-	sound_start = "Play_vermintide_2_bless_intro",
+	video_name = "video/vermintide_2_shovel_intro",
+	sound_start = "Play_vermintide_2_shovel_intro",
 	scenegraph_id = "splash_video",
-	material_name = "vermintide_2_bless_intro",
-	sound_stop = "Stop_vermintide_2_bless_intro",
-	subtitle_template_settings = bless_intro_video_subtitle_settings
+	material_name = "vermintide_2_shovel_intro",
+	sound_stop = "Stop_vermintide_2_shovel_intro",
+	subtitle_template_settings = shovel_intro_video_subtitle_settings
 }
 local first_time_video = dlc_intro_video
 

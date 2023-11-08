@@ -167,6 +167,7 @@ weapon_template.right_hand_unit = ""
 weapon_template.right_hand_attachment_node_linking = AttachmentNodeLinking.grudge_raker
 weapon_template.display_unit = "units/weapons/weapon_display/display_1h_grudge_raker"
 weapon_template.wield_anim = "to_grudge_raker"
+weapon_template.state_machine = "units/beings/player/first_person_base/state_machines/ranged/grudgeraker"
 weapon_template.wield_anim_no_ammo = "to_grudge_raker_noammo"
 weapon_template.crosshair_style = "shotgun"
 weapon_template.fire_at_gaze_setting = "tobii_fire_at_gaze_grudgeraker"

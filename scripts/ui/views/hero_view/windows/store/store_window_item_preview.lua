@@ -653,7 +653,9 @@ StoreWindowItemPreview._handle_input = function (self, input_service, dt, t)
 				new_path[#new_path + 1] = "item_details"
 			end
 
-			parent:go_to_store_path(new_path)
+			local keep_global_shader_flags = true
+
+			parent:go_to_store_path(new_path, keep_global_shader_flags)
 
 			input_handled = true
 		else

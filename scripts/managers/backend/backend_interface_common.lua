@@ -355,6 +355,7 @@ filter_macros.can_wield_bright_wizard = make_filter_macro_can_wield_profile("bri
 filter_macros.can_wield_bw_scholar = make_filter_macro_can_wield_career("bw_scholar")
 filter_macros.can_wield_bw_adept = make_filter_macro_can_wield_career("bw_adept")
 filter_macros.can_wield_bw_unchained = make_filter_macro_can_wield_career("bw_unchained")
+filter_macros.can_wield_bw_necromancer = make_filter_macro_can_wield_career("bw_necromancer")
 filter_macros.can_wield_dwarf_ranger = make_filter_macro_can_wield_profile("dwarf_ranger")
 filter_macros.can_wield_dr_ironbreaker = make_filter_macro_can_wield_career("dr_ironbreaker")
 filter_macros.can_wield_dr_slayer = make_filter_macro_can_wield_career("dr_slayer")

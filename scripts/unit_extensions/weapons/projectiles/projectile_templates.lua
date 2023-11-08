@@ -313,7 +313,7 @@ ProjectileTemplates.impact_templates = {
 					blackboard.explosion_impact = true
 				end
 
-				if AiUtils.unit_alive(owner_unit) then
+				if HEALTH_ALIVE[owner_unit] then
 					local players_inside = 0
 					local area_damage_position = POSITION_LOOKUP[unit]
 
@@ -375,7 +375,7 @@ ProjectileTemplates.impact_templates = {
 					blackboard.explosion_impact = true
 				end
 
-				if AiUtils.unit_alive(owner_unit) then
+				if HEALTH_ALIVE[owner_unit] then
 					local players_inside = 0
 					local area_damage_position = POSITION_LOOKUP[unit]
 
@@ -521,6 +521,70 @@ ProjectileTemplates.impact_templates = {
 		client = {
 			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
 				Unit.set_unit_visibility(unit, false)
+				Unit.flow_event(unit, "lua_projectile_impact")
+
+				return true
+			end
+		}
+	},
+	necromancer_trapped_soul = {
+		owner_heal_amount = 2,
+		owner_heal_type = "heal_from_proc",
+		server = {
+			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
+				local hit_unit = recent_impacts[ProjectileImpactDataIndex.UNIT]
+
+				if not HEALTH_ALIVE[hit_unit] then
+					return true
+				end
+
+				local network_manager = Managers.state.network
+				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
+
+				if hit_unit_id then
+					local hit_position = recent_impacts[ProjectileImpactDataIndex.POSITION]:unbox()
+					local hit_direction = recent_impacts[ProjectileImpactDataIndex.DIRECTION]:unbox()
+					local weapon_system = Managers.state.entity:system("weapon_system")
+					local damage_source_id = NetworkLookup.damage_sources.buff
+					local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
+					local hit_zone_name = "full"
+					local breed = Breeds[hit_unit]
+
+					if breed then
+						local actor_index = recent_impacts[ProjectileImpactDataIndex.ACTOR_INDEX]
+						local actor = Unit.actor(hit_unit, actor_index)
+						local node = Actor.node(actor)
+						hit_zone_name = breed.hit_zones_lookup[node] or hit_zone_name
+					end
+
+					local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
+					local damage_profile_id = NetworkLookup.damage_profiles.trapped_soul
+					local power_level = DefaultPowerLevel
+					local career_extension = ScriptUnit.has_extension(owner_unit, "career_system")
+
+					if career_extension then
+						power_level = career_extension:get_career_power_level()
+					end
+
+					local health_extension = ScriptUnit.has_extension(owner_unit, "health_system")
+
+					if health_extension then
+						local impact_template = ProjectileTemplates.impact_templates.necromancer_trapped_soul
+
+						health_extension:add_heal(owner_unit, impact_template.owner_heal_amount, nil, impact_template.owner_heal_type)
+					end
+
+					weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, hit_direction, damage_profile_id, "power_level", power_level)
+				end
+
+				return true
+			end
+		},
+		client = {
+			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
+				local hit_position = recent_impacts[ProjectileImpactDataIndex.POSITION]:unbox()
+
+				World.create_particles(world, "fx/necromancer_skeleton_hit", hit_position)
 				Unit.flow_event(unit, "lua_projectile_impact")
 
 				return true

@@ -18,10 +18,10 @@ end
 
 serialize.save = save
 
-local function save_simple(v)
+local function save_simple(v, indent)
 	local out = {}
 
-	save_item_simple(v, out, 1)
+	save_item_simple(v, out, indent or 1)
 
 	return table.concat(out)
 end

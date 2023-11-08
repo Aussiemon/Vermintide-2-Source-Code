@@ -1,15 +1,14 @@
 local breed_data = {
-	base_unit = "units/beings/enemies/chaos_mutator_sorcerer/chr_chaos_mutator_sorcerer",
 	target_selection = "pick_mutator_sorcerer_target",
-	has_inventory = true,
 	perception = "perception_pack_master",
+	has_inventory = true,
 	no_stagger_duration = false,
 	run_speed = 4.8,
 	walk_speed = 2.3,
 	far_off_despawn_immunity = true,
 	animation_sync_rpc = "rpc_sync_anim_state_8",
-	navigation_spline_distance_to_borders = 1,
 	debug_spawn_category = "Misc",
+	navigation_spline_distance_to_borders = 1,
 	stagger_threshold_light = 0.5,
 	wield_inventory_on_spawn = false,
 	default_inventory_template = "chaos_mutator_sorcerer",
@@ -25,6 +24,7 @@ local breed_data = {
 	is_of_interest_func = "is_of_interest_to_corruptor",
 	perception_continuous = "SET_TO_NIL",
 	behavior = "chaos_mutator_sorcerer",
+	base_unit = "units/beings/enemies/chaos_mutator_sorcerer/chr_chaos_mutator_sorcerer",
 	threat_value = 0,
 	max_health = {
 		30,
@@ -52,6 +52,14 @@ local breed_data = {
 		head = "headshot"
 	},
 	run_on_spawn = AiBreedSnippets.on_chaos_plague_sorcerer_spawn,
+	status_effect_settings = {
+		category = "medium",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning,
+			StatusEffectNames.burning_warpfire,
+			StatusEffectNames.poisoned
+		})
+	},
 	target_player_sound_events = {
 		witch_hunter = "chaos_sorcerer_plague_targeting_saltspyre",
 		empire_soldier = "chaos_sorcerer_plague_targeting_soldier",

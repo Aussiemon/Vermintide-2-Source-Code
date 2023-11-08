@@ -580,12 +580,8 @@ TutorialSystem.update = function (self, context, t)
 		if result and actor then
 			raycast_unit = Actor.unit(actor)
 
-			if raycast_unit and Unit.alive(raycast_unit) and ScriptUnit.has_extension(raycast_unit, "health_system") then
-				local health_extension = ScriptUnit.extension(raycast_unit, "health_system")
-
-				if not health_extension:is_alive() then
-					raycast_unit = nil
-				end
+			if not HEALTH_ALIVE[raycast_unit] then
+				raycast_unit = nil
 			end
 		end
 

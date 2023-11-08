@@ -35,9 +35,7 @@ BTInVortexAction.leave = function (self, unit, blackboard, t, reason, destroy)
 		LocomotionUtils.set_animation_driven_movement(unit, false, false)
 	end
 
-	local health_extension = ScriptUnit.extension(unit, "health_system")
-
-	if health_extension:is_alive() and not destroy then
+	if HEALTH_ALIVE[unit] and not destroy then
 		local locomotion_extension = blackboard.locomotion_extension
 
 		locomotion_extension:set_movement_type("snap_to_navmesh")

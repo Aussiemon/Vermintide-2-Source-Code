@@ -129,7 +129,7 @@ BossHealthUI._generate_attributes = function (self, attributes, widget, current_
 				return true
 			end
 
-			local data = BreedEnhancements.boss[id]
+			local data = BreedEnhancements[id]
 			local text = "{#grad(true);color(242,226,187,255);color2(255,125,80,255)}" .. Utf8.upper(Localize(data.display_name))
 			local pixel_width = UIUtils.get_text_width(self.ui_renderer, current_style, text)
 			style.offset[1] = x
@@ -322,7 +322,9 @@ BossHealthUI._show_boss_health_bar = function (self, unit)
 			should_show_health_bar = true
 		end
 	else
-		should_show_health_bar = breed and breed.boss
+		local ai_system = Managers.state.entity:system("ai_system")
+		local attributes = ai_system:get_attributes(unit)
+		should_show_health_bar = breed and breed.boss or attributes.grudge_marked ~= nil
 	end
 
 	if should_show_health_bar then
@@ -402,7 +404,7 @@ BossHealthUI._sync_boss_health = function (self, dt, t)
 		return
 	end
 
-	if not AiUtils.unit_alive(unit) then
+	if not HEALTH_ALIVE[unit] then
 		self:_reset()
 
 		return

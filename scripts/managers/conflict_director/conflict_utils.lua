@@ -1,6 +1,7 @@
 require("scripts/settings/breeds")
 require("scripts/settings/patrol_formation_settings")
 require("scripts/managers/conflict_director/breed_packs")
+require("scripts/managers/conflict_director/encampment_templates")
 
 ConflictUtils = {}
 local ConflictUtils = ConflictUtils
@@ -545,6 +546,40 @@ ConflictUtils.get_spawn_pos_on_circle = function (nav_world, center_pos, dist, s
 
 		if pos and (not check_no_spawn_volumes or not ConflictUtils.is_position_inside_no_spawn_volume(level, nav_tag_volume_handler, pos)) then
 			return pos, p1, p2, p3
+		end
+	end
+
+	return false
+end
+
+ConflictUtils.get_pos_towards_goal = function (nav_world, center_pos, dist, spread, tries, optional_dir, check_no_spawn_volumes, level, nav_tag_volume_handler)
+	tries = tries or 1
+
+	for i = 1, tries do
+		local add_vec, goal_pos = nil
+
+		if optional_dir then
+			goal_pos = center_pos + optional_dir * dist + (math.random() - 0.5) * spread
+		else
+			add_vec = Vector3(dist + (math.random() - 0.5) * spread, 0, 0)
+			goal_pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
+		end
+
+		local _, end_pos = GwNavQueries.raycast(nav_world, center_pos, goal_pos)
+
+		if end_pos then
+			local return_pos = nil
+			local is_on_navmesh, altitude = GwNavQueries.triangle_from_position(nav_world, end_pos, 1, 1)
+
+			if is_on_navmesh then
+				return_pos = end_pos
+			else
+				return_pos = GwNavQueries.inside_position_from_outside_position(nav_world, end_pos, 3, 3, 5, 0.5)
+			end
+
+			if not check_no_spawn_volumes or not ConflictUtils.is_position_inside_no_spawn_volume(level, nav_tag_volume_handler, end_pos) then
+				return return_pos
+			end
 		end
 	end
 
@@ -1328,12 +1363,12 @@ ConflictUtils.get_closest_position = function (pos, pos_list)
 	return closest_pos, min_dist
 end
 
-ConflictUtils.override_extension_init_data = function (breed, extension_init_data, optional_data)
+ConflictUtils.override_extension_init_data = function (main_extension_init_data, optional_data)
 	local override_extension_init_data = optional_data.extension_init_data
 
 	if override_extension_init_data then
 		for system_name, data in pairs(override_extension_init_data) do
-			table.merge(extension_init_data[system_name], data)
+			table.merge(main_extension_init_data[system_name], data)
 		end
 	end
 end
@@ -1346,6 +1381,107 @@ local function check_if_in_line_of_sight(physics_world, unit, from, to)
 	local hit_unit = hit and Actor.unit(hit_actor)
 
 	return not hit or hit_unit == unit
+end
+
+ConflictUtils.raise_dead = function (pos, radius, side_id)
+	if pos then
+		radius = radius or 10
+		local result_table = {}
+		local raise_list = {}
+		local death_system = Managers.state.entity:system("death_system")
+
+		death_system:get_dead(result_table)
+
+		for unit, _ in pairs(result_table) do
+			local blackboard = BLACKBOARDS[unit]
+
+			if blackboard then
+				local breed = blackboard.breed
+				local dead_pos = POSITION_LOOKUP[unit]
+				local dist = Vector3.distance(pos, dead_pos)
+
+				if dist < radius and breed.is_resurrectable ~= false then
+					if Unit.has_animation_event(unit, "spawn_floor") then
+						raise_list[#raise_list + 1] = unit
+					else
+						printf("Can't raise %s missing animation event: 'spawn_floor' ", BLACKBOARDS[unit].breed.name)
+					end
+				end
+			end
+		end
+
+		local amount = #raise_list
+
+		if amount > 0 then
+			local local_player = Managers.player:local_player()
+			local resurrected_group_id = local_player.resurrected_group_id
+			local group_id = resurrected_group_id or Managers.state.entity:system("ai_group_system"):generate_group_id()
+			local group_data = {
+				insert_into_group = true,
+				template = "resurrected",
+				group_type = "resurrected",
+				id = group_id,
+				size = amount,
+				commanding_player = local_player
+			}
+			local_player.resurrected_group_id = group_id
+
+			for i = 1, amount do
+				local unit = raise_list[i]
+				local dead_pos = POSITION_LOOKUP[unit]
+				local dead_rot = Unit.local_rotation(unit, 0)
+				local breed = BLACKBOARDS[unit].breed
+				local spawn_category = "resurrected"
+				local spawn_animation = "spawn_floor"
+				local optional_data = {
+					ignore_breed_limits = true,
+					side_id = side_id,
+					insert_into_group = resurrected_group_id ~= nil
+				}
+
+				Managers.state.conflict:spawn_queued_unit(breed, Vector3Box(dead_pos), QuaternionBox(dead_rot), spawn_category, spawn_animation, nil, optional_data, group_data)
+				Managers.state.unit_spawner:mark_for_deletion(unit)
+			end
+		end
+	end
+end
+
+ConflictUtils.command_ai_to_move = function (player, nav_world, pos)
+	if pos then
+		local group = Managers.state.entity:system("ai_group_system"):get_ai_group(player.resurrected_group_id)
+
+		if group then
+			QuickDrawer:sphere(pos, 2, Color(100, 0, 255))
+
+			local i = 1
+			local amount = group.members_n
+			local num_attempts = 8
+			local grid_size = math.ceil(math.sqrt(amount))
+
+			for unit, extension in pairs(group.members) do
+				local blackboard = BLACKBOARDS[unit]
+
+				for j = 1, num_attempts do
+					local offset = Vector3(4 * math.random() - 2, 4 * math.random() - 2, 0)
+
+					if j == 1 then
+						offset = Vector3(-grid_size / 2 + i % grid_size, -grid_size / 2 + math.floor(i / grid_size), 0)
+					end
+
+					local goal_pos = LocomotionUtils.pos_on_mesh(nav_world, pos + offset)
+
+					if goal_pos then
+						blackboard.new_move_to_goal = true
+						blackboard.goal_destination = Vector3Box(goal_pos)
+
+						break
+					end
+				end
+
+				i = i + 1
+			end
+		end
+	end
 end
 
 ConflictUtils.find_positions_around_position = function (center_position, output_position_list, nav_world, min_distance, max_distance, num_of_positions, forbidden_position_list, distance_to_forbidden_position_list, tries, circle_subdivision, row_distance, above_max, below_max, check_line_of_sight, physics_world, line_of_sight_target)

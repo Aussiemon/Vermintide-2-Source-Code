@@ -1,12 +1,6 @@
 ActionShieldSlam = class(ActionShieldSlam, ActionBase)
 local POSITION_LOOKUP = POSITION_LOOKUP
 
-local function weapon_printf(...)
-	if script_data.debug_weapons then
-		printf("[ActionShieldSlam] " .. sprintf(...))
-	end
-end
-
 ActionShieldSlam.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	ActionShieldSlam.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
@@ -99,14 +93,10 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 					local hit_zone = breed.hit_zones_lookup[node]
 					local hit_zone_name = hit_zone.name
 
-					if hit_zone_name ~= "afro" then
-						local target_health_extension = ScriptUnit.extension(hit_unit, "health_system")
+					if hit_zone_name ~= "afro" and HEALTH_ALIVE[hit_unit] then
+						self.target_breed_unit = hit_unit
 
-						if target_health_extension:is_alive() then
-							self.target_breed_unit = hit_unit
-
-							break
-						end
+						break
 					end
 				end
 			end
@@ -118,14 +108,13 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 		local targeting_data = targeting_extension:get_targeting_data()
 		local smart_targeting_unit = targeting_data.unit
 
-		if AiUtils.unit_alive(smart_targeting_unit) then
+		if HEALTH_ALIVE[smart_targeting_unit] then
 			local smart_targeting_position = Unit.has_node(smart_targeting_unit, "j_spine") and Unit.world_position(smart_targeting_unit, Unit.node(smart_targeting_unit, "j_spine"))
 			local target_world_position = POSITION_LOOKUP[smart_targeting_unit] or Unit.world_position(smart_targeting_unit, 0)
 			local target_position = smart_targeting_position or target_world_position
 			local distance = Vector3.length(pos - target_position)
-			local target_health_extension = smart_targeting_unit and ScriptUnit.extension(smart_targeting_unit, "health_system")
 
-			if target_health_extension:is_alive() and distance < new_action.dedicated_target_range then
+			if HEALTH_ALIVE[smart_targeting_unit] and distance < new_action.dedicated_target_range then
 				self.target_breed_unit = smart_targeting_unit
 			end
 		end
@@ -200,13 +189,8 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 	end
 
 	local target_breed_unit = self.target_breed_unit
-	local target_breed_unit_health_extension = Unit.alive(target_breed_unit) and ScriptUnit.extension(target_breed_unit, "health_system")
 
-	if target_breed_unit_health_extension then
-		if not target_breed_unit_health_extension:is_alive() then
-			target_breed_unit = nil
-		end
-	else
+	if not HEALTH_ALIVE[target_breed_unit] then
 		target_breed_unit = nil
 	end
 
@@ -229,10 +213,9 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 			end
 
 			local breed = unit_get_data(hit_unit, "breed")
-			local dummy = not breed and unit_get_data(hit_unit, "is_dummy")
 			local hit_self = hit_unit == owner_unit
 
-			if breed or dummy then
+			if breed then
 				if hit_unit == target_breed_unit then
 					break
 				end
@@ -264,12 +247,9 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 						local damage_profile = self.damage_profile_aoe
 						local target_index = 1
 						local is_critical_strike = self._is_critical_strike
+						self._overridable_settings = current_action
 
-						if not dummy then
-							self._overridable_settings = current_action
-
-							ActionSweep._play_character_impact(self, is_server, owner_unit, hit_unit, breed, hit_position, target_hit_zone_name, current_action, damage_profile, target_index, power_level, attack_direction, shield_blocked, self.melee_boost_curve_multiplier, is_critical_strike)
-						end
+						ActionSweep._play_character_impact(self, is_server, owner_unit, hit_unit, breed, hit_position, target_hit_zone_name, current_action, damage_profile, target_index, power_level, attack_direction, shield_blocked, self.melee_boost_curve_multiplier, is_critical_strike)
 
 						self._num_targets_hit = self._num_targets_hit + 1
 
@@ -329,7 +309,6 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 
 	for hit_unit, _ in pairs(inner_hit_units) do
 		local breed = unit_get_data(hit_unit, "breed")
-		local dummy = not breed and unit_get_data(hit_unit, "is_dummy")
 		local hit_zone_name = self.target_hit_zones_names[hit_unit] or "torso"
 		local target_hit_position = Unit.has_node(hit_unit, "j_spine") and Unit.world_position(hit_unit, Unit.node(hit_unit, "j_spine"))
 		local target_world_position = POSITION_LOOKUP[hit_unit] or Unit.world_position(hit_unit, 0)
@@ -338,7 +317,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 		local hit_unit_id, is_level_unit = network_manager:game_object_or_level_id(hit_unit)
 		local hit_zone_id = NetworkLookup.hit_zones[hit_zone_name]
 
-		if (breed or dummy) and self:_is_infront_player(self_pos, unit_forward, hit_position, current_action.push_dot) then
+		if breed and self:_is_infront_player(self_pos, unit_forward, hit_position, current_action.push_dot) then
 			local is_server = self.is_server
 			local hit_default_target = hit_unit == target_breed_unit
 			local damage_profile = hit_default_target and self.damage_profile_target or self.damage_profile
@@ -350,7 +329,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 			local actor = Unit.find_actor(hit_unit, "c_spine") and Unit.actor(hit_unit, "c_spine")
 			local actor_position_hit = actor and Actor.center_of_mass(actor)
 
-			if not dummy and actor_position_hit then
+			if actor_position_hit then
 				self._overridable_settings = current_action
 
 				ActionSweep._play_character_impact(self, is_server, owner_unit, hit_unit, breed, actor_position_hit, hit_zone_name, current_action, damage_profile, target_index, power_level, attack_direction, shield_blocked, self.melee_boost_curve_multiplier, is_critical_strike)
@@ -360,7 +339,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 			local charge_value = damage_profile.charge_value or "heavy_attack"
 			local buff_type = DamageUtils.get_item_buff_type(self.item_name)
 
-			DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, hit_index, send_to_server, buff_type)
+			DamageUtils.buff_on_attack(owner_unit, hit_unit, charge_value, is_critical_strike, hit_zone_name, hit_index, send_to_server, buff_type, nil, self.item_name)
 
 			local damage_source_id = NetworkLookup.damage_sources[self.item_name]
 			local weapon_system = self.weapon_system

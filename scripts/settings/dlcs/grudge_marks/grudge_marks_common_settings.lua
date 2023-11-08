@@ -31,4 +31,57 @@ settings.unlock_settings = {}
 settings.material_effect_mappings_file_names = {
 	"scripts/settings/material_effect_mappings_grudge_marks"
 }
-settings.explosion_templates = {}
+settings.explosion_templates = {
+	grudge_mark_shockwave = {
+		explosion = {
+			radius = 4.5,
+			ai_friendly_fire = true,
+			max_damage_radius = 4.5,
+			catapult_players = true,
+			sound_event_name = "Play_mutator_ticking_bomb_explosion",
+			fatigue_type = "blocked_attack",
+			alert_enemies_radius = 15,
+			catapult_force_z = 3,
+			catapult_blocked_multiplier = 0.2,
+			catapult_force = 7.5,
+			alert_enemies = true,
+			damage_profile = "ai_shockwave",
+			ignore_attacker_unit = true,
+			effect_name = "fx/chr_kruber_shockwave",
+			difficulty_power_level = {
+				easy = {
+					power_level_glance = 100,
+					power_level = 200
+				},
+				normal = {
+					power_level_glance = 100,
+					power_level = 100
+				},
+				hard = {
+					power_level_glance = 200,
+					power_level = 200
+				},
+				harder = {
+					power_level_glance = 300,
+					power_level = 300
+				},
+				hardest = {
+					power_level_glance = 400,
+					power_level = 400
+				},
+				cataclysm = {
+					power_level_glance = 300,
+					power_level = 600
+				},
+				cataclysm_2 = {
+					power_level_glance = 400,
+					power_level = 800
+				},
+				cataclysm_3 = {
+					power_level_glance = 500,
+					power_level = 1000
+				}
+			}
+		}
+	}
+}

@@ -75,6 +75,25 @@ OutlineSettings.colors = {
 			150,
 			255
 		}
+	},
+	necromancer_command = {
+		variable = "outline_color_green",
+		outline_multiplier = 0,
+		pulse_multiplier = 0,
+		pulsate = false,
+		outline_multiplier_variable = "outline_multiplier_alpha",
+		channel = {
+			255,
+			0,
+			0,
+			187
+		},
+		color = {
+			255,
+			0,
+			0,
+			0
+		}
 	}
 }
 OutlineSettings.ranges = {
@@ -142,6 +161,12 @@ OutlineSettings.templates = {
 		priority = 99,
 		method = "always",
 		outline_color = OutlineSettings.colors.interactable,
+		flag = OutlineSettings.flags.non_wall_occluded
+	},
+	necromancer_command = {
+		priority = 20,
+		method = "always",
+		outline_color = OutlineSettings.colors.necromancer_command,
 		flag = OutlineSettings.flags.non_wall_occluded
 	}
 }

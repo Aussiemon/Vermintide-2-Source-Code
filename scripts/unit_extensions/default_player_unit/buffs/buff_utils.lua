@@ -1,3 +1,4 @@
+local buff_perk_names = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 BuffUtils = BuffUtils or {}
 
 if script_data then
@@ -117,7 +118,8 @@ BuffUtils.create_attached_particles = function (world, particle_fx, unit, is_fir
 
 			if link_target then
 				local node_id = _get_particle_link_node(fx, link_target)
-				local pose = fx.pose and fx.pose:unbox() or nil
+				local pose = fx.pose
+				pose = pose and Matrix4x4.from_quaternion_position_scale(Quaternion.from_euler_angles_xyz(pose.rotation[1], pose.rotation[2], pose.rotation[3]), Vector3Aux.unbox(pose.position), Vector3Aux.unbox(pose.scale)) or nil
 				local fx_id = ScriptWorld.create_particles_linked(world, fx.effect, link_target, node_id, fx.orphaned_policy, pose)
 
 				if fx.custom_variables then
@@ -205,6 +207,66 @@ BuffUtils.create_liquid_forward = function (unit, buff)
 			local network_manager = Managers.state.network
 
 			network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, position, rotation_offset, false)
+		end
+	end
+end
+
+BalefireDots = BalefireDots or {}
+BalefireBurnDotLookup = BalefireBurnDotLookup or {}
+
+BuffUtils.generate_balefire_burn_variants = function (buff_templates)
+	for template_name, template in pairs(buff_templates) do
+		local balefire_i = string.find(template_name, "_balefire")
+
+		if not balefire_i then
+			local new_name = template_name .. "_balefire"
+			local new_buff_template = table.clone(template)
+
+			for buff_i, sub_buff in ipairs(new_buff_template.buffs) do
+				local perks = sub_buff.perks
+
+				if perks and table.find(perks, buff_perk_names.burning) then
+					table.remove_array_value(perks, buff_perk_names.burning)
+					table.insert_unique(perks, buff_perk_names.burning_balefire)
+
+					BalefireDots[new_name] = true
+					BalefireBurnDotLookup[template_name] = new_name
+					DotTypeLookup[new_name] = DotTypeLookup[template_name]
+					buff_templates[new_name] = new_buff_template
+
+					break
+				end
+			end
+		else
+			local original_name = string.sub(template_name, 1, balefire_i - 1)
+			DotTypeLookup[template_name] = DotTypeLookup[original_name]
+			BalefireDots[template_name] = true
+		end
+	end
+end
+
+InfiniteBurnDotLookup = InfiniteBurnDotLookup or {}
+
+BuffUtils.generate_infinite_burn_variants = function (buff_templates)
+	for template_name, template in pairs(buff_templates) do
+		if not string.find(template_name, "_infinite") then
+			local new_name = template_name .. "_infinite"
+			local new_buff_template = table.clone(template)
+
+			for _, sub_buff in ipairs(new_buff_template.buffs) do
+				local perks = sub_buff.perks
+
+				if perks and table.find(perks, buff_perk_names.burning) then
+					sub_buff.name = "infinite_burning_dot"
+					sub_buff.duration = nil
+					sub_buff.on_max_stacks_overflow_func = "reapply_infinite_burn"
+					sub_buff.max_stacks = 1
+					InfiniteBurnDotLookup[template_name] = new_name
+					buff_templates[new_name] = new_buff_template
+
+					break
+				end
+			end
 		end
 	end
 end

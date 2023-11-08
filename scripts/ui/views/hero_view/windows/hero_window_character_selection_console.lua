@@ -65,6 +65,9 @@ HeroWindowCharacterSelectionConsole._select_hero = function (self, profile_index
 	local hero_name = profile_settings.display_name
 	local character_name = profile_settings.character_name
 	local character_career_name = career_settings.display_name
+
+	GlobalShaderFlags.set_global_shader_flag("NECROMANCER_CAREER_REMAP", character_career_name == "bw_necromancer")
+
 	local hero_display_name = Localize(character_name)
 	local career_display_name = Localize(character_career_name)
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
@@ -277,6 +280,12 @@ HeroWindowCharacterSelectionConsole.on_exit = function (self, params)
 			hero_name = hero_name,
 			career_index = career_index
 		})
+
+		local profile = SPProfiles[profile_index]
+		local career = profile.careers[career_index]
+		local career_name = career.name
+
+		GlobalShaderFlags.set_global_shader_flag("NECROMANCER_CAREER_REMAP", career_name == "bw_necromancer")
 	end
 end
 

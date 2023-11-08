@@ -750,7 +750,7 @@ DamageProfileTemplates.torch = {
 	},
 	default_target = {
 		stagger_duration_modifier = 1.5,
-		dot_template_name = "burning_1W_dot",
+		dot_template_name = "burning_dot_1tick",
 		dead_attack_template = "flame_blast",
 		boost_curve_type = "tank_curve",
 		boost_curve_coefficient = 0.2,
@@ -788,7 +788,7 @@ DamageProfileTemplates.torch_heavy = {
 	},
 	default_target = {
 		stagger_duration_modifier = 1.75,
-		dot_template_name = "burning_3W_dot",
+		dot_template_name = "burning_dot_3tick",
 		dead_attack_template = "flame_blast",
 		boost_curve_type = "tank_curve",
 		boost_curve_coefficient = 0.2,
@@ -826,7 +826,7 @@ DamageProfileTemplates.torch_stab = {
 	},
 	default_target = {
 		stagger_duration_modifier = 1.75,
-		dot_template_name = "burning_3W_dot",
+		dot_template_name = "burning_dot_3tick",
 		dead_attack_template = "flame_blast",
 		boost_curve_type = "tank_curve",
 		boost_curve_coefficient = 0.2,
@@ -872,6 +872,15 @@ DamageProfileTemplates.ability_push = {
 	cleave_distribution = "cleave_distribution_push_default",
 	default_target = "target_push_Ability",
 	no_friendly_fire = true,
+	no_damage = true
+}
+DamageProfileTemplates.ai_shockwave = {
+	armor_modifier = "armor_modifier_push_Ability",
+	is_explosion = true,
+	charge_value = "ability",
+	cleave_distribution = "cleave_distribution_push_default",
+	default_target = "target_push_Ability",
+	always_stagger_ai = true,
 	no_damage = true
 }
 DamageProfileTemplates.medium_push = {
@@ -1561,8 +1570,9 @@ DamageProfileTemplates.shot_carbine_rapier = {
 }
 DamageProfileTemplates.shot_drakefire = {
 	charge_value = "projectile",
+	dot_balefire_variant = true,
 	no_stagger_damage_reduction_ranged = true,
-	dot_template_name = "burning_1W_dot",
+	dot_template_name = "burning_dot_1tick",
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -3218,7 +3228,8 @@ DamageProfileTemplates.staff_fireball_charged = {
 		impact = 1
 	},
 	default_target = {
-		dot_template_name = "burning_1W_dot",
+		dot_balefire_variant = true,
+		dot_template_name = "burning_dot_1tick",
 		boost_curve_type = "ninja_curve",
 		boost_curve_coefficient = 1,
 		attack_template = "fireball",
@@ -3338,9 +3349,10 @@ DamageProfileTemplates.flamethrower = {
 	default_target = {
 		dot_template_name = "burning_flamethrower_dot",
 		boost_curve_coefficient_headshot = 0,
-		boost_curve_type = "linesman_curve",
+		dot_balefire_variant = true,
 		boost_curve_coefficient = 1,
 		attack_template = "wizard_staff_beam",
+		boost_curve_type = "linesman_curve",
 		power_distribution_near = {
 			attack = 0.075,
 			impact = 0.1
@@ -3398,9 +3410,10 @@ DamageProfileTemplates.flamethrower_initial = {
 	default_target = {
 		dot_template_name = "burning_flamethrower_dot",
 		boost_curve_coefficient_headshot = 0,
-		boost_curve_type = "linesman_curve",
+		dot_balefire_variant = true,
 		boost_curve_coefficient = 1,
 		attack_template = "wizard_staff_beam",
+		boost_curve_type = "linesman_curve",
 		power_distribution_near = {
 			attack = 0.1,
 			impact = 0.2
@@ -3459,9 +3472,10 @@ DamageProfileTemplates.beam = {
 	default_target = {
 		dot_template_name = "beam_burning_dot",
 		boost_curve_coefficient_headshot = 2,
-		boost_curve_type = "linesman_curve",
+		dot_balefire_variant = true,
 		boost_curve_coefficient = 0.75,
 		attack_template = "wizard_staff_beam",
+		boost_curve_type = "linesman_curve",
 		power_distribution_near = {
 			attack = 0.075,
 			impact = 0.065
@@ -3553,8 +3567,9 @@ DamageProfileTemplates.beam_initial = {
 }
 DamageProfileTemplates.blast = {
 	charge_value = "projectile",
+	dot_balefire_variant = true,
 	no_stagger_damage_reduction_ranged = true,
-	dot_template_name = "burning_1W_dot",
+	dot_template_name = "burning_dot_1tick",
 	critical_strike = {
 		attack_armor_power_modifer = {
 			1,
@@ -3673,11 +3688,12 @@ DamageProfileTemplates.beam_shot = {
 		impact = 0.05
 	},
 	default_target = {
-		dot_template_name = "burning_3W_dot",
+		dot_template_name = "burning_dot_3tick",
 		boost_curve_coefficient_headshot = 1,
-		boost_curve_type = "ninja_curve",
+		dot_balefire_variant = true,
 		boost_curve_coefficient = 0.75,
 		attack_template = "wizard_staff_beam_sniper",
+		boost_curve_type = "ninja_curve",
 		power_distribution_near = {
 			attack = 0.7,
 			impact = 0.3
@@ -3690,8 +3706,9 @@ DamageProfileTemplates.beam_shot = {
 	}
 }
 DamageProfileTemplates.geiser = {
-	dot_template_name = "burning_1W_dot",
+	dot_template_name = "burning_dot_1tick",
 	charge_value = "aoe",
+	dot_balefire_variant = true,
 	no_stagger_damage_reduction_ranged = true,
 	attack_template = "wizard_staff_geiser",
 	critical_strike = {
@@ -3867,7 +3884,7 @@ DamageProfileTemplates.fire_grenade_aoe = {
 		}
 	},
 	default_target = {
-		dot_template_name = "burning_3W_dot_force_fire",
+		dot_template_name = "burning_dot_3tick",
 		damage_type = "grenade",
 		attack_template = "fire_grenade_dot",
 		power_distribution = {
@@ -3966,8 +3983,9 @@ DamageProfileTemplates.fireball_charged_explosion = {
 	},
 	default_target = {
 		attack_template = "drakegun",
-		dot_template_name = "burning_1W_dot",
+		dot_balefire_variant = true,
 		damage_type = "drakegun",
+		dot_template_name = "burning_dot_1tick",
 		power_distribution = {
 			attack = 0.25,
 			impact = 0.5
@@ -3977,7 +3995,8 @@ DamageProfileTemplates.fireball_charged_explosion = {
 DamageProfileTemplates.fireball_charged_explosion_glance = table.clone(DamageProfileTemplates.fireball_charged_explosion)
 DamageProfileTemplates.fireball_charged_explosion_glance.default_target.attack_template = "drakegun_glance"
 DamageProfileTemplates.fireball_charged_explosion_glance.default_target.damage_type = "drakegun_glance"
-DamageProfileTemplates.fireball_charged_explosion_glance.default_target.dot_template_name = "burning_1W_dot"
+DamageProfileTemplates.fireball_charged_explosion_glance.default_target.dot_template_name = "burning_dot_1tick"
+DamageProfileTemplates.fireball_charged_explosion_glance.default_target.dot_balefire_variant = true
 DamageProfileTemplates.overcharge_explosion_strong_ability = {
 	charge_value = "ability",
 	is_explosion = true,
@@ -4002,8 +4021,9 @@ DamageProfileTemplates.overcharge_explosion_strong_ability = {
 	},
 	default_target = {
 		attack_template = "flame_blast",
-		dot_template_name = "burning_1W_dot",
+		dot_balefire_variant = true,
 		damage_type = "burn_shotgun",
+		dot_template_name = "burning_dot_1tick",
 		power_distribution = {
 			attack = 0.15,
 			impact = 0.75
@@ -4034,8 +4054,9 @@ DamageProfileTemplates.overcharge_explosion_ability = {
 	},
 	default_target = {
 		attack_template = "flame_blast",
-		dot_template_name = "burning_1W_dot",
+		dot_balefire_variant = true,
 		damage_type = "burn_shotgun",
+		dot_template_name = "burning_dot_1tick",
 		power_distribution = {
 			attack = 0.15,
 			impact = 0.75
@@ -4045,7 +4066,8 @@ DamageProfileTemplates.overcharge_explosion_ability = {
 DamageProfileTemplates.overcharge_explosion_glance_ability = table.clone(DamageProfileTemplates.overcharge_explosion_ability)
 DamageProfileTemplates.overcharge_explosion_glance_ability.default_target.attack_template = "flame_blast"
 DamageProfileTemplates.overcharge_explosion_glance_ability.default_target.damage_type = "burn_shotgun"
-DamageProfileTemplates.overcharge_explosion_glance_ability.default_target.dot_template_name = "burning_1W_dot"
+DamageProfileTemplates.overcharge_explosion_glance_ability.default_target.dot_template_name = "burning_dot_1tick"
+DamageProfileTemplates.overcharge_explosion_glance_ability.default_target.dot_balefire_variant = true
 DamageProfileTemplates.overcharge_explosion = {
 	charge_value = "aoe",
 	is_explosion = true,
@@ -4070,8 +4092,9 @@ DamageProfileTemplates.overcharge_explosion = {
 	},
 	default_target = {
 		attack_template = "flame_blast",
-		dot_template_name = "burning_1W_dot",
+		dot_balefire_variant = true,
 		damage_type = "burn_shotgun",
+		dot_template_name = "burning_dot_1tick",
 		power_distribution = {
 			attack = 0.5,
 			impact = 0.75
@@ -4081,7 +4104,8 @@ DamageProfileTemplates.overcharge_explosion = {
 DamageProfileTemplates.overcharge_explosion_glance = table.clone(DamageProfileTemplates.overcharge_explosion)
 DamageProfileTemplates.overcharge_explosion_glance.default_target.attack_template = "flame_blast"
 DamageProfileTemplates.overcharge_explosion_glance.default_target.damage_type = "burn_shotgun"
-DamageProfileTemplates.overcharge_explosion_glance.default_target.dot_template_name = "burning_1W_dot"
+DamageProfileTemplates.overcharge_explosion_glance.default_target.dot_template_name = "burning_dot_1tick"
+DamageProfileTemplates.overcharge_explosion_glance.default_target.dot_balefire_variant = true
 DamageProfileTemplates.elven_ruins_finish = {
 	charge_value = "aoe",
 	is_explosion = true,
@@ -4111,9 +4135,6 @@ DamageProfileTemplates.elven_ruins_finish = {
 		}
 	}
 }
-DamageProfileTemplates.elven_ruins_finish_glance = table.clone(DamageProfileTemplates.elven_ruins_finish)
-DamageProfileTemplates.elven_ruins_finish_glance.default_target.attack_template = "arrow_poison_aoe"
-DamageProfileTemplates.elven_ruins_finish_glance.default_target.damage_type = "elven_magic_glance"
 DamageProfileTemplates.military_finish = {
 	instant_death = true,
 	charge_value = "aoe",
@@ -4591,8 +4612,6 @@ DamageProfileTemplates.burning_dot.default_target.power_distribution = {
 	attack = 0.07,
 	impact = 0.05
 }
-DamageProfileTemplates.burning_dot_force_fire = table.clone(DamageProfileTemplates.burning_dot)
-DamageProfileTemplates.burning_dot_force_fire.default_target.damage_type = "burninating_force_fire"
 DamageProfileTemplates.burning_dot_firegrenade = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.burning_dot_firegrenade.no_stagger = true
 DamageProfileTemplates.burning_dot_firegrenade.is_dot = true
@@ -4620,8 +4639,6 @@ DamageProfileTemplates.burning_dot_firegrenade.default_target.power_distribution
 	attack = 0.3,
 	impact = 0.3
 }
-DamageProfileTemplates.burning_dot_firegrenade_force_fire = table.clone(DamageProfileTemplates.burning_dot_firegrenade)
-DamageProfileTemplates.burning_dot_firegrenade_force_fire.default_target.damage_type = "burninating_force_fire"
 DamageProfileTemplates.beam_burning_dot = table.clone(DamageProfileTemplates.default)
 DamageProfileTemplates.beam_burning_dot.no_stagger = true
 DamageProfileTemplates.beam_burning_dot.is_dot = true
@@ -4744,7 +4761,7 @@ DamageProfileTemplates.corpse_explosion_default = {
 DamageProfileTemplates.sienna_adept_blink = {
 	charge_value = "aoe",
 	no_stagger_damage_reduction_ranged = true,
-	dot_template_name = "burning_1W_dot",
+	dot_template_name = "burning_dot_1tick",
 	cleave_distribution = {
 		attack = 0.5,
 		impact = 0.5
@@ -5047,3 +5064,9 @@ for name, damage_profile in pairs(DamageProfileTemplates) do
 end
 
 DamageProfileTemplates = table.merge(DamageProfileTemplates, no_damage_templates)
+
+for name, damage_profile in pairs(DamageProfileTemplates) do
+	assert(not damage_profile.name or name == damage_profile.name, "Name '%s' does not match name of damage profile '%s'", damage_profile.name, name)
+
+	damage_profile.name = name
+end

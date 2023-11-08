@@ -1338,7 +1338,7 @@ function flow_callback_get_random_player(params)
 	for _, player in pairs(players) do
 		local unit = player.player_unit
 
-		if unit_alive(unit) and ScriptUnit.extension(unit, "health_system"):is_alive() then
+		if HEALTH_ALIVE[unit] then
 			unit_list_n = unit_list_n + 1
 			unit_list[unit_list_n] = unit
 		end
@@ -1367,7 +1367,7 @@ function flow_callback_get_random_player_or_global_observer(params)
 	for _, player in pairs(players) do
 		local unit = player.player_unit
 
-		if unit_alive(unit) and ScriptUnit.extension(unit, "health_system"):is_alive() then
+		if HEALTH_ALIVE[unit] then
 			unit_list_n = unit_list_n + 1
 			unit_list[unit_list_n] = unit
 		end
@@ -2031,7 +2031,7 @@ function flow_callback_get_players_and_bots(params)
 	for _, player in pairs(players) do
 		local unit = player.player_unit
 
-		if unit_alive(unit) and ScriptUnit.extension(unit, "health_system"):is_alive() then
+		if HEALTH_ALIVE[unit] then
 			unit_list_n = unit_list_n + 1
 			local profile_index = player:profile_index()
 			unit_list[profile_index] = unit
@@ -2767,6 +2767,10 @@ function flow_callback_objective_is_objective_completed(params)
 		return false
 	end
 
+	if not objective:is_active() then
+		return false
+	end
+
 	return {
 		out_value = objective:is_done()
 	}
@@ -3130,10 +3134,8 @@ function flow_callback_material_dissolve_chr(params)
 			flow_callback_material_dissolve(params)
 		end
 
-		local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
-
-		if helmet_unit ~= nil then
-			params.unit = helmet_unit
+		for i = 1, #unit_inventory_extension.inventory_item_helmet_units do
+			params.unit = unit_inventory_extension.inventory_item_helmet_units[i]
 
 			flow_callback_material_dissolve(params)
 		end
@@ -3162,10 +3164,14 @@ function flow_callback_material_dissolve_chr_inventory(params)
 				flow_callback_material_dissolve(params)
 			end
 		elseif params.inventory_type == "helmet" then
-			local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
+			for i = 1, #unit_inventory_extension.inventory_item_helmet_units do
+				params.unit = unit_inventory_extension.inventory_item_helmet_units[i]
 
-			if helmet_unit ~= nil then
-				params.unit = helmet_unit
+				flow_callback_material_dissolve(params)
+			end
+		elseif params.inventory_type == "weapon" then
+			for i = 1, #unit_inventory_extension.inventory_item_weapon_units do
+				params.unit = unit_inventory_extension.inventory_item_weapon_units[i]
 
 				flow_callback_material_dissolve(params)
 			end
@@ -3260,10 +3266,8 @@ function flow_callback_material_fade_chr(params)
 			flow_callback_material_fade(params)
 		end
 
-		local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
-
-		if helmet_unit ~= nil then
-			params.unit = helmet_unit
+		for i = 1, #unit_inventory_extension.inventory_item_helmet_units do
+			params.unit = unit_inventory_extension.inventory_item_helmet_units[i]
 
 			flow_callback_material_fade(params)
 		end
@@ -3286,6 +3290,12 @@ function flow_callback_material_fade_chr_inventory(params)
 
 				flow_callback_material_fade(params)
 			end
+		elseif params.inventory_type == "weapon" then
+			for i = 1, #unit_inventory_extension.inventory_item_weapon_units do
+				params.unit = unit_inventory_extension.inventory_item_weapon_units[i]
+
+				flow_callback_material_fade(params)
+			end
 		elseif params.inventory_type == "stump" then
 			for i = 1, #unit_inventory_extension.stump_items do
 				params.unit = unit_inventory_extension.stump_items[i]
@@ -3293,13 +3303,49 @@ function flow_callback_material_fade_chr_inventory(params)
 				flow_callback_material_fade(params)
 			end
 		elseif params.inventory_type == "helmet" then
-			local helmet_unit = unit_inventory_extension.inventory_item_helmet_unit
-
-			if helmet_unit ~= nil then
-				params.unit = helmet_unit
+			for i = 1, #unit_inventory_extension.inventory_item_helmet_units do
+				params.unit = unit_inventory_extension.inventory_item_helmet_units[i]
 
 				flow_callback_material_fade(params)
 			end
+		end
+	end
+end
+
+function flow_callback_visibility_chr_inventory(params)
+	fassert(params.unit, "[flow_callback_visibility_chr_inventory] You need to specify the Unit")
+
+	local unit = params.unit
+	local visibility = params.visibility
+	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+
+	if unit_inventory_extension ~= nil then
+		for i = 1, #unit_inventory_extension.inventory_item_outfit_units do
+			unit = unit_inventory_extension.inventory_item_outfit_units[i]
+
+			Unit.set_unit_visibility(unit, visibility)
+			print("Hide " .. Unit.debug_name(unit))
+		end
+
+		for i = 1, #unit_inventory_extension.inventory_item_weapon_units do
+			unit = unit_inventory_extension.inventory_item_weapon_units[i]
+
+			Unit.set_unit_visibility(unit, visibility)
+			print("Hide " .. Unit.debug_name(unit))
+		end
+
+		for i = 1, #unit_inventory_extension.stump_items do
+			unit = unit_inventory_extension.stump_items[i]
+
+			Unit.set_unit_visibility(unit, visibility)
+			print("Hide " .. Unit.debug_name(unit))
+		end
+
+		for i = 1, #unit_inventory_extension.inventory_item_helmet_units do
+			unit = unit_inventory_extension.inventory_item_helmet_units[i]
+
+			Unit.set_unit_visibility(unit, visibility)
+			print("Hide " .. Unit.debug_name(unit))
 		end
 	end
 end
@@ -4191,9 +4237,8 @@ end
 
 function flow_callback_is_character_alive(params)
 	local unit = params.unit
-	local health_extension = ScriptUnit.has_extension(unit, "health_system")
 
-	if health_extension and health_extension:is_alive() then
+	if HEALTH_ALIVE[unit] then
 		flow_return_table.out_value = true
 
 		return flow_return_table

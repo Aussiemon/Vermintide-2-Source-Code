@@ -39,7 +39,6 @@ SimpleHuskInventoryExtension.init = function (self, extension_init_context, unit
 		if additional_item_slots then
 			for slot_name, slot_count in pairs(additional_item_slots) do
 				self._additional_items[slot_name] = {
-					used_slots = 0,
 					max_slots = slot_count,
 					items = {}
 				}
@@ -410,7 +409,21 @@ SimpleHuskInventoryExtension.has_inventory_item = function (self, slot_name, ite
 		local item_data = slot_data.item_data
 		local name = item_data.name
 
-		return name == item_name
+		if item_name == name then
+			return true
+		end
+	end
+
+	local additional_items = self:get_additional_items(slot_name)
+
+	if additional_items then
+		for additional_item_idx = 1, #additional_items do
+			local additional_item_data = additional_items[additional_item_idx]
+
+			if item_name == additional_item_data.name then
+				return true
+			end
+		end
 	end
 
 	return false
@@ -792,10 +805,10 @@ SimpleHuskInventoryExtension.get_total_item_count = function (self, slot_name)
 		count = 1
 	end
 
-	local stored_items = self._additional_items[slot_name]
+	local stored_items = self:get_additional_items(slot_name)
 
 	if stored_items then
-		count = count + stored_items.used_slots
+		count = count + #stored_items
 	end
 
 	return count
@@ -805,8 +818,6 @@ SimpleHuskInventoryExtension.update_additional_items = function (self, slot_name
 	local additional_items_slot = self._additional_items[slot_name]
 
 	if additional_items_slot then
-		additional_items_slot.used_slots = #items
-
 		table.clear(additional_items_slot.items)
 
 		for i = 1, #items do

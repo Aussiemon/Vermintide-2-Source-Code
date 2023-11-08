@@ -295,7 +295,7 @@ PlayerProjectileHuskExtension.impact_dynamic = function (self, hit_unit, hit_pos
 		local network_manager = Managers.state.network
 		local go_id, is_level_unit = network_manager:game_object_or_level_id(hit_unit)
 
-		if is_level_unit or Unit.get_data(hit_unit, "is_dummy") then
+		if is_level_unit then
 			local level_index = nil
 
 			self:hit_level_unit(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._hit_units, level_index, has_ranged_boost, ranged_boost_curve_multiplier)
@@ -377,7 +377,7 @@ PlayerProjectileHuskExtension.hit_enemy_damage = function (self, damage_profile,
 	local node = Actor.node(hit_actor)
 	local hit_zone = breed.hit_zones_lookup[node]
 	local hit_zone_name = action.projectile_info.forced_hitzone or hit_zone.name
-	local was_alive = AiUtils.unit_alive(hit_unit)
+	local was_alive = HEALTH_ALIVE[hit_unit]
 
 	if was_alive then
 		self._num_targets_hit = self._num_targets_hit + 1
@@ -583,11 +583,11 @@ PlayerProjectileHuskExtension.hit_level_unit = function (self, impact_data, hit_
 		EffectHelper.play_surface_material_effects(hit_effect, world, hit_unit, hit_position, hit_rotation, hit_normal, nil, is_husk, nil, hit_actor)
 	end
 
-	local bounce = impact_data.bounce_on_level_units and not Unit.get_data(hit_unit, "is_dummy")
+	local bounce = impact_data.bounce_on_level_units
 	local owner_buff_extension = ScriptUnit.has_extension(self._owner_unit, "buff_system")
 	local buffed_bounces = 0
 
-	if not impact_data.grenade and owner_buff_extension and not bounce and not Unit.get_data(hit_unit, "is_dummy") then
+	if not impact_data.grenade and owner_buff_extension and not bounce then
 		bounce = owner_buff_extension:has_buff_perk("add_projectile_bounces")
 		buffed_bounces = owner_buff_extension:apply_buffs_to_value(buffed_bounces, "projectile_bounces")
 	end
@@ -831,5 +831,14 @@ PlayerProjectileHuskExtension.do_aoe = function (self, aoe_data, position)
 		if aoe_data.taunt then
 			DamageUtils.create_taunt(world, owner_unit, unit, position, aoe_data)
 		end
+	end
+end
+
+PlayerProjectileHuskExtension.trigger_external_event = function (self, event_name, network_sync)
+	local external_events = self.projectile_info.external_events
+	local event = external_events and external_events[event_name]
+
+	if event then
+		event(self)
 	end
 end

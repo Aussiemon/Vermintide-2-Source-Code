@@ -3,11 +3,12 @@ require("scripts/managers/news_ticker/news_ticker_token")
 NewsTickerManager = class(NewsTickerManager)
 
 NewsTickerManager.init = function (self)
+	self._server_name = "cdn.fatsharkgames.se"
+
 	if IS_WINDOWS then
 		self._loading_screen_url = Development.parameter("news_ticker_url") or "http://cdn.fatsharkgames.se/vermintide_2_news_ticker.txt"
 		self._ingame_url = Development.parameter("news_ticker_ingame_url") or "http://cdn.fatsharkgames.se/vermintide_2_news_ticker_ingame.txt"
 	else
-		self._server_name = "cdn.fatsharkgames.se"
 		self._loading_screen_url = Development.parameter("news_ticker_url_xb1") or "vermintide_2_news_ticker_" .. PLATFORM .. ".txt"
 		self._ingame_url = Development.parameter("news_ticker_ingame_url_xb1") or "vermintide_2_news_ticker_ingame_" .. PLATFORM .. ".txt"
 	end
@@ -38,13 +39,23 @@ NewsTickerManager.destroy = function (self)
 	return
 end
 
-NewsTickerManager._load = function (self, url, callback)
-	if IS_WINDOWS then
-		local token = Curl.add_request(url)
-		local curl_token = CurlToken:new(token)
+local function _callback_wrapper(success, http_code, response_headers, data, userdata_callback)
+	local info = {
+		done = false
+	}
 
-		Managers.token:register_token(curl_token, callback)
-	else
+	if success and http_code >= 200 and http_code < 300 then
+		info.done = true
+		info.data = data
+	end
+
+	userdata_callback(info)
+end
+
+NewsTickerManager._load = function (self, url, callback)
+	if rawget(_G, "Curl") then
+		Managers.curl:get(url, nil, _callback_wrapper, callback)
+	elseif rawget(_G, "Http") then
 		local message = Http.get_uri(self._server_name, 80, url)
 
 		if message then
@@ -75,21 +86,17 @@ NewsTickerManager._load = function (self, url, callback)
 		}
 
 		callback(info)
+	else
+		self:cb_loading_screen_loaded({
+			done = true,
+			data = "This executable is built without Curl or Http. News ticker will be unavailable."
+		})
 	end
 end
 
 NewsTickerManager.refresh_loading_screen_message = function (self)
 	self._loading_screen_text = nil
 	self._refreshing_loading_screen_message = true
-
-	if IS_WINDOWS and not rawget(_G, "Curl") then
-		self:cb_loading_screen_loaded({
-			done = true,
-			data = "This executable is built without Curl. News ticker will be unavailable."
-		})
-
-		return
-	end
 
 	self:_load(Development.parameter("news_ticker_url_xb1") or self._loading_screen_url, callback(self, "cb_loading_screen_loaded"))
 end
@@ -115,15 +122,6 @@ end
 NewsTickerManager.refresh_ingame_message = function (self)
 	self._ingame_text = nil
 	self._refreshing_ingame_message = true
-
-	if IS_WINDOWS and not rawget(_G, "Curl") then
-		self:cb_ingame_loaded({
-			done = true,
-			data = "This executable is built without Curl. News ticker will be unavailable."
-		})
-
-		return
-	end
 
 	self:_load(Development.parameter("news_ticker_ingame_url_xb1") or self._ingame_url, callback(self, "cb_ingame_loaded"))
 end

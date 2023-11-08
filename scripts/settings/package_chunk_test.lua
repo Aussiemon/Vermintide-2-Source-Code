@@ -217,6 +217,7 @@ PackageChunkPackages = {
 	"resource_packages/dlcs/karak_azgaraz_part_2",
 	"resource_packages/dlcs/karak_azgaraz_part_3",
 	"resource_packages/dlcs/cosmetics_2023_q2",
+	"resource_packages/dlcs/shovel",
 	"units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_mesh",
 	"units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 	"units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_mesh",
@@ -224,7 +225,18 @@ PackageChunkPackages = {
 	"units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_mesh",
 	"units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 	"units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_mesh",
-	"units/beings/player/third_person_base/way_watcher/chr_third_person_base"
+	"units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+	"units/beings/player/first_person_base/state_machines/common",
+	"units/beings/player/first_person_base/state_machines/melee/1h_axe",
+	"units/beings/player/first_person_base/state_machines/melee/brw_hammer",
+	"units/beings/player/first_person_base/state_machines/ranged/staff",
+	"units/beings/player/first_person_base/state_machines/ranged/crossbow",
+	"units/beings/player/first_person_base/state_machines/melee/2h_hammer",
+	"units/beings/player/first_person_base/state_machines/melee/dual_daggers",
+	"units/beings/player/first_person_base/state_machines/career/skill_waywatcher",
+	"units/beings/player/first_person_base/state_machines/ranged/longbow",
+	"units/beings/player/first_person_base/state_machines/ranged/longbow_es",
+	"units/beings/player/first_person_base/state_machines/career/skill_ranger"
 }
 
 function find_playgo_package(element)

@@ -556,7 +556,7 @@ BTStormfiendShootAction.shoot_hit_check = function (self, unit, blackboard)
 				break
 			end
 
-			local is_alive = AiUtils.unit_alive(hit_unit)
+			local is_alive = HEALTH_ALIVE[hit_unit]
 
 			if hit_unit ~= unit and is_alive then
 				local unit_hit_is_player = DamageUtils.is_player_unit(hit_unit)

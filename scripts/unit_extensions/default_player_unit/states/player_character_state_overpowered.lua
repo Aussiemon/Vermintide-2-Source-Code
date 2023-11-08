@@ -73,18 +73,8 @@ PlayerCharacterStateOverpowered.update = function (self, unit, input, dt, contex
 	local status_extension = self.status_extension
 	local locomotion_extension = self.locomotion_extension
 	local world = self.world
-	local is_free = false
 	local attacking_unit = status_extension.overpowered_attacking_unit
-
-	if Unit.alive(attacking_unit) then
-		local health_ext = ScriptUnit.has_extension(attacking_unit, "health_system")
-
-		if not health_ext:is_alive() then
-			is_free = true
-		end
-	else
-		is_free = true
-	end
+	local is_free = not HEALTH_ALIVE[attacking_unit]
 
 	if is_free then
 		if CharacterStateHelper.is_waiting_for_assisted_respawn(status_extension) then

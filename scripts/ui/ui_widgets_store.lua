@@ -1977,14 +1977,18 @@ UIWidgets.create_store_dlc_feature_vertical_definition = function (scenegraph_id
 	}
 	local style = {
 		text = {
-			font_size = 20,
 			upper_case = false,
 			localize = false,
 			dynamic_font_size_word_wrap = true,
 			word_wrap = true,
+			font_size = 20,
 			horizontal_alignment = "left",
 			vertical_alignment = "top",
 			size = {
+				image_size[1] - edge_spacing,
+				size[2] - image_size[2]
+			},
+			area_size = {
 				image_size[1] - edge_spacing,
 				size[2] - image_size[2]
 			},
@@ -1997,14 +2001,18 @@ UIWidgets.create_store_dlc_feature_vertical_definition = function (scenegraph_id
 			}
 		},
 		text_shadow = {
-			font_size = 20,
 			upper_case = false,
 			localize = false,
 			dynamic_font_size_word_wrap = true,
 			word_wrap = true,
+			font_size = 20,
 			horizontal_alignment = "left",
 			vertical_alignment = "top",
 			size = {
+				image_size[1] - edge_spacing,
+				size[2] - image_size[2]
+			},
+			area_size = {
 				image_size[1] - edge_spacing,
 				size[2] - image_size[2]
 			},

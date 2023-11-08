@@ -1,5 +1,6 @@
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_bw_adept")
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_bw_unchained")
+require("scripts/unit_extensions/default_player_unit/careers/career_ability_bw_necromancer_wave")
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_dr_ironbreaker")
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_dr_slayer")
 require("scripts/unit_extensions/default_player_unit/careers/career_ability_es_huntsman")

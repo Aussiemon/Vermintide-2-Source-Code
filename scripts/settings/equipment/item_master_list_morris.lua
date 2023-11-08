@@ -2,21 +2,22 @@ require("scripts/settings/dlcs/morris/tweak_data/buff_tweak_data")
 
 local item_master_list = {
 	dr_deus_01 = {
-		description = "dr_deus_01_description",
 		ammo_unit = "units/weapons/player/wpn_dr_deus_projectile_01/wpn_dr_deus_projectile_01",
 		display_name = "dr_deus_01_name",
-		has_power_level = true,
-		inventory_icon = "icon_wpn_dw_trollhammer_t1",
 		slot_type = "ranged",
-		hud_icon = "weapon_generic_icon_crossbow",
-		rarity = "plentiful",
+		skin_combination_table = "dr_deus_01_skins",
+		left_hand_unit = "units/weapons/player/wpn_dr_deus_01/wpn_dr_deus_01",
 		ammo_unit_3p = "units/weapons/player/wpn_dr_deus_projectile_01/wpn_dr_deus_projectile_01_3p",
+		hud_icon = "weapon_generic_icon_crossbow",
+		item_type = "dr_deus_01",
+		trait_table_name = "ranged_ammo",
+		description = "dr_deus_01_description",
+		rarity = "plentiful",
+		inventory_icon = "icon_wpn_dw_trollhammer_t1",
+		has_power_level = true,
 		template = "dr_deus_01_template_1",
 		property_table_name = "ranged",
-		item_type = "dr_deus_01",
-		left_hand_unit = "units/weapons/player/wpn_dr_deus_01/wpn_dr_deus_01",
-		trait_table_name = "ranged_ammo",
-		skin_combination_table = "dr_deus_01_skins",
+		required_dlc = "grass",
 		can_wield = {
 			"dr_ironbreaker"
 		}
@@ -48,6 +49,7 @@ local item_master_list = {
 		display_unit = "units/weapons/weapon_display/display_drakegun",
 		item_type = "weapon_skin",
 		left_hand_unit = "units/weapons/player/wpn_dr_deus_02/wpn_dr_deus_02",
+		required_dlc = "grass",
 		matching_item_key = "dr_deus_01",
 		can_wield = {
 			"dr_ironbreaker"
@@ -67,6 +69,7 @@ local item_master_list = {
 		display_unit = "units/weapons/weapon_display/display_drakegun",
 		item_type = "weapon_skin",
 		left_hand_unit = "units/weapons/player/wpn_dr_deus_03/wpn_dr_deus_03",
+		required_dlc = "grass",
 		matching_item_key = "dr_deus_01",
 		can_wield = {
 			"dr_ironbreaker"
@@ -86,6 +89,7 @@ local item_master_list = {
 		display_unit = "units/weapons/weapon_display/display_drakegun",
 		item_type = "weapon_skin",
 		left_hand_unit = "units/weapons/player/wpn_dr_deus_01/wpn_dr_deus_01_runed",
+		required_dlc = "grass",
 		matching_item_key = "dr_deus_01",
 		can_wield = {
 			"dr_ironbreaker"
@@ -105,6 +109,7 @@ local item_master_list = {
 		display_unit = "units/weapons/weapon_display/display_drakegun",
 		item_type = "weapon_skin",
 		left_hand_unit = "units/weapons/player/wpn_dr_deus_02/wpn_dr_deus_02_runed",
+		required_dlc = "grass",
 		matching_item_key = "dr_deus_01",
 		can_wield = {
 			"dr_ironbreaker"
@@ -124,6 +129,7 @@ local item_master_list = {
 		display_unit = "units/weapons/weapon_display/display_drakegun",
 		item_type = "weapon_skin",
 		left_hand_unit = "units/weapons/player/wpn_dr_deus_03/wpn_dr_deus_03_runed",
+		required_dlc = "grass",
 		matching_item_key = "dr_deus_01",
 		can_wield = {
 			"dr_ironbreaker"
@@ -136,6 +142,7 @@ local item_master_list = {
 		slot_type = "weapon_skin",
 		inventory_icon = "icon_wpn_dw_trollhammer_t1",
 		left_hand_unit = "units/weapons/player/wpn_dr_deus_01/wpn_dr_deus_01_magic",
+		required_dlc = "grass",
 		hud_icon = "weapon_generic_icon_staff_3",
 		item_type = "weapon_skin",
 		matching_item_key = "dr_deus_01",
@@ -151,6 +158,7 @@ local item_master_list = {
 		slot_type = "weapon_skin",
 		inventory_icon = "icon_wpn_dw_trollhammer_t2",
 		left_hand_unit = "units/weapons/player/wpn_dr_deus_02/wpn_dr_deus_02_magic",
+		required_dlc = "grass",
 		hud_icon = "weapon_generic_icon_staff_3",
 		item_type = "weapon_skin",
 		matching_item_key = "dr_deus_01",
@@ -167,6 +175,7 @@ local item_master_list = {
 		inventory_icon = "icon_wpn_dw_trollhammer_t1",
 		left_hand_unit = "units/weapons/player/wpn_dr_deus_01/wpn_dr_deus_01",
 		template = "dr_deus_01_template_1",
+		required_dlc = "grass",
 		hud_icon = "weapon_generic_icon_staff_3",
 		item_type = "weapon_skin",
 		matching_item_key = "dr_deus_01",
@@ -176,21 +185,22 @@ local item_master_list = {
 		}
 	},
 	dr_deus_01_magic = {
-		description = "dr_deus_01_magic_description",
+		template = "dr_deus_01_template_1",
 		ammo_unit = "units/weapons/player/wpn_dr_deus_projectile_02/wpn_dr_deus_projectile_02",
 		display_name = "dr_deus_01_magic_name",
-		has_power_level = true,
-		inventory_icon = "icon_wpn_dw_trollhammer_t2_magic",
 		slot_type = "ranged",
-		hud_icon = "weapon_generic_icon_bow",
-		rarity = "magic",
-		trait_table_name = "ranged_ammo",
-		ammo_unit_3p = "units/weapons/player/wpn_dr_deus_projectile_02/wpn_dr_deus_projectile_02_3p",
-		template = "dr_deus_01_template_1",
-		property_table_name = "ranged",
-		item_type = "dr_deus_01",
-		required_unlock_item = "dr_deus_01",
 		left_hand_unit = "units/weapons/player/wpn_dr_deus_02/wpn_dr_deus_02_magic",
+		ammo_unit_3p = "units/weapons/player/wpn_dr_deus_projectile_02/wpn_dr_deus_projectile_02_3p",
+		hud_icon = "weapon_generic_icon_bow",
+		item_type = "dr_deus_01",
+		trait_table_name = "ranged_ammo",
+		description = "dr_deus_01_magic_description",
+		rarity = "magic",
+		inventory_icon = "icon_wpn_dw_trollhammer_t2_magic",
+		has_power_level = true,
+		property_table_name = "ranged",
+		required_unlock_item = "dr_deus_01",
+		required_dlc = "grass",
 		can_wield = {
 			"dr_ironbreaker"
 		}
@@ -201,7 +211,7 @@ local item_master_list = {
 		right_hand_unit = "units/weapons/player/wpn_es_deus_spear_01/wpn_es_deus_spear_01",
 		hud_icon = "weapon_generic_icon_falken",
 		inventory_icon = "icon_wpn_empire_spearshield_t1",
-		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_01/wpn_es_deus_shield_01",
+		left_hand_unit = "units/weapons/player/wpn_empire_shield_02/wpn_emp_shield_02",
 		display_name = "es_deus_01_name",
 		slot_type = "melee",
 		has_power_level = true,
@@ -210,6 +220,7 @@ local item_master_list = {
 		item_type = "es_deus_01",
 		skin_combination_table = "es_deus_01_skins",
 		trait_table_name = "melee",
+		required_dlc = "grass",
 		can_wield = {
 			"es_huntsman",
 			"es_knight",
@@ -237,10 +248,11 @@ local item_master_list = {
 		right_hand_unit = "units/weapons/player/wpn_es_deus_spear_01/wpn_es_deus_spear_01",
 		hud_icon = "weapon_generic_icon_staff_3",
 		inventory_icon = "icon_wpn_empire_spearshield_t1",
-		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_01/wpn_es_deus_shield_01",
+		left_hand_unit = "units/weapons/player/wpn_empire_shield_02/wpn_emp_shield_02",
 		template = "es_deus_01_template",
 		display_name = "es_deus_01_skin_01_name",
 		slot_type = "weapon_skin",
+		required_dlc = "grass",
 		item_type = "weapon_skin",
 		matching_item_key = "es_deus_01",
 		can_wield = {
@@ -262,6 +274,7 @@ local item_master_list = {
 		slot_type = "weapon_skin",
 		display_unit = "units/weapons/weapon_display/display_shield_sword",
 		item_type = "weapon_skin",
+		required_dlc = "grass",
 		matching_item_key = "es_deus_01",
 		can_wield = {
 			"es_huntsman",
@@ -282,6 +295,7 @@ local item_master_list = {
 		slot_type = "weapon_skin",
 		display_unit = "units/weapons/weapon_display/display_shield_sword",
 		item_type = "weapon_skin",
+		required_dlc = "grass",
 		matching_item_key = "es_deus_01",
 		can_wield = {
 			"es_huntsman",
@@ -295,13 +309,14 @@ local item_master_list = {
 		right_hand_unit = "units/weapons/player/wpn_es_deus_spear_01/wpn_es_deus_spear_01_runed",
 		hud_icon = "weapon_generic_icon_falken",
 		inventory_icon = "icon_wpn_empire_spearshield_t1_runed",
-		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_01/wpn_emp_shield_02_runed_01",
+		left_hand_unit = "units/weapons/player/wpn_empire_shield_02/wpn_emp_shield_02_runed_01",
 		information_text = "information_weapon_skin",
 		template = "es_deus_01_template",
 		display_name = "es_deus_01_skin_01_runed_name",
 		slot_type = "weapon_skin",
 		display_unit = "units/weapons/weapon_display/display_shield_sword",
 		item_type = "weapon_skin",
+		required_dlc = "grass",
 		matching_item_key = "es_deus_01",
 		can_wield = {
 			"es_huntsman",
@@ -322,6 +337,7 @@ local item_master_list = {
 		slot_type = "weapon_skin",
 		display_unit = "units/weapons/weapon_display/display_shield_sword",
 		item_type = "weapon_skin",
+		required_dlc = "grass",
 		matching_item_key = "es_deus_01",
 		can_wield = {
 			"es_huntsman",
@@ -342,6 +358,7 @@ local item_master_list = {
 		slot_type = "weapon_skin",
 		display_unit = "units/weapons/weapon_display/display_shield_sword",
 		item_type = "weapon_skin",
+		required_dlc = "grass",
 		matching_item_key = "es_deus_01",
 		can_wield = {
 			"es_huntsman",
@@ -355,9 +372,10 @@ local item_master_list = {
 		right_hand_unit = "units/weapons/player/wpn_es_deus_spear_01/wpn_es_deus_spear_01_magic",
 		hud_icon = "weapon_generic_icon_staff_3",
 		inventory_icon = "icon_wpn_empire_spearshield_t1",
-		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_01/wpn_es_deus_shield_01",
+		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_02/wpn_es_deus_shield_02_magic_3p",
 		template = "es_deus_01_template",
 		slot_type = "weapon_skin",
+		required_dlc = "grass",
 		item_type = "weapon_skin",
 		matching_item_key = "es_deus_01",
 		can_wield = {
@@ -375,6 +393,7 @@ local item_master_list = {
 		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_02/wpn_es_deus_shield_02_magic",
 		template = "es_deus_01_template",
 		slot_type = "weapon_skin",
+		required_dlc = "grass",
 		item_type = "weapon_skin",
 		matching_item_key = "es_deus_01",
 		can_wield = {
@@ -398,6 +417,7 @@ local item_master_list = {
 		item_type = "es_deus_01",
 		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_02/wpn_es_deus_shield_02_magic",
 		required_unlock_item = "es_deus_01",
+		required_dlc = "grass",
 		can_wield = {
 			"es_huntsman",
 			"es_knight",
@@ -405,21 +425,22 @@ local item_master_list = {
 		}
 	},
 	we_deus_01 = {
-		description = "we_deus_01_description",
 		ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01",
 		display_name = "we_deus_01_name",
-		has_power_level = true,
-		inventory_icon = "icon_wpn_we_moonfire_t1",
 		slot_type = "ranged",
-		hud_icon = "weapon_generic_icon_bow",
-		rarity = "plentiful",
+		skin_combination_table = "we_deus_01_skins",
+		left_hand_unit = "units/weapons/player/wpn_we_deus_01/wpn_we_deus_01",
 		ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01_3p",
+		hud_icon = "weapon_generic_icon_bow",
+		item_type = "we_deus_01",
+		trait_table_name = "ranged_energy",
+		description = "we_deus_01_description",
+		rarity = "plentiful",
+		inventory_icon = "icon_wpn_we_moonfire_t1",
+		has_power_level = true,
 		template = "we_deus_01_template_1",
 		property_table_name = "ranged",
-		item_type = "we_deus_01",
-		left_hand_unit = "units/weapons/player/wpn_we_deus_01/wpn_we_deus_01",
-		trait_table_name = "ranged_energy",
-		skin_combination_table = "we_deus_01_skins",
+		required_dlc = "grass",
 		can_wield = {
 			"we_shade",
 			"we_maidenguard",
@@ -449,6 +470,7 @@ local item_master_list = {
 		inventory_icon = "icon_wpn_we_moonfire_t1",
 		left_hand_unit = "units/weapons/player/wpn_we_deus_01/wpn_we_deus_01",
 		template = "we_deus_01_template_1",
+		required_dlc = "grass",
 		hud_icon = "weapon_generic_icon_bow",
 		item_type = "weapon_skin",
 		matching_item_key = "we_deus_01",
@@ -473,6 +495,7 @@ local item_master_list = {
 		display_unit = "units/weapons/weapon_display/display_bow",
 		item_type = "weapon_skin",
 		left_hand_unit = "units/weapons/player/wpn_we_deus_02/wpn_we_deus_02",
+		required_dlc = "grass",
 		matching_item_key = "we_deus_01",
 		can_wield = {
 			"we_shade",
@@ -494,6 +517,7 @@ local item_master_list = {
 		display_unit = "units/weapons/weapon_display/display_bow",
 		item_type = "weapon_skin",
 		left_hand_unit = "units/weapons/player/wpn_we_deus_01/wpn_we_deus_01_runed",
+		required_dlc = "grass",
 		matching_item_key = "we_deus_01",
 		can_wield = {
 			"we_shade",
@@ -515,6 +539,7 @@ local item_master_list = {
 		display_unit = "units/weapons/weapon_display/display_bow",
 		item_type = "weapon_skin",
 		left_hand_unit = "units/weapons/player/wpn_we_deus_01/wpn_we_deus_02_runed",
+		required_dlc = "grass",
 		matching_item_key = "we_deus_01",
 		can_wield = {
 			"we_shade",
@@ -529,6 +554,7 @@ local item_master_list = {
 		slot_type = "weapon_skin",
 		inventory_icon = "icon_wpn_we_moonfire_t1",
 		left_hand_unit = "units/weapons/player/wpn_we_deus_01/wpn_we_deus_01_magic",
+		required_dlc = "grass",
 		hud_icon = "weapon_generic_icon_bow",
 		item_type = "weapon_skin",
 		matching_item_key = "we_deus_01",
@@ -540,21 +566,22 @@ local item_master_list = {
 		}
 	},
 	we_deus_01_magic = {
-		description = "we_deus_01_magic_description",
+		template = "we_deus_01_template_1",
 		ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01",
 		display_name = "we_deus_01_magic_name",
-		has_power_level = true,
-		inventory_icon = "icon_wpn_we_moonfire_t1_magic",
 		slot_type = "ranged",
-		hud_icon = "weapon_generic_icon_bow",
-		rarity = "magic",
-		trait_table_name = "ranged_energy",
-		ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01_3p",
-		template = "we_deus_01_template_1",
-		property_table_name = "ranged",
-		item_type = "we_deus_01",
-		required_unlock_item = "we_deus_01",
 		left_hand_unit = "units/weapons/player/wpn_we_deus_01/wpn_we_deus_01_magic",
+		ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01_3p",
+		hud_icon = "weapon_generic_icon_bow",
+		item_type = "we_deus_01",
+		trait_table_name = "ranged_energy",
+		description = "we_deus_01_magic_description",
+		rarity = "magic",
+		inventory_icon = "icon_wpn_we_moonfire_t1_magic",
+		has_power_level = true,
+		property_table_name = "ranged",
+		required_unlock_item = "we_deus_01",
+		required_dlc = "grass",
 		can_wield = {
 			"we_shade",
 			"we_maidenguard",
@@ -572,6 +599,7 @@ local item_master_list = {
 		slot_type = "weapon_skin",
 		ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_02_3p",
 		template = "we_deus_01_template_1",
+		required_dlc = "grass",
 		item_type = "weapon_skin",
 		required_unlock_item = "we_deus_01",
 		matching_item_key = "we_deus_01",
@@ -595,6 +623,7 @@ local item_master_list = {
 		display_unit = "units/weapons/weapon_display/display_bow",
 		item_type = "weapon_skin",
 		left_hand_unit = "units/weapons/player/wpn_we_deus_03/wpn_we_deus_03",
+		required_dlc = "grass",
 		matching_item_key = "we_deus_01",
 		can_wield = {
 			"we_shade",
@@ -616,6 +645,7 @@ local item_master_list = {
 		display_unit = "units/weapons/weapon_display/display_bow",
 		item_type = "weapon_skin",
 		left_hand_unit = "units/weapons/player/wpn_we_deus_03/wpn_we_deus_03_runed",
+		required_dlc = "grass",
 		matching_item_key = "we_deus_01",
 		can_wield = {
 			"we_shade",
@@ -638,6 +668,7 @@ local item_master_list = {
 		item_type = "bw_deus_01",
 		skin_combination_table = "bw_deus_01_skins",
 		trait_table_name = "ranged_heat",
+		required_dlc = "grass",
 		can_wield = {
 			"bw_scholar",
 			"bw_adept",
@@ -669,6 +700,7 @@ local item_master_list = {
 		template = "bw_deus_01_template",
 		display_name = "bw_deus_01_skin_01_name",
 		slot_type = "weapon_skin",
+		required_dlc = "grass",
 		item_type = "weapon_skin",
 		matching_item_key = "bw_deus_01",
 		can_wield = {
@@ -681,20 +713,24 @@ local item_master_list = {
 		description = "bw_deus_01_skin_02_description",
 		rarity = "exotic",
 		right_hand_unit = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02",
-		hud_icon = "weapon_generic_icon_staff_5",
 		inventory_icon = "icon_wpn_brw_magmastaff_t2",
-		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
-		information_text = "information_weapon_skin",
-		template = "bw_deus_01_template_1",
-		display_name = "bw_deus_01_skin_02_name",
 		slot_type = "weapon_skin",
-		display_unit = "units/weapons/weapon_display/display_stff",
+		information_text = "information_weapon_skin",
+		hud_icon = "weapon_generic_icon_staff_5",
+		display_name = "bw_deus_01_skin_02_name",
+		template = "bw_deus_01_template_1",
+		display_unit = "units/weapons/weapon_display/display_staff",
 		item_type = "weapon_skin",
+		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
+		required_dlc = "grass",
 		matching_item_key = "bw_deus_01",
 		can_wield = {
 			"bw_scholar",
 			"bw_adept",
 			"bw_unchained"
+		},
+		right_hand_unit_override = {
+			bw_necromancer = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_baelfire"
 		}
 	},
 	bw_deus_01_skin_01_runed = {
@@ -708,8 +744,9 @@ local item_master_list = {
 		template = "bw_deus_01_template_1",
 		display_name = "bw_deus_01_skin_01_runed_name",
 		slot_type = "weapon_skin",
-		display_unit = "units/weapons/weapon_display/display_stff",
+		display_unit = "units/weapons/weapon_display/display_staff",
 		item_type = "weapon_skin",
+		required_dlc = "grass",
 		matching_item_key = "bw_deus_01",
 		can_wield = {
 			"bw_scholar",
@@ -721,20 +758,24 @@ local item_master_list = {
 		description = "bw_deus_01_skin_02_runed_description",
 		rarity = "unique",
 		right_hand_unit = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_runed",
-		hud_icon = "weapon_generic_icon_staff_5",
 		inventory_icon = "icon_wpn_brw_magmastaff_t2_runed",
-		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
-		information_text = "information_weapon_skin",
-		template = "bw_deus_01_template_1",
-		display_name = "bw_deus_01_skin_02_runed_name",
 		slot_type = "weapon_skin",
-		display_unit = "units/weapons/weapon_display/display_stff",
+		information_text = "information_weapon_skin",
+		hud_icon = "weapon_generic_icon_staff_5",
+		display_name = "bw_deus_01_skin_02_runed_name",
+		template = "bw_deus_01_template_1",
+		display_unit = "units/weapons/weapon_display/display_staff",
 		item_type = "weapon_skin",
+		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
+		required_dlc = "grass",
 		matching_item_key = "bw_deus_01",
 		can_wield = {
 			"bw_scholar",
 			"bw_adept",
 			"bw_unchained"
+		},
+		right_hand_unit_override = {
+			bw_necromancer = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_runed_baelfire"
 		}
 	},
 	bw_deus_01_skin_magic = {
@@ -746,6 +787,7 @@ local item_master_list = {
 		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 		template = "bw_deus_01_template",
 		slot_type = "weapon_skin",
+		required_dlc = "grass",
 		item_type = "weapon_skin",
 		matching_item_key = "bw_deus_01",
 		can_wield = {
@@ -758,38 +800,46 @@ local item_master_list = {
 		description = "bw_deus_01_magic_description",
 		rarity = "magic",
 		right_hand_unit = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_magic",
-		hud_icon = "weapon_generic_icon_staff_3",
-		inventory_icon = "icon_wpn_brw_magmastaff_t2",
 		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
-		template = "bw_deus_01_template",
+		inventory_icon = "icon_wpn_brw_magmastaff_t2",
 		slot_type = "weapon_skin",
+		hud_icon = "weapon_generic_icon_staff_3",
+		required_dlc = "grass",
+		template = "bw_deus_01_template",
 		item_type = "weapon_skin",
 		matching_item_key = "bw_deus_01",
 		can_wield = {
 			"bw_scholar",
 			"bw_adept",
 			"bw_unchained"
+		},
+		right_hand_unit_override = {
+			bw_necromancer = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_magic_baelfire"
 		}
 	},
 	bw_deus_01_magic = {
+		slot_type = "ranged",
+		display_name = "bw_deus_01_magic_name",
+		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
+		hud_icon = "weapon_generic_icon_staff_5",
+		item_type = "bw_deus_01",
+		trait_table_name = "ranged_heat",
 		description = "bw_deus_01_magic_description",
 		rarity = "magic",
 		right_hand_unit = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_magic",
-		hud_icon = "weapon_generic_icon_staff_5",
 		inventory_icon = "icon_wpn_brw_magmastaff_t2_magic",
-		slot_type = "ranged",
-		template = "bw_deus_01_template_1",
-		trait_table_name = "ranged_heat",
-		display_name = "bw_deus_01_magic_name",
 		has_power_level = true,
+		template = "bw_deus_01_template_1",
 		property_table_name = "ranged",
-		item_type = "bw_deus_01",
-		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 		required_unlock_item = "bw_deus_01",
+		required_dlc = "grass",
 		can_wield = {
 			"bw_scholar",
 			"bw_adept",
 			"bw_unchained"
+		},
+		right_hand_unit_override = {
+			bw_necromancer = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_magic_baelfire"
 		}
 	},
 	bw_deus_01_skin_03 = {
@@ -803,8 +853,9 @@ local item_master_list = {
 		template = "bw_deus_01_template_1",
 		display_name = "bw_deus_01_skin_03_name",
 		slot_type = "weapon_skin",
-		display_unit = "units/weapons/weapon_display/display_stff",
+		display_unit = "units/weapons/weapon_display/display_staff",
 		item_type = "weapon_skin",
+		required_dlc = "grass",
 		matching_item_key = "bw_deus_01",
 		can_wield = {
 			"bw_scholar",
@@ -823,8 +874,9 @@ local item_master_list = {
 		template = "bw_deus_01_template_1",
 		display_name = "bw_deus_01_skin_03_runed_name",
 		slot_type = "weapon_skin",
-		display_unit = "units/weapons/weapon_display/display_stff",
+		display_unit = "units/weapons/weapon_display/display_staff",
 		item_type = "weapon_skin",
+		required_dlc = "grass",
 		matching_item_key = "bw_deus_01",
 		can_wield = {
 			"bw_scholar",
@@ -847,6 +899,7 @@ local item_master_list = {
 		item_type = "wh_deus_01",
 		skin_combination_table = "wh_deus_01_skins",
 		trait_table_name = "ranged_ammo",
+		required_dlc = "grass",
 		can_wield = {
 			"wh_bountyhunter",
 			"wh_captain",
@@ -878,6 +931,7 @@ local item_master_list = {
 		template = "wh_deus_01_template_1",
 		display_name = "wh_deus_01_skin_01_name",
 		slot_type = "weapon_skin",
+		required_dlc = "grass",
 		item_type = "weapon_skin",
 		matching_item_key = "wh_deus_01",
 		can_wield = {
@@ -899,6 +953,7 @@ local item_master_list = {
 		slot_type = "weapon_skin",
 		display_unit = "units/weapons/weapon_display/display_pistols",
 		item_type = "weapon_skin",
+		required_dlc = "grass",
 		matching_item_key = "wh_deus_01",
 		can_wield = {
 			"wh_bountyhunter",
@@ -919,6 +974,7 @@ local item_master_list = {
 		slot_type = "weapon_skin",
 		display_unit = "units/weapons/weapon_display/display_pistols",
 		item_type = "weapon_skin",
+		required_dlc = "grass",
 		matching_item_key = "wh_deus_01",
 		can_wield = {
 			"wh_bountyhunter",
@@ -939,6 +995,7 @@ local item_master_list = {
 		slot_type = "weapon_skin",
 		display_unit = "units/weapons/weapon_display/display_pistols",
 		item_type = "weapon_skin",
+		required_dlc = "grass",
 		matching_item_key = "wh_deus_01",
 		can_wield = {
 			"wh_bountyhunter",
@@ -961,6 +1018,7 @@ local item_master_list = {
 		item_type = "wh_deus_01",
 		left_hand_unit = "units/weapons/player/wpn_wh_deus_02/wpn_wh_deus_02_magic",
 		required_unlock_item = "wh_deus_01",
+		required_dlc = "grass",
 		can_wield = {
 			"wh_bountyhunter",
 			"wh_captain",
@@ -980,6 +1038,7 @@ local item_master_list = {
 		slot_type = "weapon_skin",
 		display_unit = "units/weapons/weapon_display/display_pistols",
 		item_type = "weapon_skin",
+		required_dlc = "grass",
 		matching_item_key = "wh_deus_01",
 		can_wield = {
 			"wh_bountyhunter",
@@ -1000,6 +1059,7 @@ local item_master_list = {
 		slot_type = "weapon_skin",
 		display_unit = "units/weapons/weapon_display/display_pistols",
 		item_type = "weapon_skin",
+		required_dlc = "grass",
 		matching_item_key = "wh_deus_01",
 		can_wield = {
 			"wh_bountyhunter",
@@ -1016,6 +1076,7 @@ local item_master_list = {
 		left_hand_unit = "units/weapons/player/wpn_wh_deus_02/wpn_wh_deus_02_magic",
 		template = "wh_deus_01_template_1",
 		slot_type = "weapon_skin",
+		required_dlc = "grass",
 		item_type = "weapon_skin",
 		matching_item_key = "wh_deus_01",
 		can_wield = {
@@ -1033,6 +1094,7 @@ local item_master_list = {
 		left_hand_unit = "units/weapons/player/wpn_wh_deus_01/wpn_wh_deus_01_magic",
 		template = "wh_deus_01_template_1",
 		slot_type = "weapon_skin",
+		required_dlc = "grass",
 		item_type = "weapon_skin",
 		matching_item_key = "wh_deus_01",
 		can_wield = {
@@ -1251,6 +1313,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_lileath_1 = {
@@ -1275,6 +1338,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_lileath_3 = {
@@ -1287,6 +1351,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_myrmidia_1 = {
@@ -1299,6 +1364,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_myrmidia_2 = {
@@ -1311,6 +1377,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_myrmidia_3 = {
@@ -1323,6 +1390,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_nurgle = {
@@ -1335,6 +1403,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_sigmar_1 = {
@@ -1347,6 +1416,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_sigmar_2 = {
@@ -1359,6 +1429,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_sigmar_3 = {
@@ -1371,6 +1442,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_slaanesh = {
@@ -1383,6 +1455,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_taal_1 = {
@@ -1395,6 +1468,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_taal_2 = {
@@ -1407,6 +1481,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_taal_3 = {
@@ -1419,6 +1494,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_tzeentch = {
@@ -1431,6 +1507,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_valaya_1 = {
@@ -1443,6 +1520,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_valaya_2 = {
@@ -1455,6 +1533,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_valaya_3 = {
@@ -1467,6 +1546,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_citadel = {
@@ -1479,6 +1559,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	frame_deus_portrait_chaos_gods = {
@@ -1491,6 +1572,7 @@ local item_master_list = {
 		information_text = "information_text_frame",
 		rarity = "promo",
 		item_type = "frame",
+		required_dlc = "grass",
 		can_wield = CanWieldAllItemTemplates
 	},
 	shilling_bag_grass = {

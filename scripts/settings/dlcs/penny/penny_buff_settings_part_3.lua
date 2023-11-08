@@ -14,13 +14,15 @@ settings.buff_templates = {
 	enemy_penny_curse = {
 		buffs = {
 			{
-				icon = "troll_vomit_debuff",
-				name = "penny_curse",
 				duration = 5,
+				name = "penny_curse",
 				debuff = true,
 				max_stacks = 50,
+				icon = "troll_vomit_debuff",
 				refresh_durations = true,
-				perk = buff_perks.slayer_curse
+				perks = {
+					buff_perks.slayer_curse
+				}
 			}
 		}
 	}
@@ -29,7 +31,7 @@ settings.buff_function_templates = {
 	enemy_penny_curse_pulse = function (unit, buff, params, world)
 		local t = params.t
 
-		if Managers.state.network.is_server and AiUtils.unit_alive(unit) and (buff.next_tick == nil or buff.next_tick and buff.next_tick < t) then
+		if Managers.state.network.is_server and HEALTH_ALIVE[unit] and (buff.next_tick == nil or buff.next_tick and buff.next_tick < t) then
 			local buff_system = Managers.state.entity:system("buff_system")
 			local side_manager = Managers.state.side
 			local template = buff.template

@@ -171,7 +171,7 @@ BTEnterHooks.stormfiend_boss_charge_enter = function (unit, blackboard, t)
 		end
 	end
 
-	if AiUtils.unit_alive(wanted_unit) then
+	if HEALTH_ALIVE[wanted_unit] then
 		blackboard.target_unit = wanted_unit
 		blackboard.keep_target = true
 	end

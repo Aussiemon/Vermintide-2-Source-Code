@@ -81,48 +81,45 @@ settings.explosion_templates = {
 	},
 	victor_priest_melee_explosion = {
 		explosion = {
-			no_prop_damage = true,
-			radius = 6,
-			use_attacker_power_level = true,
-			max_damage_radius = 3,
 			always_hurt_players = false,
-			alert_enemies = false,
+			radius = 6,
+			no_prop_damage = true,
+			max_damage_radius = 3,
+			use_attacker_power_level = true,
 			alert_enemies_radius = 15,
-			attack_template = "drakegun",
 			effect_name = "fx/wp_push",
-			damage_type = "grenade",
+			attack_template = "drakegun",
+			alert_enemies = false,
 			damage_profile = "shield_slam_aoe_priest",
 			no_friendly_fire = true
 		}
 	},
 	victor_priest_passive_explosion = {
 		explosion = {
-			no_prop_damage = true,
-			radius = 8,
-			use_attacker_power_level = true,
-			max_damage_radius = 2,
 			always_hurt_players = false,
-			alert_enemies = false,
+			radius = 8,
+			no_prop_damage = true,
+			max_damage_radius = 2,
+			use_attacker_power_level = true,
 			alert_enemies_radius = 15,
-			attack_template = "drakegun",
 			sound_event_name = "career_talent_priest_unbreakable_push",
-			damage_type = "grenade",
+			attack_template = "drakegun",
+			alert_enemies = false,
 			damage_profile = "ability_push",
 			no_friendly_fire = true
 		}
 	},
 	victor_priest_career_skill_aftershock = {
 		explosion = {
-			no_prop_damage = true,
-			radius = 1,
-			use_attacker_power_level = true,
-			max_damage_radius = 1,
 			always_hurt_players = false,
-			alert_enemies = false,
+			radius = 1,
+			no_prop_damage = true,
+			max_damage_radius = 1,
+			use_attacker_power_level = true,
 			alert_enemies_radius = 15,
-			attack_template = "drakegun",
 			effect_name = "fx/wp_enemy_explosion",
-			damage_type = "grenade",
+			attack_template = "drakegun",
+			alert_enemies = false,
 			damage_profile = "medium_push",
 			no_friendly_fire = true
 		}

@@ -37,7 +37,7 @@ end
 BTInterestPointUseAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local interest_point_system_api = blackboard.system_api.ai_interest_point_system
 
-	if AiUtils.unit_alive(unit) then
+	if HEALTH_ALIVE[unit] then
 		interest_point_system_api.release_claim(blackboard.ip_request_id)
 
 		blackboard.ip_request_id = nil
@@ -49,7 +49,7 @@ BTInterestPointUseAction.leave = function (self, unit, blackboard, t, reason, de
 
 	blackboard.ip_end_time = nil
 
-	if blackboard.ip_next_request_id ~= nil and AiUtils.unit_alive(unit) then
+	if blackboard.ip_next_request_id ~= nil and HEALTH_ALIVE[unit] then
 		if reason == "aborted" then
 			interest_point_system_api.release_claim(blackboard.ip_next_request_id, unit)
 

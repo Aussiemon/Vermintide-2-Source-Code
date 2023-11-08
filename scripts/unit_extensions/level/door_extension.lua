@@ -184,7 +184,7 @@ DoorExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
-	if not self.health_extension:is_alive() then
+	if not HEALTH_ALIVE[unit] then
 		self.dead = true
 
 		self:destroy_box_obstacles()

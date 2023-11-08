@@ -35,12 +35,6 @@ ActionHealingDraught.finish = function (self, reason)
 		local event_data = FrameTable.alloc_table()
 
 		dialogue_input:trigger_networked_dialogue_event(current_action.dialogue_event, event_data)
-
-		if ScriptUnit.extension(owner_unit, "health_system"):current_health() > 80 then
-			local target_name = ScriptUnit.extension(owner_unit, "dialogue_system").context.player_profile
-
-			SurroundingAwareSystem.add_event(owner_unit, "early_healing_draught", DialogueSettings.default_view_distance, "target_name", target_name)
-		end
 	end
 
 	if buff_extension:has_buff_perk("no_permanent_health") then

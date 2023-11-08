@@ -79,6 +79,7 @@ end
 TargetHealthExtension.set_dead = function (self)
 	self._dead = true
 	self._health = 0
+	HEALTH_ALIVE[self.unit] = nil
 end
 
 TargetHealthExtension._should_die = function (self)

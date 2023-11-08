@@ -193,7 +193,7 @@ BTSelector_standard_bearer.run = function (self, unit, blackboard, t, dt)
 			condition_result = true
 		end
 	elseif condition_result == nil then
-		condition_result = blackboard.has_placed_standard and unit_alive(blackboard.target_unit) and AiUtils.unit_alive(blackboard.standard_unit) and target_distance_to_standard and blackboard.breed.pickup_standard_distance < target_distance_to_standard
+		condition_result = blackboard.has_placed_standard and unit_alive(blackboard.target_unit) and HEALTH_ALIVE[blackboard.standard_unit] and target_distance_to_standard and blackboard.breed.pickup_standard_distance < target_distance_to_standard
 	end
 
 	if condition_result then

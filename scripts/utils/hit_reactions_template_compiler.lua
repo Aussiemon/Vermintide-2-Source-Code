@@ -1,3 +1,4 @@
+require("scripts/managers/status_effect/status_effect_templates")
 dofile("scripts/settings/hit_effects/hit_effects_skaven_clan_rat")
 dofile("scripts/settings/hit_effects/hit_effects_skaven_slave")
 dofile("scripts/settings/hit_effects/hit_effects_skaven_clan_rat_shield")
@@ -28,6 +29,7 @@ dofile("scripts/settings/hit_effects/hit_effects_chaos_exalted_sorcerer")
 dofile("scripts/settings/hit_effects/hit_effects_chaos_zombie")
 dofile("scripts/settings/hit_effects/hit_effects_chaos_spawn")
 dofile("scripts/settings/hit_effects/hit_effects_undead_ethereal_skeleton")
+dofile("scripts/settings/hit_effects/hit_effects_training_dummy")
 dofile("scripts/settings/breeds")
 DLCUtils.dofile_list("hit_effects")
 

@@ -150,41 +150,29 @@ HitEffectsRatOgre = {
 	},
 	burn_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
-				"burning_tank",
-				"heavy_burning_tank",
-				"burning_stab_fencer",
-				"burn",
-				"burn_sniper",
-				"burn_carbine",
-				"burn_machinegun",
 				"drakegun_shot",
 				"drakegun",
 				"drakegun_glance"
 			}
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
-	burn_death_force_fire = {
+	burn_death_conjured = {
 		inherits = "default_death",
-		flow_event = "burn_force_fire",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank",
 				"heavy_burning_tank",
 				"burning_stab_fencer",
 				"burn",
-				"burn_force_fire",
-				"burninating_force_fire",
 				"burn_sniper",
 				"burn_carbine",
-				"burn_machinegun",
-				"drakegun_shot",
-				"drakegun",
-				"drakegun_glance"
+				"burn_machinegun"
 			}
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	push = {
 		extra_conditions = {

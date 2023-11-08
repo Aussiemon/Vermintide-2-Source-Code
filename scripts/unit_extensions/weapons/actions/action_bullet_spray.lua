@@ -104,16 +104,15 @@ ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_d
 			local breed = Unit.get_data(current_target, "breed")
 			local node = "j_spine"
 
-			if breed and not breed.is_hero then
-				local rand = math.random()
-				local chance = 1 / NUM_NODES
-				local cumalative_value = 0
+			if breed then
+				local rand = math.random(1, NUM_NODES)
 
-				for i = 1, NUM_NODES do
-					cumalative_value = cumalative_value + chance
+				for node_i = 1, NUM_NODES do
+					local idx = math.index_wrapper(rand + node_i - 1, NUM_NODES)
+					local rand_node = NODES[idx]
 
-					if rand <= cumalative_value then
-						node = NODES[i]
+					if Unit.has_node(current_target, rand_node) then
+						node = rand_node
 
 						break
 					end
@@ -245,18 +244,17 @@ ActionBulletSpray._select_targets = function (self, world, show_outline)
 
 			if not hit_units[hit_unit] then
 				local breed = Unit.get_data(hit_unit, "breed")
-				local dummy = not breed and Unit.get_data(hit_unit, "is_dummy")
 
 				if table.contains(player_and_bot_units, hit_unit) and not ignore_hitting_allies then
 					if self:_is_infront_player(player_position, player_direction, hit_position) and self:_check_within_cone(player_position, player_direction, hit_unit, true) then
 						targets[#targets + 1] = hit_unit
 						hit_units[hit_unit] = true
 					end
-				elseif (breed or dummy) and self:_is_infront_player(player_position, player_direction, hit_position) and self:_check_within_cone(player_position, player_direction, hit_unit) then
+				elseif breed and self:_is_infront_player(player_position, player_direction, hit_position) and self:_check_within_cone(player_position, player_direction, hit_unit) then
 					targets[#targets + 1] = hit_unit
 					hit_units[hit_unit] = true
 
-					if ScriptUnit.extension(hit_unit, "health_system"):is_alive() then
+					if HEALTH_ALIVE[hit_unit] then
 						num_hit = num_hit + 1
 					end
 				end

@@ -717,7 +717,6 @@ HitEffectsSkavenClanRatShield = {
 	},
 	burning_smiter_death = {
 		inherits = "default_death",
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -733,7 +732,8 @@ HitEffectsSkavenClanRatShield = {
 			distal_force = 20,
 			vertical_force = -50,
 			lateral_force = 0
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burning_smiter_death_head = {
 		inherits = "burning_smiter_death",
@@ -915,7 +915,6 @@ HitEffectsSkavenClanRatShield = {
 	},
 	burning_stab_fencer_death = {
 		inherits = "default_death",
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -934,7 +933,8 @@ HitEffectsSkavenClanRatShield = {
 			distal_force = 30,
 			vertical_force = 0,
 			lateral_force = 0
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	heavy_stab_fencer_death = {
 		inherits = "default_death",
@@ -1413,7 +1413,6 @@ HitEffectsSkavenClanRatShield = {
 	burning_tank_death = {
 		inherits = "default_death",
 		do_dismember = false,
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1432,7 +1431,8 @@ HitEffectsSkavenClanRatShield = {
 			distal_force = 10,
 			vertical_force = 0,
 			lateral_force = 30
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burning_tank_death_head = {
 		inherits = "burning_tank_death",
@@ -1455,7 +1455,6 @@ HitEffectsSkavenClanRatShield = {
 	heavy_burning_tank_death = {
 		inherits = "default_death",
 		do_dismember = true,
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1474,7 +1473,8 @@ HitEffectsSkavenClanRatShield = {
 			distal_force = 20,
 			vertical_force = 10,
 			lateral_force = 40
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	heavy_burning_tank_death_head = {
 		inherits = "heavy_burning_tank_death",
@@ -1490,7 +1490,6 @@ HitEffectsSkavenClanRatShield = {
 	},
 	light_burning_linesman_death = {
 		inherits = "default_death",
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1504,7 +1503,8 @@ HitEffectsSkavenClanRatShield = {
 			distal_force = 20,
 			vertical_force = -10,
 			lateral_force = 30
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	light_burning_linesman_death_head = {
 		inherits = "light_burning_linesman_death",
@@ -1520,7 +1520,6 @@ HitEffectsSkavenClanRatShield = {
 	},
 	burning_linesman_death = {
 		inherits = "default_death",
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -1534,7 +1533,8 @@ HitEffectsSkavenClanRatShield = {
 			distal_force = 20,
 			vertical_force = 0,
 			lateral_force = 40
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burning_linesman_death_right_arm = {
 		inherits = "burning_linesman_death",
@@ -1776,6 +1776,7 @@ HitEffectsSkavenClanRatShield = {
 			damage_type = {
 				"arrow_sniper",
 				"arrow_carbine",
+				"elven_magic_arrow_carbine",
 				"arrow_machinegun",
 				"arrow_shotgun",
 				"bolt_sniper",
@@ -1831,7 +1832,8 @@ HitEffectsSkavenClanRatShield = {
 		extra_conditions = {
 			damage_type = {
 				"arrow_carbine",
-				"arrow_shotgun"
+				"arrow_shotgun",
+				"elven_magic_arrow_carbine"
 			}
 		},
 		push = {
@@ -1839,6 +1841,13 @@ HitEffectsSkavenClanRatShield = {
 			vertical_force = 10,
 			lateral_force = 0
 		}
+	},
+	elven_magic_arrow_carbine_death = {
+		inherits = "arrow_carbine_death",
+		extra_conditions = {
+			damage_type = "elven_magic_arrow_carbine"
+		},
+		timed_status = StatusEffectNames.burning_elven_magic
 	},
 	arrow_sniper_death = {
 		inherits = "arrow_death",
@@ -1866,6 +1875,13 @@ HitEffectsSkavenClanRatShield = {
 			vertical_force = 10,
 			lateral_force = 0
 		}
+	},
+	elven_magic_arrow_carbine_death_head = {
+		inherits = "arrow_carbine_death_head",
+		extra_conditions = {
+			damage_type = "elven_magic_arrow_carbine"
+		},
+		timed_status = StatusEffectNames.burning_elven_magic
 	},
 	arrow_sniper_death_head = {
 		inherits = "arrow_death_head",
@@ -2085,14 +2101,10 @@ HitEffectsSkavenClanRatShield = {
 			damage_type = "burninating"
 		}
 	},
-	burn_death = {
-		flow_event = "burn_death",
+	burninating_death = {
+		inherits = "burninating",
 		extra_conditions = {
-			death = true,
-			damage_type = {
-				"burn",
-				"burninating"
-			}
+			death = true
 		},
 		animations = {
 			"death_burn",
@@ -2102,14 +2114,10 @@ HitEffectsSkavenClanRatShield = {
 			"death_burn_5"
 		}
 	},
-	burn_death_force_fire = {
-		flow_event = "burn_death_force_fire",
+	burn_death = {
 		extra_conditions = {
 			death = true,
-			damage_type = {
-				"burn_force_fire",
-				"burninating_force_fire"
-			}
+			damage_type = "burn"
 		},
 		animations = {
 			"death_burn",
@@ -2117,10 +2125,10 @@ HitEffectsSkavenClanRatShield = {
 			"death_burn_3",
 			"death_burn_4",
 			"death_burn_5"
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burn_sniper_death = {
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -2130,6 +2138,7 @@ HitEffectsSkavenClanRatShield = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -2139,7 +2148,6 @@ HitEffectsSkavenClanRatShield = {
 	burn_sniper_death_dismember = {
 		inherits = "burn_sniper_death",
 		do_dismember = true,
-		flow_event = "burn_death",
 		extra_conditions = {
 			hit_zone = {
 				"head",
@@ -2154,6 +2162,7 @@ HitEffectsSkavenClanRatShield = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -2163,7 +2172,6 @@ HitEffectsSkavenClanRatShield = {
 	burn_sniper_death_torso = {
 		inherits = "burn_sniper_death",
 		do_dismember = true,
-		flow_event = "burn_death",
 		extra_conditions = {
 			hit_zone = {
 				"torso"
@@ -2177,6 +2185,7 @@ HitEffectsSkavenClanRatShield = {
 			"death_burn_4",
 			"death_burn_5"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -2184,7 +2193,6 @@ HitEffectsSkavenClanRatShield = {
 		}
 	},
 	burn_shotgun_death = {
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -2194,6 +2202,7 @@ HitEffectsSkavenClanRatShield = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 40,
@@ -2201,7 +2210,6 @@ HitEffectsSkavenClanRatShield = {
 		}
 	},
 	burn_machinegun_death = {
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -2211,6 +2219,7 @@ HitEffectsSkavenClanRatShield = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
 			vertical_force = 10,
@@ -2235,9 +2244,9 @@ HitEffectsSkavenClanRatShield = {
 			"death_burn_5"
 		},
 		flow_event = {
-			"burn_death",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
 			vertical_force = 10,
@@ -2245,7 +2254,6 @@ HitEffectsSkavenClanRatShield = {
 		}
 	},
 	burn_carbine_death = {
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -2255,6 +2263,7 @@ HitEffectsSkavenClanRatShield = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 10,
@@ -2279,9 +2288,9 @@ HitEffectsSkavenClanRatShield = {
 			"death_decapitate_6"
 		},
 		flow_event = {
-			"burn_death",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 10,
@@ -2289,7 +2298,6 @@ HitEffectsSkavenClanRatShield = {
 		}
 	},
 	arrow_poison_dot = {
-		flow_event = "poisoned",
 		extra_conditions = {
 			damage = true,
 			damage_type = {
@@ -2299,11 +2307,28 @@ HitEffectsSkavenClanRatShield = {
 			}
 		}
 	},
-	arrow_poison_dot_death = {
-		inherits = "arrow_poison_dot",
-		flow_event = "poisoned",
+	poison_death = {
 		extra_conditions = {
-			death = true
+			death = true,
+			damage_type = {
+				"poison"
+			}
+		},
+		timed_status = StatusEffectNames.poisoned,
+		animations = {
+			"death_gas",
+			"death_gas_2",
+			"death_gas_3",
+			"death_gas_4"
+		}
+	},
+	arrow_poison_dot_death = {
+		extra_conditions = {
+			death = true,
+			damage_type = {
+				"arrow_poison_dot",
+				"aoe_poison_dot"
+			}
 		},
 		animations = {
 			"death_gas",
@@ -2396,7 +2421,6 @@ HitEffectsSkavenClanRatShield = {
 	fire_grenade_glance_death = {
 		inherits = "default",
 		explosion_push = true,
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = "fire_grenade_glance"
@@ -2404,6 +2428,7 @@ HitEffectsSkavenClanRatShield = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 50,
 			vertical_force = 50,
@@ -2413,7 +2438,6 @@ HitEffectsSkavenClanRatShield = {
 	fire_grenade_glance_death_dismember = {
 		inherits = "fire_grenade_glance_death",
 		do_dismember = true,
-		flow_event = "burn_death",
 		extra_conditions = {
 			hit_zone = {
 				"head",
@@ -2428,6 +2452,7 @@ HitEffectsSkavenClanRatShield = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 50,
 			vertical_force = 50,
@@ -2450,10 +2475,10 @@ HitEffectsSkavenClanRatShield = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn_death",
 			"dismember_left_leg",
 			"dismember_right_arm"
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	drakegun = {
 		inherits = "default",
@@ -2466,7 +2491,6 @@ HitEffectsSkavenClanRatShield = {
 	drakegun_death = {
 		inherits = "drakegun",
 		explosion_push = true,
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true
 		},
@@ -2476,7 +2500,8 @@ HitEffectsSkavenClanRatShield = {
 		push = {
 			distal_force = 80,
 			vertical_force = 35
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	drakegun_glance = {
 		inherits = "default",
@@ -2486,20 +2511,19 @@ HitEffectsSkavenClanRatShield = {
 	},
 	drakegun_glance_death = {
 		inherits = "drakegun_glance",
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true
 		},
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 25
 		}
 	},
 	drakegun_shot_death = {
-		flow_event = "burn_death",
 		extra_conditions = {
 			death = true,
 			damage_type = {
@@ -2509,6 +2533,7 @@ HitEffectsSkavenClanRatShield = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2518,7 +2543,6 @@ HitEffectsSkavenClanRatShield = {
 	drakegun_shot_death_dismember = {
 		inherits = "drakegun_shot_death",
 		do_dismember = true,
-		flow_event = "burn_death",
 		extra_conditions = {
 			hit_zone = {
 				"left_arm",
@@ -2531,6 +2555,7 @@ HitEffectsSkavenClanRatShield = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2555,9 +2580,9 @@ HitEffectsSkavenClanRatShield = {
 			"death_decapitate_6"
 		},
 		flow_event = {
-			"burn_death",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2637,15 +2662,13 @@ HitEffectsSkavenClanRatShield = {
 		}
 	},
 	elven_magic_death = {
-		flow_event = "elven_magic",
 		disable_blood = true,
 		explosion_push = true,
 		armour_type = "cloth",
 		extra_conditions = {
 			death = true,
 			damage_type = {
-				"elven_magic",
-				"elven_magic_glance"
+				"elven_magic"
 			}
 		},
 		animations = {
@@ -2655,7 +2678,8 @@ HitEffectsSkavenClanRatShield = {
 			distal_force = 200,
 			vertical_force = 70,
 			lateral_force = 0
-		}
+		},
+		timed_status = StatusEffectNames.burning_elven_magic
 	},
 	military_finish_death = {
 		flow_event = "military_finish",
@@ -2688,47 +2712,20 @@ HitEffectsSkavenClanRatShield = {
 			}
 		}
 	},
-	burning_death = {
-		inherits = "default",
-		flow_event = "burn_death",
-		extra_conditions = {
-			death = true,
-			damage_type = {
-				"burning_1W_dot",
-				"burning_3W_dot",
-				"beam_burning_dot",
-				"burning_flamethrower_dot",
-				"burning_dot"
-			}
-		},
-		animations = {
-			"ragdoll",
-			"death_burn",
-			"death_burn_2",
-			"death_burn_3",
-			"death_burn_4",
-			"death_burn_5"
-		}
-	},
 	warpfire_burning = {
 		inherits = "default",
-		flow_event = "warpfire_burn",
 		extra_conditions = {
 			damage_type = {
 				"warpfire_ground",
 				"warpfire_face"
 			}
-		}
+		},
+		timed_status = StatusEffectNames.burning_warpfire
 	},
 	warpfire_burning_death = {
-		inherits = "default",
-		flow_event = "warpfire_burn_death",
+		inherits = "warpfire_burning",
 		extra_conditions = {
-			death = true,
-			damage_type = {
-				"warpfire_ground",
-				"warpfire_face"
-			}
+			death = true
 		},
 		animations = {
 			"ragdoll",
@@ -2741,25 +2738,38 @@ HitEffectsSkavenClanRatShield = {
 	}
 }
 
-for hit_effect_name, hit_effect_data in pairs(HitEffectsSkavenClanRatShield) do
-	local hit_effect_flow_event = hit_effect_data.flow_event or hit_effect_data.inherits and HitEffectsSkavenClanRatShield[hit_effect_data.inherits].flow_event
+local function get_variable(template, ...)
+	local val = template
 
-	if hit_effect_flow_event then
-		local is_table = type(hit_effect_flow_event) == "table"
+	for i = 1, select("#", ...) do
+		local key = select(i, ...)
+		val = val[key]
 
-		if is_table and table.contains(hit_effect_flow_event, "burn_death") or hit_effect_flow_event == "burn_death" then
-			local new_hit_effect_name = hit_effect_name .. "_critical"
-			local new_hit_effect_data = {
-				flow_event = "burn_death_critical",
-				do_dismember = false,
-				do_diagonal_dismemberments = false,
-				inherits = hit_effect_name,
-				extra_conditions = {
-					is_critical_strike = true
-				}
-			}
-			HitEffectsSkavenClanRatShield[new_hit_effect_name] = new_hit_effect_data
+		if not val then
+			break
 		end
+	end
+
+	return val or template.inherits and get_variable(HitEffectsSkavenClanRatShield[template.inherits], ...)
+end
+
+for hit_effect_name, hit_effect_data in pairs(HitEffectsSkavenClanRatShield) do
+	local death = get_variable(hit_effect_data, "extra_conditions", "death")
+	local timed_status = get_variable(hit_effect_data, "timed_status")
+	local critical_variant = rawget(StatusEffectNames, (timed_status or "") .. "_death_critical")
+
+	if death and critical_variant then
+		local new_hit_effect_name = hit_effect_name .. "_critical"
+		local new_hit_effect_data = {
+			do_dismember = false,
+			do_diagonal_dismemberments = false,
+			inherits = hit_effect_name,
+			extra_conditions = {
+				is_critical_strike = true
+			},
+			timed_status = critical_variant
+		}
+		HitEffectsSkavenClanRatShield[new_hit_effect_name] = new_hit_effect_data
 	end
 end
 

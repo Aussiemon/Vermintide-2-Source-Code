@@ -97,6 +97,7 @@ local breed_data = {
 		distance_weight = 100,
 		target_disabled_mul = 0.15
 	},
+	infighting = InfightingSettings.small,
 	size_variation_range = {
 		1.3,
 		1.3
@@ -111,6 +112,12 @@ local breed_data = {
 		"standard_bearer_vce_profile_a",
 		"standard_bearer_vce_profile_b",
 		"standard_bearer_vce_profile_c"
+	},
+	status_effect_settings = {
+		category = "medium",
+		ignored_statuses = table.set({
+			StatusEffectNames.burning_warpfire
+		})
 	},
 	debug_color = {
 		255,

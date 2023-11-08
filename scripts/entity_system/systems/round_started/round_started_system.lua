@@ -2,6 +2,9 @@ RoundStartedSystem = class(RoundStartedSystem, ExtensionSystemBase)
 local extensions = {
 	"RoundStartedExtension"
 }
+local RPCS = {
+	"rpc_round_started"
+}
 RoundStartedExtension = class(RoundStartedExtension)
 
 RoundStartedExtension.init = function (self)
@@ -19,6 +22,10 @@ RoundStartedSystem.init = function (self, context, system_name)
 
 	self._is_server = context.is_server
 	self._world = context.world
+	self._network_event_delegate = context.network_event_delegate
+
+	self._network_event_delegate:register(self, unpack(RPCS))
+
 	self._start_area = "start_area"
 	self._round_started = false
 	self._player_spawned = false
@@ -26,7 +33,7 @@ RoundStartedSystem.init = function (self, context, system_name)
 end
 
 RoundStartedSystem.destroy = function (self)
-	return
+	self._network_event_delegate:unregister(self)
 end
 
 RoundStartedSystem.set_start_area = function (self, volume_name)
@@ -76,7 +83,7 @@ RoundStartedSystem.update = function (self, context, t)
 			leaderboard_system:round_started(score_type, start_data)
 		end
 
-		self._round_started = true
+		self:_on_round_started()
 	end
 end
 
@@ -106,4 +113,18 @@ end
 
 RoundStartedSystem.player_spawned = function (self)
 	self._player_spawned = true
+end
+
+RoundStartedSystem._on_round_started = function (self)
+	self._round_started = true
+
+	Managers.state.achievement:trigger_event("on_round_started")
+
+	if self._is_server then
+		Managers.state.network.network_transmit:send_rpc_clients("rpc_round_started")
+	end
+end
+
+RoundStartedSystem.rpc_round_started = function (self)
+	self:_on_round_started()
 end

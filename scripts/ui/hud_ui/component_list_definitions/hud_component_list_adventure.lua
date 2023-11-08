@@ -501,6 +501,14 @@ components[47] = {
 		"alive"
 	}
 }
+components[48] = {
+	use_hud_scale = true,
+	class_name = "PetUI",
+	filename = "scripts/ui/hud_ui/pet_ui",
+	visibility_groups = {
+		"alive"
+	}
+}
 
 DLCUtils.append("ingame_hud_components", components)
 

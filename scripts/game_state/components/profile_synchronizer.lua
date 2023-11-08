@@ -61,6 +61,8 @@ local function _add_slot_item_packages(packages_list, slot, item_data, optional_
 	end
 end
 
+local _combined_requires_packages = {}
+
 local function profile_packages(profile_index, career_index, is_first_person)
 	local profile = SPProfiles[profile_index]
 	local careers = profile.careers
@@ -70,20 +72,16 @@ local function profile_packages(profile_index, career_index, is_first_person)
 	local packages_list = {}
 
 	for i = 1, slots_n do
-		repeat
-			local slot = InventorySettings.slots[i]
-			local slot_name = slot.name
-			local item = BackendUtils.get_loadout_item(career_name, slot_name)
+		local slot = InventorySettings.slots[i]
+		local slot_name = slot.name
+		local item = BackendUtils.get_loadout_item(career_name, slot_name)
 
-			if not item then
-				break
-			end
-
+		if item then
 			local item_data = item.data
 			local backend_id = item.backend_id
 
 			_add_slot_item_packages(packages_list, slot, item_data, backend_id, career_name, is_first_person)
-		until true
+		end
 	end
 
 	local base_skin_name = career.base_skin
@@ -100,11 +98,48 @@ local function profile_packages(profile_index, career_index, is_first_person)
 		packages_list[career.package_name] = false
 	end
 
+	local talent_interface = Managers.backend:get_talents_interface()
+	local talent_ids = talent_interface:get_talent_ids(career_name)
+	local career_requires_packages = career.requires_packages
+
+	if career_requires_packages then
+		table.merge(_combined_requires_packages, career_requires_packages)
+	end
+
+	local talent_table = Talents[profile.display_name]
+
+	for talent_idx = 1, #talent_ids do
+		local talent = talent_table[talent_ids[talent_idx]]
+
+		if talent and talent.requires_packages then
+			table.merge(_combined_requires_packages, talent.requires_packages)
+		end
+	end
+
+	for _, group in pairs(_combined_requires_packages) do
+		for _, package_name in pairs(group) do
+			packages_list[package_name] = false
+		end
+	end
+
+	table.clear(_combined_requires_packages)
+
 	if career.talent_packages then
 		local talent_interface = Managers.backend:get_talents_interface()
 		local talent_ids = talent_interface:get_talent_ids(career_name)
 
 		career.talent_packages(talent_ids, packages_list, is_first_person)
+	end
+
+	if career.additional_inventory then
+		for slot_name, slot_items in pairs(career.additional_inventory) do
+			for i = 1, #slot_items do
+				local item_data = ItemMasterList[slot_items[i]]
+				local slot = InventorySettings.slots_by_name[slot_name]
+
+				_add_slot_item_packages(packages_list, slot, item_data, nil, career_name, is_first_person)
+			end
+		end
 	end
 
 	packages_list[career.package_name] = false

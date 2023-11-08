@@ -122,7 +122,7 @@ BTRatlingGunnerShootAction.run = function (self, unit, blackboard, t, dt)
 	local data = blackboard.attack_pattern_data
 	local target_unit = data.target_unit
 
-	if not AiUtils.unit_alive(target_unit) then
+	if not HEALTH_ALIVE[target_unit] then
 		return "done"
 	end
 

@@ -1,11 +1,13 @@
 local function on_marked_enemy_killed(dialogue_event, killer_unit)
-	local killed_by_player = ALIVE[killer_unit] and Managers.player:is_player_unit(killer_unit)
+	if HEALTH_ALIVE[killer_unit] then
+		local killed_by_player = Managers.player:is_player_unit(killer_unit)
 
-	if killed_by_player and ScriptUnit.extension(killer_unit, "health_system"):is_alive() then
-		local dialogue_input = ScriptUnit.extension_input(killer_unit, "dialogue_system")
-		local event_data = FrameTable.alloc_table()
+		if killed_by_player then
+			local dialogue_input = ScriptUnit.extension_input(killer_unit, "dialogue_system")
+			local event_data = FrameTable.alloc_table()
 
-		dialogue_input:trigger_dialogue_event(dialogue_event, event_data)
+			dialogue_input:trigger_dialogue_event(dialogue_event, event_data)
+		end
 	end
 end
 
@@ -64,7 +66,7 @@ return function (display_name, description, icon, buff, difficulty_data, markabl
 
 			for i = #marked_enemies, 1, -1 do
 				local enemy_unit = marked_enemies[i]
-				local is_dead = not AiUtils.unit_alive(enemy_unit)
+				local is_dead = not HEALTH_ALIVE[enemy_unit]
 
 				if is_dead then
 					table.swap_delete(marked_enemies, i)

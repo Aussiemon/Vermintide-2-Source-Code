@@ -643,7 +643,6 @@ HitEffectsChaosWarrior = {
 	},
 	burning_stab_fencer_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_stab_fencer"
@@ -657,7 +656,8 @@ HitEffectsChaosWarrior = {
 			distal_force = 30,
 			vertical_force = 0,
 			lateral_force = 0
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	heavy_stab_fencer_death = {
 		inherits = "default_death",
@@ -1084,7 +1084,6 @@ HitEffectsChaosWarrior = {
 	burning_tank_death = {
 		inherits = "default_death",
 		do_dismember = false,
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burning_tank"
@@ -1097,7 +1096,8 @@ HitEffectsChaosWarrior = {
 			distal_force = 10,
 			vertical_force = 0,
 			lateral_force = 30
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burning_tank_death_head = {
 		inherits = "burning_tank_death",
@@ -1115,7 +1115,6 @@ HitEffectsChaosWarrior = {
 	heavy_burning_tank_death = {
 		inherits = "default_death",
 		do_dismember = true,
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"heavy_burning_tank"
@@ -1128,7 +1127,8 @@ HitEffectsChaosWarrior = {
 			distal_force = 20,
 			vertical_force = 10,
 			lateral_force = 40
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	heavy_burning_tank_death_head = {
 		inherits = "heavy_burning_tank_death",
@@ -1401,6 +1401,7 @@ HitEffectsChaosWarrior = {
 			damage_type = {
 				"arrow_sniper",
 				"arrow_carbine",
+				"elven_magic_arrow_carbine",
 				"arrow_machinegun",
 				"arrow_shotgun",
 				"bolt_sniper",
@@ -1413,46 +1414,15 @@ HitEffectsChaosWarrior = {
 			"hit_reaction"
 		}
 	},
-	arrow_machinegun_death = {
+	arrow_death = {
 		inherits = "default_death",
 		extra_conditions = {
 			damage_type = {
-				"arrow_machinegun"
-			}
-		},
-		animations = {
-			"ragdoll",
-			"death_shot_body"
-		},
-		push = {
-			distal_force = 20,
-			vertical_force = 10,
-			lateral_force = 0
-		}
-	},
-	arrow_carbine_death = {
-		inherits = "default_death",
-		extra_conditions = {
-			damage_type = {
+				"arrow_machinegun",
 				"arrow_carbine",
-				"arrow_shotgun"
-			}
-		},
-		animations = {
-			"ragdoll",
-			"death_shot_body"
-		},
-		push = {
-			distal_force = 20,
-			vertical_force = 10,
-			lateral_force = 0
-		}
-	},
-	arrow_sniper_death = {
-		inherits = "default_death",
-		extra_conditions = {
-			damage_type = {
-				"arrow_sniper"
+				"arrow_shotgun",
+				"arrow_sniper",
+				"elven_magic_arrow_carbine"
 			}
 		},
 		animations = {
@@ -1511,7 +1481,8 @@ HitEffectsChaosWarrior = {
 				"arrow_sniper",
 				"arrow_carbine",
 				"arrow_machinegun",
-				"arrow_shotgun"
+				"arrow_shotgun",
+				"elven_magic_arrow_carbine"
 			},
 			hit_zone = {
 				"head",
@@ -1632,33 +1603,25 @@ HitEffectsChaosWarrior = {
 			"hit_reaction"
 		}
 	},
-	burn_death = {
-		flow_event = "burn",
+	burninating_death = {
+		inherits = "burninating",
 		extra_conditions = {
-			death = true,
-			damage = true,
-			damage_type = {
-				"burninating",
-				"burn"
-			}
+			death = true
 		},
 		animations = {
 			"death_burn"
 		}
 	},
-	burn_death_force_fire = {
-		flow_event = "burn_force_fire",
+	burn_death = {
 		extra_conditions = {
 			death = true,
 			damage = true,
-			damage_type = {
-				"burn_force_fire",
-				"burninating_force_fire"
-			}
+			damage_type = "burn"
 		},
 		animations = {
 			"death_burn"
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	burn_sniper = {
 		inherits = "default",
@@ -1671,7 +1634,6 @@ HitEffectsChaosWarrior = {
 	},
 	burn_sniper_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burn_sniper"
@@ -1680,6 +1642,7 @@ HitEffectsChaosWarrior = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -1689,7 +1652,6 @@ HitEffectsChaosWarrior = {
 	burn_sniper_death_dismember = {
 		inherits = "burn_sniper_death",
 		do_dismember = true,
-		flow_event = "burn",
 		extra_conditions = {
 			hit_zone = {
 				"head",
@@ -1704,6 +1666,7 @@ HitEffectsChaosWarrior = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 80,
 			vertical_force = 20,
@@ -1721,7 +1684,6 @@ HitEffectsChaosWarrior = {
 	},
 	burn_shotgun_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burn_shotgun"
@@ -1730,6 +1692,7 @@ HitEffectsChaosWarrior = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 30,
 			vertical_force = 30,
@@ -1747,7 +1710,6 @@ HitEffectsChaosWarrior = {
 	},
 	burn_machinegun_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burn_machinegun"
@@ -1756,6 +1718,7 @@ HitEffectsChaosWarrior = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
 			vertical_force = 10,
@@ -1774,9 +1737,9 @@ HitEffectsChaosWarrior = {
 			"death_shot_head_front"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 40,
 			vertical_force = 10,
@@ -1794,7 +1757,6 @@ HitEffectsChaosWarrior = {
 	},
 	burn_carbine_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"burn_carbine"
@@ -1803,6 +1765,7 @@ HitEffectsChaosWarrior = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 10,
@@ -1821,9 +1784,9 @@ HitEffectsChaosWarrior = {
 			"death_shot_head_front"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 60,
 			vertical_force = 10,
@@ -1832,24 +1795,33 @@ HitEffectsChaosWarrior = {
 	},
 	arrow_poison_dot = {
 		inherits = "default",
-		flow_event = "poisoned",
 		extra_conditions = {
-			damage_type = {
-				"arrow_poison_dot",
-				"aoe_poison_dot"
-			}
-		},
-		animations = {}
-	},
-	arrow_poison_dot_death = {
-		flow_event = "poisoned",
-		extra_conditions = {
-			death = true,
-			damage = true,
 			damage_type = {
 				"arrow_poison_dot",
 				"aoe_poison_dot",
 				"poison"
+			}
+		},
+		animations = {}
+	},
+	poison_death = {
+		extra_conditions = {
+			death = true,
+			damage_type = {
+				"poison"
+			}
+		},
+		timed_status = StatusEffectNames.poisoned,
+		animations = {
+			"death_gas"
+		}
+	},
+	arrow_poison_dot_death = {
+		extra_conditions = {
+			death = true,
+			damage_type = {
+				"arrow_poison_dot",
+				"aoe_poison_dot"
 			}
 		},
 		animations = {
@@ -1938,10 +1910,10 @@ HitEffectsChaosWarrior = {
 	fire_grenade_glance_death = {
 		inherits = "default_death",
 		explosion_push = true,
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "fire_grenade_glance"
 		},
+		timed_status = StatusEffectNames.burning,
 		animations = {
 			"ragdoll"
 		},
@@ -1954,7 +1926,6 @@ HitEffectsChaosWarrior = {
 	fire_grenade_glance_death_dismember = {
 		inherits = "fire_grenade_glance_death",
 		do_dismember = true,
-		flow_event = "burn",
 		extra_conditions = {
 			hit_zone = {
 				"head",
@@ -1971,6 +1942,7 @@ HitEffectsChaosWarrior = {
 			"death_shot_head_front",
 			"death_decapitate"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 50,
 			vertical_force = 30,
@@ -1992,10 +1964,10 @@ HitEffectsChaosWarrior = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"dismember_left_leg",
 			"dismember_right_arm"
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	drakegun = {
 		inherits = "default",
@@ -2007,7 +1979,6 @@ HitEffectsChaosWarrior = {
 	},
 	drakegun_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "drakegun"
 		},
@@ -2017,7 +1988,8 @@ HitEffectsChaosWarrior = {
 		push = {
 			distal_force = 70,
 			vertical_force = 35
-		}
+		},
+		timed_status = StatusEffectNames.burning
 	},
 	drakegun_glance = {
 		inherits = "default",
@@ -2027,13 +1999,13 @@ HitEffectsChaosWarrior = {
 	},
 	drakegun_glance_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = "drakegun_glance"
 		},
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 30,
 			vertical_force = 15
@@ -2041,7 +2013,6 @@ HitEffectsChaosWarrior = {
 	},
 	drakegun_shot_death = {
 		inherits = "default_death",
-		flow_event = "burn",
 		extra_conditions = {
 			damage_type = {
 				"drakegun_shot"
@@ -2050,6 +2021,7 @@ HitEffectsChaosWarrior = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2059,7 +2031,6 @@ HitEffectsChaosWarrior = {
 	drakegun_shot_death_dismember = {
 		inherits = "drakegun_shot_death",
 		do_dismember = true,
-		flow_event = "burn",
 		extra_conditions = {
 			hit_zone = {
 				"left_arm",
@@ -2072,6 +2043,7 @@ HitEffectsChaosWarrior = {
 		animations = {
 			"ragdoll"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,
@@ -2090,9 +2062,9 @@ HitEffectsChaosWarrior = {
 			"ragdoll"
 		},
 		flow_event = {
-			"burn",
 			"explode_head"
 		},
+		timed_status = StatusEffectNames.burning,
 		push = {
 			distal_force = 100,
 			vertical_force = 40,

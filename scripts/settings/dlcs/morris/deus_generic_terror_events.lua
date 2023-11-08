@@ -12,7 +12,7 @@ local cursed_chest_enemy_pre_spawn_func = nil
 cursed_chest_enemy_pre_spawn_func = TerrorEventUtils.add_enhancements_for_difficulty
 
 local function cursed_chest_enemy_spawned_func(unit, breed, optional_data)
-	if not breed.special and not breed.boss then
+	if not breed.special and not breed.boss and not breed.cannot_be_aggroed then
 		local player_unit = PlayerUtils.get_random_alive_hero()
 
 		AiUtils.aggro_unit_of_enemy(unit, player_unit)
@@ -3889,7 +3889,7 @@ local function belakor_shadow_lieutenant_spawn(locus_type_id, add_base_enhanceme
 			optional_data = {
 				prevent_killed_enemy_dialogue = true,
 				spawned_func = function (unit, breed, optional_data)
-					if not breed.special and not breed.boss then
+					if not breed.special and not breed.boss and not breed.cannot_be_aggroed then
 						local player_unit = PlayerUtils.get_random_alive_hero()
 
 						AiUtils.aggro_unit_of_enemy(unit, player_unit)
@@ -3934,7 +3934,7 @@ local function belakor_shadow_lieutenant_spawn(locus_type_id, add_base_enhanceme
 
 				if add_base_enhancement then
 					optional_data.enhancements = {
-						BreedEnhancements.base.base
+						BreedEnhancements.base
 					}
 				end
 
@@ -3945,7 +3945,7 @@ local function belakor_shadow_lieutenant_spawn(locus_type_id, add_base_enhanceme
 					if possible_grudge_mark_names and not table.is_empty(possible_grudge_mark_names) then
 						local available_enhancements = {}
 
-						for name, data in pairs(BreedEnhancements.boss) do
+						for name, data in pairs(BreedEnhancements) do
 							if possible_grudge_mark_names[name] then
 								table.insert(available_enhancements, data)
 							end
@@ -4076,7 +4076,7 @@ local function belakor_totem_around_origin_line(spawn_table)
 		optional_data = {
 			prevent_killed_enemy_dialogue = true,
 			spawned_func = function (unit, breed, optional_data)
-				if not breed.special and not breed.boss then
+				if not breed.special and not breed.boss and not breed.cannot_be_aggroed then
 					local player_unit = PlayerUtils.get_random_alive_hero()
 
 					AiUtils.aggro_unit_of_enemy(unit, player_unit)
@@ -4846,7 +4846,9 @@ local function grey_wings_spawn(spawn_table)
 
 				local player_unit = PlayerUtils.get_random_alive_hero()
 
-				AiUtils.aggro_unit_of_enemy(unit, player_unit)
+				if not breed.cannot_be_aggroed then
+					AiUtils.aggro_unit_of_enemy(unit, player_unit)
+				end
 			end
 		},
 		pre_spawn_unit_func = function (event, element, boxed_spawn_pos, breed_name)
@@ -4954,7 +4956,7 @@ GenericTerrorEvents.grey_wings_spawns = {
 }
 
 local function grudge_mark_commander_enemy_spawned_func(unit, breed, optional_data)
-	if not breed.special and not breed.boss then
+	if not breed.special and not breed.boss and not breed.cannot_be_aggroed then
 		local player_unit = PlayerUtils.get_random_alive_hero()
 
 		AiUtils.aggro_unit_of_enemy(unit, player_unit)

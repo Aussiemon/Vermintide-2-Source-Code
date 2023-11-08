@@ -224,14 +224,16 @@ local talent_buff_templates = {
 	bardin_engineer_pump_max_exhaustion_buff = {
 		buffs = {
 			{
-				duration = 5,
 				icon = "bardin_engineer_pump_max_exhaustion_buff_icon",
 				remove_buff_func = "bardin_engineer_animation_slow_down_remove",
 				debuff = true,
 				max_stacks = 1,
+				duration = 5,
 				apply_buff_func = "bardin_engineer_animation_slow_down_add",
 				priority_buff = true,
-				perk = buff_perks.exhausted
+				perks = {
+					buff_perks.exhausted
+				}
 			}
 		}
 	},
@@ -242,7 +244,9 @@ local talent_buff_templates = {
 				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = buff_perks.tank_healing
+				perks = {
+					buff_perks.tank_healing
+				}
 			}
 		}
 	},
@@ -251,11 +255,13 @@ local talent_buff_templates = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_damage_dealt",
+				max_targets = 5,
 				bonus = 0.25,
-				perk = buff_perks.linesman_healing
+				perks = {
+					buff_perks.linesman_healing
+				}
 			}
 		}
 	},
@@ -281,6 +287,7 @@ local talent_buff_templates = {
 				client_side = true,
 				valid_attack_types = {
 					instant_projectile = true,
+					heavy_instant_projectile = true,
 					projectile = true
 				}
 			}
@@ -422,12 +429,14 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				event = "on_ammo_used",
-				icon = "victor_bountyhunter_passive_infinite_ammo",
 				max_stacks = 1,
 				buff_func = "dummy_function",
 				remove_on_proc = true,
+				icon = "victor_bountyhunter_passive_infinite_ammo",
 				priority_buff = true,
-				perk = buff_perks.infinite_ammo
+				perks = {
+					buff_perks.infinite_ammo
+				}
 			}
 		}
 	},
@@ -454,7 +463,9 @@ local talent_buff_templates = {
 	bardin_engineer_stacks_stay = {
 		buffs = {
 			{
-				perk = buff_perks.engineer_persistent_pump_stacks,
+				perks = {
+					buff_perks.engineer_persistent_pump_stacks
+				},
 				buffs_to_remove_on_remove = {
 					"bardin_engineer_pump_buff_long",
 					"bardin_engineer_pump_buff"
@@ -505,7 +516,9 @@ local talent_buff_templates = {
 	bardin_engineer_upgraded_grenades = {
 		buffs = {
 			{
-				perk = buff_perks.frag_fire_grenades
+				perks = {
+					buff_perks.frag_fire_grenades
+				}
 			}
 		}
 	},
@@ -532,7 +545,9 @@ local talent_buff_templates = {
 				multiplier = 2,
 				stat_buff = "power_level_impact",
 				duration = 0.2,
-				perk = buff_perks.explosive_stagger
+				perks = {
+					buff_perks.explosive_stagger
+				}
 			}
 		}
 	},
@@ -575,7 +590,9 @@ local talent_buff_templates = {
 				max_stacks = 1,
 				refresh_durations = true,
 				icon = "bardin_engineer_increased_ability_bar",
-				perk = buff_perks.free_ability_engineer
+				perks = {
+					buff_perks.free_ability_engineer
+				}
 			}
 		}
 	}

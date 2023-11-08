@@ -8,6 +8,7 @@ local NODES = {
 	"j_rightshoulder",
 	"j_spine1"
 }
+local NUM_NODES = #NODES
 
 ActionFlamethrower.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	ActionFlamethrower.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -83,31 +84,35 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 			World.link_particles(world, self._flamethrower_effect, muzzle_unit, muzzle_node, Matrix4x4.identity(), "destroy")
 		end
 
-		if is_server or LEVEL_EDITOR_TEST then
-			if bot_player then
-				network_transmit:send_rpc_all("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
+		if not current_action.first_person_muzzle then
+			if is_server or LEVEL_EDITOR_TEST then
+				if bot_player then
+					network_transmit:send_rpc_all("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
+				else
+					network_transmit:send_rpc_clients("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
+				end
 			else
-				network_transmit:send_rpc_clients("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
+				network_transmit:send_rpc_server("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
 			end
-		else
-			network_transmit:send_rpc_server("rpc_start_flamethrower", go_id, flamethrower_effect_3p_id)
 		end
 
-		if self._source_id then
+		if current_action.fire_sound_event then
+			if self._source_id then
+				local owner = self.owner_player
+				local is_husk = not owner.local_player
+
+				WwiseWorld.set_switch(self.wwise_world, "husk", is_husk and "true" or "false", self._source_id)
+				WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, self._source_id)
+			else
+				self._source_id = WwiseWorld.make_auto_source(self.wwise_world, self.weapon_unit)
+			end
+
 			local owner = self.owner_player
 			local is_husk = not owner.local_player
 
 			WwiseWorld.set_switch(self.wwise_world, "husk", is_husk and "true" or "false", self._source_id)
-			WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, self._source_id)
-		else
-			self._source_id = WwiseWorld.make_auto_source(self.wwise_world, self.weapon_unit)
+			WwiseWorld.trigger_event(self.wwise_world, current_action.fire_sound_event, self._source_id)
 		end
-
-		local owner = self.owner_player
-		local is_husk = not owner.local_player
-
-		WwiseWorld.set_switch(self.wwise_world, "husk", is_husk and "true" or "false", self._source_id)
-		WwiseWorld.trigger_event(self.wwise_world, current_action.fire_sound_event, self._source_id)
 	end
 
 	self.overcharge_timer = self.overcharge_timer + dt
@@ -164,11 +169,17 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 
 						if breed then
 							buff_target_number = buff_target_number + 1
-							local rand = math.round(Math.random_range(1, #NODES))
-							local random_node = NODES[rand]
+							local rand = math.round(Math.random_range(1, NUM_NODES))
 
-							if Unit.has_node(current_target, random_node) then
-								node = random_node or node
+							for node_i = 1, NUM_NODES do
+								local idx = math.index_wrapper(rand + node_i - 1, NUM_NODES)
+								local rand_node = NODES[idx]
+
+								if Unit.has_node(current_target, rand_node) then
+									node = rand_node
+
+									break
+								end
 							end
 						end
 
@@ -372,7 +383,7 @@ ActionFlamethrower._select_targets = function (self, world, show_outline)
 					targets[#targets + 1] = hit_unit
 					targets[hit_unit] = false
 
-					if is_enemy and ScriptUnit.extension(hit_unit, "health_system"):is_alive() then
+					if is_enemy and HEALTH_ALIVE[hit_unit] then
 						num_hit = num_hit + 1
 					end
 				end

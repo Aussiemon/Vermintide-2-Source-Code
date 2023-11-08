@@ -1,3 +1,5 @@
+require("scripts/entity_system/systems/buff/buff_sync_type")
+
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local buff_tweak_data = {
 	kerillian_shade_ability_cooldown_on_hit = {
@@ -327,7 +329,9 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_shade_passive_backstab_killing_blow = {
 		buffs = {
 			{
-				perk = buff_perks.crit_backstab_killing_blow
+				perks = {
+					buff_perks.crit_backstab_killing_blow
+				}
 			}
 		}
 	},
@@ -383,11 +387,13 @@ TalentBuffTemplates.wood_elf = {
 				apply_buff_func = "apply_shade_activated_ability",
 				can_restealth_combo = true,
 				remove_buff_func = "on_shade_activated_ability_remove",
-				perk = "shade_melee_boost",
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
 				can_restealth_on_remove = true,
-				stealth_identifier = "skill_shade"
+				stealth_identifier = "skill_shade",
+				perks = {
+					"shade_melee_boost"
+				}
 			}
 		}
 	},
@@ -404,12 +410,14 @@ TalentBuffTemplates.wood_elf = {
 				apply_buff_func = "apply_shade_activated_ability",
 				can_restealth_on_remove = false,
 				remove_buff_func = "on_shade_activated_ability_remove",
-				perk = "shade_melee_boost",
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
 				icon = "passive_bonus_kerillian_shade",
 				can_restealth_combo = true,
-				duration = buff_tweak_data.kerillian_shade_activated_ability.duration
+				duration = buff_tweak_data.kerillian_shade_activated_ability.duration,
+				perks = {
+					"shade_melee_boost"
+				}
 			}
 		}
 	},
@@ -420,7 +428,9 @@ TalentBuffTemplates.wood_elf = {
 				buff_func = "heal_finesse_damage_on_melee",
 				event = "on_hit",
 				bonus = 2,
-				perk = buff_perks.ninja_healing
+				perks = {
+					buff_perks.ninja_healing
+				}
 			}
 		}
 	},
@@ -432,7 +442,9 @@ TalentBuffTemplates.wood_elf = {
 				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = buff_perks.smiter_healing
+				perks = {
+					buff_perks.smiter_healing
+				}
 			}
 		}
 	},
@@ -829,7 +841,9 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_passive_uninterruptible_revive = {
 		buffs = {
 			{
-				perk = buff_perks.uninterruptible_revive
+				perks = {
+					buff_perks.uninterruptible_revive
+				}
 			}
 		}
 	},
@@ -869,11 +883,13 @@ TalentBuffTemplates.wood_elf = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
+				max_targets = 5,
 				bonus = 0.25,
-				perk = buff_perks.linesman_healing
+				perks = {
+					buff_perks.linesman_healing
+				}
 			}
 		}
 	},
@@ -885,7 +901,9 @@ TalentBuffTemplates.wood_elf = {
 				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = buff_perks.smiter_healing
+				perks = {
+					buff_perks.smiter_healing
+				}
 			}
 		}
 	},
@@ -1216,14 +1234,18 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_waywatcher_passive_increased_zoom = {
 		buffs = {
 			{
-				perk = buff_perks.increased_zoom
+				perks = {
+					buff_perks.increased_zoom
+				}
 			}
 		}
 	},
 	kerillian_waywatcher_passive_no_damage_dropoff = {
 		buffs = {
 			{
-				perk = buff_perks.no_damage_dropoff
+				perks = {
+					buff_perks.no_damage_dropoff
+				}
 			}
 		}
 	},
@@ -1234,7 +1256,9 @@ TalentBuffTemplates.wood_elf = {
 				buff_func = "heal_finesse_damage_on_melee",
 				event = "on_hit",
 				bonus = 2,
-				perk = buff_perks.ninja_healing
+				perks = {
+					buff_perks.ninja_healing
+				}
 			}
 		}
 	},
@@ -1243,11 +1267,13 @@ TalentBuffTemplates.wood_elf = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
+				max_targets = 5,
 				bonus = 0.25,
-				perk = buff_perks.linesman_healing
+				perks = {
+					buff_perks.linesman_healing
+				}
 			}
 		}
 	},
@@ -1287,7 +1313,9 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_waywatcher_critical_bleed = {
 		buffs = {
 			{
-				perk = buff_perks.kerillian_critical_bleed_dot
+				perks = {
+					buff_perks.kerillian_critical_bleed_dot
+				}
 			}
 		}
 	},
@@ -1346,7 +1374,9 @@ TalentBuffTemplates.wood_elf = {
 			{
 				max_stacks = 1,
 				stat_buff = "projectile_bounces",
-				perk = buff_perks.add_projectile_bounces
+				perks = {
+					buff_perks.add_projectile_bounces
+				}
 			}
 		}
 	},
@@ -2233,7 +2263,7 @@ Talents.wood_elf = {
 	{
 		description = "kerillian_waywatcher_projectile_ricochet_desc",
 		name = "kerillian_waywatcher_projectile_ricochet",
-		buffer = "both",
+		buffer = "all",
 		num_ranks = 1,
 		icon = "kerillian_waywatcher_projectile_ricochet",
 		description_values = {
