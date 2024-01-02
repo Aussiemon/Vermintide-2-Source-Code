@@ -206,6 +206,10 @@ new_template("light_slashing_linesman", nil, "medium_slashing_linesman_spear", n
 
 DamageProfileTemplates.medium_slashing_linesman_spear.targets = "targets_linesman_spear_M"
 
+new_template("medium_slashing_linesman", "_2h", nil, nil)
+
+DamageProfileTemplates.medium_slashing_linesman_2h.targets = "targets_linesman_M_2h"
+
 new_template("medium_slashing_linesman", "_1h", nil, "heavy_attack")
 new_template("medium_slashing_linesman", "_finesse", nil, nil)
 
@@ -356,6 +360,10 @@ DamageProfileTemplates.light_pointy_smiter = {
 }
 
 new_template("light_slashing_smiter", "_diag", nil, nil, "slashing_linesman")
+new_template("light_slashing_smiter_diag", "_1h", nil, nil)
+
+DamageProfileTemplates.light_slashing_smiter_diag_1h.default_target = "light_slashing_smiter_diag_1h"
+
 new_template("light_slashing_smiter", "_flat", nil, nil, "slashing_tank")
 new_template("light_slashing_smiter", "_upper", nil, nil, "slashing_upper")
 new_template("light_slashing_smiter", "_heavy", nil, "heavy")
@@ -454,6 +462,7 @@ new_template("medium_slashing_smiter", nil, "medium_slashing_smiter_1h_axe", "he
 
 DamageProfileTemplates.medium_slashing_smiter_1h_axe.armor_modifier = "armor_modifier_blunt_smiter_2h_hammer_H"
 DamageProfileTemplates.medium_slashing_smiter_1h_axe.critical_strike = "critical_strike_blunt_smiter_2h_hammer_H"
+DamageProfileTemplates.medium_slashing_smiter_1h_axe.default_target = "default_target_slashing_smiter_finesse"
 DamageProfileTemplates.medium_blunt_smiter_burn = {
 	armor_modifier = "armor_modifier_smiter_M",
 	critical_strike = "critical_strike_smiter_M",
@@ -538,7 +547,7 @@ new_template("light_slashing_smiter_stab", nil, "light_slashing_smiter_stab_dual
 
 DamageProfileTemplates.light_slashing_smiter_stab_dual.armor_modifier = "armor_modifier_stab_smiter_M_1h"
 DamageProfileTemplates.light_slashing_smiter_stab_dual.targets = "targets_stab_dual_smiter_L"
-DamageProfileTemplates.light_slashing_smiter_stab_dual.critical_strike = "critical_strike_stab_smiter_M_1h"
+DamageProfileTemplates.light_slashing_smiter_stab_dual.critical_strike = "critical_strike_stab_dual_smiter_L"
 DamageProfileTemplates.light_slashing_smiter_stab_dual.melee_boost_override = 4
 DamageProfileTemplates.heavy_slashing_smiter_stab = {
 	armor_modifier = "armor_modifier_stab_smiter_H",

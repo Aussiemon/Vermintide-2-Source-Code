@@ -1750,5 +1750,261 @@ StoreBundleLayouts = {
 		{
 			type = "spacing"
 		}
+	},
+	five_career_bundle_0007 = {
+		{
+			id = "dlc_logo",
+			type = "big_image",
+			settings = {
+				text = "",
+				texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_five_career_bundle_0007",
+				localize = false,
+				show_frame = true,
+				texture_package = "resource_packages/store/bundle_icons/store_item_icon_five_career_bundle_0007",
+				image_size = {
+					800.4,
+					591.6
+				},
+				size = {
+					800.4,
+					591.6
+				}
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "divider_horizontal"
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "header_text",
+			settings = {
+				text = "menu_store_dlc_title_including",
+				localize = true
+			}
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_dr_slayer_1002",
+			type = "item",
+			settings = {
+				hide_price = false,
+				hide_new = true
+			}
+		},
+		{
+			id = "slayer_hat_1005",
+			type = "item",
+			settings = {
+				hide_price = false,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_slayer_bundle_0002",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_slayer_bundle_0002",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_ww_waywatcher_1002",
+			type = "item",
+			settings = {
+				hide_price = false,
+				hide_new = true
+			}
+		},
+		{
+			id = "waywatcher_hat_1005",
+			type = "item",
+			settings = {
+				hide_price = false,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_waywatcher_bundle_0001",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_waywatcher_bundle_0001",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_es_mercenary_1002",
+			type = "item",
+			settings = {
+				hide_price = false,
+				hide_new = true
+			}
+		},
+		{
+			id = "mercenary_hat_1003",
+			type = "item",
+			settings = {
+				hide_price = false,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_mercenary_bundle_0002",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_mercenary_bundle_0002",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_bw_scholar_1002",
+			type = "item",
+			settings = {
+				hide_price = false,
+				hide_new = true
+			}
+		},
+		{
+			id = "scholar_hat_1004",
+			type = "item",
+			settings = {
+				hide_price = false,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_scholar_bundle_0003",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_scholar_bundle_0003",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_wh_captain_1002",
+			type = "item",
+			settings = {
+				hide_price = false,
+				hide_new = true
+			}
+		},
+		{
+			id = "witchhunter_hat_1004",
+			type = "item",
+			settings = {
+				hide_price = false,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_witchhunter_bundle_0001",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_witchhunter_bundle_0001",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "divider_horizontal"
+		},
+		{
+			type = "spacing"
+		}
 	}
 }

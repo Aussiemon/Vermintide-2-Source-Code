@@ -267,7 +267,17 @@ MenuInputDescriptionUI.create_ui_elements = function (self, ui_renderer, number_
 	UIRenderer.clear_scenegraph_queue(ui_renderer)
 end
 
+MenuInputDescriptionUI._verify_input = function (self)
+	local most_recent_device = Managers.input:get_most_recent_device()
+
+	if most_recent_device ~= self._most_recent_device then
+		self:set_input_description(self.current_console_selection_data)
+	end
+end
+
 MenuInputDescriptionUI.draw = function (self, ui_renderer, dt)
+	self:_verify_input()
+
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_service
 	local ui_renderer = self.ui_renderer
@@ -459,6 +469,8 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 	self.number_of_descriptions_in_use = widget_use_index ~= 0 and widget_use_index or nil
 
 	self:_align_inputs(total_width, spacing, widgets_width_list)
+
+	self._most_recent_device = Managers.input:get_most_recent_device()
 end
 
 MenuInputDescriptionUI.clear_input_descriptions = function (self)

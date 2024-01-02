@@ -3006,6 +3006,9 @@ Cosmetics = {
 	},
 	frame_geheimnisnacht_05 = {
 		icon = "unit_frame_02"
+	},
+	frame_gotwf_01 = {
+		icon = "unit_frame_02"
 	}
 }
 

@@ -16,6 +16,7 @@ require("scripts/ui/atlas_settings/gui_frames_atlas")
 require("scripts/ui/atlas_settings/gui_menus_atlas")
 require("scripts/ui/atlas_settings/gui_country_flags_atlas")
 require("scripts/ui/atlas_settings/gui_mission_selection_atlas")
+require("scripts/ui/atlas_settings/gui_lock_test_atlas")
 
 UIAtlasHelper = UIAtlasHelper or {}
 local standalone_texture = {
@@ -338,7 +339,8 @@ local ui_atlas_setting_tables = {
 	gui_menus_atlas = menus_atlas,
 	gui_frames_atlas = frames_atlas,
 	gui_level_images_atlas = level_images_atlas,
-	gui_country_flags_atlas = country_flags_atlas
+	gui_country_flags_atlas = country_flags_atlas,
+	gui_lock_test_atlas = lock_test_atlas
 }
 local masked_materials = {
 	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_masked",
@@ -350,6 +352,7 @@ local masked_materials = {
 	gui_frames_atlas = "gui_frames_atlas_masked",
 	gui_menu_buttons_atlas = "gui_menu_buttons_atlas_masked",
 	gui_menus_atlas = "gui_menus_atlas_masked",
+	gui_lock_test_atlas = "gui_lock_test_atlas_masked",
 	gui_season_emblems_atlas = "gui_season_emblems_atlas_masked",
 	gui_country_flags_atlas = "gui_country_flags_atlas_masked",
 	gui_icons_atlas = "gui_icons_atlas_masked",
@@ -358,6 +361,7 @@ local masked_materials = {
 local saturated_materials = {
 	gui_level_images_atlas = "gui_level_images_atlas_saturated",
 	gui_frames_atlas = "gui_frames_atlas_saturated",
+	gui_lock_test_atlas = "gui_lock_test_atlas_saturated",
 	gui_hud_atlas = "gui_hud_atlas_saturated",
 	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_saturated",
 	gui_menu_buttons_atlas = "gui_menu_buttons_atlas_saturated",
@@ -368,6 +372,7 @@ local saturated_materials = {
 }
 local masked_saturated_materials = {
 	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_masked_saturated",
+	gui_lock_test_atlas = "gui_lock_test_atlas_masked_saturated",
 	gui_hud_atlas = "gui_hud_atlas_point_sample_masked_saturated",
 	gui_icons_atlas = "gui_icons_atlas_masked_saturated",
 	gui_items_atlas = "gui_items_atlas_masked_saturated",
@@ -384,6 +389,7 @@ local masked_point_sample_materials = {
 	gui_chat_atlas = "gui_chat_atlas_point_sample_masked",
 	gui_hud_atlas = "gui_hud_atlas_point_sample_masked",
 	gui_start_screen_atlas = "gui_start_screen_atlas_point_sample_masked",
+	gui_lock_test_atlas = "gui_lock_test_atlas_point_sample_masked",
 	gui_frames_atlas = "gui_frames_atlas_point_sample_masked",
 	gui_menus_atlas = "gui_menus_atlas_point_sample_masked",
 	gui_season_emblems_atlas = "gui_season_emblems_atlas_point_sample_masked",
@@ -391,6 +397,7 @@ local masked_point_sample_materials = {
 	gui_items_atlas = "gui_items_atlas_point_sample_masked"
 }
 local masked_saturated_point_sample_materials = {
+	gui_lock_test_atlas = "gui_lock_test_atlas_point_sample_masked_saturated",
 	gui_icons_atlas = "gui_icons_atlas_point_sample_masked_saturated",
 	gui_hud_atlas = "gui_hud_atlas_point_sample_masked_saturated"
 }
@@ -422,6 +429,7 @@ local point_sample_materials = {
 	gui_loading_atlas = "gui_loading_atlas_point_sample",
 	gui_startup_settings_atlas = "gui_startup_settings_atlas_point_sample",
 	controller_image_ps4 = "controller_image_ps4_point_sample",
+	gui_lock_test_atlas = "gui_lock_test_atlas_point_sample",
 	gui_items_atlas = "gui_items_atlas_point_sample",
 	gui_splash_atlas = "gui_splash_atlas_point_sample"
 }
@@ -453,6 +461,9 @@ local saturated_offscreen_materials = {
 	gui_items_atlas = "gui_items_atlas_saturated",
 	gui_icons_atlas = "gui_icons_atlas_saturated"
 }
+local viewport_mask_materials = {
+	gui_lock_test_atlas = "gui_lock_test_viewport_mask"
+}
 local ui_atlas_settings = {}
 
 for material, material_settings in pairs(ui_atlas_setting_tables) do
@@ -470,6 +481,7 @@ for material, material_settings in pairs(ui_atlas_setting_tables) do
 		settings.masked_point_sample_offscreen_material_name = masked_point_sample_offscreen_materials[material]
 		settings.point_sample_offscreen_material_name = point_sample_offscreen_materials[material]
 		settings.saturated_offscreen_material_name = saturated_offscreen_materials[material]
+		settings.viewport_mask_material_name = viewport_mask_materials[material]
 		local existing_material_name = ui_atlas_settings[texture_name] and ui_atlas_settings[texture_name].material_name
 
 		fassert(ui_atlas_settings[texture_name] == nil, "[UIAtlasHelper] Texture %q in material %q already exist in material %q. Make sure to use unique texture names.", texture_name, material, existing_material_name)
@@ -521,6 +533,7 @@ for name, dlc in pairs(DLCSettings) do
 					settings.masked_point_sample_offscreen_material_name = material_settings.masked_point_sample_offscreen_material_name
 					settings.point_sample_offscreen_material_name = material_settings.point_sample_offscreen_material_name
 					settings.saturated_offscreen_material_name = material_settings.saturated_offscreen_material_name
+					settings.viewport_mask_material_name = material_settings.viewport_mask_material_name
 					local existing_material_name = ui_atlas_settings[texture_name] and ui_atlas_settings[texture_name].material_name
 
 					fassert(ui_atlas_settings[texture_name] == nil, "[UIAtlasHelper] Texture %q in material %q already exist in material %q. Make sure to use unique texture names.", texture_name, material, existing_material_name)

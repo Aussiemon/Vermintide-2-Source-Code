@@ -832,28 +832,33 @@ CharacterStateHelper.wield_input = function (input_extension, inventory_extensio
 	if scroll_type ~= "scroll_disabled" and not slot_to_wield and scroll_value ~= 0 and not changing_debug_speed then
 		local current_index = current_slot.wield_index or 1
 		local num_slots = #wieldable_slots
-		local slot_to_wield_index = current_index + scroll_value
 		local scroll_dir = math.sign(scroll_value)
+		local slot_to_wield_index = current_index + scroll_dir
 
-		while not wieldable_slots[slot_to_wield_index] or not equipment.slots[wieldable_slots[slot_to_wield_index].name] do
-			if num_slots < slot_to_wield_index then
-				if scroll_type == "scroll_clamp" then
-					slot_to_wield_index = num_slots
-					scroll_dir = -1
+		repeat
+			local slot = wieldable_slots[slot_to_wield_index]
+			local slot_data = slot and equipment.slots[slot.name]
+
+			if not slot_data then
+				if num_slots < slot_to_wield_index then
+					if scroll_type == "scroll_clamp" then
+						slot_to_wield_index = num_slots
+						scroll_dir = -1
+					else
+						slot_to_wield_index = 1
+					end
+				elseif slot_to_wield_index < 1 then
+					if scroll_type == "scroll_clamp" then
+						slot_to_wield_index = 1
+						scroll_dir = 1
+					else
+						slot_to_wield_index = num_slots
+					end
 				else
-					slot_to_wield_index = 1
+					slot_to_wield_index = slot_to_wield_index + scroll_dir
 				end
-			elseif slot_to_wield_index < 1 then
-				if scroll_type == "scroll_clamp" then
-					slot_to_wield_index = 1
-					scroll_dir = 1
-				else
-					slot_to_wield_index = num_slots
-				end
-			else
-				slot_to_wield_index = slot_to_wield_index + scroll_dir
 			end
-		end
+		until slot_data
 
 		if current_slot.wield_index ~= slot_to_wield_index then
 			slot_to_wield = wieldable_slots[slot_to_wield_index].name
@@ -1772,6 +1777,21 @@ CharacterStateHelper.change_camera_state = function (player, state, params)
 	local camera_system = entity_manager:system("camera_system")
 
 	camera_system:external_state_change(player, state, params)
+end
+
+CharacterStateHelper.change_camera_state_delayed = function (player, state, params, t)
+	if player.bot_player then
+		return
+	end
+
+	if Development.parameter("third_person_mode") and state == "follow" then
+		state = "follow_third_person_over_shoulder"
+	end
+
+	local entity_manager = Managers.state.entity
+	local camera_system = entity_manager:system("camera_system")
+
+	camera_system:external_state_change_delayed(player, state, params, t)
 end
 
 CharacterStateHelper.play_animation_event = function (unit, anim_event)

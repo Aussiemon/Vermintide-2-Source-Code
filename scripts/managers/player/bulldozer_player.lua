@@ -194,6 +194,7 @@ BulldozerPlayer.spawn = function (self, optional_position, optional_rotation, is
 	local energy_data = EnergyData[career_name] or {}
 	local faction = profile.dialogue_faction or "player"
 	local status = Managers.party:get_status_from_unique_id(self._unique_id)
+	status.game_mode_data.first_spawn = status.game_mode_data.first_spawn == nil and true or false
 	local party = Managers.party:get_party(status.party_id)
 	local side = Managers.state.side.side_by_party[party]
 	local breed = career.breed or profile.breed

@@ -294,6 +294,14 @@ DLCSettings = DLCSettings or {
 			common = "scripts/settings/dlcs/fall_collection_2021/fall_collection_2021_common_settings"
 		}
 	},
+	gotwf = {
+		localization = "localization/gotwf_balance",
+		package_name = "resource_packages/dlcs/gotwf",
+		additional_settings = {
+			common = "scripts/settings/dlcs/gotwf/gotwf_common_settings",
+			ui = "scripts/settings/dlcs/gotwf/gotwf_ui_settings"
+		}
+	},
 	cosmetics_2022_q1 = {
 		localization = "localization/cosmetics_2022_q1",
 		package_name = "resource_packages/dlcs/cosmetics_2022_q1",
@@ -385,6 +393,14 @@ DLCSettings = DLCSettings or {
 		additional_settings = {
 			common = "scripts/settings/dlcs/cosmetics_2023_q2/cosmetics_2023_q2_common_settings",
 			equipment = "scripts/settings/dlcs/cosmetics_2023_q2/cosmetics_2023_q2_equipment_settings"
+		}
+	},
+	cosmetics_2023_q4 = {
+		localization = "localization/cosmetics_2023_q4",
+		package_name = "resource_packages/dlcs/cosmetics_2023_q4",
+		additional_settings = {
+			common = "scripts/settings/dlcs/cosmetics_2023_q4/cosmetics_2023_q4_common_settings",
+			equipment = "scripts/settings/dlcs/cosmetics_2023_q4/cosmetics_2023_q4_equipment_settings"
 		}
 	},
 	menu_cinematics = {

@@ -43,7 +43,7 @@ ActionCareerBWNecromancerTargetting.client_owner_start_action = function (self, 
 
 	self._weapon_extension:set_mode(false)
 
-	if self._local_player then
+	if self._local_player and not self._round_career_ability then
 		local decal_unit_name = self._decal_unit_name
 		local unit_spawner = Managers.state.unit_spawner
 		self._decal_unit = unit_spawner:spawn_local_unit(decal_unit_name)
@@ -127,6 +127,8 @@ ActionCareerBWNecromancerTargetting.finish = function (self, reason)
 		local unit_spawner = Managers.state.unit_spawner
 
 		unit_spawner:mark_for_deletion(self._decal_unit)
+
+		self._decal_unit = nil
 	end
 
 	if reason == "new_interupting_action" and self._has_valid_position then

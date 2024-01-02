@@ -163,7 +163,8 @@ end
 
 GamePadAbilityUI._handle_gamepad_activity = function (self)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
-	local force_update = self.gamepad_active_last_frame == nil
+	local most_recent_device = Managers.input:get_most_recent_device()
+	local force_update = self.gamepad_active_last_frame == nil or gamepad_active and most_recent_device ~= self._most_recent_device
 
 	if gamepad_active then
 		if not self.gamepad_active_last_frame or force_update then
@@ -176,6 +177,8 @@ GamePadAbilityUI._handle_gamepad_activity = function (self)
 
 		self:event_input_changed()
 	end
+
+	self._most_recent_device = most_recent_device
 end
 
 GamePadAbilityUI._handle_gamepad = function (self)

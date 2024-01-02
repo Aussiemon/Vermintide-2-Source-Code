@@ -1,3 +1,5 @@
+require("scripts/settings/profiles/career_constants")
+
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local buff_tweak_data = {
 	sienna_scholar_ability_cooldown_on_hit = {
@@ -7,7 +9,7 @@ local buff_tweak_data = {
 		bonus = 0.3
 	},
 	sienna_scholar_passive = {
-		chunk_size = 6
+		chunk_size = 9
 	},
 	sienna_scholar_passive_crit_chance = {
 		max_stacks = 5,
@@ -24,10 +26,10 @@ local buff_tweak_data = {
 	sienna_scholar_conqueror = {},
 	sienna_scholar_ranged_power_ascending_descending = {
 		update_frequency = 1,
-		max_sub_buff_stacks = 20
+		max_sub_buff_stacks = 25
 	},
 	sienna_scholar_ranged_power_ascending_descending_buff = {
-		max_stacks = 20,
+		max_stacks = 25,
 		multiplier = 0.01
 	},
 	sienna_scholar_crit_chance_above_health_threshold = {
@@ -40,20 +42,20 @@ local buff_tweak_data = {
 		multiplier = 0.05
 	},
 	sienna_scholar_passive_increased_attack_speed_from_overcharge = {
-		chunk_size = 6
+		chunk_size = 9
 	},
 	sienna_scholar_passive_increased_attack_speed = {
 		max_stacks = 5,
 		multiplier = 0.02
 	},
 	sienna_scholar_passive_increased_power_level_on_high_overcharge = {
-		chunk_size = 30
+		chunk_size = 42
 	},
 	sienna_scholar_passive_increased_power_level_on_high_overcharge_buff = {
-		multiplier = 0.15
+		multiplier = 0.2
 	},
 	sienna_scholar_passive_overcharge_pause_on_special_kill_buff = {
-		duration = 10,
+		duration = 12,
 		multiplier = -1
 	},
 	sienna_scholar_damage_taken_on_elite_or_special_kill_buff = {
@@ -65,6 +67,17 @@ local buff_tweak_data = {
 		max_stacks = 3,
 		multiplier = 1.05,
 		duration = 10
+	},
+	sienna_scholar_activated_ability_no_overcharge = {
+		max_stacks = 1,
+		duration = 12,
+		multiplier = -0.5
+	},
+	sienna_scholar_vent_zone = {
+		multiplier = -0.8
+	},
+	sienna_scholar_vent_zone_buff = {
+		multiplier = 0.2
 	},
 	sienna_adept_ability_cooldown_on_hit = {
 		bonus = 0.25
@@ -114,7 +127,7 @@ local buff_tweak_data = {
 	},
 	sienna_adept_damage_reduction_on_ignited_enemy_buff = {
 		max_stacks = 3,
-		multiplier = -0.1,
+		multiplier = -0.08,
 		duration = 5
 	},
 	sienna_adept_cooldown_reduction_on_burning_enemy_killed = {
@@ -122,10 +135,10 @@ local buff_tweak_data = {
 		cooldown_reduction = 0.03
 	},
 	sienna_adept_increased_burn_damage = {
-		multiplier = 1.5
+		multiplier = 1
 	},
 	sienna_adept_reduced_non_burn_damage = {
-		multiplier = -0.3
+		multiplier = -0.15
 	},
 	sienna_adept_ability_trail_double = {
 		duration = 10
@@ -134,7 +147,7 @@ local buff_tweak_data = {
 		display_multiplier = 0.5
 	},
 	sienna_adept_activated_ability_cooldown = {
-		multiplier = -0.3
+		multiplier = -0.4
 	},
 	sienna_unchained_ability_cooldown_on_hit = {
 		bonus = 0.25
@@ -247,6 +260,23 @@ TalentBuffTemplates.bright_wizard = {
 			}
 		}
 	},
+	sienna_scholar_passive_max_overcharge = {
+		buffs = {
+			{
+				stat_buff = "max_overcharge",
+				multiplier = CareerConstants.bw_scholar.perk_3_max_overcharge
+			}
+		}
+	},
+	sienna_scholar_overcharge_no_slow = {
+		buffs = {
+			{
+				perks = {
+					buff_perks.overcharge_no_slow
+				}
+			}
+		}
+	},
 	sienna_scholar_reaper = {
 		buffs = {
 			{
@@ -298,7 +328,7 @@ TalentBuffTemplates.bright_wizard = {
 	sienna_scholar_ranged_power_ascending_descending_buff = {
 		buffs = {
 			{
-				max_stacks = 20,
+				max_stacks = 25,
 				icon = "sienna_scholar_ranged_power_ascending_descending",
 				stat_buff = "power_level_ranged"
 			}
@@ -399,6 +429,27 @@ TalentBuffTemplates.bright_wizard = {
 			}
 		}
 	},
+	sienna_scholar_vent_zone = {
+		buffs = {
+			{
+				buff_to_add = "sienna_scholar_vent_zone_buff",
+				radius = 7,
+				stat_buff = "vent_damage",
+				update_func = "sienna_scholar_vent_zone_update",
+				update_frequency = 1
+			}
+		}
+	},
+	sienna_scholar_vent_zone_buff = {
+		buffs = {
+			{
+				max_stacks = 3,
+				icon = "sienna_scholar_activated_ability_dump_overcharge",
+				stat_buff = "vent_damage",
+				debuff = true
+			}
+		}
+	},
 	sienna_scholar_move_speed_on_critical_hit = {
 		buffs = {
 			{
@@ -421,11 +472,15 @@ TalentBuffTemplates.bright_wizard = {
 			}
 		}
 	},
-	sienna_scholar_overcharge_no_slow = {
+	sienna_scholar_activated_ability_no_overcharge = {
 		buffs = {
 			{
+				refresh_durations = true,
+				stat_buff = "reduced_ranged_charge_time",
+				icon = "sienna_scholar_overcharge_no_slow",
+				priority_buff = true,
 				perks = {
-					buff_perks.overcharge_no_slow
+					buff_perks.no_overcharge_explosion
 				}
 			}
 		}
@@ -1005,11 +1060,11 @@ TalentTrees.bright_wizard = {
 		},
 		{
 			"sienna_scholar_damage_taken_on_elite_or_special_kill",
-			"sienna_scholar_overcharge_no_slow",
+			"sienna_scholar_vent_zone",
 			"sienna_scholar_move_speed_on_critical_hit"
 		},
 		{
-			"sienna_scholar_activated_ability_dump_overcharge",
+			"sienna_scholar_activated_ability_no_overcharge",
 			"sienna_scholar_activated_ability_heal",
 			"sienna_scholar_activated_ability_crit_refresh_cooldown"
 		}
@@ -1256,13 +1311,22 @@ Talents.bright_wizard = {
 		}
 	},
 	{
-		description = "sienna_scholar_overcharge_no_slow_desc",
-		name = "sienna_scholar_overcharge_no_slow",
+		description = "sienna_scholar_vent_zone_desc",
+		name = "sienna_scholar_vent_zone",
 		num_ranks = 1,
-		icon = "sienna_scholar_overcharge_no_slow",
-		description_values = {},
+		icon = "sienna_scholar_activated_ability_dump_overcharge",
+		description_values = {
+			{
+				value_type = "percent",
+				value = -buff_tweak_data.sienna_scholar_vent_zone.multiplier
+			},
+			{
+				value_type = "percent",
+				value = -buff_tweak_data.sienna_scholar_vent_zone_buff.multiplier
+			}
+		},
 		buffs = {
-			"sienna_scholar_overcharge_no_slow"
+			"sienna_scholar_vent_zone"
 		}
 	},
 	{
@@ -1287,10 +1351,19 @@ Talents.bright_wizard = {
 		}
 	},
 	{
-		description = "sienna_scholar_activated_ability_dump_overcharge_desc",
-		name = "sienna_scholar_activated_ability_dump_overcharge",
+		description = "sienna_scholar_activated_ability_no_overcharge_desc",
+		name = "sienna_scholar_activated_ability_no_overcharge",
 		num_ranks = 1,
-		icon = "sienna_scholar_activated_ability_dump_overcharge",
+		icon = "sienna_scholar_overcharge_no_slow",
+		description_values = {
+			{
+				value_type = "baked_percent",
+				value = 1 + buff_tweak_data.sienna_scholar_activated_ability_no_overcharge.multiplier
+			},
+			{
+				value = buff_tweak_data.sienna_scholar_activated_ability_no_overcharge.duration
+			}
+		},
 		buffs = {}
 	},
 	{

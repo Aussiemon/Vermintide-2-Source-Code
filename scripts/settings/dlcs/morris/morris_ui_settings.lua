@@ -307,6 +307,13 @@ settings.controller_settings = {
 				"down",
 				"pressed"
 			}
+		},
+		ps_pad = {
+			hotkey_deus_inventory = {
+				"ps_pad",
+				"down",
+				"pressed"
+			}
 		}
 	}
 }

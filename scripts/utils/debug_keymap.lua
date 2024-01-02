@@ -665,7 +665,119 @@ DebugKeymap.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		"pressed"
 	}
 }
-DebugInputFilters.ps4 = InputUtils.keymaps_key_approved("ps4") and {
+DebugKeymap.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and {
+	l3 = {
+		"ps_pad",
+		"l3",
+		"held"
+	},
+	r3 = {
+		"ps_pad",
+		"r3",
+		"held"
+	},
+	l2 = {
+		"ps_pad",
+		"l2",
+		"held"
+	},
+	r2 = {
+		"ps_pad",
+		"r2",
+		"held"
+	},
+	l1 = {
+		"ps_pad",
+		"l1",
+		"held"
+	},
+	r1 = {
+		"ps_pad",
+		"r1",
+		"held"
+	},
+	l2_soft = {
+		"ps_pad",
+		"l2",
+		"soft_button"
+	},
+	r2_soft = {
+		"ps_pad",
+		"r2",
+		"soft_button"
+	},
+	left = {
+		"ps_pad",
+		"left",
+		"pressed"
+	},
+	right = {
+		"ps_pad",
+		"right",
+		"pressed"
+	},
+	up = {
+		"ps_pad",
+		"up",
+		"pressed"
+	},
+	down = {
+		"ps_pad",
+		"down",
+		"pressed"
+	},
+	circle = {
+		"ps_pad",
+		"circle",
+		"pressed"
+	},
+	b = {
+		"ps_pad",
+		"circle",
+		"pressed"
+	},
+	mouse_middle_held = {
+		"ps_pad",
+		"l2",
+		"held"
+	},
+	exclusive_right_key = {
+		"ps_pad",
+		"right",
+		"pressed"
+	},
+	left_key = {
+		"ps_pad",
+		"left",
+		"pressed"
+	},
+	up_key = {
+		"ps_pad",
+		"up",
+		"held"
+	},
+	down_key = {
+		"ps_pad",
+		"down",
+		"held"
+	},
+	right_shoulder_held = {
+		"ps_pad",
+		"r1",
+		"held"
+	},
+	look_raw = {
+		"ps_pad",
+		"right",
+		"axis"
+	},
+	console_favorite_key = {
+		"ps_pad",
+		"triangle",
+		"pressed"
+	}
+}
+local DebugInputFilters_ps4 = {
 	n_switch = {
 		filter_type = "and",
 		input_mappings = {
@@ -768,3 +880,5 @@ DebugInputFilters.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		input_mapping = "look_raw"
 	}
 }
+DebugInputFilters.ps4 = InputUtils.keymaps_key_approved("ps4") and DebugInputFilters_ps4
+DebugInputFilters.ps_pad = InputUtils.keymaps_key_approved("ps_pad") and DebugInputFilters_ps4

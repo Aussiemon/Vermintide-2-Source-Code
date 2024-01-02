@@ -23,3 +23,11 @@ WeaponMaterialSettingsTemplates.deep_crimson = {
 		type = "vector3"
 	}
 }
+WeaponMaterialSettingsTemplates.life_green = {
+	rune_emissive_color = {
+		y = 9,
+		z = 0.1,
+		x = 7,
+		type = "vector3"
+	}
+}

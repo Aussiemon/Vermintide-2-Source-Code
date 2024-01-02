@@ -614,7 +614,7 @@ HeroWindowItemCustomization._handle_gamepad_input = function (self, input_servic
 		if not input_handled then
 			local input_move_up = input_service:get("move_up_hold_continuous")
 			local input_move_down = input_service:get("move_down_hold_continuous")
-			local input_index = self._input_index
+			local input_index = self._input_index or 1
 
 			if input_move_down then
 				input_index = math.min(input_index + 1, #self._available_states)

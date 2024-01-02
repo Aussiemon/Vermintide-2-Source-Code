@@ -24,32 +24,18 @@ local buff_tweak_data = {
 		duration = 12,
 		bonus = 0.05
 	},
-	victor_priest_4_1 = {
-		vizualized_multiplier_2 = 1,
-		vizualized_multiplier = 0.25
-	},
-	victor_priest_4_2 = {
-		vizualized_multiplier = 0.4,
-		vizualized_delay = 1
-	},
 	victor_priest_4_3 = {
+		percent_fury_to_gain = 0.02,
 		chunk_size = 40
 	},
-	victor_priest_4_3_debuff = {
-		multiplier = 0.15
-	},
 	victor_priest_5_1_buff = {
-		multiplier = 0.35
+		multiplier = 0.25
 	},
 	victor_priest_5_2_buff = {
 		multiplier = 0.25
 	},
 	victor_priest_5_3_buff = {
 		multiplier = 0.15
-	},
-	victor_priest_6_1_buff = {
-		duration = 8,
-		multiplier = 1.25
 	},
 	victor_priest_6_3_buff = {
 		heal_window = 3
@@ -246,8 +232,8 @@ local talent_buff_templates = {
 	victor_priest_4_1 = {
 		buffs = {
 			{
-				event = "on_start_action",
-				buff_func = "victor_priest_4_1_on_push"
+				event = "on_damage_taken",
+				buff_func = "victor_priest_4_1_on_damage_taken"
 			}
 		}
 	},
@@ -274,7 +260,7 @@ local talent_buff_templates = {
 			{
 				max_stacks = 1,
 				icon = "victor_priest_5_1",
-				stat_buff = "critical_strike_effectiveness"
+				stat_buff = "power_level_large"
 			}
 		}
 	},
@@ -363,8 +349,8 @@ local talent_trees = {
 			"victor_priest_3_3"
 		},
 		{
-			"victor_priest_4_1",
-			"victor_priest_4_2",
+			"victor_priest_4_1_new",
+			"victor_priest_4_2_new",
 			"victor_priest_4_3"
 		},
 		{
@@ -537,42 +523,34 @@ local talents = {
 		}
 	},
 	{
-		description = "victor_priest_4_1_desc",
-		name = "victor_priest_4_1",
+		description = "victor_priest_4_1_desc_new",
+		name = "victor_priest_4_1_new",
 		num_ranks = 1,
 		icon = "victor_priest_4_1",
-		description_values = {
-			{
-				value_type = "percent",
-				value = buff_tweak_data.victor_priest_4_1.vizualized_multiplier
-			},
-			{
-				value_type = "percent",
-				value = buff_tweak_data.victor_priest_4_1.vizualized_multiplier_2
-			}
-		},
+		description_values = {},
 		buffs = {
 			"victor_priest_4_1"
 		}
 	},
 	{
-		description = "victor_priest_4_2_desc",
-		name = "victor_priest_4_2",
+		description = "victor_priest_4_2_desc_new",
+		name = "victor_priest_4_2_new",
 		num_ranks = 1,
 		icon = "victor_priest_4_2",
 		description_values = {
 			{
-				value = buff_tweak_data.victor_priest_4_2.vizualized_delay
+				value_type = "percent",
+				value = CareerConstants.wh_priest.talent_4_2_fury_to_gain_percent
 			},
 			{
 				value_type = "percent",
-				value = buff_tweak_data.victor_priest_4_2.vizualized_multiplier
+				value = CareerConstants.wh_priest.talent_4_2_smite_improved_damage
 			}
 		},
 		buffs = {}
 	},
 	{
-		description = "victor_priest_4_3_desc",
+		description = "victor_priest_4_3_desc_new",
 		name = "victor_priest_4_3",
 		buffer = "server",
 		num_ranks = 1,
@@ -580,7 +558,7 @@ local talents = {
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.victor_priest_4_3_debuff.multiplier
+				value = buff_tweak_data.victor_priest_4_3.percent_fury_to_gain
 			}
 		},
 		buffs = {
@@ -588,7 +566,7 @@ local talents = {
 		}
 	},
 	{
-		description = "victor_priest_5_1_desc",
+		description = "victor_priest_5_1_desc_new",
 		name = "victor_priest_5_1",
 		buffer = "server",
 		num_ranks = 1,
@@ -636,13 +614,13 @@ local talents = {
 		}
 	},
 	{
-		description = "victor_priest_6_1_desc",
+		description = "victor_priest_6_1_desc_new",
 		name = "victor_priest_6_1",
 		num_ranks = 1,
 		icon = "victor_priest_6_1",
 		description_values = {
 			{
-				value = buff_tweak_data.victor_priest_6_1_buff.duration
+				value = CareerConstants.wh_priest.talent_6_1_improved_ability_duration
 			}
 		},
 		buffs = {}

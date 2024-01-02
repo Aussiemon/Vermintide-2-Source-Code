@@ -574,8 +574,6 @@ HealthSystem.rpc_sync_damage_taken = function (self, channel_id, go_id, is_level
 	local health_extension = self.unit_extensions[unit]
 	local state = NetworkLookup.health_statuses[state_id]
 
-	printf("SYNC DMG TAKEN set_max_health=%s amount=%s, state=%s", tostring(set_max_health), tostring(amount), tostring(state))
-
 	if health_extension.sync_damage_taken then
 		health_extension:sync_damage_taken(amount, set_max_health, state)
 	elseif set_max_health then

@@ -1,8 +1,8 @@
 local player_unit_status_settings = {
 	overcharge_values = {
-		magma_charged_2 = 8,
-		magma_basic = 7,
-		magma_charged = 6
+		magma_charged_2 = 11,
+		magma_basic = 6,
+		magma_charged = 9
 	}
 }
 

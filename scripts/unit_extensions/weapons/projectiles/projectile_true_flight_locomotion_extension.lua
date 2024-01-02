@@ -59,6 +59,7 @@ ProjectileTrueFlightLocomotionExtension.init = function (self, extension_init_co
 	self._keep_target_on_miss_check_func = template.keep_target_on_miss_check_func and self[template.keep_target_on_miss_check_func] or self.legitimate_never
 	self._valid_target_dot = template.valid_target_dot or 0.75
 	self._retarget_broadphase_offset = template.retarget_broadphase_offset or 10
+	self._dont_target_patrols = template.dont_target_patrols
 	self._lerp_modifier_func = template.lerp_modifier_func or function (distance)
 		return distance < 5 and 1 or 5 / distance
 	end
@@ -248,6 +249,10 @@ ProjectileTrueFlightLocomotionExtension._check_target_valid = function (self, ta
 	if self.position_target then
 		can_see_target = true
 	elseif HEALTH_ALIVE[target] and not self.hit_units[target] then
+		if self._dont_target_patrols and AiUtils.is_part_of_patrol(target) and not AiUtils.is_aggroed(target) then
+			return has_good_target, can_see_target
+		end
+
 		has_good_target = true
 
 		if self:_legitimate_target_func(target, current_position) then

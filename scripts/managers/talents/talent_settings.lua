@@ -22,6 +22,10 @@ for hero_name, hero_talents in pairs(Talents) do
 	for talent_id, data in ipairs(hero_talents) do
 		local talent_name = data.name
 
+		if not talent_name then
+			table.dump(data, "talent_contents", 2)
+		end
+
 		fassert(not TalentIDLookup[talent_name], "talent with unique name %s already exists", talent_name)
 
 		local lookup_entry = {

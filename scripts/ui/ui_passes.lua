@@ -81,7 +81,7 @@ UIPasses.texture = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local texture_name = ui_content[pass_definition.texture_id or "texture_id"]
-		local color, masked, saturated, point_sample = nil
+		local color, masked, saturated, point_sample, viewport_mask = nil
 
 		if ui_style then
 			local texture_size = ui_style.texture_size
@@ -96,15 +96,16 @@ UIPasses.texture = {
 			masked = ui_style.masked
 			saturated = ui_style.saturated
 			point_sample = ui_style.point_sample
+			viewport_mask = ui_style.viewport_mask
 		end
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and (pass_data.retained_id or true)
-			retained_id = UIRenderer_draw_texture(ui_renderer, texture_name, position, size, color, masked, saturated, retained_id, point_sample)
+			retained_id = UIRenderer_draw_texture(ui_renderer, texture_name, position, size, color, masked, saturated, retained_id, point_sample, viewport_mask)
 			pass_data.retained_id = retained_id or pass_data.retained_id
 			pass_data.dirty = false
 		else
-			UIRenderer_draw_texture(ui_renderer, texture_name, position, size, color, masked, saturated, nil, point_sample)
+			UIRenderer_draw_texture(ui_renderer, texture_name, position, size, color, masked, saturated, nil, point_sample, viewport_mask)
 		end
 	end
 }
@@ -130,7 +131,7 @@ UIPasses.texture_uv = {
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local uvs = ui_content.uvs
 		local texture = ui_content[pass_definition.texture_id or "texture_id"]
-		local color, masked, saturated = nil
+		local color, masked, saturated, viewport_mask, point_sample = nil
 
 		if ui_style then
 			local texture_size = ui_style.texture_size
@@ -154,15 +155,17 @@ UIPasses.texture_uv = {
 			color = ui_style.color
 			masked = ui_style.masked
 			saturated = ui_style.saturated
+			point_sample = ui_style.point_sample
+			viewport_mask = ui_style.viewport_mask
 		end
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and (pass_data.retained_id and pass_data.retained_id or true)
-			retained_id = UIRenderer_draw_texture_uv(ui_renderer, texture, position, size, uvs, color, masked, saturated, retained_id)
+			retained_id = UIRenderer_draw_texture_uv(ui_renderer, texture, position, size, uvs, color, masked, saturated, retained_id, point_sample, viewport_mask)
 			pass_data.retained_id = retained_id and retained_id or pass_data.retained_id
 			pass_data.dirty = false
 		else
-			UIRenderer_draw_texture_uv(ui_renderer, texture, position, size, uvs, color, masked, saturated)
+			UIRenderer_draw_texture_uv(ui_renderer, texture, position, size, uvs, color, masked, saturated, nil, point_sample, viewport_mask)
 		end
 	end
 }
@@ -445,8 +448,27 @@ UIPasses.gradient_mask_texture = {
 	end
 }
 UIPasses.texture_frame = {
-	init = function (pass_definition)
+	init = function (pass_definition, content, style)
+		if pass_definition.retained_mode then
+			return {
+				dirty = true
+			}
+		end
+
 		return nil
+	end,
+	destroy = function (ui_renderer, pass_data, pass_definition)
+		assert(pass_definition.retained_mode, "why u destroy immediate pass?")
+
+		local retained_ids = pass_data.retained_ids
+
+		if retained_ids then
+			for i = 1, #retained_ids do
+				UIRenderer.destroy_bitmap(ui_renderer, retained_ids[i])
+			end
+
+			pass_data.retained_ids = nil
+		end
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local texture_size, texture_sizes, color, masked, saturated, only_corners, skip_background, use_tiling, mirrored_tiling, gui_position, gui_size = nil
@@ -497,7 +519,14 @@ UIPasses.texture_frame = {
 			mirrored_tiling = ui_style.mirrored_tiling
 		end
 
-		return UIRenderer.draw_texture_frame(ui_renderer, gui_position, gui_size, ui_content[texture_id], texture_size, texture_sizes, color, masked, saturated, only_corners, use_tiling, mirrored_tiling, skip_background)
+		if pass_definition.retained_mode then
+			local retained_ids = pass_definition.retained_mode and (pass_data.retained_ids and pass_data.retained_ids or true)
+			retained_ids = UIRenderer.draw_texture_frame(ui_renderer, gui_position, gui_size, ui_content[texture_id], texture_size, texture_sizes, color, masked, saturated, only_corners, use_tiling, mirrored_tiling, skip_background, retained_ids)
+			pass_data.retained_ids = retained_ids and retained_ids or pass_data.retained_ids
+			pass_data.dirty = false
+		else
+			return UIRenderer.draw_texture_frame(ui_renderer, gui_position, gui_size, ui_content[texture_id], texture_size, texture_sizes, color, masked, saturated, only_corners, use_tiling, mirrored_tiling, skip_background)
+		end
 	end
 }
 UIPasses.shader_tiled_texture = {
@@ -542,7 +571,8 @@ UIPasses.shader_tiled_texture = {
 
 			local tile_size = ui_style.tile_size
 			local tiles = Vector2(size[1] / tile_size[1], size[2] / tile_size[2])
-			local material = Gui.material(ui_renderer.gui, ui_content[texture_id])
+			local gui = pass_definition.retained_mode and ui_renderer.gui_retained or ui_renderer.gui
+			local material = Gui.material(gui, ui_content[texture_id])
 
 			Material.set_vector2(material, "tile_multiplier", tiles)
 
@@ -2298,6 +2328,24 @@ UIPasses.viewport = {
 		Managers.world:destroy_world(pass_data.world)
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
+		local viewport_size = ui_style.viewport_size
+
+		if viewport_size then
+			if ui_style.horizontal_alignment == "right" then
+				position[1] = position[1] + size[1] - viewport_size[1]
+			elseif ui_style.horizontal_alignment == "center" then
+				position[1] = position[1] + (size[1] - viewport_size[1]) / 2
+			end
+
+			if ui_style.vertical_alignment == "center" then
+				position[2] = position[2] + (size[2] - viewport_size[2]) / 2
+			elseif ui_style.vertical_alignment == "top" then
+				position[2] = position[2] + size[2] - viewport_size[2]
+			end
+
+			size = viewport_size
+		end
+
 		local scaled_position = UIScaleVectorToResolution(position)
 		local scaled_size = UIScaleVectorToResolution(size)
 		local resx = RESOLUTION_LOOKUP.res_w
@@ -2333,6 +2381,8 @@ UIPasses.viewport = {
 
 		Viewport.set_rect(viewport, viewport_position.x * multiplier, viewport_position.y * multiplier, viewport_size.x * multiplier, viewport_size.y * multiplier)
 
+		ui_content.viewport_size_x = viewport_size.x
+		ui_content.viewport_size_y = viewport_size.y
 		pass_data.viewport_rect_pos_x = viewport_position.x
 		pass_data.viewport_rect_pos_y = viewport_position.y
 		pass_data.viewport_rect_size_x = scaled_size.x

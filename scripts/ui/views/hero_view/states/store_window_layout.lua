@@ -56,6 +56,9 @@ local windows = {
 		class_name = "StoreWindowItemDetails"
 	}
 }
+
+DLCUtils.merge("store_windows", windows)
+
 local window_layouts = {
 	{
 		name = "featured",
@@ -164,6 +167,9 @@ local window_layouts = {
 		}
 	}
 }
+
+DLCUtils.append("store_window_layouts", window_layouts)
+
 local MAX_ACTIVE_WINDOWS = 5
 
 return {

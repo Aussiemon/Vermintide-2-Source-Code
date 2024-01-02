@@ -1013,8 +1013,8 @@ local damage_templates = {
 		critical_strike = {
 			attack_armor_power_modifer = {
 				0.5,
-				0.5,
-				2,
+				0.6,
+				2.5,
 				0.5,
 				0.5,
 				0.2
@@ -1031,8 +1031,8 @@ local damage_templates = {
 		armor_modifier = {
 			attack = {
 				0.5,
-				0.5,
-				2,
+				0.6,
+				2.5,
 				0.5,
 				0.1,
 				0
@@ -1057,12 +1057,12 @@ local damage_templates = {
 			boost_curve_coefficient = 1,
 			attack_template = "fireball",
 			power_distribution_near = {
-				attack = 0.12,
-				impact = 0.2
+				attack = 0.17,
+				impact = 0.25
 			},
 			power_distribution_far = {
-				attack = 0.12,
-				impact = 0.2
+				attack = 0.17,
+				impact = 0.25
 			},
 			range_modifier_settings = shotgun_dropoff_ranges
 		}

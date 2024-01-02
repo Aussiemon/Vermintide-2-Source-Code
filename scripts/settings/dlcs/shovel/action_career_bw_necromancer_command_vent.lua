@@ -58,12 +58,13 @@ ActionCareerBWNecromancerCommandVent.client_owner_post_update = function (self, 
 end
 
 ActionCareerBWNecromancerCommandVent.finish = function (self, reason, data)
-	World.destroy_particles(self._world, self._sacrifice_vfx_trail)
-	World.destroy_particles(self._world, self._sacrifice_vfx_hand)
+	if self._fp_extension then
+		World.destroy_particles(self._world, self._sacrifice_vfx_trail)
+		World.destroy_particles(self._world, self._sacrifice_vfx_hand)
 
-	self._sacrifice_vfx_trail = nil
-	self._sacrifice_vfx_hand = nil
-	self._vfx_destroy_t = nil
+		self._sacrifice_vfx_trail = nil
+		self._sacrifice_vfx_hand = nil
+	end
 end
 
 ActionCareerBWNecromancerCommandVent.destroy = function (self)

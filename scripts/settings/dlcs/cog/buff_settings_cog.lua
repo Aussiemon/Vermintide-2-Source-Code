@@ -1,5 +1,72 @@
+require("scripts/settings/profiles/career_constants")
+
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local settings = DLCSettings.cog
-settings.buff_templates = {}
+settings.buff_templates = {
+	bardin_engineer_pump_max_overheat_check = {
+		buffs = {
+			{
+				duration = 2,
+				name = "bardin_engineer_pump_max_overheat_check",
+				on_max_stacks_overflow_func = "add_remove_buffs",
+				max_stacks = 1,
+				refresh_durations = true,
+				max_stack_data = {
+					talent_buffs = {
+						bardin_engineer_overclock = {
+							buffs_to_add = {
+								{
+									name = "bardin_engineer_pump_overclock_buff"
+								}
+							},
+							buffs_to_add_if_missing = {
+								{
+									name = "bardin_engineer_pump_max_exhaustion_buff"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	bardin_engineer_pump_max_exhaustion_buff = {
+		buffs = {
+			{
+				duration = 5,
+				name = "bardin_engineer_pump_max_exhaustion_buff",
+				priority_buff = true,
+				remove_buff_func = "bardin_engineer_animation_slow_down_remove",
+				apply_buff_func = "bardin_engineer_animation_slow_down_add",
+				debuff = true,
+				max_stacks = 1,
+				icon = "bardin_engineer_pump_max_exhaustion_buff_icon",
+				perks = {
+					buff_perks.exhausted
+				}
+			}
+		}
+	},
+	bardin_engineer_pump_overclock_buff = {
+		buffs = {
+			{
+				name = "bardin_engineer_pump_overclock_buff",
+				stat_buff = "critical_strike_chance",
+				apply_buff_func = "bardin_engineer_overclock_damage",
+				on_max_stacks_overflow_func = "reapply_buff",
+				refresh_durations = true,
+				priority_buff = true,
+				max_health_loss = 10,
+				duration = 12,
+				max_stacks = 3,
+				icon = "bardin_engineer_4_2",
+				health_to_lose_per_stack = 4,
+				bonus = CareerConstants.dr_engineer.talent_4_2_crit,
+				cooldown_amount = CareerConstants.dr_engineer.talent_4_2_cooldown
+			}
+		}
+	}
+}
 settings.proc_functions = {
 	add_debuff_on_drakefire_hit = function (owner_unit, buff, params)
 		if not Managers.state.network.is_server then
@@ -19,23 +86,6 @@ settings.proc_functions = {
 
 				buff_system:add_buff(target_unit, buff_to_add, owner_unit, false)
 			end
-		end
-	end,
-	bardin_engineer_remove_pump_stacks = function (owner_unit, buff, params)
-		if ALIVE[owner_unit] then
-			local buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
-
-			if buff_extension and not buff_extension:has_buff_perk("engineer_persistent_pump_stacks") then
-				ProcFunctions.remove_buff_stack(owner_unit, buff, params)
-			end
-		end
-	end,
-	bardin_engineer_remove_pump_stacks_on_fire = function (owner_unit, buff, params)
-		local action = params[1]
-		local kind = action and action.kind
-
-		if kind and kind == "career_dr_four" then
-			settings.proc_functions.bardin_engineer_remove_pump_stacks(owner_unit, buff, params)
 		end
 	end,
 	bardin_engineer_piston_power_add = function (owner_unit, buff, params)
@@ -63,6 +113,10 @@ settings.proc_functions = {
 
 				buff_system:add_buff(owner_unit, buff_to_add, owner_unit, false)
 				buff_extension:add_buff(buff_to_check)
+
+				local status_extension = ScriptUnit.extension(owner_unit, "status_system")
+
+				status_extension:remove_all_fatigue()
 			end
 		end
 	end,
@@ -141,5 +195,96 @@ settings.buff_function_templates = {
 
 			buff_extension:add_buff(buff_to_remove)
 		end
+	end,
+	bardin_engineer_bomb_grant = function (unit, buff, params)
+		local network_manager = Managers.state.network
+		local network_transmit = network_manager.network_transmit
+		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
+		local t = Managers.time:time("game")
+		local slot_name = "slot_grenade"
+		local slot_data = inventory_extension:get_slot_data(slot_name)
+		local can_store = inventory_extension:can_store_additional_item(slot_name)
+
+		if slot_data and not can_store then
+			buff.is_full = true
+
+			return t
+		elseif buff.is_full then
+			buff.is_full = false
+			local buff_ext = ScriptUnit.has_extension(unit, "buff_system")
+
+			if buff_ext then
+				buff_ext:add_buff(buff.template.cooldown_buff)
+			end
+
+			return t + buff.template.update_frequency
+		end
+
+		local buff_ext = ScriptUnit.has_extension(unit, "buff_system")
+
+		if buff_ext then
+			buff_ext:add_buff(buff.template.cooldown_buff)
+		end
+
+		local pick_frag = nil
+		pick_frag, buff._state = PseudoRandomDistribution.flip_coin(buff._state, 0.5)
+		local frag_settings = AllPickups.frag_grenade_t1
+		local fire_settings = AllPickups.fire_grenade_t1
+
+		if fire_settings.slot_name ~= slot_name then
+			fire_settings = frag_settings
+		end
+
+		if frag_settings.slot_name ~= slot_name then
+			if frag_settings == fire_settings then
+				return
+			end
+
+			frag_settings = fire_settings
+		end
+
+		local pickup_settings = pick_frag and frag_settings or fire_settings
+		local item_name = pickup_settings.item_name
+		local item_data = ItemMasterList[item_name]
+		local player = Managers.player:owner(unit)
+
+		if player and not player.remote then
+			if not slot_data then
+				local extra_extension_init_data = {}
+
+				inventory_extension:add_equipment(slot_name, item_data, nil, extra_extension_init_data)
+
+				local go_id = Managers.state.unit_storage:go_id(unit)
+				local slot_id = NetworkLookup.equipment_slots[slot_name]
+				local item_id = NetworkLookup.item_names[item_name]
+				local weapon_skin_id = NetworkLookup.weapon_skins["n/a"]
+
+				if go_id then
+					if Managers.state.network.is_server then
+						network_transmit:send_rpc_clients("rpc_add_equipment", go_id, slot_id, item_id, weapon_skin_id)
+					else
+						network_transmit:send_rpc_server("rpc_add_equipment", go_id, slot_id, item_id, weapon_skin_id)
+					end
+				end
+			elseif can_store then
+				inventory_extension:store_additional_item(slot_name, item_data)
+			end
+		end
+	end,
+	bardin_engineer_overclock_damage = function (unit, buff, params)
+		local career_extension = ScriptUnit.has_extension(unit, "career_system")
+
+		if career_extension then
+			local cooldown_amount = buff.template.cooldown_amount
+
+			career_extension:reduce_activated_ability_cooldown_percent(cooldown_amount)
+		end
+
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local buff_type = buff.template.name
+		local num_overclock_stacks = buff_extension:num_buff_stacks(buff_type)
+		local damage = math.clamp(num_overclock_stacks * buff.template.health_to_lose_per_stack, 0, buff.template.max_health_loss)
+
+		DamageUtils.add_damage_network(unit, unit, damage, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, unit)
 	end
 }

@@ -339,10 +339,10 @@ settings.proc_functions = {
 settings.explosion_templates = {
 	homing_skull_explosion = {
 		explosion = {
-			always_hurt_players = true,
+			alert_enemies = false,
 			radius = 1,
 			always_stagger_ai = true,
-			alert_enemies = false,
+			allow_friendly_fire_override = true,
 			buff_to_apply = "belakor_homing_skull_debuff",
 			max_damage_radius_min = 0.5,
 			attack_template = "drakegun",
@@ -382,7 +382,7 @@ settings.explosion_templates = {
 			max_damage_radius = 1.75,
 			alert_enemies = true,
 			alert_enemies_radius = 10,
-			always_hurt_players = true,
+			allow_friendly_fire_override = true,
 			attack_template = "drakegun",
 			sound_event_name = "boon_cluster_barrel_explosion",
 			damage_profile = "explosive_barrel",
@@ -425,15 +425,14 @@ settings.explosion_templates = {
 	},
 	belakor_arena_finish = {
 		explosion = {
-			always_hurt_players = false,
-			radius = 300,
 			no_aggro = true,
+			radius = 300,
 			player_push_speed = 5,
-			collision_filter = "filter_simple_explosion_overlap",
 			alert_enemies = false,
 			damage_profile = "belakor_arena_finish",
 			power_level = 1000,
-			level_unit_damage = true
+			level_unit_damage = true,
+			collision_filter = "filter_simple_explosion_overlap"
 		}
 	}
 }

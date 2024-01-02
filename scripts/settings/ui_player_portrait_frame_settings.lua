@@ -585,6 +585,51 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_gotwf_01 = {
+		{
+			texture = "portrait_frame_gotwf_01_child",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				128,
+				140
+			},
+			offset = {
+				0,
+				-61,
+				0
+			}
+		}
+	},
+	frame_gotwf_02 = {
+		{
+			texture = "portrait_frame_gotwf_02",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_gotwf_03 = {
+		{
+			texture = "portrait_frame_gotwf_03",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
 	default = {
 		{
 			texture = "portrait_frame_0000",

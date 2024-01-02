@@ -1,4 +1,4 @@
-require("scripts/settings/dlcs/shovel/shovel_constants")
+require("scripts/settings/profiles/career_constants")
 
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local stagger_types = require("scripts/utils/stagger_types")
@@ -260,15 +260,9 @@ local function _spawn_skeleton_ability(necromancer_unit, spawn_data, spawn_index
 	local _, position = GwNavQueries.raycast(nav_world, target_center, wanted_position, traverse_logic)
 	local career_extension = ScriptUnit.extension(necromancer_unit, "career_system")
 	local passive_ability = career_extension:get_passive_ability_by_name("bw_necromancer")
+	local done = passive_ability:spawn_army_pet(spawn_index, position, NecromancerPositionModes.Absolute)
 
-	passive_ability:spawn_army_pet(spawn_index, position, NecromancerPositionModes.Absolute)
-
-	if ALIVE[necromancer_unit] then
-		local career_power_level = career_extension and career_extension:get_career_power_level() or DefaultPowerLevel
-		local area_damage_system = Managers.state.entity:system("area_damage_system")
-	end
-
-	return position
+	return position, done
 end
 
 local function is_local(unit)
@@ -488,9 +482,9 @@ settings.buff_templates = {
 				name = "sienna_necromancer_lifetaker_crit",
 				stat_buff = "critical_strike_chance",
 				icon = "sienna_necromancer_passive",
-				bonus = NecromancerConstants.lifetaker_bonus,
-				max_stacks = NecromancerConstants.lifetaker_max_stacks,
-				duration = NecromancerConstants.lifetaker_duration
+				bonus = CareerConstants.bw_necromancer.lifetaker_bonus,
+				max_stacks = CareerConstants.bw_necromancer.lifetaker_max_stacks,
+				duration = CareerConstants.bw_necromancer.lifetaker_duration
 			}
 		}
 	},
@@ -589,22 +583,14 @@ settings.buff_templates = {
 	raise_dead_ability = {
 		buffs = {
 			{
-				remove_buff_on_duration_end = true,
+				update_frequency = 0.2,
 				name = "raise_dead_ability",
-				ticks = 6,
+				remove_buff_on_duration_end = true,
+				update_func = "raise_dead_update",
 				apply_buff_func = "on_raise_dead_start",
 				update_start_delay = 0.2,
-				update_func = "raise_dead_update",
-				update_frequency = 0.2,
 				apply_condition = function (owner_unit, template, params)
 					return is_local(params.source_attacker_unit)
-				end,
-				duration_modifier_func = function (sub_buff_template, duration, buff_extension, params)
-					local frequency = sub_buff_template.update_frequency
-					local ticks = sub_buff_template.ticks
-					duration = ticks * frequency + 0.5
-
-					return duration, ticks
 				end,
 				area_radius = ability_radius
 			},
@@ -1563,6 +1549,18 @@ settings.buff_function_templates = {
 		passive_ability:stragglify_pets()
 	end,
 	raise_dead_update = function (owner_unit, buff, params, world)
+		if buff._spawning_done then
+			buff._grace_timer = buff._grace_timer or params.time_into_buff + 0.5
+
+			if buff._grace_timer < params.time_into_buff then
+				local buff_ext = ScriptUnit.extension(owner_unit, "buff_system")
+
+				buff_ext:remove_buff(buff.id)
+			end
+
+			return
+		end
+
 		local spawn_data = buff.spawn_data
 		local necromancer_unit = buff.source_attacker_unit
 		local spawn_index = (buff.spawn_index or 0) + 1
@@ -1570,11 +1568,13 @@ settings.buff_function_templates = {
 
 		local function nav_callback()
 			if ALIVE[necromancer_unit] then
-				local position = _spawn_skeleton_ability(necromancer_unit, spawn_data, spawn_index - 1)
+				local position, done = _spawn_skeleton_ability(necromancer_unit, spawn_data, spawn_index - 1)
 
 				if position then
 					_spawn_skeleton_ability_fx(necromancer_unit, position, buff, world)
 				end
+
+				buff._spawning_done = done
 			end
 		end
 

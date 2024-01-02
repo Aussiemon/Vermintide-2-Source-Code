@@ -51,6 +51,7 @@ SimpleInventoryExtension.init = function (self, extension_init_context, unit, ex
 			slot_ranged = {}
 		}
 	}
+	self._blocked_wield_slots = {}
 	self._weapon_fx = {}
 	self._items_to_spawn = {}
 	self.recently_acquired_list = {}

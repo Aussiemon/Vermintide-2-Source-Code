@@ -39,12 +39,13 @@ ActionCareerDREngineer.client_owner_start_action = function (self, new_action, t
 	self._max_rps = new_action.max_rps
 	self._rps_loss_per_second = new_action.rps_loss_per_second
 	self._rps_gain_per_shot = new_action.rps_gain_per_shot
+	self._projectiles_per_shot = new_action.shot_count
 	local windup = math.clamp(self.weapon_extension:get_custom_data("windup"), 0, 1)
 	self._current_rps = math.lerp(self._initial_rounds_per_second, self._max_rps, windup)
 	self._attack_speed_mod = 1
 
 	if self.talent_extension:has_talent("bardin_engineer_reduced_ability_fire_slowdown") then
-		self._max_rps = new_action.max_rps * 1.1
+		self._max_rps = new_action.max_rps * 1.3
 		self._current_rps = self._max_rps
 	end
 
@@ -56,6 +57,7 @@ ActionCareerDREngineer.client_owner_start_action = function (self, new_action, t
 	self:_update_attack_speed(t)
 
 	self._time_to_shoot = math.max(old_time_to_shoot, t - 1 / self._current_rps)
+	self._first_shot = true
 	local fire_loop_start = new_action.fire_loop_start
 
 	if fire_loop_start then
@@ -76,7 +78,7 @@ ActionCareerDREngineer._update_attack_speed = function (self, t)
 	end
 end
 
-ActionCareerDREngineer._waiting_to_shoot = function (self, t)
+ActionCareerDREngineer._waiting_to_shoot = function (self, dt, t)
 	self:_update_animation_speed(self._current_rps)
 
 	if self._time_to_shoot <= t then
@@ -89,24 +91,32 @@ ActionCareerDREngineer._waiting_to_shoot = function (self, t)
 		local fire_rounds_per_second = self._current_rps * self._attack_speed_mod
 		local max_shots = ability_charge / self._shot_cost
 		local rounds_to_fire = math.min(fire_rounds_per_second * (t - self._time_to_shoot), max_shots)
-		local num_projectilise = math.floor(rounds_to_fire)
 
-		if num_projectilise > 0 then
+		self:_handle_infinite_stacks(dt, t)
+
+		local num_projectiles = math.floor(rounds_to_fire)
+
+		if num_projectiles > 0 then
 			local override_extra_shots = true
-			local extra_shots = self:_update_extra_shots(self.buff_extension, 0, override_extra_shots) or 0
+			local projectiles_per_shot = self._projectiles_per_shot
+			local total_shots = projectiles_per_shot
+			local buff_shots = self:_update_extra_shots(self.buff_extension, 0, override_extra_shots) or 0
 
-			if extra_shots > 0 then
+			if buff_shots > 0 then
 				self.extra_buff_shot = true
-				self._num_extra_shots = extra_shots
+				self._num_extra_shots = buff_shots
+				total_shots = total_shots + buff_shots
 			end
 
-			self._current_rps = math.clamp(self._current_rps + self._rps_gain_per_shot * num_projectilise, self._initial_rounds_per_second, self._max_rps)
+			self._current_rps = math.clamp(self._current_rps + self._rps_gain_per_shot * num_projectiles, self._initial_rounds_per_second, self._max_rps)
 			self._time_last_fired = t
-			self._time_to_shoot = t - (rounds_to_fire - num_projectilise) / fire_rounds_per_second
-			self._num_projectiles_per_shot = num_projectilise * (extra_shots + 1)
+			self._time_to_shoot = t - (rounds_to_fire - num_projectiles) / fire_rounds_per_second
+			self._num_projectiles_per_shot = num_projectiles * total_shots
 			self._state = "start_shooting"
 			self._calculated_attack_speed = false
 		end
+
+		self._first_shot = false
 	end
 end
 
@@ -270,6 +280,49 @@ ActionCareerDREngineer._fake_activate_ability = function (self, t)
 			buff_extension:trigger_procs("on_ability_cooldown_started")
 
 			self._ammo_expended = 0
+		end
+	end
+end
+
+ActionCareerDREngineer._handle_infinite_stacks = function (self, dt, t)
+	if not self.talent_extension:has_talent("bardin_engineer_pump_buff_long") then
+		return
+	end
+
+	local buff_extension = self.buff_extension
+	local buffs = buff_extension:get_stacking_buff("bardin_engineer_pump_buff")
+
+	if buffs then
+		if self._first_shot then
+			for i = 1, #buffs do
+				if buffs[i].duration then
+					return
+				end
+			end
+
+			local first_buff = buffs[1]
+			first_buff.duration = CareerConstants.dr_engineer.talent_4_3_stack_duration
+			first_buff.start_time = t
+		else
+			local duration_buff = nil
+
+			for i = 1, #buffs do
+				local buff = buffs[i]
+
+				if buff.duration then
+					duration_buff = buff
+
+					break
+				end
+			end
+
+			if not duration_buff then
+				duration_buff = buffs[1]
+				duration_buff.duration = CareerConstants.dr_engineer.talent_4_3_stack_duration
+				duration_buff.start_time = t
+
+				return
+			end
 		end
 	end
 end

@@ -27,31 +27,31 @@ StatBuffApplicationMethods = {
 	dummy_stagger = "stacking_bonus",
 	gromril_cooldown = "stacking_bonus",
 	headshot_multiplier = "stacking_multiplier",
-	increased_max_targets = "stacking_bonus",
-	power_level_ranged = "stacking_multiplier",
 	protection_chaos = "stacking_multiplier",
 	max_damage_taken_from_boss_or_elite = "min",
-	debuff_armoured = "stacking_bonus",
 	attack_speed_drakefire = "stacking_multiplier",
-	increased_balefire_dot_duration = "stacking_multiplier",
+	increased_damage_to_balefire = "stacking_multiplier",
+	debuff_armoured = "stacking_bonus",
 	power_level_large = "stacking_multiplier",
+	increased_balefire_dot_duration = "stacking_multiplier",
 	critical_strike_effectiveness = "stacking_multiplier",
 	critical_strike_chance_melee = "stacking_bonus",
+	critical_strike_chance_ranged = "stacking_bonus",
 	protection_gutter_runner = "stacking_multiplier",
-	power_level_armoured = "stacking_multiplier",
 	vent_speed = "stacking_multiplier",
 	power_level_melee_cleave = "stacking_multiplier",
-	power_level_critical_strike = "stacking_multiplier",
+	faster_respawn = "stacking_multiplier",
 	damage_taken_elites = "stacking_multiplier",
-	damage_taken = "stacking_multiplier_multiplicative",
+	coop_stamina = "proc",
 	damage_taken_kd = "stacking_multiplier",
+	power_level_armoured = "stacking_multiplier",
 	not_consume_potion = "proc",
 	reduced_overcharge = "stacking_multiplier",
-	critical_strike_chance_ranged = "stacking_bonus",
-	increased_weapon_damage_melee_1h = "stacking_multiplier",
+	increased_weapon_damage_ranged_to_wounded = "stacking_multiplier",
 	not_consume_grenade = "proc",
+	increased_max_targets = "stacking_bonus",
 	faster_revive = "stacking_multiplier",
-	push_power = "stacking_multiplier",
+	increased_weapon_damage_melee_1h = "stacking_multiplier",
 	grenade_extra_shot = "stacking_bonus",
 	block_cost = "stacking_multiplier",
 	applied_stagger_distance = "stacking_multiplier",
@@ -60,9 +60,9 @@ StatBuffApplicationMethods = {
 	reduced_overcharge_from_passive = "stacking_multiplier",
 	clip_size = "stacking_multiplier",
 	first_melee_hit_damage = "stacking_multiplier",
-	increased_weapon_damage_ranged_to_wounded = "stacking_multiplier",
 	attack_intensity_reset = "stacking_multiplier",
-	faster_respawn = "stacking_multiplier",
+	damage_taken = "stacking_multiplier_multiplicative",
+	extra_wounds = "stacking_bonus",
 	life_essence = "stacking_multiplier",
 	max_controlled_pets = "stacking_bonus_and_multiplier",
 	attack_intensity_decay = "stacking_multiplier",
@@ -71,12 +71,12 @@ StatBuffApplicationMethods = {
 	cooldown_regen = "stacking_multiplier",
 	power_level_chaos = "stacking_multiplier",
 	health_curse = "stacking_bonus",
-	increased_damage_to_balefire = "stacking_multiplier",
+	power_level_critical_strike = "stacking_multiplier",
 	increased_weapon_damage_melee = "stacking_multiplier",
 	power_level = "stacking_multiplier",
 	hit_force = "stacking_multiplier",
-	coop_stamina = "proc",
-	extra_wounds = "stacking_bonus",
+	push_power = "stacking_multiplier",
+	power_level_ranged = "stacking_multiplier",
 	unbalanced_damage_taken = "stacking_bonus",
 	increased_weapon_damage_ranged = "stacking_multiplier",
 	protection_aoe = "stacking_multiplier",
@@ -131,6 +131,7 @@ StatBuffApplicationMethods = {
 	non_headshot_damage = "stacking_multiplier",
 	flat_power_level = "stacking_bonus",
 	reduced_spread_shot = "stacking_multiplier",
+	explosion_radius = "stacking_multiplier",
 	healing_received = "stacking_multiplier",
 	protection_skaven = "stacking_multiplier",
 	power_level_melee = "stacking_multiplier",
@@ -4007,7 +4008,7 @@ ProcFunctions = {
 	end
 }
 StackingBuffFunctions = {
-	add_remove_buffs = function (unit, sub_buff_template, new_buff_params)
+	add_remove_buffs = function (unit, sub_buff_template, new_buff_params, is_overflow)
 		if ALIVE[unit] then
 			local max_stack_data = sub_buff_template.max_stack_data
 
@@ -4021,22 +4022,58 @@ StackingBuffFunctions = {
 					end
 				end
 
-				local talent_buffs_to_add = max_stack_data.talent_buffs_to_add
+				if is_overflow then
+					local overflow_buffs_to_add = max_stack_data.overflow_buffs_to_add
 
-				if talent_buffs_to_add then
+					if overflow_buffs_to_add then
+						for i = 1, #overflow_buffs_to_add do
+							buff_extension:add_buff(overflow_buffs_to_add[i])
+						end
+					end
+				end
+
+				local talent_buffs = max_stack_data.talent_buffs
+
+				if talent_buffs then
 					local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
 
 					if talent_extension then
-						for name, data in pairs(talent_buffs_to_add) do
-							if talent_extension:has_talent(name) then
-								local buff_to_add = data.buff_to_add
+						for name, data in pairs(talent_buffs) do
+							local buffs_to_add = data.buffs_to_add
+							local buffs_to_add_if_missing = data.buffs_to_add_if_missing
+							local has_talent = talent_extension:has_talent(name)
 
-								if data.rpc_sync then
-									local buff_system = Managers.state.entity:system("buff_system")
+							if has_talent and buffs_to_add then
+								for i = 1, #buffs_to_add do
+									local buff_to_add = buffs_to_add[i]
 
-									buff_system:add_buff(unit, buff_to_add, unit, false)
-								else
-									buff_extension:add_buff(buff_to_add)
+									if not buff_to_add.only_if_overflow or is_overflow then
+										local buff_name = buff_to_add.name
+
+										if data.rpc_sync then
+											local buff_system = Managers.state.entity:system("buff_system")
+
+											buff_system:add_buff(unit, buff_name, unit, false)
+										else
+											buff_extension:add_buff(buff_name)
+										end
+									end
+								end
+							elseif not has_talent and buffs_to_add_if_missing then
+								for i = 1, #buffs_to_add_if_missing do
+									local buff_to_add = buffs_to_add_if_missing[i]
+
+									if not buff_to_add.only_if_overflow or is_overflow then
+										local buff_name = buff_to_add.name
+
+										if data.rpc_sync then
+											local buff_system = Managers.state.entity:system("buff_system")
+
+											buff_system:add_buff(unit, buff_name, unit, false)
+										else
+											buff_extension:add_buff(buff_name)
+										end
+									end
 								end
 							end
 						end
@@ -4059,7 +4096,7 @@ StackingBuffFunctions = {
 
 		return false
 	end,
-	reapply_buff = function (unit, sub_buff_template, new_buff_params)
+	reapply_buff = function (unit, sub_buff_template, new_buff_params, is_overflow)
 		if ALIVE[unit] then
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 			local buff_stacks = buff_extension:get_stacking_buff(sub_buff_template.name)
@@ -4085,7 +4122,7 @@ StackingBuffFunctions = {
 
 		return true
 	end,
-	reapply_infinite_burn = function (unit, sub_buff_template, new_buff_params)
+	reapply_infinite_burn = function (unit, sub_buff_template, new_buff_params, is_overflow)
 		if ALIVE[unit] then
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 			local burn_buffs = buff_extension:get_stacking_buff(sub_buff_template.name)
@@ -4137,17 +4174,23 @@ StackingBuffFunctions = {
 
 		return true
 	end,
-	add_buff_synced = function (unit, sub_buff_template, new_buff_params)
+	add_buff_synced = function (unit, sub_buff_template, new_buff_params, is_overflow)
 		local dummy_buff = FrameTable.alloc_table()
 		dummy_buff.template = sub_buff_template
 
 		BuffFunctionTemplates.functions.add_buff_synced(unit, dummy_buff, new_buff_params)
 	end,
-	remove_buff_synced = function (unit, sub_buff_template, new_buff_params)
+	remove_buff_synced = function (unit, sub_buff_template, new_buff_params, is_overflow)
 		local dummy_buff = FrameTable.alloc_table()
 		dummy_buff.template = sub_buff_template
 
 		BuffFunctionTemplates.functions.remove_buff_synced(unit, dummy_buff, new_buff_params)
+	end,
+	reduce_cooldown_percent = function (unit, sub_buff_template, new_buff_params, is_overflow)
+		local dummy_buff = FrameTable.alloc_table()
+		dummy_buff.template = sub_buff_template
+
+		BuffFunctionTemplates.functions.reduce_cooldown_percent(unit, dummy_buff, new_buff_params)
 	end
 }
 PotionSpreadTrinketTemplates = {
@@ -8636,7 +8679,7 @@ BuffTemplates = {
 				icon = "mutator_icon_splitting_enemies",
 				duration = 30,
 				name = "twitch_mutator_buff_splitting_enemies",
-				duration_modifier_func = function (buff_template, duration)
+				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
@@ -8648,7 +8691,7 @@ BuffTemplates = {
 				icon = "mutator_icon_leash",
 				duration = 30,
 				name = "twitch_mutator_buff_leash",
-				duration_modifier_func = function (buff_template, duration)
+				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
@@ -8660,7 +8703,7 @@ BuffTemplates = {
 				icon = "mutator_icon_slayer_curse",
 				duration = 30,
 				name = "twitch_mutator_buff_slayers_curse",
-				duration_modifier_func = function (buff_template, duration)
+				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
@@ -8672,7 +8715,7 @@ BuffTemplates = {
 				icon = "icon_deed_normal_01",
 				duration = 30,
 				name = "twitch_mutator_buff_shared_health_pool",
-				duration_modifier_func = function (buff_template, duration)
+				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
@@ -8684,7 +8727,7 @@ BuffTemplates = {
 				icon = "bardin_slayer_activated_ability",
 				duration = 30,
 				name = "twitch_mutator_buff_bloodlust",
-				duration_modifier_func = function (buff_template, duration)
+				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
@@ -8696,7 +8739,7 @@ BuffTemplates = {
 				icon = "mutator_icon_ticking_bomb",
 				duration = 30,
 				name = "twitch_mutator_buff_ticking_bomb",
-				duration_modifier_func = function (buff_template, duration)
+				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
@@ -8708,7 +8751,7 @@ BuffTemplates = {
 				icon = "mutator_icon_heavens_lightning",
 				duration = 33,
 				name = "twitch_mutator_buff_lightning_strike",
-				duration_modifier_func = function (buff_template, duration)
+				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
@@ -8720,7 +8763,7 @@ BuffTemplates = {
 				icon = "mutator_icon_death_spirits",
 				duration = 25,
 				name = "twitch_mutator_buff_chasing_spirits",
-				duration_modifier_func = function (buff_template, duration)
+				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}
@@ -8732,7 +8775,7 @@ BuffTemplates = {
 				icon = "mutator_icon_fire_burn",
 				duration = 30,
 				name = "twitch_mutator_buff_flames",
-				duration_modifier_func = function (buff_template, duration)
+				duration_modifier_func = function (owner_unit, buff_template, duration)
 					return duration * TwitchSettings.mutator_duration_multiplier
 				end
 			}

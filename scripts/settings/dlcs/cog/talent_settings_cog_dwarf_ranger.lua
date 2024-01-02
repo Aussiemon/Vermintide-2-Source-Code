@@ -1,3 +1,5 @@
+require("scripts/settings/profiles/career_constants")
+
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local buff_tweak_data = {
 	bardin_engineer_passive_no_ability_regen = {
@@ -16,23 +18,12 @@ local buff_tweak_data = {
 	bardin_engineer_pump_buff = {
 		multiplier = 0.4
 	},
-	bardin_engineer_pump_buff_long = {
-		multiplier = 0.4
-	},
-	bardin_engineer_pump_buff_long_attack_speed = {
-		multiplier = 0.025
-	},
 	bardin_engineer_vanguard = {},
 	bardin_engineer_reaper = {},
 	bardin_engineer_heal_share = {},
-	bardin_engineer_ranged_crit_count = {
-		bonus = -1
-	},
-	bardin_engineer_ranged_crit_counter_buff = {
-		max_stacks = 4
-	},
-	bardin_engineer_ranged_crit_count_buff = {
-		bonus = 2
+	bardin_engineer_2_1 = {},
+	bardin_engineer_2_1_cooldown = {
+		duration = 80
 	},
 	bardin_engineer_ranged_pierce = {
 		bonus = 1
@@ -58,6 +49,12 @@ local buff_tweak_data = {
 	bardin_engineer_power_on_max_pump = {
 		stacks_for_buff = 5
 	},
+	bardin_engineer_4_1_buff = {
+		multiplier = 0.15
+	},
+	bardin_engineer_pump_buff_power = {
+		multiplier = 0.04
+	},
 	bardin_engineer_tank_unbalance = {},
 	bardin_engineer_linesman_unbalance = {},
 	bardin_engineer_power_level_unbalance = {},
@@ -68,7 +65,6 @@ local buff_tweak_data = {
 		max_stacks = 5,
 		multiplier = -0.05
 	},
-	bardin_engineer_upgraded_grenades = {},
 	bardin_engineer_piston_powered_delay = {
 		duration = 15
 	},
@@ -116,124 +112,67 @@ local talent_buff_templates = {
 			}
 		}
 	},
-	bardin_engineer_remove_pump_stacks_fire = {
-		buffs = {
-			{
-				event = "on_start_action",
-				buff_func = "bardin_engineer_remove_pump_stacks_on_fire",
-				remove_buff_stack_data = {
-					{
-						buff_to_remove = "bardin_engineer_pump_buff",
-						num_stacks = math.huge
-					},
-					{
-						buff_to_remove = "bardin_engineer_pump_buff_long",
-						num_stacks = math.huge
-					}
-				}
-			}
-		}
-	},
-	bardin_engineer_remove_pump_stacks = {
-		buffs = {
-			{
-				event = "on_ability_recharged",
-				buff_func = "bardin_engineer_remove_pump_stacks",
-				remove_buff_stack_data = {
-					{
-						buff_to_remove = "bardin_engineer_pump_buff",
-						num_stacks = math.huge
-					},
-					{
-						buff_to_remove = "bardin_engineer_pump_buff_long",
-						num_stacks = math.huge
-					}
-				}
-			}
-		}
-	},
 	bardin_engineer_pump_buff = {
 		buffs = {
 			{
-				icon = "bardin_engineer_passive",
-				on_max_stacks_func = "add_remove_buffs",
-				stat_buff = "cooldown_regen",
-				on_max_stacks_overflow_func = "add_remove_buffs",
 				max_stacks = 5,
-				duration = 12,
-				refresh_durations = true,
-				max_stack_data = {
-					buffs_to_add = {
-						"bardin_engineer_pump_exhaustion_buff"
-					},
-					talent_buffs_to_add = {
-						bardin_engineer_power_on_max_pump = {
-							buff_to_add = "bardin_engineer_power_on_max_pump_buff",
-							rpc_sync = true
-						}
-					}
-				}
-			}
-		}
-	},
-	bardin_engineer_pump_buff_long = {
-		buffs = {
-			{
-				on_max_stacks_func = "add_remove_buffs",
-				on_max_stacks_overflow_func = "add_remove_buffs",
+				multiplier = 0.4,
 				stat_buff = "cooldown_regen",
-				max_stacks = 4,
 				icon = "bardin_engineer_passive",
+				on_max_stacks_overflow_func = "add_remove_buffs",
+				refresh_durations = true,
+				duration = 12,
 				apply_buff_func = "add_buffs",
+				buff_to_remove = "bardin_engineer_pump_buff_power",
+				on_max_stacks_func = "add_remove_buffs",
+				remove_buff_func = "remove_buff_local",
+				duration_modifier_func = function (owner_unit, sub_buff_template, duration, buff_extension, params)
+					local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
+
+					if talent_extension:has_talent("bardin_engineer_pump_buff_long") then
+						return nil, nil
+					end
+
+					return duration, sub_buff_template.ticks
+				end,
 				max_stack_data = {
 					buffs_to_add = {
-						"bardin_engineer_pump_exhaustion_buff"
+						"bardin_engineer_pump_max_overheat_check"
+					},
+					talent_buffs = {
+						bardin_engineer_power_on_max_pump = {
+							buffs_to_add = {
+								{
+									name = "bardin_engineer_4_1_buff"
+								}
+							}
+						}
 					}
 				},
 				add_buffs_data = {
 					link_buffs = true,
 					buffs_to_add = {
-						"bardin_engineer_pump_buff_long_attack_speed"
+						"bardin_engineer_pump_buff_power"
 					}
+				},
+				buffs_to_remove_on_remove = {
+					"bardin_engineer_4_1_buff",
+					"bardin_engineer_pump_overclock_buff",
+					"bardin_engineer_pump_max_exhaustion_buff"
 				}
 			}
 		}
 	},
-	bardin_engineer_pump_buff_long_attack_speed = {
+	bardin_engineer_pump_buff_power = {
 		buffs = {
 			{
-				max_stacks = 4,
-				stat_buff = "attack_speed"
-			}
-		}
-	},
-	bardin_engineer_pump_exhaustion_buff = {
-		buffs = {
-			{
-				max_stacks = 1,
-				duration = 2,
-				on_max_stacks_overflow_func = "add_remove_buffs",
-				max_stack_data = {
-					buffs_to_add = {
-						"bardin_engineer_pump_max_exhaustion_buff"
-					}
-				}
-			}
-		}
-	},
-	bardin_engineer_pump_max_exhaustion_buff = {
-		buffs = {
-			{
-				icon = "bardin_engineer_pump_max_exhaustion_buff_icon",
-				remove_buff_func = "bardin_engineer_animation_slow_down_remove",
-				debuff = true,
-				max_stacks = 1,
-				duration = 5,
-				apply_buff_func = "bardin_engineer_animation_slow_down_add",
-				priority_buff = true,
-				perks = {
-					buff_perks.exhausted
-				}
+				max_stacks = 5,
+				stat_buff = "power_level",
+				apply_condition = function (owner_unit, template, params)
+					local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
+
+					return talent_extension:has_talent("bardin_engineer_pump_buff_long")
+				end
 			}
 		}
 	},
@@ -276,49 +215,26 @@ local talent_buff_templates = {
 			}
 		}
 	},
-	bardin_engineer_ranged_crit_count = {
+	bardin_engineer_2_1 = {
 		buffs = {
 			{
-				buff_to_add = "bardin_engineer_ranged_crit_counter_buff",
-				max_stacks = 1,
-				stat_buff = "critical_strike_chance_ranged",
-				buff_func = "add_buff_on_first_target_hit",
-				event = "on_hit",
-				client_side = true,
-				valid_attack_types = {
-					instant_projectile = true,
-					heavy_instant_projectile = true,
-					projectile = true
+				update_start_delay = 80,
+				update_func = "bardin_engineer_bomb_grant",
+				cooldown_buff = "bardin_engineer_2_1_cooldown",
+				update_frequency = 80,
+				perks = {
+					buff_perks.no_explosion_friendly_fire
 				}
 			}
 		}
 	},
-	bardin_engineer_ranged_crit_counter_buff = {
+	bardin_engineer_2_1_cooldown = {
 		buffs = {
 			{
-				reset_on_max_stacks = true,
-				on_max_stacks_func = "add_remove_buffs",
-				max_stacks = 5,
+				max_stacks = 1,
+				icon = "bardin_engineer_fast_ability_charge",
 				is_cooldown = true,
-				icon = "bardin_engineer_ranged_crit_count",
-				max_stack_data = {
-					buffs_to_add = {
-						"bardin_engineer_ranged_crit_count_buff"
-					}
-				}
-			}
-		}
-	},
-	bardin_engineer_ranged_crit_count_buff = {
-		buffs = {
-			{
-				event = "on_critical_shot",
-				max_stacks = 1,
-				stat_buff = "critical_strike_chance_ranged",
-				buff_func = "dummy_function",
-				remove_on_proc = true,
-				icon = "bardin_engineer_ranged_crit_count",
-				priority_buff = true
+				refresh_durations = true
 			}
 		}
 	},
@@ -440,44 +356,19 @@ local talent_buff_templates = {
 			}
 		}
 	},
-	bardin_engineer_power_on_max_pump_buff = {
+	bardin_engineer_4_1_buff = {
 		buffs = {
 			{
-				stat_buff = "power_level",
+				max_stacks = 1,
 				icon = "bardin_engineer_party_ability_charge",
-				priority_buff = true,
-				refresh_durations = true
+				stat_buff = "attack_speed"
 			}
 		}
 	},
-	bardin_engineer_power_on_max_pump_buff_on_remove = {
+	bardin_engineer_4th_row_cleanup = {
 		buffs = {
 			{
 				buffs_to_remove_on_remove = {
-					"bardin_engineer_pump_buff_long",
-					"bardin_engineer_pump_buff"
-				}
-			}
-		}
-	},
-	bardin_engineer_stacks_stay = {
-		buffs = {
-			{
-				perks = {
-					buff_perks.engineer_persistent_pump_stacks
-				},
-				buffs_to_remove_on_remove = {
-					"bardin_engineer_pump_buff_long",
-					"bardin_engineer_pump_buff"
-				}
-			}
-		}
-	},
-	bardin_engineer_long_stacks_on_remove = {
-		buffs = {
-			{
-				buffs_to_remove_on_remove = {
-					"bardin_engineer_pump_buff_long",
 					"bardin_engineer_pump_buff"
 				}
 			}
@@ -513,7 +404,7 @@ local talent_buff_templates = {
 			}
 		}
 	},
-	bardin_engineer_upgraded_grenades = {
+	bardin_engineer_5_2 = {
 		buffs = {
 			{
 				perks = {
@@ -605,7 +496,7 @@ local talent_trees = {
 			"bardin_engineer_heal_share"
 		},
 		{
-			"bardin_engineer_ranged_crit_count",
+			"bardin_engineer_improved_explosives",
 			"bardin_engineer_ranged_pierce",
 			"bardin_engineer_melee_power_ranged_power"
 		},
@@ -616,7 +507,7 @@ local talent_trees = {
 		},
 		{
 			"bardin_engineer_power_on_max_pump",
-			"bardin_engineer_stacks_stay",
+			"bardin_engineer_overclock",
 			"bardin_engineer_pump_buff_long"
 		},
 		{
@@ -675,17 +566,19 @@ local talents = {
 		}
 	},
 	{
-		description = "bardin_engineer_ranged_crit_count_desc",
-		name = "bardin_engineer_ranged_crit_count",
+		description = "bardin_engineer_improved_explosives_desc",
+		name = "bardin_engineer_improved_explosives",
+		buffer = "both",
 		num_ranks = 1,
-		icon = "bardin_engineer_ranged_crit_count",
+		icon = "bardin_engineer_fast_ability_charge",
 		description_values = {
 			{
-				value = buff_tweak_data.bardin_engineer_ranged_crit_counter_buff.max_stacks
+				value = buff_tweak_data.bardin_engineer_2_1_cooldown.duration
 			}
 		},
 		buffs = {
-			"bardin_engineer_ranged_crit_count"
+			"bardin_engineer_2_1",
+			"bardin_engineer_2_1_cooldown"
 		}
 	},
 	{
@@ -794,7 +687,7 @@ local talents = {
 		}
 	},
 	{
-		description = "bardin_engineer_power_on_max_pump_desc",
+		description = "bardin_engineer_power_on_max_pump_desc_b",
 		name = "bardin_engineer_power_on_max_pump",
 		num_ranks = 1,
 		icon = "bardin_engineer_party_ability_charge",
@@ -805,38 +698,48 @@ local talents = {
 			{
 				value_type = "percent",
 				value = buff_tweak_data.bardin_engineer_power_on_max_pump_buff.multiplier
-			},
-			{
-				value = buff_tweak_data.bardin_engineer_power_on_max_pump_buff.duration
 			}
 		},
 		buffs = {
-			"bardin_engineer_power_on_max_pump_buff_on_remove"
+			"bardin_engineer_4th_row_cleanup"
 		}
 	},
 	{
-		description = "bardin_engineer_stacks_stay_desc",
-		name = "bardin_engineer_stacks_stay",
+		description = "bardin_engineer_overclock_desc",
+		name = "bardin_engineer_overclock",
 		num_ranks = 1,
-		icon = "bardin_engineer_fast_ability_charge",
-		description_values = {},
+		icon = "bardin_engineer_4_2",
+		description_values = {
+			{
+				value_type = "percent",
+				value = CareerConstants.dr_engineer.talent_4_2_cooldown
+			},
+			{
+				value_type = "percent",
+				value = CareerConstants.dr_engineer.talent_4_2_crit
+			},
+			{
+				value_type = "percent",
+				value = CareerConstants.dr_engineer.talent_4_2_damage_taken
+			}
+		},
 		buffs = {
-			"bardin_engineer_stacks_stay"
+			"bardin_engineer_4th_row_cleanup"
 		}
 	},
 	{
-		description = "bardin_engineer_pump_buff_long_desc",
+		description = "bardin_engineer_pump_buff_long_desc_b",
 		name = "bardin_engineer_pump_buff_long",
 		num_ranks = 1,
 		icon = "bardin_engineer_passive_ability_charge",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.bardin_engineer_pump_buff_long_attack_speed.multiplier
+				value = buff_tweak_data.bardin_engineer_pump_buff_power.multiplier
 			}
 		},
 		buffs = {
-			"bardin_engineer_long_stacks_on_remove"
+			"bardin_engineer_4th_row_cleanup"
 		}
 	},
 	{
@@ -862,18 +765,22 @@ local talents = {
 		}
 	},
 	{
-		description = "bardin_engineer_upgraded_grenades_desc",
+		description = "bardin_engineer_upgraded_grenades_desc_b",
 		name = "bardin_engineer_upgraded_grenades",
-		buffer = "server",
+		buffer = "both",
 		num_ranks = 1,
 		icon = "bardin_engineer_upgraded_grenades",
-		description_values = {},
+		description_values = {
+			{
+				value = CareerConstants.dr_engineer.num_starting_bombs
+			}
+		},
 		buffs = {
-			"bardin_engineer_upgraded_grenades"
+			"bardin_engineer_5_2"
 		}
 	},
 	{
-		description = "bardin_engineer_piston_powered_desc",
+		description = "bardin_engineer_piston_powered_desc_b",
 		name = "bardin_engineer_piston_powered",
 		buffer = "both",
 		num_ranks = 1,
@@ -901,6 +808,7 @@ local talents = {
 		name = "bardin_engineer_reduced_ability_fire_slowdown",
 		num_ranks = 1,
 		icon = "bardin_engineer_reduced_ability_fire_slowdown",
+		talent_career_weapon_index = 1,
 		description_values = {
 			{
 				value_type = "percent",

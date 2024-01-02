@@ -4,7 +4,7 @@ InputUtils.keymaps_key_approved = function (platform_key)
 	local platform = PLATFORM
 
 	if IS_WINDOWS then
-		return (platform_key == platform or platform_key == "xb1") and true or nil
+		return (platform_key == platform or platform_key == "xb1" or platform_key == "ps_pad") and true or nil
 	elseif IS_XB1 then
 		return (platform_key == platform or platform_key == "win32") and true or nil
 	else

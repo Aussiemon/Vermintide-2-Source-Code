@@ -123,10 +123,6 @@ NewsFeedTemplates = {
 			40
 		},
 		condition_func = function (params)
-			if GameSettingsDevelopment.use_offline_backend then
-				return false
-			end
-
 			local backend_store = Managers.backend:get_interface("peddler")
 			local login_rewards = backend_store:get_login_rewards()
 

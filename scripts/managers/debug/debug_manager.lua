@@ -364,10 +364,13 @@ DebugManager._adjust_gamepad_player_speed = function (self)
 		return
 	end
 
+	local controller_type = active_controller.type()
+	local is_ps_pad = controller_type == "sce_pad"
 	local right_held = nil
 
-	if not IS_PS4 then
-		right_held = active_controller.button(active_controller.button_index("right_thumb")) > 0.5
+	if not IS_PS4 and not is_ps_pad then
+		local button_index = active_controller.button_index("right_thumb")
+		right_held = button_index and active_controller.button(button_index) > 0.5
 	else
 		right_held = active_controller.button(active_controller.button_index("r3")) > 0.5
 	end
@@ -375,9 +378,11 @@ DebugManager._adjust_gamepad_player_speed = function (self)
 	if right_held then
 		local up_pressed, down_pressed = nil
 
-		if not IS_PS4 then
-			up_pressed = active_controller.pressed(active_controller.button_index("d_up"))
-			down_pressed = active_controller.pressed(active_controller.button_index("d_down"))
+		if not IS_PS4 and not is_ps_pad then
+			local button_index = active_controller.button_index("d_up")
+			up_pressed = button_index and active_controller.pressed(button_index)
+			local button_index = active_controller.button_index("d_down")
+			down_pressed = button_index and active_controller.pressed(button_index)
 		else
 			up_pressed = active_controller.pressed(active_controller.button_index("up"))
 			down_pressed = active_controller.pressed(active_controller.button_index("down"))

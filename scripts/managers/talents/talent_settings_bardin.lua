@@ -137,7 +137,7 @@ local buff_tweak_data = {
 	bardin_slayer_bloodlust = {},
 	bardin_slayer_conqueror = {},
 	bardin_slayer_crit_chance = {
-		bonus = 0.05
+		bonus = 0.1
 	},
 	bardin_slayer_attack_speed_on_double_one_handed_weapons_buff = {
 		multiplier = 0.1

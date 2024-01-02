@@ -7664,7 +7664,7 @@ UIWidgets.create_career_summary_window = function (scenegraph_id, size)
 	}
 end
 
-UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, background_texture, text, font_size, optional_color_name, optional_detail_texture, optional_detail_offset, disable_with_gamepad, skip_side_detail)
+UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, background_texture, text, font_size, optional_color_name, optional_detail_texture, optional_detail_offset, disable_with_gamepad, skip_side_detail, masked)
 	background_texture = background_texture or "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_settings = frame_name and UIFrameSettings[frame_name] or UIFrameSettings.button_frame_01
@@ -7830,7 +7830,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 					0,
 					0,
 					0
-				}
+				},
+				masked = masked
 			},
 			background_fade = {
 				color = {
@@ -7847,7 +7848,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 				size = {
 					size[1] - frame_width * 2,
 					size[2] - frame_width * 2
-				}
+				},
+				masked = masked
 			},
 			hover_glow = {
 				color = {
@@ -7864,7 +7866,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 				size = {
 					size[1],
 					math.min(size[2] - 5, 80)
-				}
+				},
+				masked = masked
 			},
 			clicked_rect = {
 				color = {
@@ -7898,8 +7901,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				dynamic_font_size = true,
-				font_type = "hell_shark",
 				font_size = font_size or 24,
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				default_text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				select_text_color = Colors.get_color_table_with_alpha("white", 255),
@@ -7919,8 +7922,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				dynamic_font_size = true,
-				font_type = "hell_shark",
 				font_size = font_size or 24,
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("gray", 255),
 				default_text_color = Colors.get_color_table_with_alpha("gray", 255),
 				size = {
@@ -7939,8 +7942,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 				horizontal_alignment = "center",
 				vertical_alignment = "center",
 				dynamic_font_size = true,
-				font_type = "hell_shark",
 				font_size = font_size or 24,
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				default_text_color = Colors.get_color_table_with_alpha("black", 255),
 				size = {
@@ -7966,7 +7969,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 					0,
 					0,
 					8
-				}
+				},
+				masked = masked
 			},
 			glass_top = {
 				color = {
@@ -7983,7 +7987,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 				size = {
 					size[1],
 					11
-				}
+				},
+				masked = masked
 			},
 			glass_bottom = {
 				color = {
@@ -8000,7 +8005,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 				size = {
 					size[1],
 					11
-				}
+				},
+				masked = masked
 			},
 			side_detail_left = {
 				color = {
@@ -8017,7 +8023,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 				size = {
 					side_detail_texture_size[1],
 					side_detail_texture_size[2]
-				}
+				},
+				masked = masked
 			},
 			side_detail_right = {
 				color = {
@@ -8034,7 +8041,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 				size = {
 					side_detail_texture_size[1],
 					side_detail_texture_size[2]
-				}
+				},
+				masked = masked
 			}
 		},
 		scenegraph_id = scenegraph_id,
@@ -13388,6 +13396,82 @@ UIWidgets.create_difficulty_selector = function (scenegraph_id, size, spacing, a
 	widget.content = content
 	widget.style = style
 	widget.offset = {
+		0,
+		0,
+		0
+	}
+	widget.scenegraph_id = scenegraph_id
+
+	return widget
+end
+
+UIWidgets.create_base_portrait_frame = function (scenegraph_id, frame_settings_name, scale, offset, masked, skip_offset)
+	scale = scale or 1
+	local frame_settings_name = frame_settings_name or "default"
+	local frame_settings = UIPlayerPortraitFrameSettings[frame_settings_name]
+	local default_color = {
+		255,
+		255,
+		255,
+		255
+	}
+	local default_offset = {
+		0,
+		0,
+		0
+	}
+	local widget = {
+		element = {}
+	}
+	local passes = {}
+	local content = {
+		scale = scale,
+		frame_settings_name = frame_settings_name
+	}
+	local style = {}
+
+	for index, data in ipairs(frame_settings) do
+		local name = "texture_" .. index
+		local texture_name = data.texture or "icons_placeholder"
+		local size = data.size
+
+		if UIAtlasHelper.has_atlas_settings_by_texture_name(texture_name) then
+			local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture_name)
+			size = texture_settings.size
+		else
+			size = data.size
+		end
+
+		size = size and table.clone(size) or {
+			0,
+			0
+		}
+		size[1] = size[1] * scale
+		size[2] = size[2] * scale
+		local offset = table.clone(not skip_offset and data.offset or default_offset)
+		offset[1] = offset[1] * scale
+		offset[2] = offset[2] * scale
+		offset[3] = data.layer or 0
+		passes[#passes + 1] = {
+			pass_type = "texture",
+			texture_id = name,
+			style_id = name
+		}
+		content[name] = texture_name
+		style[name] = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			masked = masked,
+			color = data.color or default_color,
+			offset = offset,
+			texture_size = size
+		}
+	end
+
+	widget.element.passes = passes
+	widget.content = content
+	widget.style = style
+	widget.offset = offset or {
 		0,
 		0,
 		0

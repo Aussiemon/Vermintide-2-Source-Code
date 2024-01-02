@@ -1466,7 +1466,7 @@ local function create_engineer_background(scenegraph_id, layer, retained)
 						local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 						content.using_career_skill_weapon = inventory_extension and inventory_extension:get_wielded_slot_name() == "slot_career_skill_weapon"
 						local buff_ext = ScriptUnit.extension(player_unit, "buff_system")
-						content.is_reloading = buff_ext and (buff_ext:has_buff_type("bardin_engineer_pump_buff_long") or buff_ext:has_buff_type("bardin_engineer_pump_buff"))
+						content.is_reloading = buff_ext and buff_ext:has_buff_type("bardin_engineer_pump_buff")
 						local _, dt = Managers.time:time_and_delta("game")
 						local time = content.time + dt
 						content.time = content.is_reloading and time or 0

@@ -1514,7 +1514,7 @@ PlayFabMirrorBase._commit_status = function (self)
 
 	if commit_data.status == "commit_error" then
 		return "commit_error"
-	elseif commit_data.num_updates == commit_data.updates_to_make and not commit_data.wait_for_stats and not commit_data.wait_for_weave_user_data and not commit_data.wait_for_keep_decorations and not commit_data.wait_for_user_data and not commit_data.wait_for_read_only_data and not commit_data.wait_for_win_tracks_data then
+	elseif commit_data.num_updates == commit_data.updates_to_make and not commit_data.wait_for_stats and not commit_data.wait_for_weave_user_data and not commit_data.wait_for_keep_decorations and not commit_data.wait_for_user_data and not commit_data.wait_for_read_only_data and not commit_data.wait_for_win_tracks_data and not commit_data.wait_for_gotwf_data then
 		if IS_CONSOLE and not Managers.account:offline_mode() then
 			PlayfabBackendSaveDataUtils.store_online_data(self)
 		end
@@ -2278,6 +2278,20 @@ PlayFabMirrorBase.update_current_win_track_cb = function (self, commit_id, resul
 	end
 
 	commit.wait_for_win_tracks_data = false
+end
+
+PlayFabMirrorBase.update_current_gotwf_cb = function (self, commit_id, result)
+	local commit = self._commits[commit_id]
+	local function_result = result.FunctionResult
+	local new_read_only_data = function_result.new_read_only_data
+
+	for key, value in pairs(new_read_only_data) do
+		local encoded_value = cjson.encode(value)
+
+		self:set_read_only_data(key, encoded_value, true)
+	end
+
+	commit.wait_for_gotwf_data = false
 end
 
 PlayFabMirrorBase.update_read_only_data_request_cb = function (self, commit_id, result)

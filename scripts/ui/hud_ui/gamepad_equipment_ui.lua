@@ -529,7 +529,7 @@ GamePadEquipmentUI._sync_player_equipment = function (self)
 		local is_wielded = item_name and wielded == item_data or false
 
 		if is_wielded then
-			local master_item = slot_data.master_item
+			local master_item = item_data
 			local slot_type = master_item.slot_type
 			local widget = self._widgets_by_name.weapon_slot
 			local content = widget.content
@@ -1358,7 +1358,8 @@ end
 
 GamePadEquipmentUI._handle_gamepad_activity = function (self)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
-	local force_update = self.gamepad_active_last_frame == nil
+	local most_recent_device = Managers.input:get_most_recent_device()
+	local force_update = self.gamepad_active_last_frame == nil or gamepad_active and most_recent_device ~= self._most_recent_device
 
 	if gamepad_active or IS_PS4 then
 		if not self.gamepad_active_last_frame or force_update then
@@ -1373,6 +1374,8 @@ GamePadEquipmentUI._handle_gamepad_activity = function (self)
 		self:_update_gamepad_input_button()
 		self:event_input_changed()
 	end
+
+	self._most_recent_device = most_recent_device
 end
 
 GamePadEquipmentUI._set_game_options_dirty = function (self)

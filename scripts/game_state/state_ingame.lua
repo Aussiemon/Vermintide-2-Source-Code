@@ -778,6 +778,63 @@ StateIngame.pre_update = function (self, dt)
 	end
 end
 
+local INDEX = 1
+local TIMER = 0
+local REMAP_INDEX = 0
+local EVENTS = {
+	"charge_end",
+	"spark_muzzlefx_right",
+	"spark_muzzlefx_left",
+	"above_overcharge_threshold",
+	"sfx_ranged_weapon_foley",
+	"beam_muzzlefx",
+	"fx_show_fire_trail",
+	"below_overcharge_threshold",
+	"send_spear",
+	"fireball_charged_shoot",
+	"fireball_shoot",
+	"staff_charge_cancel",
+	"fx_hide_fire_trail",
+	"sfx_ranged_weapon_equip",
+	"lua_wield",
+	"geiser_muzzlefx"
+}
+
+local function test(dt, t)
+	if TIMER < t then
+		TIMER = t + 0.5
+		local player_unit = Managers.player:local_player().player_unit
+
+		if not ALIVE[player_unit] then
+			return
+		end
+
+		local inventory_ext = ScriptUnit.extension(player_unit, "inventory_system")
+		local equipment = inventory_ext:equipment()
+		local staff_unit = equipment.right_hand_wielded_unit
+
+		if ALIVE[staff_unit] then
+			INDEX = INDEX + 1
+
+			if not EVENTS[INDEX] then
+				INDEX = 1
+				REMAP_INDEX = (1 + REMAP_INDEX) % 2
+				local value = bit.lshift(REMAP_INDEX, 4)
+
+				Application.set_render_setting("global_shader_variable", value)
+			end
+
+			local event_name = EVENTS[INDEX]
+
+			Unit.flow_event(staff_unit, event_name)
+		end
+	end
+
+	local event_name = EVENTS[INDEX]
+
+	Debug.text(string.format("Event Name: %s - Remap Index: %s - Remap variable: %s", event_name, REMAP_INDEX, Application.render_config("settings", "global_shader_variable")))
+end
+
 StateIngame.update = function (self, dt, main_t)
 	self.dt = dt
 

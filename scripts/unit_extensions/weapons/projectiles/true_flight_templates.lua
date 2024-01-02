@@ -182,18 +182,19 @@ TrueFlightTemplates.sorcerer_vortex_dummy_missile = {
 	end
 }
 TrueFlightTemplates.necromancer_trapped_soul = {
+	target_players = false,
+	dot_threshold = 0.9999,
+	dont_target_patrols = true,
 	lerp_distance_threshold = 625,
-	dont_target_friendly = true,
-	ignore_dead = true,
 	target_tracking_check_func = "update_towards_target",
 	retarget_broadphase_offset = 0,
-	dot_threshold = 0.9999,
-	speed_multiplier = 6.5,
 	target_node = "c_neck",
-	target_players = false,
+	speed_multiplier = 6.5,
 	valid_target_dot = 0.99,
 	time_between_raycasts = 0.1,
+	dont_target_friendly = true,
 	broadphase_radius = 7.5,
+	ignore_dead = true,
 	max_on_target_time = math.huge,
 	lerp_modifier_func = function (distance, height, t)
 		return 0.75

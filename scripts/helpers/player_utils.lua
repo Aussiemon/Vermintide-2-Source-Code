@@ -29,5 +29,14 @@ PlayerUtils = {
 		end
 
 		return nil
+	end,
+	broadphase_query = function (position, radius, result_table, broadphase_categories)
+		fassert(result_table, "No result_table given to PlayerUtils.broadphase_query")
+
+		local proximity_system = Managers.state.entity:system("proximity_system")
+		local broadphase = proximity_system.player_units_broadphase
+		local num_hits = Broadphase.query(broadphase, position, radius, result_table, broadphase_categories)
+
+		return num_hits
 	end
 }

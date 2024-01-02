@@ -160,3 +160,34 @@ if not Presence then
 end
 
 ColorBox = QuaternionBox
+local STRING_FORMAT = STRING_FORMAT or nil
+local VALIDATED_STRINGS = VALIDATED_STRINGS or {}
+local INVALID_STRINGS = INVALID_STRINGS or {}
+
+if not STRING_FORMAT then
+	STRING_FORMAT = STRING_FORMAT or string.format
+
+	string.format = function (str, ...)
+		if VALIDATED_STRINGS[str] then
+			return STRING_FORMAT(str, ...)
+		end
+
+		if INVALID_STRINGS[str] then
+			return "<Invalid string format>"
+		end
+
+		local success, result = pcall(STRING_FORMAT, str, ...)
+
+		if not success then
+			INVALID_STRINGS[str] = true
+
+			Crashify.print_exception("string.format", "Invalid string format for string %q", str)
+
+			return "<Invalid string format>"
+		else
+			VALIDATED_STRINGS[str] = true
+
+			return result
+		end
+	end
+end

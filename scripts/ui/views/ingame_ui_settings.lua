@@ -548,6 +548,8 @@ local view_settings = {
 			materials[#materials + 1] = "materials/ui/ui_1080p_achievement_atlas_textures"
 			materials[#materials + 1] = "material"
 			materials[#materials + 1] = "materials/ui/ui_1080p_inn_single_textures"
+			materials[#materials + 1] = "material"
+			materials[#materials + 1] = "materials/ui/ui_1080p_lock_test"
 
 			for _, settings in pairs(AreaSettings) do
 				local video_settings = settings.video_settings

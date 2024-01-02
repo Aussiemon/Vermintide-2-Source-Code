@@ -1405,14 +1405,15 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 				for i = 1, 6 do
 					local id = talent_ids[i]
 					local talent = profile_talents and profile_talents[id]
+					local talent_icon = talent and talent.icon
 					local talent_content = content["talent_" .. i]
 
-					if not is_build_visible then
+					if not is_build_visible or not talent_icon then
 						talent = nil
 					end
 
 					talent_content.talent = talent
-					talent_content.icon = talent and talent.icon
+					talent_content.icon = talent_icon or "icons_placeholder"
 
 					if talent_content.is_hover then
 						ui_scenegraph.talent_tooltip.local_position[2] = widget.offset[2]

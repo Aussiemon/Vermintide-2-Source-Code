@@ -75,7 +75,8 @@ local components = {
 			"cutscene",
 			"realism",
 			"dead",
-			"alive"
+			"alive",
+			"in_menu"
 		},
 		validation_function = function (context, is_in_inn)
 			return is_in_inn or Managers.mechanism:current_mechanism_name() == "deus"

@@ -1222,6 +1222,7 @@ weapon_template.actions = {
 			no_damage_impact_sound_event = "slashing_hit_armour",
 			attack_template = "basic_sweep_push",
 			damage_profile_outer = "light_push",
+			fatigue_cost = "action_stun_push",
 			weapon_action_hand = "right",
 			push_angle = 100,
 			hit_effect = "melee_hit_hammers_1h",

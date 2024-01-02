@@ -260,7 +260,11 @@ BuffUtils.generate_infinite_burn_variants = function (buff_templates)
 					sub_buff.name = "infinite_burning_dot"
 					sub_buff.duration = nil
 					sub_buff.on_max_stacks_overflow_func = "reapply_infinite_burn"
-					sub_buff.max_stacks = 1
+
+					if sub_buff.time_between_dot_damages then
+						sub_buff.time_between_dot_damages = sub_buff.time_between_dot_damages / 2
+					end
+
 					InfiniteBurnDotLookup[template_name] = new_name
 					buff_templates[new_name] = new_buff_template
 

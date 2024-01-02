@@ -161,12 +161,7 @@ DEUS_LEVEL_PICKUP_SETTINGS.default_arena_pickup_settings = {
 		}
 	}
 }
-DEUS_CHEST_TYPES = DEUS_CHEST_TYPES or {
-	swap_melee = "swap_melee",
-	upgrade = "upgrade",
-	power_up = "power_up",
-	swap_ranged = "swap_ranged"
-}
+DEUS_CHEST_TYPES = DEUS_CHEST_TYPES or table.enum("swap_ranged", "swap_melee", "upgrade", "power_up")
 DEUS_WEAPON_CHEST_DISTRIBUTION = DEUS_WEAPON_CHEST_DISTRIBUTION or {}
 DEUS_WEAPON_CHEST_DISTRIBUTION.default_signature = {
 	[DEUS_CHEST_TYPES.swap_ranged] = 1.5,

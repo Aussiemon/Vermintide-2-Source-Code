@@ -6,15 +6,25 @@ local MAX_NUMBER_OF_BUFFS = definitions.MAX_NUMBER_OF_BUFFS
 local BUFF_SIZE = definitions.BUFF_SIZE
 local BUFF_SPACING = definitions.BUFF_SPACING
 
+local function BUFF_IS_INFINITE(buff)
+	return not buff.duration or buff.duration == math.huge
+end
+
 local function BUFF_COMPARATOR_FUNC(a, b)
 	local a_content = a.content
 	local b_content = b.content
+	local a_buff = a_content.buff
+	local b_buff = b_content.buff
 
-	if a_content.is_infinite ~= b_content.is_infinite then
-		return b_content.is_infinite
+	if BUFF_IS_INFINITE(a_buff) ~= BUFF_IS_INFINITE(b_buff) then
+		return BUFF_IS_INFINITE(b_buff)
 	end
 
-	return b_content.start_time < a_content.start_time
+	return b_content.static_start_time < a_content.static_start_time
+end
+
+local function BUFF_END_TIME(buff)
+	return BUFF_IS_INFINITE(buff) and math.huge or buff.start_time + buff.duration
 end
 
 BuffUI = class(BuffUI)
@@ -70,7 +80,6 @@ BuffUI._sync_buffs = function (self)
 	for i = 1, #active_buff_widgets do
 		local widget_content = active_buff_widgets[i].content
 		widget_content.stack_count = 0
-		widget_content.end_time = math.huge
 	end
 
 	local player_unit = self._is_spectator and self._spectated_player_unit or self._player.player_unit
@@ -106,24 +115,30 @@ BuffUI._sync_buffs = function (self)
 		local widget = active_buff_widgets[i]
 		local widget_content = widget.content
 
-		if widget_content.stack_count == 0 then
+		if widget_content.stack_count == 0 or widget_content.buff.is_stale then
 			self:_remove_buff(i)
 
 			align_widgets = true
 			widget.element.dirty = true
 			self._dirty = true
 		else
-			if not widget_content.is_infinite then
-				if widget_content.duration == 0 then
+			local buff = widget_content.buff
+
+			if not BUFF_IS_INFINITE(buff) then
+				local duration = buff.duration or math.huge
+
+				if duration == 0 then
 					widget_content.progress = 0
 				else
-					widget_content.progress = 1 - math.clamp((widget_content.end_time - t) / widget_content.duration, 0, 1)
+					local end_time = BUFF_END_TIME(buff)
+					widget_content.progress = 1 - math.clamp((end_time - t) / duration, 0, 1)
 				end
 
 				widget.element.dirty = true
 				self._dirty = true
 			elseif widget_content.stack_count ~= widget_content.last_stack_count then
 				widget_content.last_stack_count = widget_content.stack_count
+				widget_content.progress = buff.template.is_cooldown and 1 or 0
 				widget.element.dirty = true
 				self._dirty = true
 			end
@@ -159,9 +174,9 @@ local COLOR_DEBUFF = {
 BuffUI._add_buff = function (self, buff, icon)
 	local buff_template = buff.template
 	local start_time = buff.start_time
-	local duration = buff.duration or math.huge
-	local is_infinite = duration == math.huge
-	local end_time = start_time + duration
+	local end_time = BUFF_END_TIME(buff)
+	local is_infinite = BUFF_IS_INFINITE(buff)
+	local is_cooldown = buff_template.is_cooldown
 	local buff_name_to_widget = self._buff_name_to_widget
 	local widget = buff_name_to_widget[buff_template.name]
 
@@ -169,10 +184,12 @@ BuffUI._add_buff = function (self, buff, icon)
 		local widget_content = widget.content
 		local stack_count = widget_content.stack_count + 1
 		widget_content.stack_count = stack_count
+		local current_end_time = BUFF_END_TIME(widget_content.buff)
 
-		if end_time < widget_content.end_time then
-			widget_content.end_time = end_time
-			widget_content.duration = duration
+		if end_time < current_end_time then
+			widget_content.buff = buff
+			widget.style.texture_icon.saturated = is_cooldown
+			widget.style.texture_icon_bg.saturated = is_cooldown and is_infinite
 		end
 
 		return false
@@ -185,16 +202,13 @@ BuffUI._add_buff = function (self, buff, icon)
 		return false
 	end
 
-	local is_cooldown = buff_template.is_cooldown
 	local widget = table.remove(self._unused_buff_widgets)
 	local widget_content = widget.content
 	widget_content.texture_icon = icon
 	widget_content.is_cooldown = is_cooldown
-	widget_content.is_infinite = is_infinite
+	widget_content.buff = buff
 	widget_content.name = buff_template.name
-	widget_content.start_time = start_time
-	widget_content.end_time = end_time
-	widget_content.duration = duration
+	widget_content.static_start_time = start_time
 	widget_content.stack_count = 1
 	widget_content.progress = is_cooldown and 1 or 0
 

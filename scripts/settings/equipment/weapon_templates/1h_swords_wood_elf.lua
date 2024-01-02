@@ -1161,6 +1161,7 @@ weapon_template.actions = {
 			outer_push_angle = 180,
 			kind = "push_stagger",
 			damage_profile_outer = "light_push",
+			fatigue_cost = "action_stun_push",
 			weapon_action_hand = "right",
 			push_angle = 100,
 			hit_effect = "melee_hit_sword_1h",

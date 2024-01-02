@@ -119,6 +119,17 @@ local wh_hats_no_ears_skinned = {
 	buffs = {}
 }
 Attachments.wh_hats_no_ears_skinned = table.clone(wh_hats_no_ears_skinned)
+local wh_hats_no_ears_skinned_lock_jaw = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_hide_ears_lock_jaw",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_wide,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.wh_hats_no_ears_skinned_lock_jaw = table.clone(wh_hats_no_ears_skinned_lock_jaw)
 local wh_hats_face_skinned = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -305,6 +316,28 @@ local ww_hoods = {
 	buffs = {}
 }
 Attachments.ww_hoods = table.clone(ww_hoods)
+local ww_hoods_jaw = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_mask",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face_wide,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.ww_hoods_jaw = table.clone(ww_hoods_jaw)
+local ww_balaclava_wide = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_balaclava",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_face_wide,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.ww_balaclava_wide = table.clone(ww_balaclava_wide)
 local ww_full_face = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -1005,6 +1038,23 @@ local dr_s_hat_14 = {
 	}
 }
 Attachments.dr_s_hat_14 = table.clone(dr_s_hat_14)
+local dr_s_hat_15 = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_hide_beard",
+	attachment_node_linking = AttachmentNodeLinking.dr_beard,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {},
+	character_material_changes = {
+		package_name = "units/beings/player/dwarf_ranger_slayer/headpiece/dr_s_hat_15_face",
+		third_person = {
+			mtr_face = "units/beings/player/dwarf_ranger_slayer/headpiece/dr_s_hat_15_face"
+		}
+	}
+}
+Attachments.dr_s_hat_15 = table.clone(dr_s_hat_15)
 local bw_gates = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",

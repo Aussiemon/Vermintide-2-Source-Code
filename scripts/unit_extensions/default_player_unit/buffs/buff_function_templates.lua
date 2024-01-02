@@ -4962,12 +4962,13 @@ BuffFunctionTemplates.functions = {
 
 		buff.previous_multiplier = multiplier
 	end,
-	reduce_cooldown_on_buff_removed = function (unit, buff, params)
-		local multiplier = buff.multiplier
+	reduce_cooldown_percent = function (unit, buff, params)
 		local career_extension = ScriptUnit.has_extension(unit, "career_system")
 
 		if career_extension then
-			career_extension:reduce_activated_ability_cooldown_percent(multiplier)
+			local cooldown_amount = buff.template.cooldown_amount
+
+			career_extension:reduce_activated_ability_cooldown_percent(cooldown_amount)
 		end
 	end,
 	apply_volume_dot_damage = function (unit, buff, params)
@@ -5190,6 +5191,31 @@ BuffFunctionTemplates.functions = {
 		local skip_buff_removal = true
 
 		commander_extension:remove_controlled_unit(unit, skip_sync, skip_buff_removal)
+	end,
+	sienna_scholar_vent_zone_update = function (owner_unit, buff, params)
+		local template = buff.template
+		local buff_to_add = template.buff_to_add
+		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+		local buff_stacks = buff_extension:get_stacking_buff(buff_to_add)
+		local num_buffs = buff_stacks and #buff_stacks or 0
+		local sienna_side = Managers.state.side.side_by_unit[owner_unit]
+		local ally_categories = sienna_side.enemy_broadphase_categories
+		local position = POSITION_LOOKUP[owner_unit]
+		local radius = template.radius
+		local result_table = FrameTable.alloc_table()
+		local num_hits = AiUtils.broadphase_query(position, radius, result_table, ally_categories)
+
+		if num_buffs < num_hits then
+			for i = num_buffs + 1, num_hits do
+				buff_extension:add_buff(buff_to_add)
+			end
+		elseif num_hits < num_buffs then
+			for i = 1, num_buffs - num_hits do
+				local last_buff = buff_stacks[num_buffs - i + 1]
+
+				buff_extension:remove_buff(last_buff.id)
+			end
+		end
 	end
 }
 

@@ -25,6 +25,19 @@ InputAux.input_device_mapping = InputAux.input_device_mapping or {
 	}
 }
 
+if not InputAux.input_device_mapping.ps_pad then
+	InputAux.input_device_mapping.ps_pad = {}
+	local device_list = InputAux.input_device_mapping.gamepad
+
+	for _, device in ipairs(device_list) do
+		local controller_type = device.type()
+
+		if controller_type == "sce_pad" then
+			InputAux.input_device_mapping.ps_pad[#InputAux.input_device_mapping.ps_pad + 1] = device
+		end
+	end
+end
+
 if not InputAux.input_device_type_lookup then
 	InputAux.input_device_type_lookup = {}
 

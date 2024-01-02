@@ -1,4 +1,4 @@
-require("scripts/settings/dlcs/shovel/shovel_constants")
+require("scripts/settings/profiles/career_constants")
 
 local target_decal_unit_name = "fx/bw_necromancer_ability_indicator"
 local indicator_radius = 0.35
@@ -9,7 +9,7 @@ local forward_spacing = 0.9
 ActionCareerBwNecromancerCommandStandTargetingUtility = {
 	generate_positions = function (target_center, fp_rotation, num_positions, optional_cached_positions)
 		local navified_spawn_positions = optional_cached_positions or {}
-		local num_per_rank = math.min(num_positions, NecromancerConstants.pets_per_rank)
+		local num_per_rank = math.min(num_positions, CareerConstants.bw_necromancer.pets_per_rank)
 
 		if num_per_rank == 0 then
 			table.clear(navified_spawn_positions)

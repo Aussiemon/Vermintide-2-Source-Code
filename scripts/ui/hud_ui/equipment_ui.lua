@@ -966,7 +966,7 @@ EquipmentUI._add_item = function (self, slot_data, data)
 	end
 
 	local slot_name = slot_data.id
-	local master_item = slot_data.master_item or slot_data.item_data
+	local master_item = slot_data.item_data
 	local slot_type = master_item.slot_type
 	local slots_by_name = InventorySettings.slots_by_name
 	local slot_settings = slots_by_name[slot_name]

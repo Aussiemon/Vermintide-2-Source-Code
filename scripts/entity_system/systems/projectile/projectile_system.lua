@@ -637,6 +637,7 @@ ProjectileSystem.spawn_ai_true_flight_projectile = function (self, owner_unit, t
 	local trajectory_template_name = projectile_info.trajectory_template_name
 	local true_flight_template = TrueFlightTemplates[true_flight_template_name]
 	local dont_target_friendly = true_flight_template.dont_target_friendly
+	local dont_target_patrols = true_flight_template.dont_target_patrols
 	local ignore_dead = true_flight_template.ignore_dead
 	local min = projectile_info.radius_min
 	local max = projectile_info.radius_max
@@ -657,6 +658,7 @@ ProjectileSystem.spawn_ai_true_flight_projectile = function (self, owner_unit, t
 			owner_unit = owner_unit,
 			radius = radius,
 			dont_target_friendly = dont_target_friendly,
+			dont_target_patrols = dont_target_patrols,
 			ignore_dead = ignore_dead
 		},
 		projectile_system = {

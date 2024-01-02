@@ -1788,3 +1788,15 @@ AiUtils.magic_entrance_optional_spawned_func = function (unit, breed, optional_d
 		AiUtils.stagger(unit, blackboard, unit, direction, distance, stagger_type, stun_duration, nil, t)
 	end
 end
+
+AiUtils.is_part_of_patrol = function (unit)
+	local blackboard = BLACKBOARDS[unit]
+
+	return blackboard and blackboard.patrolling
+end
+
+AiUtils.is_aggroed = function (unit)
+	local blackboard = BLACKBOARDS[unit]
+
+	return blackboard and blackboard.target_unit
+end

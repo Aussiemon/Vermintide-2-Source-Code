@@ -70,7 +70,7 @@ local buff_tweak_data = {
 	},
 	victor_zealot_activated_ability_cooldown_stack_on_hit_buff = {
 		max_stacks = 10,
-		multiplier = 0.05
+		cooldown_amount = 0.05
 	},
 	victor_bountyhunter_ability_cooldown_on_hit = {
 		bonus = 0.25
@@ -138,7 +138,7 @@ local buff_tweak_data = {
 		multiplier = -0.25
 	},
 	victor_bountyhunter_activated_ability_railgun = {
-		multiplier = 0.4
+		multiplier = 0.6
 	},
 	victor_bountyhunter_activated_ability_reset_cooldown_on_stacks = {
 		multiplier = 0.02
@@ -577,7 +577,7 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				refresh_durations = true,
 				icon = "victor_zealot_activated_ability_cooldown_stack_on_hit",
-				remove_buff_func = "reduce_cooldown_on_buff_removed",
+				remove_buff_func = "reduce_cooldown_percent",
 				duration = 5
 			}
 		}
@@ -944,9 +944,9 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_activated_ability_railgun_delayed_add = {
 		buffs = {
 			{
-				max_stacks = 2,
-				duration = 0.15,
-				multiplier = 0.4,
+				max_stacks = 1,
+				duration = 0.25,
+				multiplier = 0.6,
 				remove_buff_func = "victor_bountyhunter_activated_ability_railgun_delayed"
 			}
 		}
@@ -1569,7 +1569,7 @@ Talents.witch_hunter = {
 			},
 			{
 				value_type = "percent",
-				value = buff_tweak_data.victor_zealot_activated_ability_cooldown_stack_on_hit_buff.multiplier
+				value = buff_tweak_data.victor_zealot_activated_ability_cooldown_stack_on_hit_buff.cooldown_amount
 			}
 		},
 		buffs = {}

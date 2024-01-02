@@ -557,46 +557,6 @@ HeroViewStateAchievements._populate_tab = function (self, widget, categories)
 	style.num_draws = num_categories
 end
 
-HeroViewStateAchievements._get_fake_currency_item = function (self, currency_code, amount)
-	local template = nil
-
-	if currency_code == "SM" then
-		local item_key = "shillings_"
-		local amount = amount
-
-		if amount == 1 then
-			item_key = item_key .. "01"
-		elseif amount == 5 then
-			item_key = item_key .. "02"
-		elseif amount == 10 then
-			item_key = item_key .. "03"
-		elseif amount == 25 then
-			item_key = item_key .. "04"
-		elseif amount == 50 then
-			item_key = item_key .. "05"
-		elseif amount == 100 then
-			item_key = item_key .. "06"
-		elseif amount >= 1 and amount < 50 then
-			item_key = item_key .. "small"
-		elseif amount >= 50 and amount < 100 then
-			item_key = item_key .. "medium"
-		elseif amount >= 100 then
-			item_key = item_key .. "large"
-		end
-
-		local data = Currencies[item_key]
-		template = {
-			data = data
-		}
-	else
-		fassert(false, "Unsupported currency code '%s'", currency_code)
-	end
-
-	local fake_item = table.clone(template)
-
-	return fake_item
-end
-
 HeroViewStateAchievements._create_entries = function (self, entries, entry_type, entry_subtype)
 	local quest_manager = self._quest_manager
 	local achievement_manager = self._achievement_manager
@@ -750,7 +710,9 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 									temp_content.is_illusion = true
 									temp_content.reward_icon_background = UISettings.item_rarity_textures[rarity]
 								elseif reward_type == "currency" then
-									local fake_item = self:_get_fake_currency_item(reward.currency_code, reward.amount)
+									local fake_item = {
+										data = BackendUtils.get_fake_currency_item(reward.currency_code, reward.amount)
+									}
 									local icon = fake_item.data.icon
 									local background = UISettings.item_rarity_textures[fake_item.data.rarity]
 									temp_content.reward_item = fake_item
@@ -1600,7 +1562,9 @@ HeroViewStateAchievements._setup_reward_presentation = function (self, reward_po
 				}
 				presentation_data[#presentation_data + 1] = entry
 			elseif reward_type == "currency" then
-				local fake_item = self:_get_fake_currency_item(data.currency_code, data.amount)
+				local fake_item = {
+					data = BackendUtils.get_fake_currency_item(data.currency_code, data.amount)
+				}
 				local description = {}
 				local _, display_name, _ = UIUtils.get_ui_information_from_item(fake_item)
 				description[1] = Localize(display_name)
@@ -2770,7 +2734,7 @@ HeroViewStateAchievements._handle_search_input = function (self, dt, t, input_se
 
 			input_content.input_active = false
 			self._keyboard_id = nil
-		elseif input_service:get("toggle_menu", true) or self._achievement_layout_type == "summary" then
+		elseif input_service:get("toggle_menu", true) or self._achievement_layout_type == "summary" or input_service:get("back", true) then
 			self:_set_input_blocked(false)
 
 			input_content.input_active = false

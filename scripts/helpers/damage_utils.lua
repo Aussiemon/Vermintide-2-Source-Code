@@ -1068,15 +1068,19 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 
 		fassert(radius, "Explosion template [%s] has no radius, or radius_min & radius_max, set", explosion_template.name)
 
+		local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
 		local is_grenade = explosion_template.is_grenade
 
-		if is_grenade then
-			local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+		if buff_extension then
+			local radius_multiplier = 1
 
-			if buff_extension then
-				radius = buff_extension:apply_buffs_to_value(radius, "grenade_radius")
-				max_damage_radius = buff_extension:apply_buffs_to_value(max_damage_radius, "grenade_radius")
+			if is_grenade then
+				radius_multiplier = radius_multiplier + buff_extension:apply_buffs_to_value(1, "grenade_radius") - 1
 			end
+
+			radius_multiplier = radius_multiplier + buff_extension:apply_buffs_to_value(1, "explosion_radius") - 1
+			radius = radius * radius_multiplier
+			max_damage_radius = max_damage_radius * radius_multiplier
 		end
 
 		local difficulty_power_level = explosion_data.difficulty_power_level and explosion_data.difficulty_power_level[difficulty_rank]
@@ -1122,15 +1126,25 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 		local attacker_player = Managers.player:owner(attacker_unit)
 		local attacker_is_player = attacker_player ~= nil
 		local friendly_fire_disabled = explosion_data.no_friendly_fire
+		local allow_friendly_fire_override = explosion_data.allow_friendly_fire_override
 		local friendly_fire_allowed = nil
 
 		if attacker_is_player then
-			friendly_fire_allowed = DamageUtils.allow_friendly_fire_ranged(difficulty_settings, attacker_player)
+			friendly_fire_allowed = allow_friendly_fire_override or DamageUtils.allow_friendly_fire_ranged(difficulty_settings, attacker_player)
 		else
 			friendly_fire_allowed = explosion_data.ai_friendly_fire
 		end
 
-		local forced_friendly_player_damage = explosion_data.always_hurt_players
+		local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+
+		if buff_extension then
+			local no_friendly_damage_perk = buff_extension:has_buff_perk(buff_perk_names.no_explosion_friendly_fire)
+
+			if no_friendly_damage_perk then
+				friendly_fire_allowed = false
+			end
+		end
+
 		local friendly_fire_enabled = friendly_fire_allowed and not friendly_fire_disabled
 		local physics_world = World.physics_world(world)
 		local actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", impact_position, "size", radius, "collision_filter", collision_filter)
@@ -1286,9 +1300,7 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 			local damage_unit = not is_ally or friendly_fire_enabled
 
 			if is_player then
-				if is_ally then
-					damage_unit = damage_unit or forced_friendly_player_damage
-				elseif damage_unit then
+				if not is_ally and damage_unit then
 					local ghost_mode_extension = ScriptUnit.has_extension(hit_unit, "ghost_mode_system")
 				end
 			elseif attacker_is_player and is_ai and is_ally then
@@ -1490,10 +1502,17 @@ DamageUtils.create_aoe = function (world, attacker_unit, position, damage_source
 	local duration = duration or aoe_data.duration
 	local attacker_unit = AiUtils.get_actual_attacker_unit(attacker_unit)
 	local is_grenade = explosion_template.is_grenade
+	local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
 
-	if ScriptUnit.has_extension(attacker_unit, "buff_system") and is_grenade then
-		local buff_extension = ScriptUnit.extension(attacker_unit, "buff_system")
-		radius = buff_extension:apply_buffs_to_value(radius, "grenade_radius")
+	if buff_extension then
+		local radius_multiplier = 1
+
+		if is_grenade then
+			radius_multiplier = radius_multiplier + buff_extension:apply_buffs_to_value(1, "grenade_radius") - 1
+		end
+
+		radius_multiplier = radius_multiplier + buff_extension:apply_buffs_to_value(1, "explosion_radius") - 1
+		radius = radius * radius_multiplier
 	end
 
 	local attacker_player = Managers.player:owner(attacker_unit)
@@ -1504,7 +1523,7 @@ DamageUtils.create_aoe = function (world, attacker_unit, position, damage_source
 		local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 		local friendly_fire_disabled = aoe_data.no_friendly_fire
 		local friendly_fire_allowed = DamageUtils.allow_friendly_fire_ranged(difficulty_settings, attacker_player)
-		local forced_friendly_fire = aoe_data.always_hurt_players
+		local forced_friendly_fire = aoe_data.allow_friendly_fire
 		damage_players = forced_friendly_fire or friendly_fire_allowed and not friendly_fire_disabled
 	end
 
@@ -3003,7 +3022,7 @@ DamageUtils.process_projectile_hit = function (world, damage_source, owner_unit,
 	local num_hits = #raycast_result
 	hit_data.hits = num_penetrations
 	local friendly_fire_disabled = damage_profile.no_friendly_fire
-	local forced_friendly_fire = damage_profile.always_hurt_players
+	local forced_friendly_fire = damage_profile.allow_friendly_fire
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
 	local allow_friendly_fire = forced_friendly_fire or not friendly_fire_disabled and DamageUtils.allow_friendly_fire_ranged(difficulty_settings, owner_player)
 	local side_manager = Managers.state.side

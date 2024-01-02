@@ -5124,6 +5124,11 @@ UIWidgets.create_simple_hotspot = function (scenegraph_id, allow_multi_hover)
 			}
 		},
 		style = {},
+		offset = {
+			0,
+			0,
+			0
+		},
 		scenegraph_id = scenegraph_id
 	}
 end
@@ -5212,7 +5217,7 @@ UIWidgets.create_simple_rounded_rect = function (scenegraph_id, corner_radius, c
 	}
 end
 
-UIWidgets.create_simple_texture = function (texture, scenegraph_id, masked, retained, color, offset, texture_size, disable_with_gamepad)
+UIWidgets.create_simple_texture = function (texture, scenegraph_id, masked, retained, color, offset, texture_size, disable_with_gamepad, viewport_mask)
 	if type(offset) ~= "table" then
 		offset = {
 			0,
@@ -5259,7 +5264,8 @@ UIWidgets.create_simple_texture = function (texture, scenegraph_id, masked, reta
 					0
 				},
 				masked = masked,
-				texture_size = texture_size
+				texture_size = texture_size,
+				viewport_mask = viewport_mask
 			}
 		},
 		offset = offset,
@@ -5367,14 +5373,15 @@ UIWidgets.create_simple_centered_texture_amount = function (texture, texture_siz
 	}
 end
 
-UIWidgets.create_simple_multi_texture = function (textures, texture_sizes, axis, direction, spacing, scenegraph_id, masked)
+UIWidgets.create_simple_multi_texture = function (textures, texture_sizes, axis, direction, spacing, scenegraph_id, masked, retained_mode)
 	return {
 		element = {
 			passes = {
 				{
 					texture_id = "texture_id",
 					style_id = "texture_id",
-					pass_type = "multi_texture"
+					pass_type = "multi_texture",
+					retained_mode = retained_mode
 				}
 			}
 		},

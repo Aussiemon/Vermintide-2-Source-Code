@@ -260,20 +260,20 @@ StatusEffectTemplates.burning_warpfire_death_critical.unit_material_variable.val
 	0.02
 }
 StatusEffectTemplates.burning_warpfire_death_critical.death_unit_material_variable = nil
-StatusEffectTemplates.burning_warpfire_death_critical.particle_material_variable.value = 1
+StatusEffectTemplates.burning_warpfire_death_critical.particle_material_variable.value = 2
 StatusEffectTemplates.burning_elven_magic = table.clone(StatusEffectTemplates.burning)
 StatusEffectTemplates.burning_elven_magic.unit_material_variable.value = {
-	0.45,
-	0.4,
-	1.25
+	0.22,
+	0.2,
+	3
 }
 StatusEffectTemplates.burning_elven_magic.death_unit_material_variable = nil
 StatusEffectTemplates.burning_elven_magic.particle_material_variable.value = 3
 StatusEffectTemplates.burning_elven_magic_death_critical = table.clone(StatusEffectTemplates.burning_death_critical)
 StatusEffectTemplates.burning_elven_magic_death_critical.unit_material_variable.value = {
-	0.45,
-	0.4,
-	1.25
+	0.22,
+	0.2,
+	3
 }
 StatusEffectTemplates.burning_elven_magic_death_critical.death_unit_material_variable = nil
 StatusEffectTemplates.burning_elven_magic_death_critical.particle_material_variable.value = 3

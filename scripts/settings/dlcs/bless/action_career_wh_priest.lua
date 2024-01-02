@@ -1,13 +1,86 @@
-ActionCareerWHPriest = class(ActionCareerWHPriest, ActionBase)
-local spell_data = {
+require("scripts/settings/profiles/career_constants")
+
+local spell_params = {}
+local spell_params_improved = {
+	external_optional_duration = CareerConstants.wh_priest.talent_6_1_improved_ability_duration
+}
+local spell_buffs = {
 	"victor_priest_activated_ability_invincibility",
-	"victor_priest_activated_ability_nuke"
+	"victor_priest_activated_ability_nuke",
+	"victor_priest_activated_noclip"
 }
-local spell_data_improved = {
-	"victor_priest_activated_ability_invincibility_improved",
-	"victor_priest_activated_ability_nuke_improved",
-	"victor_priest_activated_noclip_improved"
-}
+ActionCareerWHPriestUtility = {}
+
+ActionCareerWHPriestUtility.cast_spell = function (target_unit, warrior_priest_unit)
+	ActionCareerWHPriestUtility._add_buffs_to_target(target_unit, warrior_priest_unit)
+
+	local talent_extension = ScriptUnit.extension(warrior_priest_unit, "talent_system")
+
+	if talent_extension:has_talent("victor_priest_4_2_new") then
+		local career_extension = ScriptUnit.extension(warrior_priest_unit, "career_system")
+		local career_passive = career_extension:get_passive_ability_by_name("wh_priest")
+
+		career_passive:modify_resource_percent(CareerConstants.wh_priest.talent_4_2_fury_to_gain_percent)
+	end
+
+	if talent_extension:has_talent("victor_priest_6_2") then
+		if target_unit ~= warrior_priest_unit then
+			ActionCareerWHPriestUtility._add_buffs_to_target(warrior_priest_unit, warrior_priest_unit)
+		else
+			local side = Managers.state.side.side_by_unit[warrior_priest_unit]
+
+			if not side then
+				return
+			end
+
+			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+			local num_units = #player_and_bot_units
+			local current_min_dist = math.huge
+			local current_target = nil
+			local owner_position = POSITION_LOOKUP[warrior_priest_unit]
+
+			for i = 1, num_units do
+				local unit = player_and_bot_units[i]
+
+				if ALIVE[unit] and unit ~= warrior_priest_unit then
+					local unit_position = POSITION_LOOKUP[unit]
+					local dist_squared = Vector3.distance_squared(owner_position, unit_position)
+
+					if dist_squared < current_min_dist then
+						current_min_dist = dist_squared
+						current_target = unit
+					end
+				end
+			end
+
+			ActionCareerWHPriestUtility._add_buffs_to_target(current_target, warrior_priest_unit)
+		end
+	end
+end
+
+ActionCareerWHPriestUtility._add_buffs_to_target = function (target_unit, warrior_priest_unit)
+	local spell_buffs = spell_buffs
+	local params = spell_params
+	local talent_extension = ScriptUnit.extension(warrior_priest_unit, "talent_system")
+
+	if talent_extension:has_talent("victor_priest_6_1") then
+		params = spell_params_improved
+	end
+
+	params.attacker_unit = warrior_priest_unit
+
+	if ALIVE[target_unit] then
+		local buff_system = Managers.state.entity:system("buff_system")
+
+		for i = 1, #spell_buffs do
+			local buff_name = spell_buffs[i]
+
+			buff_system:add_buff_synced(target_unit, buff_name, BuffSyncType.All, params)
+		end
+	end
+end
+
+ActionCareerWHPriest = class(ActionCareerWHPriest, ActionBase)
 
 ActionCareerWHPriest.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 	ActionCareerWHPriest.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
@@ -34,13 +107,7 @@ ActionCareerWHPriest.client_owner_start_action = function (self, new_action, t, 
 	end
 
 	if ALIVE[spell_target] then
-		local current_spell = spell_data
-
-		if self.talent_extension:has_talent("victor_priest_6_1") then
-			current_spell = spell_data_improved
-		end
-
-		self:_cast_spells(current_spell, spell_target)
+		ActionCareerWHPriestUtility.cast_spell(spell_target, self.owner_unit)
 		self.career_extension:start_activated_ability_cooldown()
 		CharacterStateHelper.play_animation_event(self.owner_unit, "witch_hunter_active_ability")
 		self:_play_vo()
@@ -68,58 +135,4 @@ ActionCareerWHPriest._play_vo = function (self)
 
 	first_person_extension:play_hud_sound_event(audio_event)
 	first_person_extension:play_remote_unit_sound_event(audio_event, owner_unit, 0)
-end
-
-ActionCareerWHPriest._cast_spells = function (self, spell_data, target)
-	local owner_unit = self.owner_unit
-	local talent_extension = self.talent_extension
-
-	self:_add_buffs_to_target(spell_data, target)
-
-	if talent_extension:has_talent("victor_priest_6_2") then
-		if target ~= owner_unit then
-			self:_add_buffs_to_target(spell_data, owner_unit)
-		else
-			local side = Managers.state.side.side_by_unit[owner_unit]
-
-			if not side then
-				return
-			end
-
-			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
-			local num_units = #player_and_bot_units
-			local current_min_dist = math.huge
-			local current_target = nil
-			local owner_position = POSITION_LOOKUP[owner_unit]
-
-			for i = 1, num_units do
-				local unit = player_and_bot_units[i]
-
-				if ALIVE[unit] and unit ~= owner_unit then
-					local unit_position = POSITION_LOOKUP[unit]
-					local dist_squared = Vector3.distance_squared(owner_position, unit_position)
-
-					if dist_squared < current_min_dist then
-						current_min_dist = dist_squared
-						current_target = unit
-					end
-				end
-			end
-
-			self:_add_buffs_to_target(spell_data, current_target)
-		end
-	end
-end
-
-ActionCareerWHPriest._add_buffs_to_target = function (self, buffs_to_add, target)
-	if ALIVE[target] then
-		local owner_unit = self.owner_unit
-		local buff_system = Managers.state.entity:system("buff_system")
-
-		for i = 1, #buffs_to_add do
-			local buff_name = buffs_to_add[i]
-
-			buff_system:add_buff(target, buff_name, owner_unit)
-		end
-	end
 end

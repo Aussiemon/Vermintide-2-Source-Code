@@ -4,6 +4,7 @@ InputService.init = function (self, input_service_name, keymaps_name, filters_na
 	self.platform = PLATFORM
 	self.mapped_devices = {
 		gamepad = {},
+		ps_pad = {},
 		mouse = {},
 		keyboard = {},
 		network = {},
@@ -74,7 +75,7 @@ InputService.get = function (self, input_data_name, consume)
 							local input_device_data = input_devices_data[input_device]
 
 							if input_device:active() and not input_device_data.blocked_access[name] then
-								action_value = key_action_type == "soft_button" and math_max(action_value or 0, input_device_data[key_action_type][key_index]) or action_value or input_device_data[key_action_type][key_index]
+								action_value = key_action_type == "soft_button" and math_max(action_value or 0, input_device_data[key_action_type][key_index]) or key_action_type == "axis" and (not action_value or action_value and Vector3.length_squared(action_value) < 0.01) and input_device_data[key_action_type][key_index] or action_value or input_device_data[key_action_type][key_index]
 
 								if action_value == true then
 									if input_device_data.consumed_input[key_index] then
@@ -135,7 +136,10 @@ InputService.get_active_keymaps = function (self, optional_platform, optional_in
 	local platform = optional_platform or self.platform
 
 	if not optional_platform and IS_WINDOWS and self.input_manager:is_device_active("gamepad") then
-		platform = "xb1"
+		local active_controller = Managers.input:get_most_recent_device()
+		local controller_type = active_controller and active_controller.type()
+		local is_ps_pad = controller_type == "sce_pad"
+		platform = is_ps_pad and "ps_pad" or "xb1"
 	end
 
 	if not optional_platform and IS_XB1 and (self.input_manager:is_device_active("keyboard") or self.input_manager:is_device_active("mouse")) then
@@ -168,6 +172,11 @@ InputService.get_active_filters = function (self, optional_platform, optional_in
 
 	if not optional_platform and IS_WINDOWS and self.input_manager:is_device_active("gamepad") then
 		platform = "xb1"
+		local most_recent_device = Managers.input:get_most_recent_device()
+
+		if most_recent_device.type() == "sce_pad" then
+			platform = "ps_pad"
+		end
 	end
 
 	if not optional_platform and IS_XB1 and (self.input_manager:is_device_active("keyboard") or self.input_manager:is_device_active("mouse")) then

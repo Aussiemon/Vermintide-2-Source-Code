@@ -2,10 +2,10 @@ local ammo_ability_cost = 0.75
 local min_shots_activate = 1
 local spinup_time = 0.5
 local base_chain_time = 0.15
-local initial_rounds_per_second = 6
+local initial_rounds_per_second = 4
 local max_rps = 12
 local rps_loss_per_second = 1.5
-local rps_gain_per_shot = 0.3
+local rps_gain_per_shot = 0.2
 local armor_pierce_ammo_ability_cost = 2
 local armor_pierce_damage_profile = "engineer_ability_shot_armor_pierce"
 local armor_pierce_initial_rounds_per_second = 2
@@ -18,7 +18,7 @@ local visual_heat_generation = 0.0015
 local visual_heat_generation_armor_pierce = 0.002
 local visual_heat_cooldown_speed = 0.006
 local base_anim_speed = 0.16666666666666666
-local base_anim_speed_armor_pierce = 0.3333333333333333
+local base_anim_speed_big_barrel = 0.3333333333333333
 
 local function shoot_condition_func(action_user, input_extension)
 	local career_extension = ScriptUnit.extension(action_user, "career_system")
@@ -145,30 +145,32 @@ local weapon_template = {
 				chain_condition_func = shoot_condition_func
 			},
 			base_fire = {
-				reload_when_out_of_ammo = true,
 				alert_sound_range_hit = 1.5,
-				kind = "career_dr_four",
+				charge_value = "bullet_hit",
 				damage_profile = "engineer_ability_shot",
+				kind = "career_dr_four",
+				shot_count = 1,
 				action_priority = 0,
 				fire_time = 0,
-				charge_value = "bullet_hit",
 				anim_end_event = "attack_finished",
+				anim_event_secondary = "reload",
 				total_time_secondary = 1.75,
+				apply_recoil = true,
 				headshot_multiplier = 2,
 				aim_assist_ramp_multiplier = 0.1,
-				aim_assist_max_ramp_multiplier = 0.3,
 				additional_critical_strike_chance = 0,
+				aim_assist_max_ramp_multiplier = 0.3,
 				aim_assist_auto_hit_chance = 0.5,
-				aim_assist_ramp_decay_delay = 0.2,
 				fire_sound_event = "Play_player_engineer_shooting_burst",
+				aim_assist_ramp_decay_delay = 0.2,
 				critical_hit_effect = "bullet_critical_impact",
 				anim_event = "attack_shoot_charged",
-				apply_recoil = true,
+				reload_when_out_of_ammo = true,
 				continuous_buff_check = true,
+				num_layers_spread = 1,
 				hit_effect = "bullet_impact",
 				ranged_attack = true,
 				alert_sound_range_fire = 10,
-				anim_event_secondary = "reload",
 				hold_input = "action_one_hold",
 				on_chain_keep_audio_loops = {
 					"engineer_weapon_spin"
@@ -374,22 +376,18 @@ local weapon_template = {
 					}
 				},
 				condition_func = function (action_user, input_extension)
-					local talent_extension = ScriptUnit.has_extension(action_user, "talent_system")
 					local career_extension = ScriptUnit.has_extension(action_user, "career_system")
 					local buff_extension = ScriptUnit.has_extension(action_user, "buff_system")
 					local can_reload = not buff_extension:has_buff_type("bardin_engineer_pump_max_exhaustion_buff")
-					local needs_reload = career_extension:current_ability_cooldown(1) > 0
 
-					return needs_reload and can_reload
+					return can_reload
 				end,
 				chain_condition_func = function (action_user, input_extension)
-					local talent_extension = ScriptUnit.has_extension(action_user, "talent_system")
 					local career_extension = ScriptUnit.has_extension(action_user, "career_system")
 					local buff_extension = ScriptUnit.has_extension(action_user, "buff_system")
 					local can_reload = not buff_extension:has_buff_type("bardin_engineer_pump_max_exhaustion_buff")
-					local needs_reload = career_extension:current_ability_cooldown(1) > 0
 
-					return needs_reload and can_reload
+					return can_reload
 				end,
 				initial_charge_delay = base_initial_charge_delay,
 				ability_charge_interval = base_ability_charge_interval
@@ -404,7 +402,7 @@ weapon_template.actions.action_one.fast_fire = fast_fire
 local armor_pierce_fire = table.shallow_copy(weapon_template.actions.action_one.base_fire)
 armor_pierce_fire.damage_profile = armor_pierce_damage_profile
 armor_pierce_fire.visual_heat_generation = visual_heat_generation_armor_pierce
-armor_pierce_fire.base_anim_speed = base_anim_speed_armor_pierce
+armor_pierce_fire.base_anim_speed = base_anim_speed_big_barrel
 armor_pierce_fire.ammo_usage = armor_pierce_ammo_ability_cost
 armor_pierce_fire.initial_rounds_per_second = armor_pierce_initial_rounds_per_second
 armor_pierce_fire.max_rps = armor_pierce_max_rps

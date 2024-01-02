@@ -17,7 +17,7 @@ local function buff_duration_func(current_stacks)
 	return MIN_BUFF_DURATION + BUFF_DURATION_PER_STACK * MAX_STACKS - BUFF_DURATION_PER_STACK * current_stacks
 end
 
-local function buff_duration_modifier_func(sub_buff_template, duration, buff_extension)
+local function buff_duration_modifier_func(owner_unit, sub_buff_template, duration, buff_extension)
 	local buff_stacks = buff_extension:num_buff_stacks("skulls_2023_buff")
 
 	return buff_duration_func(math.min(buff_stacks, MAX_STACKS))

@@ -68,7 +68,7 @@ end
 
 DeusChestExtension.game_object_initialized = function (self, unit, go_id)
 	if self._is_server then
-		local server_chest_type = self._deus_run_controller:get_deus_weapon_chest_type()
+		local server_chest_type = self._chest_type_override or self._deus_run_controller:get_deus_weapon_chest_type()
 
 		self:_set_server_chest_type(server_chest_type)
 	end
