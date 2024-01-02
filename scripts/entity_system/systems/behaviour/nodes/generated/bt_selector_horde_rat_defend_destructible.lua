@@ -21,6 +21,8 @@ BTSelector_horde_rat_defend_destructible.leave = function (self, unit, blackboar
 end
 
 BTSelector_horde_rat_defend_destructible.run = function (self, unit, blackboard, t, dt)
+	local Profiler_start = Profiler.start
+	local Profiler_stop = Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_spawn = children[1]

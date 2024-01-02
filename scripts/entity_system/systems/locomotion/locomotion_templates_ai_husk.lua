@@ -3,7 +3,10 @@ local LocomotionTemplates = LocomotionTemplates
 local detailed_profiler_start, detailed_profiler_stop = nil
 local DETAILED_PROFILING = true
 
-if not DETAILED_PROFILING then
+if DETAILED_PROFILING then
+	detailed_profiler_start = Profiler.start
+	detailed_profiler_start = Profiler.stop
+else
 	function detailed_profiler_start()
 		return
 	end

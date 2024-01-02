@@ -3405,7 +3405,7 @@ ProcFunctions = {
 				for i = 1, num_units do
 					local unit = player_and_bot_units[i]
 
-					if Unit.alive(unit) then
+					if HEALTH_ALIVE[unit] then
 						buff_system:add_buff(unit, buff_to_add, owner_unit, false)
 					end
 				end

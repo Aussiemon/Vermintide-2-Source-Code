@@ -595,6 +595,14 @@ local function buff_param_unpack_unit(input, ctx)
 	return ctx.unit_storage:unit(input)
 end
 
+local function buff_param_pack_parent_id(input, ctx, unit)
+	return ScriptUnit.extension(unit, "buff_system"):id_to_sync_id(input) or 0
+end
+
+local function buff_param_unpack_parent_id(input, ctx, unit)
+	return ScriptUnit.extension(unit, "buff_system"):sync_id_to_id(input) or 0
+end
+
 local buff_param_packing_methods = {
 	attacker_unit = {
 		pack = buff_param_pack_unit,
@@ -669,7 +677,7 @@ local packed_buff_param_ids = Script.new_array(buff_param_count)
 local packed_buff_param_vals = Script.new_array(buff_param_count)
 local unpacked_buff_params = Script.new_map(buff_param_count)
 
-BuffSystem._pack_buff_params = function (self, buff_params, dest_param_ids, dest_param_vals)
+BuffSystem._pack_buff_params = function (self, buff_params, dest_param_ids, dest_param_vals, unit)
 	table.clear(packed_buff_param_ids)
 	table.clear(packed_buff_param_vals)
 
@@ -682,7 +690,7 @@ BuffSystem._pack_buff_params = function (self, buff_params, dest_param_ids, dest
 		elseif buff_params_list_lookup[name] then
 			num_params = num_params + 1
 			dest_param_ids[num_params] = buff_params_list_lookup[name]
-			dest_param_vals[num_params] = buff_param_packing_methods[name].pack(val, self)
+			dest_param_vals[num_params] = buff_param_packing_methods[name].pack(val, self, unit)
 		end
 	end
 
@@ -695,7 +703,7 @@ BuffSystem._pack_buff_params = function (self, buff_params, dest_param_ids, dest
 	return dest_param_ids, dest_param_vals
 end
 
-BuffSystem._unpack_buff_params = function (self, dest_table, param_ids, param_vals)
+BuffSystem._unpack_buff_params = function (self, dest_table, param_ids, param_vals, unit)
 	table.clear(dest_table)
 
 	local num_params = #param_ids
@@ -720,7 +728,7 @@ BuffSystem._unpack_buff_params = function (self, dest_table, param_ids, param_va
 		local param_id = param_ids[i]
 		local param_name = buff_params_list[param_id]
 		local param_type_data = buff_param_packing_methods[param_name]
-		dest_table[param_name] = param_type_data.unpack(param_vals[i], self)
+		dest_table[param_name] = param_type_data.unpack(param_vals[i], self, unit)
 	end
 
 	return dest_table
@@ -738,7 +746,7 @@ BuffSystem._prepare_sync = function (self, target_unit, template_name, sync_type
 
 	if params then
 		rpc_name = "rpc_add_buff_synced_params"
-		param_ids, param_vals = self:_pack_buff_params(params, packed_buff_param_ids, packed_buff_param_vals)
+		param_ids, param_vals = self:_pack_buff_params(params, packed_buff_param_ids, packed_buff_param_vals, target_unit)
 	end
 
 	return target_unit_id, template_name_id, sync_type_id, rpc_name, param_ids, param_vals
@@ -910,7 +918,7 @@ BuffSystem.rpc_add_buff_synced_params = function (self, channel_id, target_unit_
 
 	if buff_extension then
 		local template_name = NetworkLookup.buff_templates[template_name_id]
-		local params = self:_unpack_buff_params(unpacked_buff_params, param_ids, param_vals)
+		local params = self:_unpack_buff_params(unpacked_buff_params, param_ids, param_vals, target_unit)
 		local id = buff_extension:add_buff(template_name, params)
 		local local_sync_id = remote_sync_id ~= invalid_buff_sync_id and buff_extension:generate_sync_id() or invalid_buff_sync_id
 		local server_sync_id = self.is_server and local_sync_id or remote_sync_id
@@ -949,7 +957,7 @@ BuffSystem.rpc_add_buff_synced_relay_params = function (self, channel_id, target
 
 	if buff_extension then
 		local template_name = NetworkLookup.buff_templates[template_name_id]
-		local params = self:_unpack_buff_params(unpacked_buff_params, param_ids, param_vals)
+		local params = self:_unpack_buff_params(unpacked_buff_params, param_ids, param_vals, target_unit)
 		local local_buff_id = buff_extension:add_buff(template_name, params)
 
 		if server_sync_id ~= invalid_buff_sync_id then
@@ -1035,7 +1043,7 @@ BuffSystem._hot_join_sync_synced_buffs = function (self, peer_id)
 					buff_params.source_attacker_unit = buff.source_attacker_unit
 					buff_params._hot_join_sync_buff_age = buff.duration and math.min(t - buff.start_time, 6550)
 
-					self:_pack_buff_params(buff_params, packed_buff_param_ids, packed_buff_param_vals)
+					self:_pack_buff_params(buff_params, packed_buff_param_ids, packed_buff_param_vals, unit)
 					network_transmit:send_rpc("rpc_add_buff_synced_relay_params", peer_id, unit_id, template_name_id, server_sync_id, sync_type_id, packed_buff_param_ids, packed_buff_param_vals)
 				end
 			end

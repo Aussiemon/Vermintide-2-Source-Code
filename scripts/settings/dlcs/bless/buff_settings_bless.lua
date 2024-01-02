@@ -247,6 +247,12 @@ settings.proc_functions = {
 			return
 		end
 
+		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
+
+		if status_extension:is_knocked_down() then
+			return
+		end
+
 		local damage_taken = params[2]
 		damage_taken = damage_taken * CareerConstants.wh_priest.talent_4_1_fury_gain_mult
 

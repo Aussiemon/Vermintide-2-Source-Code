@@ -21,6 +21,8 @@ BTSelector_chaos_exalted_sorcerer_drachenfels.leave = function (self, unit, blac
 end
 
 BTSelector_chaos_exalted_sorcerer_drachenfels.run = function (self, unit, blackboard, t, dt)
+	local Profiler_start = Profiler.start
+	local Profiler_stop = Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_spawn = children[1]

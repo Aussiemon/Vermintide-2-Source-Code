@@ -53,6 +53,10 @@ PassiveAbilityEngineer._register_events = function (self)
 	Managers.state.event:register(self, "on_talents_changed", "on_talents_changed")
 end
 
+PassiveAbilityEngineer.game_object_initialized = function (self, unit, go_id)
+	self:on_talents_changed(unit, self._talent_extension, true)
+end
+
 PassiveAbilityEngineer._unregister_events = function (self)
 	local event_manager = Managers.state.event
 
@@ -105,12 +109,6 @@ PassiveAbilityEngineer.update = function (self, dt, t)
 	else
 		self._heat_particles_spawned = false
 		self._wind_down_progress = 0
-	end
-
-	if self._first_update then
-		self._first_update = false
-
-		self:_add_5_2_bombs(true)
 	end
 end
 
@@ -187,16 +185,16 @@ PassiveAbilityEngineer.create_game_object = function (self)
 	self._game_object_id = network_manager:create_game_object("engineer_career_data", game_object_data_table, callback)
 end
 
-PassiveAbilityEngineer.on_talents_changed = function (self, unit, talent_extension, is_spawning)
+PassiveAbilityEngineer.on_talents_changed = function (self, unit, talent_extension)
 	if unit ~= self._owner_unit then
 		return
 	end
 
-	self:_add_5_2_bombs(is_spawning)
+	self:_add_5_2_bombs()
 end
 
-PassiveAbilityEngineer._add_5_2_bombs = function (self, is_spawning)
-	if not self._is_local_player then
+PassiveAbilityEngineer._add_5_2_bombs = function (self)
+	if not self._is_server then
 		return
 	end
 
@@ -204,16 +202,15 @@ PassiveAbilityEngineer._add_5_2_bombs = function (self, is_spawning)
 		return
 	end
 
-	if is_spawning then
-		local unique_id = self._player:unique_id()
-		local status = Managers.party:get_status_from_unique_id(unique_id)
-		local is_initial_spawn = status.game_mode_data.first_spawn or global_is_inside_inn
+	local unique_id = self._player:unique_id()
+	local status = Managers.party:get_status_from_unique_id(unique_id)
+	local already_given = not global_is_inside_inn and status.game_mode_data._engineer_upgraded_grenades_added
 
-		if not is_initial_spawn then
-			return
-		end
+	if already_given then
+		return
 	end
 
+	status.game_mode_data._engineer_upgraded_grenades_added = true
 	local item_name = "grenade_frag_01"
 	local slot_name = "slot_grenade"
 	local inventory_extension = self._inventory_extension

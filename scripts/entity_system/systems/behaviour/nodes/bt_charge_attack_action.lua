@@ -159,7 +159,6 @@ BTChargeAttackAction.leave = function (self, unit, blackboard, t, reason, destro
 	blackboard.target_lunge_position = nil
 	blackboard.target_unit_status_extension = nil
 	blackboard.triggered_dodge_sound = nil
-	blackboard.charge_path_received = nil
 
 	self:_set_leaning_enabled(unit, blackboard, false)
 
@@ -757,13 +756,6 @@ BTChargeAttackAction._run_approaching = function (self, unit, blackboard, t, dt)
 
 	self:_check_overlap(unit, blackboard, action)
 	self:_check_smartobjects(unit, blackboard)
-
-	if blackboard.navigation_extension:is_following_path() then
-		blackboard.charge_path_received = true
-	elseif blackboard.charge_path_received then
-		self:_cancel_charge(unit, blackboard)
-	end
-
 	self:_update_animation_movement_speed(unit, blackboard, dt)
 
 	local wanted_node_index = 4

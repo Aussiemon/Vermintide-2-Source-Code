@@ -21,6 +21,8 @@ BTSelector_chaos_exalted_sorcerer.leave = function (self, unit, blackboard, t, r
 end
 
 BTSelector_chaos_exalted_sorcerer.run = function (self, unit, blackboard, t, dt)
+	local Profiler_start = Profiler.start
+	local Profiler_stop = Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_spawn = children[1]

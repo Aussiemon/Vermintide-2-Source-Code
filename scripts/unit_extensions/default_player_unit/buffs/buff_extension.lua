@@ -1441,11 +1441,11 @@ BuffExtension.claim_buff_id = function (self)
 end
 
 BuffExtension.sync_id_to_id = function (self, server_sync_id)
-	return self._server_sync_to_id[server_sync_id]
+	return self._server_sync_to_id and self._server_sync_to_id[server_sync_id]
 end
 
 BuffExtension.id_to_sync_id = function (self, id)
-	return self._id_to_server_sync[id]
+	return self._id_to_server_sync and self._id_to_server_sync[id]
 end
 
 BuffExtension.buff_sync_type = function (self, id)
@@ -1526,6 +1526,12 @@ BuffExtension._remove_buff_synced = function (self, id)
 	local unit_id = network_manager:unit_game_object_id(self._unit)
 
 	if not unit_id then
+		return
+	end
+
+	local game = network_manager:game()
+
+	if not game then
 		return
 	end
 

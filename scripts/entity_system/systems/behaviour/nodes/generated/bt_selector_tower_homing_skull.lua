@@ -21,6 +21,8 @@ BTSelector_tower_homing_skull.leave = function (self, unit, blackboard, t, reaso
 end
 
 BTSelector_tower_homing_skull.run = function (self, unit, blackboard, t, dt)
+	local Profiler_start = Profiler.start
+	local Profiler_stop = Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_bt_ethereal_homing_flight_action = children[1]

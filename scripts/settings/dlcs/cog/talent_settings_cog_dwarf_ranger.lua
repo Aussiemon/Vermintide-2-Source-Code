@@ -150,7 +150,7 @@ local talent_buff_templates = {
 					}
 				},
 				add_buffs_data = {
-					link_buffs = true,
+					sync_buffs = true,
 					buffs_to_add = {
 						"bardin_engineer_pump_buff_power"
 					}

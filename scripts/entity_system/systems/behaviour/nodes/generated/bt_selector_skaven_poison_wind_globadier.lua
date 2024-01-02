@@ -21,6 +21,8 @@ BTSelector_skaven_poison_wind_globadier.leave = function (self, unit, blackboard
 end
 
 BTSelector_skaven_poison_wind_globadier.run = function (self, unit, blackboard, t, dt)
+	local Profiler_start = Profiler.start
+	local Profiler_stop = Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_suicide_stagger = children[1]

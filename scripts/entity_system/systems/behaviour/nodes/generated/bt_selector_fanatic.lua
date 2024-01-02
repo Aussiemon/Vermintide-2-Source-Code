@@ -21,6 +21,8 @@ BTSelector_fanatic.leave = function (self, unit, blackboard, t, reason)
 end
 
 BTSelector_fanatic.run = function (self, unit, blackboard, t, dt)
+	local Profiler_start = Profiler.start
+	local Profiler_stop = Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_spawn = children[1]

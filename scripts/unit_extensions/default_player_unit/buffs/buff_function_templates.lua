@@ -1908,21 +1908,21 @@ BuffFunctionTemplates.functions = {
 				local buffs_to_add = add_buffs_data.buffs_to_add
 
 				if buffs_to_add then
-					local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+					local buff_system = Managers.state.entity:system("buff_system")
+					local link_buffs = add_buffs_data.link_buffs
+					local params = nil
 
-					if buff_extension then
-						local link_buffs = add_buffs_data.link_buffs
-						local params = nil
+					if link_buffs then
+						params = {
+							parent_id = buff.id
+						}
+					end
 
-						if link_buffs then
-							params = {
-								parent_id = buff.id
-							}
-						end
+					local sync_buffs = add_buffs_data.sync_buffs
+					local sync_type = sync_buffs and BuffSyncType.LocalAndServer or BuffSyncType.Local
 
-						for i = 1, #buffs_to_add do
-							buff_extension:add_buff(buffs_to_add[i], params)
-						end
+					for i = 1, #buffs_to_add do
+						buff_system:add_buff_synced(unit, buffs_to_add[i], sync_type, params)
 					end
 				end
 			end

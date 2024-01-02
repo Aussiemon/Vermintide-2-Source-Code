@@ -104,7 +104,7 @@ ImguiBoonsDebug._update_controls = function (self)
 		end
 
 		local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
-		local power_up = deus_run_controller:grant_party_power_up(power_up_name, power_up_rarity)
+		local power_up = DeusPowerUpUtils.generate_specific_power_up(power_up_name, power_up_rarity)
 		local local_player_id = local_player:local_player_id()
 
 		deus_run_controller:add_power_ups({
